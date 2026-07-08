@@ -73,7 +73,7 @@ let mockFiles: Collection
 
 beforeEach(async () => {
 	vi.clearAllMocks()
-	tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), "memongo-sync-test-"))
+	tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), "mbrain-sync-test-"))
 	mockChunks = createMockChunksCol()
 	mockFiles = createMockFilesCol()
 	vi.mocked(chunksCollection).mockReturnValue(mockChunks)

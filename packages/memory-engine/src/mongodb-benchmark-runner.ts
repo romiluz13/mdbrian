@@ -201,17 +201,17 @@ type BenchmarkReportInput = {
 
 function readBuildIdentity(): MemoryBenchmarkRunReport["build"] {
 	const commitSha =
-		process.env.MEMONGO_BUILD_COMMIT?.trim() ||
+		process.env.MBRAIN_BUILD_COMMIT?.trim() ||
 		process.env.VERCEL_GIT_COMMIT_SHA?.trim() ||
 		process.env.GITHUB_SHA?.trim() ||
 		""
 	const buildId =
-		process.env.MEMONGO_BUILD_ID?.trim() ||
+		process.env.MBRAIN_BUILD_ID?.trim() ||
 		process.env.VERCEL_DEPLOYMENT_ID?.trim() ||
 		process.env.GITHUB_RUN_ID?.trim() ||
 		""
 	const buildLabel =
-		process.env.MEMONGO_BUILD_LABEL?.trim() ||
+		process.env.MBRAIN_BUILD_LABEL?.trim() ||
 		process.env.npm_package_version?.trim() ||
 		""
 
@@ -400,7 +400,7 @@ export function buildBenchmarkRunReport(
  *   - `db` + `collectionName` — used for `collStats`; null-with-reason on
  *     atlas-local:preview when unsupported.
  *   - `datasetPath` — used to compute SHA-256 if no env override is set.
- *     Env `MEMONGO_BENCHMARK_DATASET_SHA` takes precedence (matches
+ *     Env `MBRAIN_BENCHMARK_DATASET_SHA` takes precedence (matches
  *     bootstrap.json), then the `datasetSha256` override.
  *   - `datasetKind` — determines retrieval unit (currently always "turn").
  *   - `mongoEmbeddingConfig` — from resolved backend config

@@ -5,7 +5,7 @@ import type { Db, MongoClient, ClientSession } from "mongodb"
 import {
 	type MemoryMongoDBEmbeddingMode,
 	createSubsystemLogger,
-} from "@memongo/lib"
+} from "@mbrain/lib"
 import { chunkMarkdown, hashText } from "./internal.js"
 import type { EmbeddingStatus } from "./mongodb-embedding-retry.js"
 import { kbCollection, kbChunksCollection } from "./mongodb-schema.js"
@@ -133,7 +133,7 @@ export async function ingestToKB(params: {
 			// Chunk the document content — OUTSIDE transaction body (CPU-bound)
 			const chunks = chunkMarkdown(doc.content, chunking)
 
-			// Memongo uses MongoDB community automatic embeddings. KB chunks stay
+			// Mbrain uses MongoDB community automatic embeddings. KB chunks stay
 			// embedding-free on write and rely on autoEmbed indexes at query time.
 			const embeddingStatus: EmbeddingStatus = "pending"
 

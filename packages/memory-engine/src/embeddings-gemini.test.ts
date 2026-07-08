@@ -1,9 +1,9 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
-import * as authModule from "@memongo/lib"
+import * as authModule from "@mbrain/lib"
 import { mockPublicPinnedHostname } from "./test-helpers/ssrf.js"
 
-vi.mock("@memongo/lib", async (importOriginal) => {
-	const original = await importOriginal<typeof import("@memongo/lib")>()
+vi.mock("@mbrain/lib", async (importOriginal) => {
+	const original = await importOriginal<typeof import("@mbrain/lib")>()
 	const { createModelAuthMockModule } = await import(
 		"./test-helpers/model-auth-mock.js"
 	)

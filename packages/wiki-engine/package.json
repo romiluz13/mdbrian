@@ -1,0 +1,25 @@
+{
+	"name": "@mbrain/wiki-engine",
+	"version": "0.1.0",
+	"private": true,
+	"description": "MBrain wiki engine \u2014 wiki_pages, OKF interchange, page rendering, maintenance, contradictions, governance, connectors",
+	"license": "Apache-2.0",
+	"type": "module",
+	"main": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"default": "./dist/index.js"
+		}
+	},
+	"scripts": {
+		"build": "node ../../node_modules/typescript/bin/tsc -p tsconfig.json",
+		"check-types": "node ../../node_modules/typescript/bin/tsc --noEmit -p tsconfig.json",
+		"test": "vitest run"
+	},
+	"dependencies": {
+		"@mbrain/memory-engine": "workspace:*",
+		"@mbrain/lib": "workspace:*"
+	}
+}

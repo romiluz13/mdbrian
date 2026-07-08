@@ -3,8 +3,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import { DEFAULT_GEMINI_EMBEDDING_MODEL } from "./embeddings-gemini.js"
 import { mockPublicPinnedHostname } from "./test-helpers/ssrf.js"
 
-vi.mock("@memongo/lib", async (importOriginal) => {
-	const original = await importOriginal<typeof import("@memongo/lib")>()
+vi.mock("@mbrain/lib", async (importOriginal) => {
+	const original = await importOriginal<typeof import("@mbrain/lib")>()
 	const { createModelAuthMockModule } = await import(
 		"./test-helpers/model-auth-mock.js"
 	)
@@ -31,7 +31,7 @@ function readFirstFetchRequest(fetchMock: { mock: { calls: unknown[][] } }) {
 }
 
 type EmbeddingsModule = typeof import("./embeddings.js")
-type AuthModule = typeof import("@memongo/lib")
+type AuthModule = typeof import("@mbrain/lib")
 type ResolvedProviderAuth = ReturnType<AuthModule["resolveApiKeyForProvider"]>
 
 let authModule: AuthModule
@@ -41,7 +41,7 @@ let DEFAULT_LOCAL_MODEL: EmbeddingsModule["DEFAULT_LOCAL_MODEL"]
 
 beforeEach(async () => {
 	vi.resetModules()
-	authModule = await import("@memongo/lib")
+	authModule = await import("@mbrain/lib")
 	nodeLlamaModule = await import("./node-llama.js")
 	vi.spyOn(authModule, "resolveApiKeyForProvider")
 	vi.spyOn(nodeLlamaModule, "importNodeLlamaCpp")
@@ -710,7 +710,7 @@ describe("local embedding ensureContext concurrency", () => {
 
 describe("FTS-only fallback when no provider available", () => {
 	beforeEach(async () => {
-		authModule = await import("@memongo/lib")
+		authModule = await import("@mbrain/lib")
 		;({ createEmbeddingProvider, DEFAULT_LOCAL_MODEL } = await import(
 			"./embeddings.js"
 		))

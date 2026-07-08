@@ -1,14 +1,14 @@
 /**
- * Request shapes for the Memongo HTTP API.
- * Runtime implementation lives in @memongo/memory-bridge.
+ * Request shapes for the Mbrain HTTP API.
+ * Runtime implementation lives in @mbrain/memory-bridge.
  */
 
-export type MemongoContainerTag = string
+export type MbrainContainerTag = string
 
-export type MemongoAddInput = {
+export type MbrainAddInput = {
 	content: string
 	/** @deprecated Prefer `sessionId`. */
-	containerTag?: MemongoContainerTag
+	containerTag?: MbrainContainerTag
 	entityContext?: string
 	customId?: string
 	metadata?: Record<string, string | number | boolean | null>
@@ -16,10 +16,10 @@ export type MemongoAddInput = {
 	sessionId?: string
 }
 
-export type MemongoSearchInput = {
+export type MbrainSearchInput = {
 	query: string
 	/** @deprecated Prefer `sessionKey`. */
-	containerTag?: MemongoContainerTag
+	containerTag?: MbrainContainerTag
 	limit?: number
 	agentId?: string
 	minScore?: number
@@ -49,7 +49,7 @@ export type SearchConfig = {
 	lexicalPrefilter?: "disabled" | "experimental"
 }
 
-export type MemongoConversationRecallInput = {
+export type MbrainConversationRecallInput = {
 	query?: string
 	sessionId?: string
 	roles?: Array<"user" | "assistant" | "system" | "tool">
@@ -61,7 +61,7 @@ export type MemongoConversationRecallInput = {
 	agentId?: string
 }
 
-export type MemongoConversationImportInput = {
+export type MbrainConversationImportInput = {
 	datasetPath: string
 	scope?: "session" | "user" | "agent" | "workspace" | "tenant" | "global"
 	limitConversations?: number
@@ -69,33 +69,33 @@ export type MemongoConversationImportInput = {
 	agentId?: string
 }
 
-export type MemongoSourceAgent = {
+export type MbrainSourceAgent = {
 	id: string
 	name: string
 	runId?: string
 }
 
-export type MemongoActorRole = "user" | "assistant" | "system"
-export type MemongoMemoryFeedbackSignal = "confirm" | "correct" | "irrelevant"
+export type MbrainActorRole = "user" | "assistant" | "system"
+export type MbrainMemoryFeedbackSignal = "confirm" | "correct" | "irrelevant"
 
-export type MemongoLifecycleFamily = "structured" | "procedure"
-export type MemongoLifecycleState = "active" | "invalidated" | "conflicted"
-export type MemongoLifecycleHistoryKind = "revision" | "current"
+export type MbrainLifecycleFamily = "structured" | "procedure"
+export type MbrainLifecycleState = "active" | "invalidated" | "conflicted"
+export type MbrainLifecycleHistoryKind = "revision" | "current"
 
-type MemongoStableHandleBase = {
-	family: MemongoLifecycleFamily
+type MbrainStableHandleBase = {
+	family: MbrainLifecycleFamily
 	id: string
 	agentId: string
 	scope: "session" | "user" | "agent" | "workspace" | "tenant" | "global"
 	scopeRef: string
 	revision: number
-	state: MemongoLifecycleState
+	state: MbrainLifecycleState
 	validFrom?: string
 	validTo?: string
 	updatedAt?: string
 }
 
-export type MemongoStructuredStableHandle = MemongoStableHandleBase & {
+export type MbrainStructuredStableHandle = MbrainStableHandleBase & {
 	family: "structured"
 	structured: {
 		type: string
@@ -103,18 +103,18 @@ export type MemongoStructuredStableHandle = MemongoStableHandleBase & {
 	}
 }
 
-export type MemongoProcedureStableHandle = MemongoStableHandleBase & {
+export type MbrainProcedureStableHandle = MbrainStableHandleBase & {
 	family: "procedure"
 	procedure: {
 		procedureId: string
 	}
 }
 
-export type MemongoStableHandle =
-	| MemongoStructuredStableHandle
-	| MemongoProcedureStableHandle
+export type MbrainStableHandle =
+	| MbrainStructuredStableHandle
+	| MbrainProcedureStableHandle
 
-export type MemongoLifecycleStructuredData = {
+export type MbrainLifecycleStructuredData = {
 	type: string
 	key: string
 	value: string
@@ -131,11 +131,11 @@ export type MemongoLifecycleStructuredData = {
 	reinforcementCount?: number
 	reviewAt?: string
 	lastConfirmedAt?: string
-	sourceAgent?: MemongoSourceAgent
+	sourceAgent?: MbrainSourceAgent
 	artifact?: Record<string, unknown>
 }
 
-export type MemongoLifecycleProcedureData = {
+export type MbrainLifecycleProcedureData = {
 	procedureId: string
 	name: string
 	intentTags?: string[]
@@ -149,33 +149,33 @@ export type MemongoLifecycleProcedureData = {
 	failCount?: number
 	lastSuccessAt?: string
 	lastFailureAt?: string
-	sourceAgent?: MemongoSourceAgent
+	sourceAgent?: MbrainSourceAgent
 }
 
-export type MemongoLifecycleItem =
+export type MbrainLifecycleItem =
 	| {
 			family: "structured"
-			handle: MemongoStructuredStableHandle
-			data: MemongoLifecycleStructuredData
+			handle: MbrainStructuredStableHandle
+			data: MbrainLifecycleStructuredData
 			createdAt?: string
 			updatedAt?: string
 	  }
 	| {
 			family: "procedure"
-			handle: MemongoProcedureStableHandle
-			data: MemongoLifecycleProcedureData
+			handle: MbrainProcedureStableHandle
+			data: MbrainLifecycleProcedureData
 			createdAt?: string
 			updatedAt?: string
 	  }
 
-export type MemongoLifecycleHistoryEntry = MemongoLifecycleItem & {
-	historyKind: MemongoLifecycleHistoryKind
+export type MbrainLifecycleHistoryEntry = MbrainLifecycleItem & {
+	historyKind: MbrainLifecycleHistoryKind
 	supersededAt?: string
 }
 
-export type MemongoStructuredLifecyclePatch = Partial<
+export type MbrainStructuredLifecyclePatch = Partial<
 	Pick<
-		MemongoLifecycleStructuredData,
+		MbrainLifecycleStructuredData,
 		| "value"
 		| "context"
 		| "confidence"
@@ -194,9 +194,9 @@ export type MemongoStructuredLifecyclePatch = Partial<
 	> & { validTo: string }
 >
 
-export type MemongoProcedureLifecyclePatch = Partial<
+export type MbrainProcedureLifecyclePatch = Partial<
 	Pick<
-		MemongoLifecycleProcedureData,
+		MbrainLifecycleProcedureData,
 		| "name"
 		| "intentTags"
 		| "triggerQueries"
@@ -209,62 +209,62 @@ export type MemongoProcedureLifecyclePatch = Partial<
 	>
 >
 
-export type MemongoLifecycleGetInput = {
-	handle: MemongoStableHandle
+export type MbrainLifecycleGetInput = {
+	handle: MbrainStableHandle
 }
 
-export type MemongoLifecycleUpdateInput =
+export type MbrainLifecycleUpdateInput =
 	| {
-			handle: MemongoStructuredStableHandle
-			patch: MemongoStructuredLifecyclePatch
+			handle: MbrainStructuredStableHandle
+			patch: MbrainStructuredLifecyclePatch
 	  }
 	| {
-			handle: MemongoProcedureStableHandle
-			patch: MemongoProcedureLifecyclePatch
+			handle: MbrainProcedureStableHandle
+			patch: MbrainProcedureLifecyclePatch
 	  }
 
-export type MemongoLifecycleDeleteInput = {
-	handle: MemongoStableHandle
+export type MbrainLifecycleDeleteInput = {
+	handle: MbrainStableHandle
 	invalidatedBy?: Record<string, unknown>
 }
 
-export type MemongoLifecycleHistoryInput = {
-	handle: MemongoStableHandle
+export type MbrainLifecycleHistoryInput = {
+	handle: MbrainStableHandle
 	limit?: number
 }
 
-export type MemongoProcedureOutcomeInput = {
-	handle: MemongoProcedureStableHandle
+export type MbrainProcedureOutcomeInput = {
+	handle: MbrainProcedureStableHandle
 	success: boolean
 	note?: string
-	actorRole?: MemongoActorRole
+	actorRole?: MbrainActorRole
 }
 
-export type MemongoMemoryFeedbackInput =
+export type MbrainMemoryFeedbackInput =
 	| {
-			handle: MemongoStructuredStableHandle
+			handle: MbrainStructuredStableHandle
 			signal: "confirm"
 			note?: string
-			actorRole?: MemongoActorRole
+			actorRole?: MbrainActorRole
 	  }
 	| {
-			handle: MemongoStructuredStableHandle
+			handle: MbrainStructuredStableHandle
 			signal: "correct"
-			patch: MemongoStructuredLifecyclePatch
+			patch: MbrainStructuredLifecyclePatch
 			note?: string
-			actorRole?: MemongoActorRole
+			actorRole?: MbrainActorRole
 	  }
 	| {
-			handle: MemongoStructuredStableHandle
+			handle: MbrainStructuredStableHandle
 			signal: "irrelevant"
 			note?: string
-			actorRole?: MemongoActorRole
+			actorRole?: MbrainActorRole
 			invalidatedBy?: Record<string, unknown>
 	  }
 
-export type MemongoProfileInput = {
+export type MbrainProfileInput = {
 	/** @deprecated Prefer `scopeRef`. */
-	containerTag?: MemongoContainerTag
+	containerTag?: MbrainContainerTag
 	agentId?: string
 	scope?: "session" | "user" | "agent" | "workspace" | "tenant" | "global"
 	scopeRef?: string
@@ -272,14 +272,14 @@ export type MemongoProfileInput = {
 	maxEpisodes?: number
 }
 
-export type MemongoActiveSlateInput = {
+export type MbrainActiveSlateInput = {
 	agentId?: string
 	scope?: "session" | "user" | "agent" | "workspace" | "tenant" | "global"
 	scopeRef?: string
 	maxItems?: number
 }
 
-export type MemongoDiscoveryProjectionInput = {
+export type MbrainDiscoveryProjectionInput = {
 	agentId?: string
 	kind: "entity-brief" | "topic-brief" | "what-changed" | "contradiction-report"
 	query?: string
@@ -289,44 +289,44 @@ export type MemongoDiscoveryProjectionInput = {
 	timeRange?: { preset?: string; start?: string; end?: string }
 }
 
-export type MemongoTraceChainInput = {
+export type MbrainTraceChainInput = {
 	factId: string
 	collection: string
 	agentId?: string
 	maxDepth?: number
 }
 
-export type MemongoScanNoveltyInput = {
+export type MbrainScanNoveltyInput = {
 	agentId?: string
 	limit?: number
 	scope?: string
 }
 
-export type MemongoConsolidateInput = {
+export type MbrainConsolidateInput = {
 	agentId?: string
 	maxEvents?: number
 	minCombinedScore?: number
 	scope?: string
 }
 
-export type MemongoSelfEditInput = {
+export type MbrainSelfEditInput = {
 	block: "user" | "persona" | "instructions"
 	action: "append" | "replace" | "prepend"
 	content: string
 	agentId?: string
 }
 
-export type MemongoSelfEditResponse = {
+export type MbrainSelfEditResponse = {
 	upserted: boolean
 	id: string
 }
 
-export type MemongoExtractInput = {
+export type MbrainExtractInput = {
 	eventId: string
 	agentId?: string
 }
 
-export type MemongoExtractResponse = {
+export type MbrainExtractResponse = {
 	ok: true
 	jobId: string
 	scheduled: boolean
@@ -336,7 +336,7 @@ export type MemongoExtractResponse = {
 // Response types for typed client methods (JSON wire format — dates as strings)
 // ---------------------------------------------------------------------------
 
-export type MemongoReadFileResponse = {
+export type MbrainReadFileResponse = {
 	text: string
 	path: string
 	locator?: string
@@ -349,7 +349,7 @@ export type MemongoReadFileResponse = {
 	disabled?: boolean
 }
 
-export type MemongoStatusResponse = {
+export type MbrainStatusResponse = {
 	backend: "mongodb"
 	provider: string
 	model?: string
@@ -382,7 +382,7 @@ export type MemongoStatusResponse = {
 	custom?: Record<string, unknown>
 }
 
-export type MemongoConversationRecallCitation = {
+export type MbrainConversationRecallCitation = {
 	eventId: string
 	sessionId?: string
 	role: "user" | "assistant" | "system" | "tool"
@@ -391,14 +391,14 @@ export type MemongoConversationRecallCitation = {
 	preview: string
 }
 
-export type MemongoConversationRecallResult = {
-	citation: MemongoConversationRecallCitation
+export type MbrainConversationRecallResult = {
+	citation: MbrainConversationRecallCitation
 	score?: number
 	matchType: "filter" | "semantic" | "hybrid"
 }
 
-export type MemongoConversationRecallResponse = {
-	results: MemongoConversationRecallResult[]
+export type MbrainConversationRecallResponse = {
+	results: MbrainConversationRecallResult[]
 	metadata: {
 		totalMatched: number
 		queryUsed?: string
@@ -408,7 +408,7 @@ export type MemongoConversationRecallResponse = {
 	}
 }
 
-export type MemongoDetailedStatusResponse = {
+export type MbrainDetailedStatusResponse = {
 	events: { count: number; latestTimestamp?: string }
 	entities: { count: number }
 	relations: { count: number }
@@ -442,7 +442,7 @@ export type MemongoDetailedStatusResponse = {
 	}
 }
 
-export type MemongoStatsResponse = {
+export type MbrainStatsResponse = {
 	sources: Array<{ source: string; files: number; chunks: number }>
 	totalFiles: number
 	totalChunks: number
@@ -459,12 +459,12 @@ export type MemongoStatsResponse = {
 	}>
 }
 
-export type MemongoProbeEmbeddingResponse = {
+export type MbrainProbeEmbeddingResponse = {
 	ok: boolean
 	error?: string
 }
 
-export type MemongoProfileResponse = {
+export type MbrainProfileResponse = {
 	agentId: string
 	scope: string
 	scopeRef: string
@@ -507,7 +507,7 @@ export type MemongoProfileResponse = {
 	synthesizedAt: string
 }
 
-export type MemongoRelevanceExplainResponse = {
+export type MbrainRelevanceExplainResponse = {
 	runId?: string
 	latencyMs: number
 	sourceScope: string
@@ -523,14 +523,14 @@ export type MemongoRelevanceExplainResponse = {
 	results: Array<Record<string, unknown>>
 }
 
-export type MemongoBenchmarkBuildIdentity = {
+export type MbrainBenchmarkBuildIdentity = {
 	source: "env" | "unknown"
 	commitSha?: string
 	buildId?: string
 	buildLabel?: string
 }
 
-export type MemongoBenchmarkReleaseGate = {
+export type MbrainBenchmarkReleaseGate = {
 	gate:
 		| "official-retrieval"
 		| "internal-retrieval"
@@ -540,9 +540,9 @@ export type MemongoBenchmarkReleaseGate = {
 	evidence: string
 }
 
-export type MemongoBenchmarkRunReport = {
+export type MbrainBenchmarkRunReport = {
 	generatedAt: string
-	build: MemongoBenchmarkBuildIdentity
+	build: MbrainBenchmarkBuildIdentity
 	corpus: {
 		datasetVersion: string
 		datasetName?: string
@@ -566,8 +566,8 @@ export type MemongoBenchmarkRunReport = {
 			longMemEval?: {
 				retrievalCases: number
 				abstentionCases: number
-				session: MemongoBenchmarkOfficialRetrievalMetrics
-				turn?: MemongoBenchmarkOfficialRetrievalMetrics
+				session: MbrainBenchmarkOfficialRetrievalMetrics
+				turn?: MbrainBenchmarkOfficialRetrievalMetrics
 			}
 			loCoMo?: {
 				qaCases: number
@@ -579,12 +579,12 @@ export type MemongoBenchmarkRunReport = {
 			}
 		}
 	}
-	releaseGates: MemongoBenchmarkReleaseGate[]
+	releaseGates: MbrainBenchmarkReleaseGate[]
 	warnings: string[]
 	degradations: string[]
 }
 
-export type MemongoRelevanceBenchmarkResponse = {
+export type MbrainRelevanceBenchmarkResponse = {
 	datasetVersion: string
 	datasetName?: string
 	datasetKind?: "generic" | "longmemeval" | "locomo" | "legacy-query"
@@ -612,8 +612,8 @@ export type MemongoRelevanceBenchmarkResponse = {
 		longMemEval?: {
 			retrievalCases: number
 			abstentionCases: number
-			session: MemongoBenchmarkOfficialRetrievalMetrics
-			turn?: MemongoBenchmarkOfficialRetrievalMetrics
+			session: MbrainBenchmarkOfficialRetrievalMetrics
+			turn?: MbrainBenchmarkOfficialRetrievalMetrics
 		}
 		loCoMo?: {
 			qaCases: number
@@ -662,10 +662,10 @@ export type MemongoRelevanceBenchmarkResponse = {
 		}>
 		notes: string[]
 	}
-	benchmarkReport?: MemongoBenchmarkRunReport
+	benchmarkReport?: MbrainBenchmarkRunReport
 }
 
-export type MemongoBenchmarkOfficialRetrievalMetrics = {
+export type MbrainBenchmarkOfficialRetrievalMetrics = {
 	recallAnyAt1: number
 	recallAllAt1: number
 	ndcgAnyAt1: number
@@ -686,7 +686,7 @@ export type MemongoBenchmarkOfficialRetrievalMetrics = {
 	ndcgAnyAt50: number
 }
 
-export type MemongoRelevanceReportResponse = {
+export type MbrainRelevanceReportResponse = {
 	health: "ok" | "degraded" | "insufficient-data"
 	runs: number
 	sampledRuns: number
@@ -701,7 +701,7 @@ export type MemongoRelevanceReportResponse = {
 	}
 }
 
-export type MemongoRelevanceSampleRateResponse = {
+export type MbrainRelevanceSampleRateResponse = {
 	enabled: boolean
 	current: number
 	base: number
@@ -710,7 +710,7 @@ export type MemongoRelevanceSampleRateResponse = {
 	degradedSignals: number
 }
 
-export type MemongoBenchmarkIngestResponse = {
+export type MbrainBenchmarkIngestResponse = {
 	datasetPath: string
 	datasetName?: string
 	conversationsIngested: number
@@ -722,7 +722,7 @@ export type MemongoBenchmarkIngestResponse = {
 	completedAt: string
 }
 
-export type MemongoConversationImportResponse = {
+export type MbrainConversationImportResponse = {
 	datasetPath: string
 	datasetName?: string
 	datasetKind?: "generic" | "longmemeval" | "locomo"
@@ -735,7 +735,7 @@ export type MemongoConversationImportResponse = {
 	completedAt: string
 }
 
-export type MemongoAccessTrendResponse = Array<{
+export type MbrainAccessTrendResponse = Array<{
 	collection: string
 	memoryId: string
 	day: string
@@ -744,14 +744,14 @@ export type MemongoAccessTrendResponse = Array<{
 	lastAccessedAt?: string
 }>
 
-export type MemongoAccessSummaryResponse = Array<{
+export type MbrainAccessSummaryResponse = Array<{
 	collection: string
 	memoryId: string
 	accessCount: number
 	lastAccessedAt?: string
 }>
 
-export type MemongoTraceChainResponse = {
+export type MbrainTraceChainResponse = {
 	factId: string
 	collection: string
 	nodes: Array<{
@@ -769,7 +769,7 @@ export type MemongoTraceChainResponse = {
 	agentId: string
 }
 
-export type MemongoNoveltyResponse = {
+export type MbrainNoveltyResponse = {
 	events: Array<{
 		eventId: string
 		body: string
@@ -783,7 +783,7 @@ export type MemongoNoveltyResponse = {
 	agentId: string
 }
 
-export type MemongoConsolidateResponse = {
+export type MbrainConsolidateResponse = {
 	runId: string
 	agentId: string
 	eventsProcessed: number
@@ -808,7 +808,7 @@ export type MemongoConsolidateResponse = {
 	prunedCount?: number
 }
 
-export type MemongoRecallTrace = {
+export type MbrainRecallTrace = {
 	traceId: string
 	agentId: string
 	query: string
@@ -823,25 +823,25 @@ export type MemongoRecallTrace = {
 	bundleMode?: "full" | "wake-up"
 }
 
-export type MemongoMemoryJobStatus =
+export type MbrainMemoryJobStatus =
 	| "pending"
 	| "running"
 	| "completed"
 	| "failed"
 	| "cancelled"
 
-export type MemongoMemoryJobType =
+export type MbrainMemoryJobType =
 	| "consolidation"
 	| "extraction"
 	| "import"
 	| "materialization"
 	| "enrichment"
 
-export type MemongoMemoryJob = {
+export type MbrainMemoryJob = {
 	jobId: string
-	jobType: MemongoMemoryJobType
+	jobType: MbrainMemoryJobType
 	agentId: string
-	status: MemongoMemoryJobStatus
+	status: MbrainMemoryJobStatus
 	createdAt: string
 	startedAt?: string
 	completedAt?: string
@@ -852,7 +852,7 @@ export type MemongoMemoryJob = {
 	metadata?: Record<string, unknown>
 }
 
-export type MemongoSearchKBResponse = {
+export type MbrainSearchKBResponse = {
 	results: Array<{
 		path: string
 		startLine: number
@@ -867,7 +867,7 @@ export type MemongoSearchKBResponse = {
 	}>
 }
 
-export type MemongoSearchResponse = {
+export type MbrainSearchResponse = {
 	results: Array<{
 		path: string
 		startLine: number
@@ -883,7 +883,7 @@ export type MemongoSearchResponse = {
 	}>
 }
 
-export type MemongoContextBundleInput = {
+export type MbrainContextBundleInput = {
 	agentId?: string
 	query?: string
 	scope?: "session" | "user" | "agent" | "workspace" | "tenant" | "global"

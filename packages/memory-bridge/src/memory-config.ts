@@ -1,33 +1,33 @@
 import fs from "node:fs"
 import os from "node:os"
 import path from "node:path"
-import type { MemoryConfig, MemongoConfig } from "@memongo/lib"
+import type { MemoryConfig, MbrainConfig } from "@mbrain/lib"
 
-export const MEMONGO_CONFIG_FILENAME = path.join(".memongo", "memongo.json")
+export const MBRAIN_CONFIG_FILENAME = path.join(".mbrain", "mbrain.json")
 
-export function resolveMemongoStandaloneWorkspaceDir(
+export function resolveMbrainStandaloneWorkspaceDir(
 	env: NodeJS.ProcessEnv = process.env,
 ): string {
-	const explicit = env.MEMONGO_WORKSPACE_DIR?.trim()
+	const explicit = env.MBRAIN_WORKSPACE_DIR?.trim()
 	if (explicit) {
 		return path.resolve(explicit)
 	}
-	return path.join(os.homedir(), ".memongo", "workspace")
+	return path.join(os.homedir(), ".mbrain", "workspace")
 }
 
-export function resolveMemongoConfigFilePath(
+export function resolveMbrainConfigFilePath(
 	env: NodeJS.ProcessEnv = process.env,
 ): string {
-	const fromEnv = env.MEMONGO_CONFIG_PATH?.trim()
+	const fromEnv = env.MBRAIN_CONFIG_PATH?.trim()
 	if (fromEnv) {
 		return path.resolve(fromEnv)
 	}
-	return path.join(os.homedir(), MEMONGO_CONFIG_FILENAME)
+	return path.join(os.homedir(), MBRAIN_CONFIG_FILENAME)
 }
 
-function readMemongoJsonFile(
+function readMbrainJsonFile(
 	filePath: string,
-): { memory?: MemoryConfig; agents?: MemongoConfig["agents"] } | undefined {
+): { memory?: MemoryConfig; agents?: MbrainConfig["agents"] } | undefined {
 	try {
 		if (!fs.existsSync(filePath)) {
 			return undefined
@@ -37,23 +37,23 @@ function readMemongoJsonFile(
 		if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
 			return undefined
 		}
-		return parsed as { memory?: MemoryConfig; agents?: MemongoConfig["agents"] }
+		return parsed as { memory?: MemoryConfig; agents?: MbrainConfig["agents"] }
 	} catch {
 		return undefined
 	}
 }
 
-export function buildMemongoConfig(
+export function buildMbrainConfig(
 	env: NodeJS.ProcessEnv = process.env,
-): MemongoConfig {
-	const filePath = resolveMemongoConfigFilePath(env)
-	const fromFile = readMemongoJsonFile(filePath)
+): MbrainConfig {
+	const filePath = resolveMbrainConfigFilePath(env)
+	const fromFile = readMbrainJsonFile(filePath)
 
 	const uriFromEnv =
-		env.MEMONGO_MONGODB_URI?.trim() || env.MEMONGO_FORCE_MONGODB_URI?.trim()
+		env.MBRAIN_MONGODB_URI?.trim() || env.MBRAIN_FORCE_MONGODB_URI?.trim()
 	const uriFromFile = fromFile?.memory?.mongodb?.uri?.trim()
 	const uri = uriFromEnv || uriFromFile
-	const collectionPrefixFromEnv = env.MEMONGO_MONGODB_COLLECTION_PREFIX?.trim()
+	const collectionPrefixFromEnv = env.MBRAIN_MONGODB_COLLECTION_PREFIX?.trim()
 
 	const mergedMongo: MemoryConfig["mongodb"] = {
 		...fromFile?.memory?.mongodb,
@@ -70,7 +70,7 @@ export function buildMemongoConfig(
 		mongodb: mergedMongo,
 	}
 
-	const workspace = resolveMemongoStandaloneWorkspaceDir(env)
+	const workspace = resolveMbrainStandaloneWorkspaceDir(env)
 
 	return {
 		memory,
@@ -84,6 +84,6 @@ export function buildMemongoConfig(
 	}
 }
 
-export function resolveBridgeConfig(): MemongoConfig {
-	return buildMemongoConfig()
+export function resolveBridgeConfig(): MbrainConfig {
+	return buildMbrainConfig()
 }

@@ -1,5 +1,5 @@
 import { randomUUID } from "node:crypto"
-import { MemongoClient } from "@memongo/client"
+import { MbrainClient } from "@mbrain/client"
 
 import { compareEvalRuns, runMemoryEvalSuite } from "./memory-eval-core.js"
 import { writeProofArtifact } from "./proof-artifacts.js"
@@ -14,24 +14,21 @@ function readBaseUrl(name: string, fallback?: string): string {
 
 async function main() {
 	const seed =
-		process.env.MEMONGO_EVAL_SEED?.trim() ??
+		process.env.MBRAIN_EVAL_SEED?.trim() ??
 		`compare-${randomUUID().slice(0, 8)}`
-	const baselineClient = new MemongoClient({
-		baseUrl: readBaseUrl(
-			"MEMONGO_BASELINE_API_URL",
-			process.env.MEMONGO_API_URL,
-		),
-		apiKey: process.env.MEMONGO_BASELINE_API_KEY?.trim() || undefined,
+	const baselineClient = new MbrainClient({
+		baseUrl: readBaseUrl("MBRAIN_BASELINE_API_URL", process.env.MBRAIN_API_URL),
+		apiKey: process.env.MBRAIN_BASELINE_API_KEY?.trim() || undefined,
 		maxRetries: 2,
 	})
-	const candidateClient = new MemongoClient({
+	const candidateClient = new MbrainClient({
 		baseUrl: readBaseUrl(
-			"MEMONGO_CANDIDATE_API_URL",
-			process.env.MEMONGO_API_URL,
+			"MBRAIN_CANDIDATE_API_URL",
+			process.env.MBRAIN_API_URL,
 		),
 		apiKey:
-			process.env.MEMONGO_CANDIDATE_API_KEY?.trim() ||
-			process.env.MEMONGO_API_KEY?.trim() ||
+			process.env.MBRAIN_CANDIDATE_API_KEY?.trim() ||
+			process.env.MBRAIN_API_KEY?.trim() ||
 			undefined,
 		maxRetries: 2,
 	})

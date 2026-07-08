@@ -1,6 +1,6 @@
-# Memongo Platform
+# Mbrain Platform
 
-This repository is the Memongo product: a Turborepo/Bun monorepo that ships MongoDB-native long-term AI memory on MongoDB Atlas cloud and Atlas Local Preview.
+This repository is the Mbrain product: a Turborepo/Bun monorepo that ships MongoDB-native long-term AI memory on MongoDB Atlas cloud and Atlas Local Preview.
 
 ## What ships here
 
@@ -9,11 +9,11 @@ This repository is the Memongo product: a Turborepo/Bun monorepo that ships Mong
 | HTTP API | `apps/api` | Hono, `/v1/*`, `GET /openapi.json`, default `http://127.0.0.1:3847` |
 | MCP | `apps/mcp` | stdio MCP that calls the HTTP API |
 | Web console | `apps/web` | Next.js operator dashboard (default port **3040**) |
-| SDK | `packages/client` | `MemongoClient` for the API |
+| SDK | `packages/client` | `MbrainClient` for the API |
 | Engine | `packages/memory-engine` | MongoDB memory core |
 | Bridge | `packages/memory-bridge` | Stable facade used by `apps/api` |
-| Published re-export | `packages/memongo-memory` | `@memongo/memory` convenience barrel |
-| AI SDK tools | `packages/tools` | `createMemongoTools` pattern |
+| Published re-export | `packages/mbrain-memory` | `@mbrain/memory` convenience barrel |
+| AI SDK tools | `packages/tools` | `createMbrainTools` pattern |
 | Docs (Mintlify) | `apps/docs` | Product documentation site sources |
 
 Optional or historical surfaces such as `apps/browser-extension`, `apps/memory-graph-playground`, and `packages/memory-graph` are not part of the supported product core.
@@ -40,7 +40,7 @@ bun install
 Managed Atlas cloud:
 
 ```bash
-export MEMONGO_MONGODB_URI="mongodb+srv://<user>:<password>@<cluster>.mongodb.net/?appName=memongo"
+export MBRAIN_MONGODB_URI="mongodb+srv://<user>:<password>@<cluster>.mongodb.net/?appName=mbrain"
 export VOYAGE_API_KEY="al-your-atlas-model-api-key"
 ```
 
@@ -49,7 +49,7 @@ Atlas Local Preview:
 ```bash
 export VOYAGE_API_KEY="al-your-atlas-model-api-key"
 docker compose -f docker/mongodb/docker-compose.preview.yml up -d
-export MEMONGO_MONGODB_URI="mongodb://127.0.0.1:27017/?directConnection=true"
+export MBRAIN_MONGODB_URI="mongodb://127.0.0.1:27017/?directConnection=true"
 ```
 
 Use cloud for serious benchmark/control runs and Atlas Local Preview for local reproducibility/parity.
@@ -65,12 +65,12 @@ cd apps/api && bun run dev
 ```bash
 cd apps/web && bun run dev
 
-cd apps/mcp && MEMONGO_API_URL=http://127.0.0.1:3847 bun run start
+cd apps/mcp && MBRAIN_API_URL=http://127.0.0.1:3847 bun run start
 ```
 
 ## Configuration
 
-Standalone mode uses environment variables and optional `~/.memongo/memongo.json`. See `apps/docs/guides/memory-config.mdx`.
+Standalone mode uses environment variables and optional `~/.mbrain/mbrain.json`. See `apps/docs/guides/memory-config.mdx`.
 
 ## Documentation map
 

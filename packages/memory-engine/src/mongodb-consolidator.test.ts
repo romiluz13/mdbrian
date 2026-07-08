@@ -40,7 +40,7 @@ function mockDb(collectionMap: Record<string, Collection> = {}): Db {
 // Module-level mocks for dependencies
 // ---------------------------------------------------------------------------
 
-vi.mock("@memongo/lib", () => ({
+vi.mock("@mbrain/lib", () => ({
 	createSubsystemLogger: () => ({
 		info: vi.fn(),
 		warn: vi.fn(),
@@ -263,7 +263,7 @@ describe("consolidateMemory", () => {
 								timestamp: new Date(),
 								role: "user",
 								scope: "workspace",
-								scopeRef: "workspace:memongo",
+								scopeRef: "workspace:mbrain",
 							},
 						]),
 					})),
@@ -298,13 +298,13 @@ describe("consolidateMemory", () => {
 		expect(pipeline[0]?.$vectorSearch?.filter).toEqual({
 			agentId: "agent-1",
 			scope: "workspace",
-			scopeRef: "workspace:memongo",
+			scopeRef: "workspace:mbrain",
 		})
 		expect(writeStructuredMemory).toHaveBeenCalledWith(
 			expect.objectContaining({
 				entry: expect.objectContaining({
 					scope: "workspace",
-					scopeRef: "workspace:memongo",
+					scopeRef: "workspace:mbrain",
 				}),
 			}),
 		)
@@ -330,7 +330,7 @@ describe("consolidateMemory", () => {
 								timestamp: new Date(),
 								role: "user",
 								scope: "workspace",
-								scopeRef: "workspace:memongo",
+								scopeRef: "workspace:mbrain",
 							},
 						]),
 					})),
@@ -343,8 +343,8 @@ describe("consolidateMemory", () => {
 			test_events: eventsCol,
 		})
 
-		const previousStrict = process.env.MEMONGO_BENCHMARK_STRICT
-		process.env.MEMONGO_BENCHMARK_STRICT = "1"
+		const previousStrict = process.env.MBRAIN_BENCHMARK_STRICT
+		process.env.MBRAIN_BENCHMARK_STRICT = "1"
 		vi.mocked(writeStructuredMemory).mockClear()
 		try {
 			await expect(
@@ -361,9 +361,9 @@ describe("consolidateMemory", () => {
 			).rejects.toThrow("consolidator scopeRef mismatch")
 		} finally {
 			if (previousStrict === undefined) {
-				delete process.env.MEMONGO_BENCHMARK_STRICT
+				delete process.env.MBRAIN_BENCHMARK_STRICT
 			} else {
-				process.env.MEMONGO_BENCHMARK_STRICT = previousStrict
+				process.env.MBRAIN_BENCHMARK_STRICT = previousStrict
 			}
 		}
 		expect(writeStructuredMemory).not.toHaveBeenCalled()

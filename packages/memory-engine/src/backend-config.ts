@@ -1,5 +1,5 @@
 import {
-	type MemongoConfig,
+	type MbrainConfig,
 	type MemoryCitationsMode,
 	type MemoryMongoDBDeploymentProfile,
 	type MemoryMongoDBEmbeddingMode,
@@ -7,7 +7,7 @@ import {
 	type MemoryMongoDBRecallProfile,
 	createSubsystemLogger,
 	resolveUserPath,
-} from "@memongo/lib"
+} from "@mbrain/lib"
 
 const log = createSubsystemLogger("memory:backend-config")
 
@@ -123,7 +123,7 @@ export type ResolvedMemoryBackendConfig = {
 }
 const DEFAULT_BACKEND = "mongodb"
 const DEFAULT_CITATIONS: MemoryCitationsMode = "auto"
-const DEFAULT_RELEVANCE_DATASET = "~/.memongo/relevance/golden.jsonl"
+const DEFAULT_RELEVANCE_DATASET = "~/.mbrain/relevance/golden.jsonl"
 const DEFAULT_MONGODB_PROFILE: MemoryMongoDBDeploymentProfile =
 	"atlas-local-preview"
 const DEFAULT_MONGODB_EMBEDDING_MODE: MemoryMongoDBEmbeddingMode = "automated"
@@ -135,7 +135,7 @@ function sanitizeName(input: string): string {
 }
 
 export function resolveMemoryBackendConfig(params: {
-	cfg: MemongoConfig
+	cfg: MbrainConfig
 	agentId: string
 }): ResolvedMemoryBackendConfig {
 	const backend = params.cfg.memory?.backend ?? DEFAULT_BACKEND
@@ -143,25 +143,25 @@ export function resolveMemoryBackendConfig(params: {
 
 	if (backend !== "mongodb") {
 		throw new Error(
-			`Unsupported memory.backend "${String(backend)}". Memongo supports only the MongoDB memory backend.`,
+			`Unsupported memory.backend "${String(backend)}". Mbrain supports only the MongoDB memory backend.`,
 		)
 	}
 
 	if (backend === "mongodb") {
 		const mongoCfg = params.cfg.memory?.mongodb
-		const forceUri = process.env.MEMONGO_FORCE_MONGODB_URI?.trim()
+		const forceUri = process.env.MBRAIN_FORCE_MONGODB_URI?.trim()
 		const uri =
 			forceUri ||
 			(typeof mongoCfg?.uri === "string" && mongoCfg.uri.trim()
 				? mongoCfg.uri.trim()
 				: undefined) ||
-			process.env.MEMONGO_MONGODB_URI?.trim()
+			process.env.MBRAIN_MONGODB_URI?.trim()
 		if (!uri) {
 			throw new Error(
 				[
-					"MongoDB URI required for Memongo.",
-					"Set `memory.mongodb.uri` in config or `MEMONGO_MONGODB_URI` in the environment.",
-					"Use `MEMONGO_FORCE_MONGODB_URI` to override a file URI (for example memongo-api or CI).",
+					"MongoDB URI required for Mbrain.",
+					"Set `memory.mongodb.uri` in config or `MBRAIN_MONGODB_URI` in the environment.",
+					"Use `MBRAIN_FORCE_MONGODB_URI` to override a file URI (for example mbrain-api or CI).",
 				].join(" "),
 			)
 		}
@@ -177,7 +177,7 @@ export function resolveMemoryBackendConfig(params: {
 		const embeddingMode: MemoryMongoDBEmbeddingMode =
 			DEFAULT_MONGODB_EMBEDDING_MODE
 		const envCollectionPrefix =
-			process.env.MEMONGO_MONGODB_COLLECTION_PREFIX?.trim()
+			process.env.MBRAIN_MONGODB_COLLECTION_PREFIX?.trim()
 
 		if (
 			rawDeploymentProfile !== "atlas-local-preview" &&
@@ -187,7 +187,7 @@ export function resolveMemoryBackendConfig(params: {
 			const unsupportedDeploymentProfile = String(mongoCfg?.deploymentProfile)
 			throw new Error(
 				[
-					`deploymentProfile "${unsupportedDeploymentProfile}" is not supported in Memongo.`,
+					`deploymentProfile "${unsupportedDeploymentProfile}" is not supported in Mbrain.`,
 					'Use deploymentProfile "atlas-local-preview" or "atlas-managed".',
 				].join(" "),
 			)
@@ -196,7 +196,7 @@ export function resolveMemoryBackendConfig(params: {
 			const unsupportedEmbeddingMode = String(mongoCfg?.embeddingMode)
 			throw new Error(
 				[
-					`embeddingMode "${unsupportedEmbeddingMode}" is not supported in Memongo.`,
+					`embeddingMode "${unsupportedEmbeddingMode}" is not supported in Mbrain.`,
 					'Use embeddingMode "automated" with atlas-local-preview or atlas-managed.',
 				].join(" "),
 			)
@@ -207,7 +207,7 @@ export function resolveMemoryBackendConfig(params: {
 		) {
 			throw new Error(
 				[
-					`queryRewriting.method "${mongoCfg.queryRewriting.method}" is not supported in Memongo.`,
+					`queryRewriting.method "${mongoCfg.queryRewriting.method}" is not supported in Mbrain.`,
 					'Use queryRewriting.method "synonym-expansion" or disable query rewriting.',
 				].join(" "),
 			)
@@ -218,21 +218,21 @@ export function resolveMemoryBackendConfig(params: {
 			citations,
 			mongodb: {
 				uri,
-				database: mongoCfg?.database ?? "memongo",
+				database: mongoCfg?.database ?? "mbrain",
 				collectionPrefix:
 					(envCollectionPrefix && envCollectionPrefix.length > 0
 						? envCollectionPrefix
 						: undefined) ??
 					mongoCfg?.collectionPrefix ??
-					`memongo_${sanitizeName(params.agentId)}_`,
+					`mbrain_${sanitizeName(params.agentId)}_`,
 				deploymentProfile,
 				embeddingMode,
 				fusionMethod: resolveEnvFusionMethod(
-					"MEMONGO_MONGODB_FUSION_METHOD",
+					"MBRAIN_MONGODB_FUSION_METHOD",
 					mongoCfg?.fusionMethod ?? "rankFusion",
 				),
 				recallProfile: resolveEnvRecallProfile(
-					"MEMONGO_MONGODB_RECALL_PROFILE",
+					"MBRAIN_MONGODB_RECALL_PROFILE",
 					mongoCfg?.recallProfile ?? "balanced",
 				),
 				quantization: mongoCfg?.quantization ?? "none",
@@ -250,50 +250,50 @@ export function resolveMemoryBackendConfig(params: {
 						: 1024,
 				maxPoolSize: resolvePositiveIntegerSetting(
 					mongoCfg?.maxPoolSize,
-					"MEMONGO_MONGODB_MAX_POOL_SIZE",
+					"MBRAIN_MONGODB_MAX_POOL_SIZE",
 					10,
 				),
 				minPoolSize: resolveNonNegativeIntegerSetting(
 					mongoCfg?.minPoolSize,
-					"MEMONGO_MONGODB_MIN_POOL_SIZE",
+					"MBRAIN_MONGODB_MIN_POOL_SIZE",
 					2,
 				),
 				maxConnecting: resolveOptionalPositiveIntegerSetting(
 					mongoCfg?.maxConnecting,
-					"MEMONGO_MONGODB_MAX_CONNECTING",
+					"MBRAIN_MONGODB_MAX_CONNECTING",
 				),
 				maxIdleTimeMs: resolveOptionalPositiveIntegerSetting(
 					mongoCfg?.maxIdleTimeMs,
-					"MEMONGO_MONGODB_MAX_IDLE_TIME_MS",
+					"MBRAIN_MONGODB_MAX_IDLE_TIME_MS",
 				),
 				networkFamily: resolveOptionalMongoNetworkFamily(
 					mongoCfg?.networkFamily,
-					"MEMONGO_MONGODB_NETWORK_FAMILY",
+					"MBRAIN_MONGODB_NETWORK_FAMILY",
 				),
 				socketTimeoutMs: resolveOptionalPositiveIntegerSetting(
 					mongoCfg?.socketTimeoutMs,
-					"MEMONGO_MONGODB_SOCKET_TIMEOUT_MS",
+					"MBRAIN_MONGODB_SOCKET_TIMEOUT_MS",
 				),
 				serverSelectionTimeoutMs: resolvePositiveIntegerSetting(
 					mongoCfg?.serverSelectionTimeoutMs,
-					"MEMONGO_MONGODB_SERVER_SELECTION_TIMEOUT_MS",
+					"MBRAIN_MONGODB_SERVER_SELECTION_TIMEOUT_MS",
 					resolvePositiveIntegerSetting(
 						mongoCfg?.connectTimeoutMs,
-						"MEMONGO_MONGODB_CONNECT_TIMEOUT_MS",
+						"MBRAIN_MONGODB_CONNECT_TIMEOUT_MS",
 						10_000,
 					),
 				),
 				heartbeatFrequencyMs: resolveOptionalPositiveIntegerSetting(
 					mongoCfg?.heartbeatFrequencyMs,
-					"MEMONGO_MONGODB_HEARTBEAT_FREQUENCY_MS",
+					"MBRAIN_MONGODB_HEARTBEAT_FREQUENCY_MS",
 				),
 				serverMonitoringMode: resolveOptionalMongoServerMonitoringMode(
 					mongoCfg?.serverMonitoringMode,
-					"MEMONGO_MONGODB_SERVER_MONITORING_MODE",
+					"MBRAIN_MONGODB_SERVER_MONITORING_MODE",
 				),
 				waitQueueTimeoutMs: resolveOptionalPositiveIntegerSetting(
 					mongoCfg?.waitQueueTimeoutMs,
-					"MEMONGO_MONGODB_WAIT_QUEUE_TIMEOUT_MS",
+					"MBRAIN_MONGODB_WAIT_QUEUE_TIMEOUT_MS",
 				),
 				embeddingCacheTtlDays:
 					typeof mongoCfg?.embeddingCacheTtlDays === "number" &&
@@ -316,7 +316,7 @@ export function resolveMemoryBackendConfig(params: {
 						: 1000,
 				connectTimeoutMs: resolvePositiveIntegerSetting(
 					mongoCfg?.connectTimeoutMs,
-					"MEMONGO_MONGODB_CONNECT_TIMEOUT_MS",
+					"MBRAIN_MONGODB_CONNECT_TIMEOUT_MS",
 					10_000,
 				),
 				numCandidates: Math.min(
@@ -324,7 +324,7 @@ export function resolveMemoryBackendConfig(params: {
 						Number.isFinite(mongoCfg.numCandidates) &&
 						mongoCfg.numCandidates > 0
 						? Math.floor(mongoCfg.numCandidates)
-						: resolveEnvInt("MEMONGO_NUM_CANDIDATES", 500),
+						: resolveEnvInt("MBRAIN_NUM_CANDIDATES", 500),
 					10_000, // F1: hard cap at MongoDB's max numCandidates
 				),
 				maxSessionChunks:
@@ -478,7 +478,7 @@ export function resolveMemoryBackendConfig(params: {
 				},
 				reranking: {
 					enabled: resolveEnvBoolean(
-						"MEMONGO_RERANKING_ENABLED",
+						"MBRAIN_RERANKING_ENABLED",
 						mongoCfg?.reranking?.enabled !== false,
 					),
 					model: mongoCfg?.reranking?.model ?? "rerank-2.5",
@@ -492,7 +492,7 @@ export function resolveMemoryBackendConfig(params: {
 						typeof mongoCfg?.reranking?.minScore === "number" &&
 						Number.isFinite(mongoCfg.reranking.minScore)
 							? Math.min(1, Math.max(0, mongoCfg.reranking.minScore))
-							: resolveEnvFloat("MEMONGO_RERANK_MIN_SCORE", 0.01),
+							: resolveEnvFloat("MBRAIN_RERANK_MIN_SCORE", 0.01),
 					voyageApiKey:
 						mongoCfg?.reranking?.voyageApiKey ??
 						process.env.VOYAGE_API_KEY ??

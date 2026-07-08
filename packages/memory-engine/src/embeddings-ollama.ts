@@ -3,7 +3,7 @@ import {
 	formatErrorMessage,
 	type SsrFPolicy,
 	normalizeOptionalSecretInput,
-} from "@memongo/lib"
+} from "@mbrain/lib"
 
 const OLLAMA_DEFAULT_BASE_URL = "http://127.0.0.1:11434"
 

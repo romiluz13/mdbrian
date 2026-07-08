@@ -4,39 +4,39 @@ import {
 	CallToolRequestSchema,
 	ListToolsRequestSchema,
 } from "@modelcontextprotocol/sdk/types.js"
-import { MemongoClient } from "@memongo/client"
+import { MbrainClient } from "@mbrain/client"
 import { pathToFileURL } from "node:url"
 
-const memongo = new MemongoClient({
-	baseUrl: process.env.MEMONGO_API_URL,
-	apiKey: process.env.MEMONGO_API_KEY,
+const mbrain = new MbrainClient({
+	baseUrl: process.env.MBRAIN_API_URL,
+	apiKey: process.env.MBRAIN_API_KEY,
 })
 
-type MemongoMcpClient = typeof memongo
+type MbrainMcpClient = typeof mbrain
 
 const RECALL_TOOL_NAMES = new Set([
-	"memongo_recall_conversation",
-	"memongo_recall_messages",
+	"mbrain_recall_conversation",
+	"mbrain_recall_messages",
 ])
 const LIFECYCLE_GET_TOOL_NAMES = new Set([
-	"memongo_lifecycle_get",
-	"memongo_memory_get",
+	"mbrain_lifecycle_get",
+	"mbrain_memory_get",
 ])
 const LIFECYCLE_UPDATE_TOOL_NAMES = new Set([
-	"memongo_lifecycle_update",
-	"memongo_memory_update",
+	"mbrain_lifecycle_update",
+	"mbrain_memory_update",
 ])
 const LIFECYCLE_DELETE_TOOL_NAMES = new Set([
-	"memongo_lifecycle_delete",
-	"memongo_memory_delete",
+	"mbrain_lifecycle_delete",
+	"mbrain_memory_delete",
 ])
 const LIFECYCLE_HISTORY_TOOL_NAMES = new Set([
-	"memongo_lifecycle_history",
-	"memongo_memory_history",
+	"mbrain_lifecycle_history",
+	"mbrain_memory_history",
 ])
 const IMPORT_TOOL_NAMES = new Set([
-	"memongo_import_conversations",
-	"memongo_import_conversation_history",
+	"mbrain_import_conversations",
+	"mbrain_import_conversation_history",
 ])
 
 function jsonResult(payload: unknown, isError = false) {
@@ -55,8 +55,8 @@ function jsonResult(payload: unknown, isError = false) {
 
 export const toolList = [
 	{
-		name: "memongo_search",
-		description: "Search Memongo memory",
+		name: "mbrain_search",
+		description: "Search Mbrain memory",
 		inputSchema: {
 			type: "object",
 			properties: {
@@ -69,8 +69,8 @@ export const toolList = [
 		},
 	},
 	{
-		name: "memongo_search_kb",
-		description: "Search Memongo knowledge base",
+		name: "mbrain_search_kb",
+		description: "Search Mbrain knowledge base",
 		inputSchema: {
 			type: "object",
 			properties: {
@@ -82,7 +82,7 @@ export const toolList = [
 		},
 	},
 	{
-		name: "memongo_read_file",
+		name: "mbrain_read_file",
 		description: "Read memory file by path (memory_get parity)",
 		inputSchema: {
 			type: "object",
@@ -96,7 +96,7 @@ export const toolList = [
 		},
 	},
 	{
-		name: "memongo_add",
+		name: "mbrain_add",
 		description: "Add user message to memory",
 		inputSchema: {
 			type: "object",
@@ -109,7 +109,7 @@ export const toolList = [
 		},
 	},
 	{
-		name: "memongo_write_event",
+		name: "mbrain_write_event",
 		description: "Write conversation event (any role)",
 		inputSchema: {
 			type: "object",
@@ -123,8 +123,8 @@ export const toolList = [
 		},
 	},
 	{
-		name: "memongo_profile",
-		description: "Synthesize profile from Memongo memory",
+		name: "mbrain_profile",
+		description: "Synthesize profile from Mbrain memory",
 		inputSchema: {
 			type: "object",
 			properties: {
@@ -134,8 +134,8 @@ export const toolList = [
 		},
 	},
 	{
-		name: "memongo_build_context_bundle",
-		description: "Build a prompt-ready context bundle from Memongo memory",
+		name: "mbrain_build_context_bundle",
+		description: "Build a prompt-ready context bundle from Mbrain memory",
 		inputSchema: {
 			type: "object",
 			properties: {
@@ -180,7 +180,7 @@ export const toolList = [
 		},
 	},
 	{
-		name: "memongo_recall_conversation",
+		name: "mbrain_recall_conversation",
 		description:
 			"Search and retrieve past conversation messages with canonical citations. Use exact ISO 8601 timestamps (for example `2026-04-08T14:30:00Z`); for date-only input (`2026-04-08`), include timezone to resolve local day boundaries correctly. Tool messages are excluded by default unless includeToolMessages is true.",
 		inputSchema: {
@@ -231,9 +231,9 @@ export const toolList = [
 		},
 	},
 	{
-		name: "memongo_recall_messages",
+		name: "mbrain_recall_messages",
 		description:
-			"Semantic alias for memongo_recall_conversation. Recall past messages with exact time/session/role filters and canonical citations from the same runtime truth.",
+			"Semantic alias for mbrain_recall_conversation. Recall past messages with exact time/session/role filters and canonical citations from the same runtime truth.",
 		inputSchema: {
 			type: "object",
 			properties: {
@@ -282,7 +282,7 @@ export const toolList = [
 		},
 	},
 	{
-		name: "memongo_lifecycle_get",
+		name: "mbrain_lifecycle_get",
 		description:
 			"Get the current structured memory or procedure referenced by a stable lifecycle handle.",
 		inputSchema: {
@@ -298,9 +298,9 @@ export const toolList = [
 		},
 	},
 	{
-		name: "memongo_memory_get",
+		name: "mbrain_memory_get",
 		description:
-			"Semantic alias for memongo_lifecycle_get. Fetch the current structured memory or procedure for a stable memory handle.",
+			"Semantic alias for mbrain_lifecycle_get. Fetch the current structured memory or procedure for a stable memory handle.",
 		inputSchema: {
 			type: "object",
 			properties: {
@@ -314,7 +314,7 @@ export const toolList = [
 		},
 	},
 	{
-		name: "memongo_lifecycle_update",
+		name: "mbrain_lifecycle_update",
 		description:
 			"Update a structured memory or procedure via its stable lifecycle handle. Creates a new current revision and preserves history.",
 		inputSchema: {
@@ -335,9 +335,9 @@ export const toolList = [
 		},
 	},
 	{
-		name: "memongo_memory_update",
+		name: "mbrain_memory_update",
 		description:
-			"Semantic alias for memongo_lifecycle_update. Update a memory item by stable handle while preserving revision history.",
+			"Semantic alias for mbrain_lifecycle_update. Update a memory item by stable handle while preserving revision history.",
 		inputSchema: {
 			type: "object",
 			properties: {
@@ -356,9 +356,9 @@ export const toolList = [
 		},
 	},
 	{
-		name: "memongo_lifecycle_delete",
+		name: "mbrain_lifecycle_delete",
 		description:
-			"Delete a memory item using Memongo lifecycle semantics. This invalidates the current version and preserves history instead of hard-deleting it.",
+			"Delete a memory item using Mbrain lifecycle semantics. This invalidates the current version and preserves history instead of hard-deleting it.",
 		inputSchema: {
 			type: "object",
 			properties: {
@@ -377,9 +377,9 @@ export const toolList = [
 		},
 	},
 	{
-		name: "memongo_memory_delete",
+		name: "mbrain_memory_delete",
 		description:
-			"Semantic alias for memongo_lifecycle_delete. Delete a memory item using invalidate-with-history semantics rather than hard delete.",
+			"Semantic alias for mbrain_lifecycle_delete. Delete a memory item using invalidate-with-history semantics rather than hard delete.",
 		inputSchema: {
 			type: "object",
 			properties: {
@@ -398,7 +398,7 @@ export const toolList = [
 		},
 	},
 	{
-		name: "memongo_lifecycle_history",
+		name: "mbrain_lifecycle_history",
 		description:
 			"Fetch ordered revision history for a structured memory or procedure from its stable lifecycle handle.",
 		inputSchema: {
@@ -419,9 +419,9 @@ export const toolList = [
 		},
 	},
 	{
-		name: "memongo_memory_history",
+		name: "mbrain_memory_history",
 		description:
-			"Semantic alias for memongo_lifecycle_history. Fetch ordered memory revision history from a stable handle.",
+			"Semantic alias for mbrain_lifecycle_history. Fetch ordered memory revision history from a stable handle.",
 		inputSchema: {
 			type: "object",
 			properties: {
@@ -440,7 +440,7 @@ export const toolList = [
 		},
 	},
 	{
-		name: "memongo_procedure_outcome",
+		name: "mbrain_procedure_outcome",
 		description:
 			"Record whether a procedure succeeded or failed using its stable handle. Updates outcome counters without bypassing the canonical procedure record.",
 		inputSchema: {
@@ -470,7 +470,7 @@ export const toolList = [
 		},
 	},
 	{
-		name: "memongo_memory_feedback",
+		name: "mbrain_memory_feedback",
 		description:
 			"Apply confirm/correct/irrelevant feedback to a structured memory using its stable handle. Confirm reinforces, correct routes through revision-aware updates, and irrelevant invalidates with history.",
 		inputSchema: {
@@ -511,7 +511,7 @@ export const toolList = [
 		},
 	},
 	{
-		name: "memongo_status",
+		name: "mbrain_status",
 		description: "Memory provider status",
 		inputSchema: {
 			type: "object",
@@ -521,7 +521,7 @@ export const toolList = [
 		},
 	},
 	{
-		name: "memongo_chain_trace",
+		name: "mbrain_chain_trace",
 		description:
 			"Trace the provenance chain of a derived fact back to its source events",
 		inputSchema: {
@@ -545,7 +545,7 @@ export const toolList = [
 		},
 	},
 	{
-		name: "memongo_novelty_scan",
+		name: "mbrain_novelty_scan",
 		description:
 			"Scan for the most novel/surprising events using vector distance scoring",
 		inputSchema: {
@@ -558,7 +558,7 @@ export const toolList = [
 		},
 	},
 	{
-		name: "memongo_consolidate",
+		name: "mbrain_consolidate",
 		description:
 			"Run the consolidation pipeline to promote high-value events to structured facts",
 		inputSchema: {
@@ -572,7 +572,7 @@ export const toolList = [
 		},
 	},
 	{
-		name: "memongo_self_edit",
+		name: "mbrain_self_edit",
 		description:
 			"Edit your own core memory blocks directly. Use 'user' for user preferences/profile, 'persona' for your identity/behavior, 'instructions' for task instructions. Changes persist across sessions.",
 		inputSchema: {
@@ -598,7 +598,7 @@ export const toolList = [
 		},
 	},
 	{
-		name: "memongo_state_unified",
+		name: "mbrain_state_unified",
 		description:
 			"Get all three state surfaces (profile, blocks, bundle) in one call",
 		inputSchema: {
@@ -611,7 +611,7 @@ export const toolList = [
 		},
 	},
 	{
-		name: "memongo_benchmark_ingest",
+		name: "mbrain_benchmark_ingest",
 		description:
 			"Replay a benchmark conversation dataset through the canonical writeConversationEvent() pipeline",
 		inputSchema: {
@@ -630,7 +630,7 @@ export const toolList = [
 		},
 	},
 	{
-		name: "memongo_import_conversations",
+		name: "mbrain_import_conversations",
 		description:
 			"Import conversation history through the canonical writeConversationEvent() pipeline",
 		inputSchema: {
@@ -649,9 +649,9 @@ export const toolList = [
 		},
 	},
 	{
-		name: "memongo_import_conversation_history",
+		name: "mbrain_import_conversation_history",
 		description:
-			"Semantic alias for memongo_import_conversations. Import conversation history through the same canonical writeConversationEvent() runtime path.",
+			"Semantic alias for mbrain_import_conversations. Import conversation history through the same canonical writeConversationEvent() runtime path.",
 		inputSchema: {
 			type: "object",
 			properties: {
@@ -668,7 +668,7 @@ export const toolList = [
 		},
 	},
 	{
-		name: "memongo_admin_access_trends",
+		name: "mbrain_admin_access_trends",
 		description:
 			"Inspect rolling 7-day access trends from the access_events time series collection",
 		inputSchema: {
@@ -696,7 +696,7 @@ export const toolList = [
 		},
 	},
 	{
-		name: "memongo_admin_access_summaries",
+		name: "mbrain_admin_access_summaries",
 		description:
 			"Inspect aggregate access counts and last-access timestamps from the access_events time series collection",
 		inputSchema: {
@@ -724,7 +724,7 @@ export const toolList = [
 		},
 	},
 	{
-		name: "memongo_admin_list_traces",
+		name: "mbrain_admin_list_traces",
 		description: "List recent recall traces for operator debugging",
 		inputSchema: {
 			type: "object",
@@ -735,7 +735,7 @@ export const toolList = [
 		},
 	},
 	{
-		name: "memongo_admin_get_trace",
+		name: "mbrain_admin_get_trace",
 		description: "Fetch one recall trace by traceId",
 		inputSchema: {
 			type: "object",
@@ -747,7 +747,7 @@ export const toolList = [
 		},
 	},
 	{
-		name: "memongo_list_jobs",
+		name: "mbrain_list_jobs",
 		description: "List memory jobs for an agent",
 		inputSchema: {
 			type: "object",
@@ -772,7 +772,7 @@ export const toolList = [
 		},
 	},
 	{
-		name: "memongo_get_job",
+		name: "mbrain_get_job",
 		description: "Fetch one memory job by jobId",
 		inputSchema: {
 			type: "object",
@@ -784,7 +784,7 @@ export const toolList = [
 		},
 	},
 	{
-		name: "memongo_search_detailed",
+		name: "mbrain_search_detailed",
 		description:
 			"Full CRAG search pipeline with scored results, trust annotations, and source provenance",
 		inputSchema: {
@@ -849,7 +849,7 @@ export const toolList = [
 		},
 	},
 	{
-		name: "memongo_hydrate_active_slate",
+		name: "mbrain_hydrate_active_slate",
 		description:
 			"Load the highest-salience active memories (hot context for current session)",
 		inputSchema: {
@@ -863,7 +863,7 @@ export const toolList = [
 		},
 	},
 	{
-		name: "memongo_discovery_projection",
+		name: "mbrain_discovery_projection",
 		description:
 			"Build a discovery projection (entity-brief, topic-brief, what-changed, contradiction-report)",
 		inputSchema: {
@@ -888,7 +888,7 @@ export const toolList = [
 		},
 	},
 	{
-		name: "memongo_write_structured",
+		name: "mbrain_write_structured",
 		description: "Write a structured memory entry directly",
 		inputSchema: {
 			type: "object",
@@ -900,7 +900,7 @@ export const toolList = [
 		},
 	},
 	{
-		name: "memongo_write_procedure",
+		name: "mbrain_write_procedure",
 		description: "Write a step-by-step procedure",
 		inputSchema: {
 			type: "object",
@@ -912,7 +912,7 @@ export const toolList = [
 		},
 	},
 	{
-		name: "memongo_status_detailed",
+		name: "mbrain_status_detailed",
 		description:
 			"Detailed health status: events, entities, projection lag, lane coverage, diagnostics",
 		inputSchema: {
@@ -921,7 +921,7 @@ export const toolList = [
 		},
 	},
 	{
-		name: "memongo_stats",
+		name: "mbrain_stats",
 		description:
 			"Memory statistics: source counts, embedding coverage, index stats",
 		inputSchema: {
@@ -930,7 +930,7 @@ export const toolList = [
 		},
 	},
 	{
-		name: "memongo_sync",
+		name: "mbrain_sync",
 		description: "Trigger a memory sync operation",
 		inputSchema: {
 			type: "object",
@@ -942,7 +942,7 @@ export const toolList = [
 		},
 	},
 	{
-		name: "memongo_probe_embedding",
+		name: "mbrain_probe_embedding",
 		description: "Probe embedding model availability",
 		inputSchema: {
 			type: "object",
@@ -950,7 +950,7 @@ export const toolList = [
 		},
 	},
 	{
-		name: "memongo_probe_vector",
+		name: "mbrain_probe_vector",
 		description: "Probe vector search availability",
 		inputSchema: {
 			type: "object",
@@ -958,7 +958,7 @@ export const toolList = [
 		},
 	},
 	{
-		name: "memongo_relevance_explain",
+		name: "mbrain_relevance_explain",
 		description:
 			"Detailed relevance diagnostics for a query: artifacts, health, scores",
 		inputSchema: {
@@ -978,7 +978,7 @@ export const toolList = [
 		},
 	},
 	{
-		name: "memongo_relevance_benchmark",
+		name: "mbrain_relevance_benchmark",
 		description: "Run relevance benchmark suite",
 		inputSchema: {
 			type: "object",
@@ -991,7 +991,7 @@ export const toolList = [
 		},
 	},
 	{
-		name: "memongo_relevance_report",
+		name: "mbrain_relevance_report",
 		description: "Relevance health report: hit rate, empty rate, fallback rate",
 		inputSchema: {
 			type: "object",
@@ -1002,7 +1002,7 @@ export const toolList = [
 		},
 	},
 	{
-		name: "memongo_relevance_sample_rate",
+		name: "mbrain_relevance_sample_rate",
 		description: "Current relevance sampling rate and degraded signal count",
 		inputSchema: {
 			type: "object",
@@ -1013,7 +1013,7 @@ export const toolList = [
 
 const server = new Server(
 	{
-		name: "memongo",
+		name: "mbrain",
 		version: "0.1.0",
 	},
 	{
@@ -1028,12 +1028,12 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
 export async function handleToolCall(
 	name: string,
 	args: Record<string, unknown>,
-	client: MemongoMcpClient = memongo,
+	client: MbrainMcpClient = mbrain,
 ) {
 	try {
-		const memongo = client
-		if (name === "memongo_search") {
-			const out = await memongo.search({
+		const mbrain = client
+		if (name === "mbrain_search") {
+			const out = await mbrain.search({
 				query: typeof args.query === "string" ? args.query : "",
 				agentId: typeof args.agentId === "string" ? args.agentId : undefined,
 				limit: typeof args.limit === "number" ? args.limit : undefined,
@@ -1041,16 +1041,16 @@ export async function handleToolCall(
 			})
 			return { content: [{ type: "text", text: JSON.stringify(out) }] }
 		}
-		if (name === "memongo_search_kb") {
-			const out = await memongo.searchKB({
+		if (name === "mbrain_search_kb") {
+			const out = await mbrain.searchKB({
 				query: typeof args.query === "string" ? args.query : "",
 				agentId: typeof args.agentId === "string" ? args.agentId : undefined,
 				limit: typeof args.limit === "number" ? args.limit : undefined,
 			})
 			return { content: [{ type: "text", text: JSON.stringify(out) }] }
 		}
-		if (name === "memongo_read_file") {
-			const out = await memongo.readFile({
+		if (name === "mbrain_read_file") {
+			const out = await mbrain.readFile({
 				relPath: typeof args.relPath === "string" ? args.relPath : "",
 				agentId: typeof args.agentId === "string" ? args.agentId : undefined,
 				from: typeof args.from === "number" ? args.from : undefined,
@@ -1058,8 +1058,8 @@ export async function handleToolCall(
 			})
 			return { content: [{ type: "text", text: JSON.stringify(out) }] }
 		}
-		if (name === "memongo_add") {
-			const out = await memongo.add({
+		if (name === "mbrain_add") {
+			const out = await mbrain.add({
 				content: typeof args.content === "string" ? args.content : "",
 				agentId: typeof args.agentId === "string" ? args.agentId : undefined,
 				sessionId:
@@ -1067,7 +1067,7 @@ export async function handleToolCall(
 			})
 			return { content: [{ type: "text", text: JSON.stringify(out) }] }
 		}
-		if (name === "memongo_write_event") {
+		if (name === "mbrain_write_event") {
 			const role = args.role
 			if (
 				role !== "user" &&
@@ -1077,7 +1077,7 @@ export async function handleToolCall(
 			) {
 				throw new Error("invalid role")
 			}
-			const out = await memongo.writeEvent({
+			const out = await mbrain.writeEvent({
 				role,
 				body: typeof args.body === "string" ? args.body : "",
 				agentId: typeof args.agentId === "string" ? args.agentId : undefined,
@@ -1086,14 +1086,14 @@ export async function handleToolCall(
 			})
 			return { content: [{ type: "text", text: JSON.stringify(out) }] }
 		}
-		if (name === "memongo_profile") {
-			const out = await memongo.profile({
+		if (name === "mbrain_profile") {
+			const out = await mbrain.profile({
 				agentId: typeof args.agentId === "string" ? args.agentId : undefined,
 				scopeRef: typeof args.scopeRef === "string" ? args.scopeRef : undefined,
 			})
 			return { content: [{ type: "text", text: JSON.stringify(out) }] }
 		}
-		if (name === "memongo_build_context_bundle") {
+		if (name === "mbrain_build_context_bundle") {
 			const scope = args.scope
 			if (
 				scope !== undefined &&
@@ -1138,7 +1138,7 @@ export async function handleToolCall(
 				!Array.isArray(args.timeRange)
 					? (args.timeRange as Record<string, unknown>)
 					: undefined
-			const out = await memongo.buildContextBundle({
+			const out = await mbrain.buildContextBundle({
 				query: typeof args.query === "string" ? args.query : undefined,
 				agentId: typeof args.agentId === "string" ? args.agentId : undefined,
 				scope: validatedScope,
@@ -1189,18 +1189,18 @@ export async function handleToolCall(
 			})
 			return { content: [{ type: "text", text: JSON.stringify(out) }] }
 		}
-		if (name === "memongo_status") {
-			const out = await memongo.status(
+		if (name === "mbrain_status") {
+			const out = await mbrain.status(
 				typeof args.agentId === "string" ? args.agentId : undefined,
 			)
 			const guidance = {
 				quickStart:
-					"Call memongo_profile first. Then memongo_search_detailed for queries. Use memongo_write_event to save insights.",
+					"Call mbrain_profile first. Then mbrain_search_detailed for queries. Use mbrain_write_event to save insights.",
 				bestPractices: [
-					"Call memongo_profile or memongo_state_unified at session start",
-					"Save decisions with memongo_write_structured",
-					"Use memongo_search_detailed before answering knowledge questions",
-					"Use memongo_build_context_bundle with mode: wake-up for fast session start",
+					"Call mbrain_profile or mbrain_state_unified at session start",
+					"Save decisions with mbrain_write_structured",
+					"Use mbrain_search_detailed before answering knowledge questions",
+					"Use mbrain_build_context_bundle with mode: wake-up for fast session start",
 				],
 				capabilities: [
 					"semantic search",
@@ -1232,7 +1232,7 @@ export async function handleToolCall(
 			if (Array.isArray(args.roles) && roles?.length !== args.roles.length) {
 				throw new Error("roles must contain only user|assistant|system|tool")
 			}
-			const out = await memongo.recallConversation({
+			const out = await mbrain.recallConversation({
 				query: typeof args.query === "string" ? args.query : undefined,
 				agentId: typeof args.agentId === "string" ? args.agentId : undefined,
 				sessionId:
@@ -1254,7 +1254,7 @@ export async function handleToolCall(
 			return jsonResult(out)
 		}
 		if (LIFECYCLE_GET_TOOL_NAMES.has(name)) {
-			const out = await memongo.getLifecycleItem({
+			const out = await mbrain.getLifecycleItem({
 				handle:
 					typeof args.handle === "object" && args.handle !== null
 						? (args.handle as any)
@@ -1263,7 +1263,7 @@ export async function handleToolCall(
 			return jsonResult(out)
 		}
 		if (LIFECYCLE_UPDATE_TOOL_NAMES.has(name)) {
-			const out = await memongo.updateLifecycleItem({
+			const out = await mbrain.updateLifecycleItem({
 				handle:
 					typeof args.handle === "object" && args.handle !== null
 						? (args.handle as any)
@@ -1276,7 +1276,7 @@ export async function handleToolCall(
 			return jsonResult(out)
 		}
 		if (LIFECYCLE_DELETE_TOOL_NAMES.has(name)) {
-			const out = await memongo.deleteLifecycleItem({
+			const out = await mbrain.deleteLifecycleItem({
 				handle:
 					typeof args.handle === "object" && args.handle !== null
 						? (args.handle as any)
@@ -1289,7 +1289,7 @@ export async function handleToolCall(
 			return jsonResult(out)
 		}
 		if (LIFECYCLE_HISTORY_TOOL_NAMES.has(name)) {
-			const out = await memongo.getLifecycleHistory({
+			const out = await mbrain.getLifecycleHistory({
 				handle:
 					typeof args.handle === "object" && args.handle !== null
 						? (args.handle as any)
@@ -1301,7 +1301,7 @@ export async function handleToolCall(
 			})
 			return jsonResult(out)
 		}
-		if (name === "memongo_procedure_outcome") {
+		if (name === "mbrain_procedure_outcome") {
 			if (typeof args.success !== "boolean") {
 				throw new Error("success must be a boolean")
 			}
@@ -1319,7 +1319,7 @@ export async function handleToolCall(
 				args.actorRole === "system"
 					? args.actorRole
 					: undefined
-			const out = await memongo.reportProcedureOutcome({
+			const out = await mbrain.reportProcedureOutcome({
 				handle:
 					typeof args.handle === "object" && args.handle !== null
 						? (args.handle as any)
@@ -1330,7 +1330,7 @@ export async function handleToolCall(
 			})
 			return jsonResult(out)
 		}
-		if (name === "memongo_memory_feedback") {
+		if (name === "mbrain_memory_feedback") {
 			const signal =
 				args.signal === "confirm" ||
 				args.signal === "correct" ||
@@ -1365,7 +1365,7 @@ export async function handleToolCall(
 			}
 			const out =
 				signal === "correct"
-					? await memongo.applyMemoryFeedback({
+					? await mbrain.applyMemoryFeedback({
 							...common,
 							signal,
 							patch:
@@ -1374,7 +1374,7 @@ export async function handleToolCall(
 									: ({} as any),
 						})
 					: signal === "irrelevant"
-						? await memongo.applyMemoryFeedback({
+						? await mbrain.applyMemoryFeedback({
 								...common,
 								signal,
 								...(typeof args.invalidatedBy === "object" &&
@@ -1387,14 +1387,14 @@ export async function handleToolCall(
 										}
 									: {}),
 							})
-						: await memongo.applyMemoryFeedback({
+						: await mbrain.applyMemoryFeedback({
 								...common,
 								signal,
 							})
 			return jsonResult(out)
 		}
-		if (name === "memongo_chain_trace") {
-			const out = await memongo.traceChain({
+		if (name === "mbrain_chain_trace") {
+			const out = await mbrain.traceChain({
 				factId: typeof args.factId === "string" ? args.factId : "",
 				collection: typeof args.collection === "string" ? args.collection : "",
 				agentId: typeof args.agentId === "string" ? args.agentId : undefined,
@@ -1402,16 +1402,16 @@ export async function handleToolCall(
 			})
 			return { content: [{ type: "text", text: JSON.stringify(out) }] }
 		}
-		if (name === "memongo_novelty_scan") {
-			const out = await memongo.scanNovelty({
+		if (name === "mbrain_novelty_scan") {
+			const out = await mbrain.scanNovelty({
 				agentId: typeof args.agentId === "string" ? args.agentId : undefined,
 				limit: typeof args.limit === "number" ? args.limit : undefined,
 				scope: typeof args.scope === "string" ? args.scope : undefined,
 			})
 			return { content: [{ type: "text", text: JSON.stringify(out) }] }
 		}
-		if (name === "memongo_consolidate") {
-			const out = await memongo.consolidate({
+		if (name === "mbrain_consolidate") {
+			const out = await mbrain.consolidate({
 				agentId: typeof args.agentId === "string" ? args.agentId : undefined,
 				maxEvents:
 					typeof args.maxEvents === "number" ? args.maxEvents : undefined,
@@ -1423,7 +1423,7 @@ export async function handleToolCall(
 			})
 			return { content: [{ type: "text", text: JSON.stringify(out) }] }
 		}
-		if (name === "memongo_self_edit") {
+		if (name === "mbrain_self_edit") {
 			const block = typeof args.block === "string" ? args.block : ""
 			const action = typeof args.action === "string" ? args.action : "replace"
 			const validBlocks = ["user", "persona", "instructions"]
@@ -1454,7 +1454,7 @@ export async function handleToolCall(
 					isError: true,
 				}
 			}
-			const out = await memongo.selfEdit({
+			const out = await mbrain.selfEdit({
 				block: block as "user" | "persona" | "instructions",
 				action: action as "append" | "replace" | "prepend",
 				content: typeof args.content === "string" ? args.content : "",
@@ -1462,7 +1462,7 @@ export async function handleToolCall(
 			})
 			return { content: [{ type: "text", text: JSON.stringify(out) }] }
 		}
-		if (name === "memongo_search_detailed") {
+		if (name === "mbrain_search_detailed") {
 			const searchConfig =
 				typeof args.searchConfig === "object" &&
 				args.searchConfig !== null &&
@@ -1496,7 +1496,7 @@ export async function handleToolCall(
 							value === "graph",
 					)
 				: undefined
-			const out = await memongo.searchDetailed({
+			const out = await mbrain.searchDetailed({
 				query: typeof args.query === "string" ? args.query : "",
 				agentId: typeof args.agentId === "string" ? args.agentId : undefined,
 				limit: typeof args.limit === "number" ? args.limit : undefined,
@@ -1593,8 +1593,8 @@ export async function handleToolCall(
 			})
 			return { content: [{ type: "text", text: JSON.stringify(out) }] }
 		}
-		if (name === "memongo_hydrate_active_slate") {
-			const out = await memongo.hydrateActiveSlate({
+		if (name === "mbrain_hydrate_active_slate") {
+			const out = await mbrain.hydrateActiveSlate({
 				agentId: typeof args.agentId === "string" ? args.agentId : undefined,
 				scope:
 					typeof args.scope === "string" ? (args.scope as "user") : undefined,
@@ -1603,7 +1603,7 @@ export async function handleToolCall(
 			})
 			return { content: [{ type: "text", text: JSON.stringify(out) }] }
 		}
-		if (name === "memongo_discovery_projection") {
+		if (name === "mbrain_discovery_projection") {
 			const kind = args.kind
 			if (
 				kind !== "entity-brief" &&
@@ -1615,7 +1615,7 @@ export async function handleToolCall(
 					"kind is required and must be entity-brief|topic-brief|what-changed|contradiction-report",
 				)
 			}
-			const out = await memongo.buildDiscoveryProjection({
+			const out = await mbrain.buildDiscoveryProjection({
 				kind,
 				query: typeof args.query === "string" ? args.query : undefined,
 				agentId: typeof args.agentId === "string" ? args.agentId : undefined,
@@ -1626,62 +1626,62 @@ export async function handleToolCall(
 			})
 			return { content: [{ type: "text", text: JSON.stringify(out) }] }
 		}
-		if (name === "memongo_write_structured") {
+		if (name === "mbrain_write_structured") {
 			const entry =
 				typeof args.entry === "object" && args.entry !== null
 					? (args.entry as Record<string, unknown>)
 					: {}
-			const out = await memongo.writeStructured({
+			const out = await mbrain.writeStructured({
 				entry,
 				agentId: typeof args.agentId === "string" ? args.agentId : undefined,
 			})
 			return { content: [{ type: "text", text: JSON.stringify(out) }] }
 		}
-		if (name === "memongo_write_procedure") {
+		if (name === "mbrain_write_procedure") {
 			const entry =
 				typeof args.entry === "object" && args.entry !== null
 					? (args.entry as Record<string, unknown>)
 					: {}
-			const out = await memongo.writeProcedure({
+			const out = await mbrain.writeProcedure({
 				entry,
 				agentId: typeof args.agentId === "string" ? args.agentId : undefined,
 			})
 			return { content: [{ type: "text", text: JSON.stringify(out) }] }
 		}
-		if (name === "memongo_status_detailed") {
-			const out = await memongo.getDetailedStatus(
+		if (name === "mbrain_status_detailed") {
+			const out = await mbrain.getDetailedStatus(
 				typeof args.agentId === "string" ? args.agentId : undefined,
 			)
 			return { content: [{ type: "text", text: JSON.stringify(out) }] }
 		}
-		if (name === "memongo_stats") {
-			const out = await memongo.stats(
+		if (name === "mbrain_stats") {
+			const out = await mbrain.stats(
 				typeof args.agentId === "string" ? args.agentId : undefined,
 			)
 			return { content: [{ type: "text", text: JSON.stringify(out) }] }
 		}
-		if (name === "memongo_sync") {
-			const out = await memongo.sync({
+		if (name === "mbrain_sync") {
+			const out = await mbrain.sync({
 				agentId: typeof args.agentId === "string" ? args.agentId : undefined,
 				reason: typeof args.reason === "string" ? args.reason : undefined,
 				force: typeof args.force === "boolean" ? args.force : undefined,
 			})
 			return { content: [{ type: "text", text: JSON.stringify(out) }] }
 		}
-		if (name === "memongo_probe_embedding") {
-			const out = await memongo.probeEmbedding(
+		if (name === "mbrain_probe_embedding") {
+			const out = await mbrain.probeEmbedding(
 				typeof args.agentId === "string" ? args.agentId : undefined,
 			)
 			return { content: [{ type: "text", text: JSON.stringify(out) }] }
 		}
-		if (name === "memongo_probe_vector") {
-			const out = await memongo.probeVector(
+		if (name === "mbrain_probe_vector") {
+			const out = await mbrain.probeVector(
 				typeof args.agentId === "string" ? args.agentId : undefined,
 			)
 			return { content: [{ type: "text", text: JSON.stringify(out) }] }
 		}
-		if (name === "memongo_relevance_explain") {
-			const out = await memongo.relevanceExplain({
+		if (name === "mbrain_relevance_explain") {
+			const out = await mbrain.relevanceExplain({
 				query: typeof args.query === "string" ? args.query : "",
 				agentId: typeof args.agentId === "string" ? args.agentId : undefined,
 				sourceScope:
@@ -1698,8 +1698,8 @@ export async function handleToolCall(
 			})
 			return { content: [{ type: "text", text: JSON.stringify(out) }] }
 		}
-		if (name === "memongo_relevance_benchmark") {
-			const out = await memongo.relevanceBenchmark({
+		if (name === "mbrain_relevance_benchmark") {
+			const out = await mbrain.relevanceBenchmark({
 				agentId: typeof args.agentId === "string" ? args.agentId : undefined,
 				datasetPath:
 					typeof args.datasetPath === "string" ? args.datasetPath : undefined,
@@ -1709,21 +1709,21 @@ export async function handleToolCall(
 			})
 			return { content: [{ type: "text", text: JSON.stringify(out) }] }
 		}
-		if (name === "memongo_relevance_report") {
-			const out = await memongo.relevanceReport(
+		if (name === "mbrain_relevance_report") {
+			const out = await mbrain.relevanceReport(
 				typeof args.agentId === "string" ? args.agentId : undefined,
 				typeof args.windowMs === "number" ? args.windowMs : undefined,
 			)
 			return { content: [{ type: "text", text: JSON.stringify(out) }] }
 		}
-		if (name === "memongo_relevance_sample_rate") {
-			const out = await memongo.relevanceSampleRate(
+		if (name === "mbrain_relevance_sample_rate") {
+			const out = await mbrain.relevanceSampleRate(
 				typeof args.agentId === "string" ? args.agentId : undefined,
 			)
 			return { content: [{ type: "text", text: JSON.stringify(out) }] }
 		}
-		if (name === "memongo_state_unified") {
-			const out = await memongo.state({
+		if (name === "mbrain_state_unified") {
+			const out = await mbrain.state({
 				agentId: typeof args.agentId === "string" ? args.agentId : undefined,
 				scope:
 					typeof args.scope === "string"
@@ -1746,14 +1746,14 @@ export async function handleToolCall(
 				],
 			}
 		}
-		if (name === "memongo_benchmark_ingest") {
+		if (name === "mbrain_benchmark_ingest") {
 			if (
 				typeof args.datasetPath !== "string" ||
 				args.datasetPath.length === 0
 			) {
 				throw new Error("datasetPath is required")
 			}
-			const out = await memongo.benchmarkIngest({
+			const out = await mbrain.benchmarkIngest({
 				datasetPath: args.datasetPath,
 				agentId: typeof args.agentId === "string" ? args.agentId : undefined,
 				scope:
@@ -1783,7 +1783,7 @@ export async function handleToolCall(
 			) {
 				throw new Error("datasetPath is required")
 			}
-			const out = await memongo.importConversations({
+			const out = await mbrain.importConversations({
 				datasetPath: args.datasetPath,
 				agentId: typeof args.agentId === "string" ? args.agentId : undefined,
 				scope:
@@ -1806,8 +1806,8 @@ export async function handleToolCall(
 			})
 			return jsonResult(out)
 		}
-		if (name === "memongo_admin_access_trends") {
-			const out = await memongo.accessTrends({
+		if (name === "mbrain_admin_access_trends") {
+			const out = await mbrain.accessTrends({
 				agentId: typeof args.agentId === "string" ? args.agentId : undefined,
 				collection:
 					args.collection === "events" ||
@@ -1833,7 +1833,7 @@ export async function handleToolCall(
 			})
 			return { content: [{ type: "text", text: JSON.stringify(out) }] }
 		}
-		if (name === "memongo_admin_access_summaries") {
+		if (name === "mbrain_admin_access_summaries") {
 			const memoryIds = Array.isArray(args.memoryIds)
 				? args.memoryIds.filter(
 						(memoryId): memoryId is string =>
@@ -1853,7 +1853,7 @@ export async function handleToolCall(
 			) {
 				throw new Error("collection is required")
 			}
-			const out = await memongo.accessSummaries({
+			const out = await mbrain.accessSummaries({
 				agentId: typeof args.agentId === "string" ? args.agentId : undefined,
 				collection: args.collection,
 				memoryIds,
@@ -1862,8 +1862,8 @@ export async function handleToolCall(
 			})
 			return { content: [{ type: "text", text: JSON.stringify(out) }] }
 		}
-		if (name === "memongo_admin_list_traces") {
-			const out = await memongo.listRecallTraces({
+		if (name === "mbrain_admin_list_traces") {
+			const out = await mbrain.listRecallTraces({
 				agentId: typeof args.agentId === "string" ? args.agentId : undefined,
 				limit:
 					typeof args.limit === "number"
@@ -1872,18 +1872,18 @@ export async function handleToolCall(
 			})
 			return { content: [{ type: "text", text: JSON.stringify(out) }] }
 		}
-		if (name === "memongo_admin_get_trace") {
+		if (name === "mbrain_admin_get_trace") {
 			if (typeof args.traceId !== "string" || !args.traceId.trim()) {
 				throw new Error("traceId is required")
 			}
-			const out = await memongo.getRecallTrace({
+			const out = await mbrain.getRecallTrace({
 				traceId: args.traceId,
 				agentId: typeof args.agentId === "string" ? args.agentId : undefined,
 			})
 			return { content: [{ type: "text", text: JSON.stringify(out) }] }
 		}
-		if (name === "memongo_list_jobs") {
-			const out = await memongo.listJobs({
+		if (name === "mbrain_list_jobs") {
+			const out = await mbrain.listJobs({
 				agentId: typeof args.agentId === "string" ? args.agentId : undefined,
 				status:
 					args.status === "pending" ||
@@ -1908,11 +1908,11 @@ export async function handleToolCall(
 			})
 			return { content: [{ type: "text", text: JSON.stringify(out) }] }
 		}
-		if (name === "memongo_get_job") {
+		if (name === "mbrain_get_job") {
 			if (typeof args.jobId !== "string" || !args.jobId.trim()) {
 				throw new Error("jobId is required")
 			}
-			const out = await memongo.getJob({
+			const out = await mbrain.getJob({
 				jobId: args.jobId,
 				agentId: typeof args.agentId === "string" ? args.agentId : undefined,
 			})

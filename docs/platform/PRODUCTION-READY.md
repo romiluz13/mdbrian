@@ -1,10 +1,10 @@
 # Production-ready checklist
 
-Use this before npm publish, release tags, or public production-ready claims for Memongo.
+Use this before npm publish, release tags, or public production-ready claims for Mbrain.
 
 ## Official release lanes
 
-Memongo is only release-ready when every release-blocking lane below is green on the branch you intend to ship.
+Mbrain is only release-ready when every release-blocking lane below is green on the branch you intend to ship.
 
 ### 1. `repo-foundation`
 
@@ -23,7 +23,7 @@ bun run test
 With MongoDB reachable and `apps/api` running:
 
 ```bash
-export MEMONGO_API_URL=http://127.0.0.1:3847
+export MBRAIN_API_URL=http://127.0.0.1:3847
 bun run proof-pack
 ```
 
@@ -44,7 +44,7 @@ Use a real MongoDB stack for the core live path.
 Managed Atlas cloud is the control lane for serious benchmark and release validation:
 
 ```bash
-export MEMONGO_MONGODB_URI="mongodb+srv://<user>:<password>@<cluster>.mongodb.net/?appName=memongo"
+export MBRAIN_MONGODB_URI="mongodb+srv://<user>:<password>@<cluster>.mongodb.net/?appName=mbrain"
 export VOYAGE_API_KEY="al-your-atlas-model-api-key"
 bun run mongodb:parity
 ```
@@ -54,7 +54,7 @@ Atlas Local Preview remains the local reproducibility lane:
 ```bash
 export VOYAGE_API_KEY="al-your-atlas-model-api-key"
 docker compose -f docker/mongodb/docker-compose.preview.yml up -d
-export MEMONGO_MONGODB_URI="mongodb://127.0.0.1:27017/?directConnection=true"
+export MBRAIN_MONGODB_URI="mongodb://127.0.0.1:27017/?directConnection=true"
 ```
 
 Then run:
@@ -79,7 +79,7 @@ Capability lanes are separate from the core release lane and must be run with th
   Use `docker/mongodb/docker-compose.mongodb.yml` `replicaset` or `fullstack`, then run `packages/memory-engine/src/mongodb-e2e.e2e.test.ts` with:
 
 ```bash
-MONGODB_TEST_URI="mongodb://admin:admin@localhost:27017/memongo?authSource=admin&replicaSet=rs0&directConnection=true"
+MONGODB_TEST_URI="mongodb://admin:admin@localhost:27017/mbrain?authSource=admin&replicaSet=rs0&directConnection=true"
 ```
 
 This lane covers transactions, change streams, and other replica-set-specific behavior. Do not treat the preview connection string as proof for those features unless that lane is green too.
@@ -89,14 +89,14 @@ This lane covers transactions, change streams, and other replica-set-specific be
 With `apps/api` running against managed Atlas cloud or the preview stack:
 
 ```bash
-export MEMONGO_LLM_BASE_URL="https://api.openai.com/v1"
-export MEMONGO_LLM_API_KEY="your-llm-api-key"
-export MEMONGO_LLM_MODEL="gpt-4o-mini"
-export MEMONGO_API_URL="http://127.0.0.1:3847"
+export MBRAIN_LLM_BASE_URL="https://api.openai.com/v1"
+export MBRAIN_LLM_API_KEY="your-llm-api-key"
+export MBRAIN_LLM_MODEL="gpt-4o-mini"
+export MBRAIN_API_URL="http://127.0.0.1:3847"
 bun run agent-smoke
 ```
 
-This lane is the closest supported proof that a real model can use Memongo as memory, not just that the engine and API pass standalone tests.
+This lane is the closest supported proof that a real model can use Mbrain as memory, not just that the engine and API pass standalone tests.
 
 ## Operational honesty
 

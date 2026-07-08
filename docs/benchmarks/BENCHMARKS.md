@@ -1,10 +1,10 @@
-# Memongo Benchmark Evidence
+# Mbrain Benchmark Evidence
 
 Status: scoped public evidence for selected MemPalace retrieval lanes.
 
 Last reviewed: 2026-06-24.
 
-Memongo benchmark claims are intentionally narrow. Retrieval recall and judged
+Mbrain benchmark claims are intentionally narrow. Retrieval recall and judged
 answer quality are different metrics and must not be presented as one
 leaderboard.
 
@@ -12,7 +12,7 @@ leaderboard.
 
 Allowed:
 
-- Memongo has scoped MemPalace P0 retrieval-lane evidence.
+- Mbrain has scoped MemPalace P0 retrieval-lane evidence.
 - A row may be quoted only with its metric, dataset, retrieval unit, top-k,
   scorer, and LLM/rerank posture.
 
@@ -33,7 +33,7 @@ artifact bundles can be attached to a GitHub Release before quoting hashes.
 These rows are retrieval-lane comparisons against MemPalace committed artifacts.
 They are not Mem0 claims and not judged-answer claims.
 
-| Lane | Metric | Retrieval unit | Memongo | MemPalace | Status |
+| Lane | Metric | Retrieval unit | Mbrain | MemPalace | Status |
 |---|---|---|---:|---:|---|
 | LongMemEval raw session full 500 | RecallAny@5 | session | 99.15% | 96.60% | Scoped retrieval win |
 | LongMemEval held-out 450 hybrid no-LLM | RecallAny@5 | session | 99.11% | 98.44% | Scoped retrieval win |
@@ -44,7 +44,7 @@ They are not Mem0 claims and not judged-answer claims.
 
 The previous LongMemEval full-500 hybrid no-LLM row is excluded from the launch
 summary because it mixed MemPalace raw and rerank lanes in one line. It can be
-reintroduced only as a separately worded Memongo-native retrieval row.
+reintroduced only as a separately worded Mbrain-native retrieval row.
 
 ## Evidence Artifacts
 

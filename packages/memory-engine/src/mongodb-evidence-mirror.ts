@@ -1,6 +1,6 @@
 import { createHash } from "node:crypto"
 import type { Collection, Document } from "mongodb"
-import type { MemoryScope } from "@memongo/lib"
+import type { MemoryScope } from "@mbrain/lib"
 import { truncateAtSentenceBoundary } from "./mongodb-session-evidence.js"
 import type { MemoryBenchmarkConversation } from "./types.js"
 
@@ -58,7 +58,7 @@ export function isEvidenceMirrorEnabled(
 	env: NodeJS.ProcessEnv = process.env,
 ): boolean {
 	return (
-		resolveEvidenceMirrorMode(env.MEMONGO_EVIDENCE_MIRROR_MODE) === "enabled"
+		resolveEvidenceMirrorMode(env.MBRAIN_EVIDENCE_MIRROR_MODE) === "enabled"
 	)
 }
 

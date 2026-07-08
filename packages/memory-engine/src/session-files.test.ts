@@ -30,7 +30,7 @@ describe("buildSessionEntry", () => {
 			}),
 			JSON.stringify({
 				type: "custom",
-				customType: "memongo.cache-ttl",
+				customType: "mbrain.cache-ttl",
 				data: {},
 			}),
 			JSON.stringify({ type: "session-meta", agentId: "test" }),

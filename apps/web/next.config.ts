@@ -1,7 +1,7 @@
 import path from "node:path"
 import type { NextConfig } from "next"
 
-const staticExport = process.env.MEMONGO_WEB_STATIC_EXPORT === "true"
+const staticExport = process.env.MBRAIN_WEB_STATIC_EXPORT === "true"
 
 const nextConfig: NextConfig = {
 	output: staticExport ? "export" : undefined,
@@ -10,7 +10,7 @@ const nextConfig: NextConfig = {
 	images: {
 		unoptimized: staticExport,
 	},
-	transpilePackages: ["@memongo/client"],
+	transpilePackages: ["@mbrain/client"],
 	webpack: (config) => {
 		config.resolve.extensionAlias = {
 			...(config.resolve.extensionAlias ?? {}),

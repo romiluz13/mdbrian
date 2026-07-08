@@ -1,6 +1,6 @@
 import { randomUUID } from "node:crypto"
 import type { Db } from "mongodb"
-import { createSubsystemLogger } from "@memongo/lib"
+import { createSubsystemLogger } from "@mbrain/lib"
 import {
 	ingestRunsCollection,
 	projectionRunsCollection,

@@ -1,84 +1,84 @@
 import type {
-	MemongoAddInput,
-	MemongoAccessSummaryResponse,
-	MemongoAccessTrendResponse,
-	MemongoActiveSlateInput,
-	MemongoBenchmarkIngestResponse,
-	MemongoConsolidateInput,
-	MemongoConsolidateResponse,
-	MemongoConversationImportInput,
-	MemongoConversationImportResponse,
-	MemongoConversationRecallInput,
-	MemongoConversationRecallResponse,
-	MemongoMemoryJob,
-	MemongoMemoryJobStatus,
-	MemongoMemoryJobType,
-	MemongoContextBundleInput,
-	MemongoDetailedStatusResponse,
-	MemongoDiscoveryProjectionInput,
-	MemongoExtractInput,
-	MemongoExtractResponse,
-	MemongoLifecycleDeleteInput,
-	MemongoMemoryFeedbackInput,
-	MemongoLifecycleGetInput,
-	MemongoLifecycleHistoryEntry,
-	MemongoLifecycleHistoryInput,
-	MemongoLifecycleItem,
-	MemongoLifecycleUpdateInput,
-	MemongoNoveltyResponse,
-	MemongoProbeEmbeddingResponse,
-	MemongoProfileInput,
-	MemongoProfileResponse,
-	MemongoReadFileResponse,
-	MemongoRelevanceBenchmarkResponse,
-	MemongoRelevanceExplainResponse,
-	MemongoRelevanceReportResponse,
-	MemongoRelevanceSampleRateResponse,
-	MemongoProcedureOutcomeInput,
-	MemongoRecallTrace,
-	MemongoScanNoveltyInput,
-	MemongoSearchInput,
-	MemongoSearchKBResponse,
-	MemongoSearchResponse,
+	MbrainAddInput,
+	MbrainAccessSummaryResponse,
+	MbrainAccessTrendResponse,
+	MbrainActiveSlateInput,
+	MbrainBenchmarkIngestResponse,
+	MbrainConsolidateInput,
+	MbrainConsolidateResponse,
+	MbrainConversationImportInput,
+	MbrainConversationImportResponse,
+	MbrainConversationRecallInput,
+	MbrainConversationRecallResponse,
+	MbrainMemoryJob,
+	MbrainMemoryJobStatus,
+	MbrainMemoryJobType,
+	MbrainContextBundleInput,
+	MbrainDetailedStatusResponse,
+	MbrainDiscoveryProjectionInput,
+	MbrainExtractInput,
+	MbrainExtractResponse,
+	MbrainLifecycleDeleteInput,
+	MbrainMemoryFeedbackInput,
+	MbrainLifecycleGetInput,
+	MbrainLifecycleHistoryEntry,
+	MbrainLifecycleHistoryInput,
+	MbrainLifecycleItem,
+	MbrainLifecycleUpdateInput,
+	MbrainNoveltyResponse,
+	MbrainProbeEmbeddingResponse,
+	MbrainProfileInput,
+	MbrainProfileResponse,
+	MbrainReadFileResponse,
+	MbrainRelevanceBenchmarkResponse,
+	MbrainRelevanceExplainResponse,
+	MbrainRelevanceReportResponse,
+	MbrainRelevanceSampleRateResponse,
+	MbrainProcedureOutcomeInput,
+	MbrainRecallTrace,
+	MbrainScanNoveltyInput,
+	MbrainSearchInput,
+	MbrainSearchKBResponse,
+	MbrainSearchResponse,
 	SearchConfig,
-	MemongoStatsResponse,
-	MemongoStatusResponse,
-	MemongoTraceChainInput,
-	MemongoTraceChainResponse,
-	MemongoSelfEditInput,
-	MemongoSelfEditResponse,
+	MbrainStatsResponse,
+	MbrainStatusResponse,
+	MbrainTraceChainInput,
+	MbrainTraceChainResponse,
+	MbrainSelfEditInput,
+	MbrainSelfEditResponse,
 } from "./types.js"
 
-export type MemongoClientOptions = {
-	/** Memongo API base URL (e.g. http://127.0.0.1:3847). */
+export type MbrainClientOptions = {
+	/** Mbrain API base URL (e.g. http://127.0.0.1:3847). */
 	baseUrl?: string
-	/** Optional Bearer token; also reads `MEMONGO_API_KEY` when unset. */
+	/** Optional Bearer token; also reads `MBRAIN_API_KEY` when unset. */
 	apiKey?: string
 	/** Max retries for 429/503 (default 2). */
 	maxRetries?: number
 }
 
-/** Thrown when the Memongo HTTP API returns a non-OK status. */
-export class MemongoClientError extends Error {
+/** Thrown when the Mbrain HTTP API returns a non-OK status. */
+export class MbrainClientError extends Error {
 	readonly status: number
 	readonly body: string
 
 	constructor(status: number, body: string, message?: string) {
-		super(message ?? `Memongo API ${status}: ${body || "(empty)"}`)
-		this.name = "MemongoClientError"
+		super(message ?? `Mbrain API ${status}: ${body || "(empty)"}`)
+		this.name = "MbrainClientError"
 		this.status = status
 		this.body = body
 	}
 }
 
-function resolveBaseUrl(opts: MemongoClientOptions): string {
+function resolveBaseUrl(opts: MbrainClientOptions): string {
 	const raw =
-		opts.baseUrl ?? process.env.MEMONGO_API_URL ?? "http://127.0.0.1:3847"
+		opts.baseUrl ?? process.env.MBRAIN_API_URL ?? "http://127.0.0.1:3847"
 	return raw.replace(/\/$/, "")
 }
 
-function resolveApiKey(opts: MemongoClientOptions): string | undefined {
-	return opts.apiKey ?? process.env.MEMONGO_API_KEY ?? undefined
+function resolveApiKey(opts: MbrainClientOptions): string | undefined {
+	return opts.apiKey ?? process.env.MBRAIN_API_KEY ?? undefined
 }
 
 function shouldRetryStatus(status: number): boolean {
@@ -90,7 +90,7 @@ function sleep(ms: number): Promise<void> {
 }
 
 function buildHeaders(
-	opts: MemongoClientOptions,
+	opts: MbrainClientOptions,
 	method: string,
 ): Record<string, string> {
 	const key = resolveApiKey(opts)
@@ -105,7 +105,7 @@ function buildHeaders(
 }
 
 async function apiFetch<T>(
-	opts: MemongoClientOptions,
+	opts: MbrainClientOptions,
 	path: string,
 	init: RequestInit,
 ): Promise<T> {
@@ -127,12 +127,12 @@ async function apiFetch<T>(
 			await sleep(200 * attempt)
 			continue
 		}
-		throw new MemongoClientError(res.status, text)
+		throw new MbrainClientError(res.status, text)
 	}
 }
 
 async function apiPost<T>(
-	opts: MemongoClientOptions,
+	opts: MbrainClientOptions,
 	path: string,
 	body: Record<string, unknown>,
 ): Promise<T> {
@@ -142,7 +142,7 @@ async function apiPost<T>(
 	})
 }
 
-async function apiGet<T>(opts: MemongoClientOptions, path: string): Promise<T> {
+async function apiGet<T>(opts: MbrainClientOptions, path: string): Promise<T> {
 	return apiFetch<T>(opts, path, { method: "GET" })
 }
 
@@ -166,7 +166,7 @@ function q(
 }
 
 /** A single result from `searchDetailed`. */
-export type MemongoSearchDetailedResult = {
+export type MbrainSearchDetailedResult = {
 	path: string
 	startLine: number
 	endLine: number
@@ -201,7 +201,7 @@ export type MemongoSearchDetailedResult = {
 }
 
 /** A single retrieval pass executed during search. */
-export type MemongoSearchPass = {
+export type MbrainSearchPass = {
 	pass: number
 	query: string
 	reason: string
@@ -213,7 +213,7 @@ export type MemongoSearchPass = {
 }
 
 /** Metadata returned by `searchDetailed`. */
-export type MemongoSearchDetailedMetadata = {
+export type MbrainSearchDetailedMetadata = {
 	mode: string
 	classification: string
 	sourceOrder: string[]
@@ -237,7 +237,7 @@ export type MemongoSearchDetailedMetadata = {
 		allowHybridBackstop: boolean
 		lexicalPrefilter: "disabled" | "experimental"
 	}
-	passes: MemongoSearchPass[]
+	passes: MbrainSearchPass[]
 	queriesTried: string[]
 	constraintsApplied: string[]
 	resultsRejected: Array<{
@@ -269,12 +269,12 @@ export type MemongoSearchDetailedMetadata = {
 }
 
 /** Full response from `searchDetailed`. */
-export type MemongoSearchDetailedResponse = {
-	results: MemongoSearchDetailedResult[]
-	metadata: MemongoSearchDetailedMetadata
+export type MbrainSearchDetailedResponse = {
+	results: MbrainSearchDetailedResult[]
+	metadata: MbrainSearchDetailedMetadata
 }
 
-export type MemongoActiveSlateItem = {
+export type MbrainActiveSlateItem = {
 	kind: string
 	source: string
 	title: string
@@ -290,11 +290,11 @@ export type MemongoActiveSlateItem = {
 	sourceEventIds?: string[]
 }
 
-export type MemongoActiveSlateResponse = {
+export type MbrainActiveSlateResponse = {
 	agentId: string
 	scope: string
 	scopeRef: string
-	items: MemongoActiveSlateItem[]
+	items: MbrainActiveSlateItem[]
 	metadata: {
 		maxItems: number
 		truncated: boolean
@@ -305,15 +305,15 @@ export type MemongoActiveSlateResponse = {
 	hydratedAt: string
 }
 
-export type MemongoMemoryBlockLabel =
+export type MbrainMemoryBlockLabel =
 	| "working-memory"
 	| "decisions"
 	| "preferences"
 	| "todos"
 	| "procedures"
 
-export type MemongoMemoryBlock = {
-	label: MemongoMemoryBlockLabel
+export type MbrainMemoryBlock = {
+	label: MbrainMemoryBlockLabel
 	title: string
 	content: string
 	tokenBudget: number
@@ -321,13 +321,13 @@ export type MemongoMemoryBlock = {
 	sourcePaths: string[]
 }
 
-export type MemongoMemoryBlocksResponse = {
-	blocks: MemongoMemoryBlock[]
+export type MbrainMemoryBlocksResponse = {
+	blocks: MbrainMemoryBlock[]
 	totalTokenBudget: number
 	totalActualTokens: number
 }
 
-export type MemongoDiscoveryProjectionResponse = {
+export type MbrainDiscoveryProjectionResponse = {
 	kind: string
 	query?: string
 	title: string
@@ -362,7 +362,7 @@ export type MemongoDiscoveryProjectionResponse = {
 	builtAt: string
 }
 
-export type MemongoContextBundleSectionItem = {
+export type MbrainContextBundleSectionItem = {
 	title: string
 	summary: string
 	path?: string
@@ -386,7 +386,7 @@ export type MemongoContextBundleSectionItem = {
 	metadata?: Record<string, unknown>
 }
 
-export type MemongoContextBundleResponse = {
+export type MbrainContextBundleResponse = {
 	agentId: string
 	query?: string
 	scope: string
@@ -403,7 +403,7 @@ export type MemongoContextBundleResponse = {
 			| "profile"
 		title: string
 		summary?: string
-		items: MemongoContextBundleSectionItem[]
+		items: MbrainContextBundleSectionItem[]
 		estimatedTokens: number
 		truncated: boolean
 		partial: boolean
@@ -436,19 +436,19 @@ export type MemongoContextBundleResponse = {
 	builtAt: string
 }
 
-export type MemongoStateResponse = {
-	profile: MemongoProfileResponse
-	blocks: MemongoMemoryBlocksResponse
-	bundle: MemongoContextBundleResponse
+export type MbrainStateResponse = {
+	profile: MbrainProfileResponse
+	blocks: MbrainMemoryBlocksResponse
+	bundle: MbrainContextBundleResponse
 	partial?: boolean
 }
 
-/** HTTP client for the supported Memongo API surface. */
-export class MemongoClient {
-	constructor(private readonly _opts: MemongoClientOptions = {}) {}
+/** HTTP client for the supported Mbrain API surface. */
+export class MbrainClient {
+	constructor(private readonly _opts: MbrainClientOptions = {}) {}
 
 	async add(
-		input: MemongoAddInput,
+		input: MbrainAddInput,
 	): Promise<{ ok: true; eventId: string; chunkCreated: boolean }> {
 		return apiPost(this._opts, "/v1/add", {
 			content: input.content,
@@ -460,12 +460,12 @@ export class MemongoClient {
 	}
 
 	async search(
-		input: MemongoSearchInput & {
+		input: MbrainSearchInput & {
 			agentId?: string
 			minScore?: number
 			sessionKey?: string
 		},
-	): Promise<MemongoSearchResponse> {
+	): Promise<MbrainSearchResponse> {
 		return apiPost(this._opts, "/v1/search", {
 			query: input.query,
 			agentId: input.agentId,
@@ -503,7 +503,7 @@ export class MemongoClient {
 		searchConfig?: SearchConfig
 		/** @deprecated This legacy alias is ignored by the canonical detailed search path. */
 		containerTag?: string
-	}): Promise<MemongoSearchDetailedResponse> {
+	}): Promise<MbrainSearchDetailedResponse> {
 		return apiPost(this._opts, "/v1/search-detailed", {
 			query: input.query,
 			agentId: input.agentId,
@@ -530,7 +530,7 @@ export class MemongoClient {
 		limit?: number
 		minScore?: number
 		filter?: { tags?: string[]; category?: string; source?: string }
-	}): Promise<MemongoSearchKBResponse> {
+	}): Promise<MbrainSearchKBResponse> {
 		return apiPost(this._opts, "/v1/search-kb", {
 			query: input.query,
 			agentId: input.agentId,
@@ -541,8 +541,8 @@ export class MemongoClient {
 	}
 
 	async recallConversation(
-		input: MemongoConversationRecallInput = {},
-	): Promise<MemongoConversationRecallResponse> {
+		input: MbrainConversationRecallInput = {},
+	): Promise<MbrainConversationRecallResponse> {
 		return apiPost(this._opts, "/v1/recall-conversation", {
 			query: input.query,
 			sessionId: input.sessionId,
@@ -557,16 +557,16 @@ export class MemongoClient {
 	}
 
 	async getLifecycleItem(
-		input: MemongoLifecycleGetInput,
-	): Promise<MemongoLifecycleItem> {
+		input: MbrainLifecycleGetInput,
+	): Promise<MbrainLifecycleItem> {
 		return apiPost(this._opts, "/v1/lifecycle/get", {
 			handle: input.handle,
 		})
 	}
 
 	async updateLifecycleItem(
-		input: MemongoLifecycleUpdateInput,
-	): Promise<MemongoLifecycleItem> {
+		input: MbrainLifecycleUpdateInput,
+	): Promise<MbrainLifecycleItem> {
 		return apiPost(this._opts, "/v1/lifecycle/update", {
 			handle: input.handle,
 			patch: input.patch,
@@ -574,8 +574,8 @@ export class MemongoClient {
 	}
 
 	async deleteLifecycleItem(
-		input: MemongoLifecycleDeleteInput,
-	): Promise<MemongoLifecycleItem> {
+		input: MbrainLifecycleDeleteInput,
+	): Promise<MbrainLifecycleItem> {
 		return apiPost(this._opts, "/v1/lifecycle/delete", {
 			handle: input.handle,
 			invalidatedBy: input.invalidatedBy,
@@ -583,8 +583,8 @@ export class MemongoClient {
 	}
 
 	async getLifecycleHistory(
-		input: MemongoLifecycleHistoryInput,
-	): Promise<MemongoLifecycleHistoryEntry[]> {
+		input: MbrainLifecycleHistoryInput,
+	): Promise<MbrainLifecycleHistoryEntry[]> {
 		return apiPost(this._opts, "/v1/lifecycle/history", {
 			handle: input.handle,
 			limit: input.limit,
@@ -592,8 +592,8 @@ export class MemongoClient {
 	}
 
 	async reportProcedureOutcome(
-		input: MemongoProcedureOutcomeInput,
-	): Promise<MemongoLifecycleItem> {
+		input: MbrainProcedureOutcomeInput,
+	): Promise<MbrainLifecycleItem> {
 		return apiPost(this._opts, "/v1/procedures/outcome", {
 			handle: input.handle,
 			success: input.success,
@@ -603,8 +603,8 @@ export class MemongoClient {
 	}
 
 	async applyMemoryFeedback(
-		input: MemongoMemoryFeedbackInput,
-	): Promise<MemongoLifecycleItem> {
+		input: MbrainMemoryFeedbackInput,
+	): Promise<MbrainLifecycleItem> {
 		return apiPost(this._opts, "/v1/memory/feedback", {
 			handle: input.handle,
 			signal: input.signal,
@@ -622,7 +622,7 @@ export class MemongoClient {
 		from?: number
 		lines?: number
 		agentId?: string
-	}): Promise<MemongoReadFileResponse> {
+	}): Promise<MbrainReadFileResponse> {
 		return apiPost(this._opts, "/v1/read-file", {
 			relPath: input.relPath,
 			from: input.from,
@@ -671,7 +671,7 @@ export class MemongoClient {
 		})
 	}
 
-	async extract(input: MemongoExtractInput): Promise<MemongoExtractResponse> {
+	async extract(input: MbrainExtractInput): Promise<MbrainExtractResponse> {
 		return apiPost(this._opts, "/v1/extract", {
 			eventId: input.eventId,
 			agentId: input.agentId,
@@ -679,7 +679,7 @@ export class MemongoClient {
 	}
 
 	async profile(
-		input: MemongoProfileInput & {
+		input: MbrainProfileInput & {
 			agentId?: string
 			scopeRef?: string
 			maxEntities?: number
@@ -687,7 +687,7 @@ export class MemongoClient {
 			maxPerType?: number
 			activityWindowMs?: number
 		} = {},
-	): Promise<MemongoProfileResponse> {
+	): Promise<MbrainProfileResponse> {
 		return apiPost(this._opts, "/v1/profile", {
 			agentId: input.agentId,
 			containerTag: input.containerTag,
@@ -701,8 +701,8 @@ export class MemongoClient {
 	}
 
 	async hydrateActiveSlate(
-		input: MemongoActiveSlateInput = {},
-	): Promise<MemongoActiveSlateResponse> {
+		input: MbrainActiveSlateInput = {},
+	): Promise<MbrainActiveSlateResponse> {
 		return apiPost(this._opts, "/v1/hydrate-active-slate", {
 			agentId: input.agentId,
 			scope: input.scope,
@@ -712,8 +712,8 @@ export class MemongoClient {
 	}
 
 	async state(
-		input: MemongoActiveSlateInput = {},
-	): Promise<MemongoStateResponse> {
+		input: MbrainActiveSlateInput = {},
+	): Promise<MbrainStateResponse> {
 		return apiGet(
 			this._opts,
 			`/v1/state${q(input.agentId, {
@@ -724,8 +724,8 @@ export class MemongoClient {
 	}
 
 	async buildDiscoveryProjection(
-		input: MemongoDiscoveryProjectionInput,
-	): Promise<MemongoDiscoveryProjectionResponse> {
+		input: MbrainDiscoveryProjectionInput,
+	): Promise<MbrainDiscoveryProjectionResponse> {
 		return apiPost(this._opts, "/v1/discovery-projection", {
 			agentId: input.agentId,
 			kind: input.kind,
@@ -738,8 +738,8 @@ export class MemongoClient {
 	}
 
 	async buildContextBundle(
-		input: MemongoContextBundleInput = {},
-	): Promise<MemongoContextBundleResponse> {
+		input: MbrainContextBundleInput = {},
+	): Promise<MbrainContextBundleResponse> {
 		return apiPost(this._opts, "/v1/context-bundle", {
 			agentId: input.agentId,
 			query: input.query,
@@ -758,17 +758,17 @@ export class MemongoClient {
 		})
 	}
 
-	async status(agentId?: string): Promise<MemongoStatusResponse> {
+	async status(agentId?: string): Promise<MbrainStatusResponse> {
 		return apiGet(this._opts, `/v1/status${q(agentId)}`)
 	}
 
 	async getDetailedStatus(
 		agentId?: string,
-	): Promise<MemongoDetailedStatusResponse> {
+	): Promise<MbrainDetailedStatusResponse> {
 		return apiGet(this._opts, `/v1/status/detailed${q(agentId)}`)
 	}
 
-	async stats(agentId?: string): Promise<MemongoStatsResponse> {
+	async stats(agentId?: string): Promise<MbrainStatsResponse> {
 		return apiGet(this._opts, `/v1/stats${q(agentId)}`)
 	}
 
@@ -786,7 +786,7 @@ export class MemongoClient {
 
 	async probeEmbedding(
 		agentId?: string,
-	): Promise<MemongoProbeEmbeddingResponse> {
+	): Promise<MbrainProbeEmbeddingResponse> {
 		return apiGet(this._opts, `/v1/probes/embedding${q(agentId)}`)
 	}
 
@@ -802,7 +802,7 @@ export class MemongoClient {
 		maxResults?: number
 		minScore?: number
 		deep?: boolean
-	}): Promise<MemongoRelevanceExplainResponse> {
+	}): Promise<MbrainRelevanceExplainResponse> {
 		return apiPost(this._opts, "/v1/admin/relevance/explain", {
 			query: input.query,
 			agentId: input.agentId,
@@ -820,7 +820,7 @@ export class MemongoClient {
 		maxResults?: number
 		minScore?: number
 		retrievalLane?: "native" | "raw-session"
-	}): Promise<MemongoRelevanceBenchmarkResponse> {
+	}): Promise<MbrainRelevanceBenchmarkResponse> {
 		return apiPost(this._opts, "/v1/admin/relevance/benchmark", {
 			agentId: input?.agentId,
 			datasetPath: input?.datasetPath,
@@ -836,7 +836,7 @@ export class MemongoClient {
 		scope?: "session" | "user" | "agent" | "workspace" | "tenant" | "global"
 		limitConversations?: number
 		limitTurnsPerConversation?: number
-	}): Promise<MemongoBenchmarkIngestResponse> {
+	}): Promise<MbrainBenchmarkIngestResponse> {
 		return apiPost(this._opts, "/v1/admin/benchmarks/ingest", {
 			datasetPath: input.datasetPath,
 			agentId: input.agentId,
@@ -847,8 +847,8 @@ export class MemongoClient {
 	}
 
 	async importConversations(
-		input: MemongoConversationImportInput,
-	): Promise<MemongoConversationImportResponse> {
+		input: MbrainConversationImportInput,
+	): Promise<MbrainConversationImportResponse> {
 		return apiPost(this._opts, "/v1/import/conversations", {
 			datasetPath: input.datasetPath,
 			agentId: input.agentId,
@@ -861,7 +861,7 @@ export class MemongoClient {
 	async relevanceReport(
 		agentId?: string,
 		windowMs?: number,
-	): Promise<MemongoRelevanceReportResponse> {
+	): Promise<MbrainRelevanceReportResponse> {
 		return apiGet(
 			this._opts,
 			`/v1/admin/relevance/report${q(agentId, { windowMs })}`,
@@ -870,7 +870,7 @@ export class MemongoClient {
 
 	async relevanceSampleRate(
 		agentId?: string,
-	): Promise<MemongoRelevanceSampleRateResponse> {
+	): Promise<MbrainRelevanceSampleRateResponse> {
 		return apiGet(this._opts, `/v1/admin/relevance/sample-rate${q(agentId)}`)
 	}
 
@@ -886,7 +886,7 @@ export class MemongoClient {
 		memoryIds?: string[]
 		windowDays?: number
 		limit?: number
-	}): Promise<MemongoAccessTrendResponse> {
+	}): Promise<MbrainAccessTrendResponse> {
 		return apiGet(
 			this._opts,
 			`/v1/admin/access-trends${q(input?.agentId, {
@@ -909,7 +909,7 @@ export class MemongoClient {
 			| "relations"
 		memoryIds: string[]
 		windowDays?: number
-	}): Promise<MemongoAccessSummaryResponse> {
+	}): Promise<MbrainAccessSummaryResponse> {
 		return apiGet(
 			this._opts,
 			`/v1/admin/access-summaries${q(input.agentId, {
@@ -923,7 +923,7 @@ export class MemongoClient {
 	async listRecallTraces(input?: {
 		agentId?: string
 		limit?: number
-	}): Promise<MemongoRecallTrace[]> {
+	}): Promise<MbrainRecallTrace[]> {
 		return apiGet(
 			this._opts,
 			`/v1/admin/traces${q(input?.agentId, { limit: input?.limit })}`,
@@ -933,7 +933,7 @@ export class MemongoClient {
 	async getRecallTrace(input: {
 		traceId: string
 		agentId?: string
-	}): Promise<MemongoRecallTrace | null> {
+	}): Promise<MbrainRecallTrace | null> {
 		return apiGet(
 			this._opts,
 			`/v1/admin/traces/${encodeURIComponent(input.traceId)}${q(input.agentId)}`,
@@ -942,10 +942,10 @@ export class MemongoClient {
 
 	async listJobs(input?: {
 		agentId?: string
-		status?: MemongoMemoryJobStatus
+		status?: MbrainMemoryJobStatus
 		limit?: number
-		jobType?: MemongoMemoryJobType
-	}): Promise<MemongoMemoryJob[]> {
+		jobType?: MbrainMemoryJobType
+	}): Promise<MbrainMemoryJob[]> {
 		return apiGet(
 			this._opts,
 			`/v1/jobs${q(input?.agentId, {
@@ -959,7 +959,7 @@ export class MemongoClient {
 	async getJob(input: {
 		jobId: string
 		agentId?: string
-	}): Promise<MemongoMemoryJob | null> {
+	}): Promise<MbrainMemoryJob | null> {
 		return apiGet(
 			this._opts,
 			`/v1/jobs/${encodeURIComponent(input.jobId)}${q(input.agentId)}`,
@@ -967,8 +967,8 @@ export class MemongoClient {
 	}
 
 	async traceChain(
-		input: MemongoTraceChainInput,
-	): Promise<MemongoTraceChainResponse> {
+		input: MbrainTraceChainInput,
+	): Promise<MbrainTraceChainResponse> {
 		return apiPost(this._opts, "/v1/chain-trace", {
 			factId: input.factId,
 			collection: input.collection,
@@ -978,8 +978,8 @@ export class MemongoClient {
 	}
 
 	async scanNovelty(
-		input?: MemongoScanNoveltyInput,
-	): Promise<MemongoNoveltyResponse> {
+		input?: MbrainScanNoveltyInput,
+	): Promise<MbrainNoveltyResponse> {
 		return apiPost(this._opts, "/v1/novelty-scan", {
 			agentId: input?.agentId,
 			limit: input?.limit,
@@ -988,8 +988,8 @@ export class MemongoClient {
 	}
 
 	async consolidate(
-		input?: MemongoConsolidateInput,
-	): Promise<MemongoConsolidateResponse> {
+		input?: MbrainConsolidateInput,
+	): Promise<MbrainConsolidateResponse> {
 		return apiPost(this._opts, "/v1/consolidate", {
 			agentId: input?.agentId,
 			maxEvents: input?.maxEvents,
@@ -998,9 +998,7 @@ export class MemongoClient {
 		})
 	}
 
-	async selfEdit(
-		input: MemongoSelfEditInput,
-	): Promise<MemongoSelfEditResponse> {
+	async selfEdit(input: MbrainSelfEditInput): Promise<MbrainSelfEditResponse> {
 		return apiPost(this._opts, "/v1/self-edit", {
 			block: input.block,
 			action: input.action,
@@ -1011,7 +1009,7 @@ export class MemongoClient {
 }
 
 function normalizeMetadata(
-	meta: MemongoAddInput["metadata"],
+	meta: MbrainAddInput["metadata"],
 ): Record<string, unknown> | undefined {
 	if (!meta) {
 		return undefined

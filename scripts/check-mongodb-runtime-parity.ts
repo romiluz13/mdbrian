@@ -5,7 +5,7 @@ import {
 	isSearchIndexQueryable,
 	type SearchIndexDescription,
 } from "../packages/memory-engine/src/mongodb-schema.ts"
-import type { MemoryMongoDBDeploymentProfile } from "@memongo/lib"
+import type { MemoryMongoDBDeploymentProfile } from "@mbrain/lib"
 
 type RuntimeInput = {
 	name: string
@@ -54,9 +54,9 @@ function runtimeKind(
 
 function readRuntimeInputs(): RuntimeInput[] {
 	const inputs: RuntimeInput[] = []
-	const cloudUri = process.env.MEMONGO_CLOUD_MONGODB_URI?.trim()
-	const localUri = process.env.MEMONGO_LOCAL_MONGODB_URI?.trim()
-	const activeUri = process.env.MEMONGO_MONGODB_URI?.trim()
+	const cloudUri = process.env.MBRAIN_CLOUD_MONGODB_URI?.trim()
+	const localUri = process.env.MBRAIN_LOCAL_MONGODB_URI?.trim()
+	const activeUri = process.env.MBRAIN_MONGODB_URI?.trim()
 
 	if (cloudUri) {
 		inputs.push({
@@ -107,14 +107,14 @@ function parseNonNegativeInteger(
 function readWaitOptions(): RuntimeParityWaitOptions {
 	return {
 		waitMs: parseNonNegativeInteger(
-			readArgValue("--wait-ms") ?? process.env.MEMONGO_PARITY_WAIT_MS,
+			readArgValue("--wait-ms") ?? process.env.MBRAIN_PARITY_WAIT_MS,
 			0,
-			"--wait-ms/MEMONGO_PARITY_WAIT_MS",
+			"--wait-ms/MBRAIN_PARITY_WAIT_MS",
 		),
 		pollMs: parseNonNegativeInteger(
-			readArgValue("--poll-ms") ?? process.env.MEMONGO_PARITY_POLL_MS,
+			readArgValue("--poll-ms") ?? process.env.MBRAIN_PARITY_POLL_MS,
 			5000,
-			"--poll-ms/MEMONGO_PARITY_POLL_MS",
+			"--poll-ms/MBRAIN_PARITY_POLL_MS",
 		),
 	}
 }
@@ -147,11 +147,11 @@ async function listSearchIndexes(
 }
 
 async function inspectRuntime(input: RuntimeInput): Promise<RuntimeReport> {
-	const database = process.env.MEMONGO_PARITY_DATABASE?.trim() || "memongo"
+	const database = process.env.MBRAIN_PARITY_DATABASE?.trim() || "mbrain"
 	const prefix =
-		process.env.MEMONGO_PARITY_COLLECTION_PREFIX?.trim() || "memongo_default_"
+		process.env.MBRAIN_PARITY_COLLECTION_PREFIX?.trim() || "mbrain_default_"
 	const client = new MongoClient(input.uri, {
-		appName: "memongo-runtime-parity-check",
+		appName: "mbrain-runtime-parity-check",
 		serverSelectionTimeoutMS: 10_000,
 	})
 	try {
@@ -262,7 +262,7 @@ function renderText(reports: RuntimeReport[]): string {
 		return [
 			"mongodb:parity FAIL",
 			"no runtimes configured",
-			"set MEMONGO_CLOUD_MONGODB_URI, MEMONGO_LOCAL_MONGODB_URI, or MEMONGO_MONGODB_URI",
+			"set MBRAIN_CLOUD_MONGODB_URI, MBRAIN_LOCAL_MONGODB_URI, or MBRAIN_MONGODB_URI",
 		].join("\n")
 	}
 

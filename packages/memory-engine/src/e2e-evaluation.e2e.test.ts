@@ -3,10 +3,10 @@
  * against 3 real-world scenarios with 450+ seeded events.
  *
  * Run (from packages/memory-engine):
- *   MEMONGO_MONGODB_URI="mongodb://localhost:27017" vitest run src/e2e-evaluation.e2e.test.ts --reporter=verbose
+ *   MBRAIN_MONGODB_URI="mongodb://localhost:27017" vitest run src/e2e-evaluation.e2e.test.ts --reporter=verbose
  *
  * Or from repo root:
- *   MEMONGO_MONGODB_URI="mongodb://localhost:27017" bun run --filter @memongo/memory-engine test:e2e
+ *   MBRAIN_MONGODB_URI="mongodb://localhost:27017" bun run --filter @mbrain/memory-engine test:e2e
  *
  * 10-Dimension Score Card:
  *   1. Chain Completeness (15%)
@@ -50,7 +50,7 @@ import { resolvePreviewMongoTestUri } from "./test-helpers/preview-env.js"
 // ---------------------------------------------------------------------------
 
 const TEST_URI = resolvePreviewMongoTestUri("mongodb://localhost:27017")
-const TEST_DB = "memongo_evaluation"
+const TEST_DB = "mbrain_evaluation"
 const TEST_PREFIX = "eval_"
 
 // ---------------------------------------------------------------------------
@@ -274,7 +274,7 @@ beforeAll(async () => {
 afterAll(async () => {
 	// Print score card
 	console.log("\n===================================================")
-	console.log("=== MEMONGO E2E EVALUATION SCORE CARD ===")
+	console.log("=== MBRAIN E2E EVALUATION SCORE CARD ===")
 	console.log("===================================================\n")
 	for (const [dim, score] of Object.entries(scores)) {
 		const pad = dim.padEnd(28)

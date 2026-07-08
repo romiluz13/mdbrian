@@ -1,7 +1,7 @@
 import { createHash, randomUUID } from "node:crypto"
 import { readFile } from "node:fs/promises"
 import type { Db } from "mongodb"
-import { createSubsystemLogger } from "@memongo/lib"
+import { createSubsystemLogger } from "@mbrain/lib"
 import type { ResolvedMongoDBConfig } from "./backend-config.js"
 import type { DetectedCapabilities } from "./mongodb-schema.js"
 import {

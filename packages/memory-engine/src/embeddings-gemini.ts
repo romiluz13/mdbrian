@@ -1,4 +1,4 @@
-import { requireApiKey, type SsrFPolicy } from "@memongo/lib"
+import { requireApiKey, type SsrFPolicy } from "@mbrain/lib"
 
 function parseGeminiAuth(apiKey: string): { headers: Record<string, string> } {
 	if (apiKey.startsWith("{")) {

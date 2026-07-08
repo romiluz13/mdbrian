@@ -1,5 +1,5 @@
-const BASE = process.env.MEMONGO_API_URL ?? "http://127.0.0.1:3847"
-const API_KEY = process.env.MEMONGO_API_KEY ?? ""
+const BASE = process.env.MBRAIN_API_URL ?? "http://127.0.0.1:3847"
+const API_KEY = process.env.MBRAIN_API_KEY ?? ""
 
 type PhaseResult = {
 	name: string
@@ -677,7 +677,7 @@ async function phase4Endurance(): Promise<
 
 async function main() {
 	console.log("╔══════════════════════════════════════════════╗")
-	console.log("║     MEMONGO REAL RUNTIME STRESS TEST         ║")
+	console.log("║     MBRAIN REAL RUNTIME STRESS TEST         ║")
 	console.log("╠══════════════════════════════════════════════╣")
 	console.log(`║ Target: ${BASE}`)
 	console.log(`║ Time:   ${new Date().toISOString()}`)
@@ -698,7 +698,7 @@ async function main() {
 	const allLatencies = p4.latencies
 
 	console.log("\n╔══════════════════════════════════════════════════════════╗")
-	console.log("║          MEMONGO STRESS TEST REPORT                     ║")
+	console.log("║          MBRAIN STRESS TEST REPORT                     ║")
 	console.log("╠══════════════════════════════════════════════════════════╣")
 	console.log(
 		`║ ${p1.name.padEnd(22)} ${String(p1.passed).padStart(3)}/${String(p1.passed + p1.failed).padStart(3)} passed  avg ${String(p1.avgMs).padStart(5)}ms`,

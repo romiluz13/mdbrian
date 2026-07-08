@@ -1,17 +1,17 @@
 {
-	"name": "@memongo/memory",
+	"name": "@mbrain/memory",
 	"version": "1.1.0",
-	"description": "Memongo memory: published re-export surface for the memory engine and bridge",
+	"description": "Mbrain memory: published re-export surface for the memory engine and bridge",
 	"type": "module",
 	"license": "Apache-2.0",
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/romiluz13/memongo.git",
-		"directory": "packages/memongo-memory"
+		"url": "git+https://github.com/romiluz13/mbrain.git",
+		"directory": "packages/mbrain-memory"
 	},
 	"author": "Rom Iluz",
 	"keywords": [
-		"memongo",
+		"mbrain",
 		"memory",
 		"mongodb",
 		"agent-memory"
@@ -33,14 +33,14 @@
 		"check-types": "node ../../node_modules/typescript/bin/tsc --noEmit -p tsconfig.json"
 	},
 	"dependencies": {
-		"@memongo/memory-engine": "1.1.0",
-		"@memongo/memory-bridge": "1.1.0"
+		"@mbrain/memory-engine": "1.1.0",
+		"@mbrain/memory-bridge": "1.1.0"
 	},
 	"devDependencies": {
 		"typescript": "^5.8.0"
 	},
-	"homepage": "https://github.com/romiluz13/memongo#readme",
+	"homepage": "https://github.com/romiluz13/mbrain#readme",
 	"bugs": {
-		"url": "https://github.com/romiluz13/memongo/issues"
+		"url": "https://github.com/romiluz13/mbrain/issues"
 	}
 }

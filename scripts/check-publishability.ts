@@ -31,32 +31,32 @@ const rootDir = process.cwd()
 const publishablePackages: PublishablePackage[] = [
 	{
 		dir: "packages/lib",
-		name: "@memongo/lib",
+		name: "@mbrain/lib",
 		supportedSurface: false,
 	},
 	{
 		dir: "packages/memory-engine",
-		name: "@memongo/memory-engine",
+		name: "@mbrain/memory-engine",
 		supportedSurface: true,
 	},
 	{
 		dir: "packages/memory-bridge",
-		name: "@memongo/memory-bridge",
+		name: "@mbrain/memory-bridge",
 		supportedSurface: true,
 	},
 	{
-		dir: "packages/memongo-memory",
-		name: "@memongo/memory",
+		dir: "packages/mbrain-memory",
+		name: "@mbrain/memory",
 		supportedSurface: true,
 	},
 	{
 		dir: "packages/client",
-		name: "@memongo/client",
+		name: "@mbrain/client",
 		supportedSurface: true,
 	},
 	{
 		dir: "packages/tools",
-		name: "@memongo/tools",
+		name: "@mbrain/tools",
 		supportedSurface: true,
 	},
 ] as const
@@ -81,10 +81,10 @@ const forbiddenTarballPatterns = [
 	/^tsconfig\.json$/,
 ] as const
 const forbiddenPrivateDeps = new Set([
-	"@memongo/api",
-	"@memongo/mcp",
-	"@memongo/web",
-	"@memongo/docs",
+	"@mbrain/api",
+	"@mbrain/mcp",
+	"@mbrain/web",
+	"@mbrain/docs",
 ])
 
 function fail(message: string): never {
@@ -312,7 +312,7 @@ function installSmoke(
 	tarballsByName: Map<string, string>,
 ) {
 	const installDir = fs.mkdtempSync(
-		path.join(os.tmpdir(), "memongo-pack-smoke-"),
+		path.join(os.tmpdir(), "mbrain-pack-smoke-"),
 	)
 	const dependencies = Object.fromEntries(
 		Array.from(tarballsByName.entries()).map(([name, tarballPath]) => [
@@ -321,7 +321,7 @@ function installSmoke(
 		]),
 	)
 
-	if (targetPackage.name === "@memongo/tools") {
+	if (targetPackage.name === "@mbrain/tools") {
 		dependencies.ai = "^5.0.0"
 	}
 
@@ -329,7 +329,7 @@ function installSmoke(
 		path.join(installDir, "package.json"),
 		JSON.stringify(
 			{
-				name: "memongo-pack-smoke",
+				name: "mbrain-pack-smoke",
 				private: true,
 				type: "module",
 				dependencies,
@@ -361,7 +361,7 @@ function main() {
 	checkRemovedPaths()
 	checkPublishWorkflow()
 
-	const packDir = fs.mkdtempSync(path.join(os.tmpdir(), "memongo-packs-"))
+	const packDir = fs.mkdtempSync(path.join(os.tmpdir(), "mbrain-packs-"))
 	const tarballs = publishablePackages.map((packageSpec) =>
 		checkPackage(packageSpec, packDir),
 	)

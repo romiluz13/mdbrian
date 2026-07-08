@@ -1,6 +1,6 @@
-# Publishing `@memongo/*` packages
+# Publishing `@mbrain/*` packages
 
-This monorepo uses the `@memongo` npm scope. Publishing is maintainer-operated; the repo root is `private: true` and does not publish itself.
+This monorepo uses the `@mbrain` npm scope. Publishing is maintainer-operated; the repo root is `private: true` and does not publish itself.
 
 ## Before you publish anything
 
@@ -8,19 +8,19 @@ This monorepo uses the `@memongo` npm scope. Publishing is maintainer-operated; 
 2. Confirm no secrets in the working tree.
 3. Bump semver in the package(s) you ship; tag releases in git to match.
 4. Configure `NPM_TOKEN` as a GitHub Actions secret with publish access to the
-   `@memongo` npm scope.
+   `@mbrain` npm scope.
 
 ## Which packages are intended for npm
 
 | Package | Name | Typical consumers |
 |---------|------|-------------------|
-| Engine | `@memongo/memory-engine` | Advanced integrations |
-| Bridge | `@memongo/memory-bridge` | API and custom servers |
-| Barrel | `@memongo/memory` (`packages/memongo-memory`) | Single import for engine + bridge |
-| Client | `@memongo/client` | Apps using the HTTP API |
-| Tools | `@memongo/tools` | Vercel AI SDK tool helpers |
+| Engine | `@mbrain/memory-engine` | Advanced integrations |
+| Bridge | `@mbrain/memory-bridge` | API and custom servers |
+| Barrel | `@mbrain/memory` (`packages/mbrain-memory`) | Single import for engine + bridge |
+| Client | `@mbrain/client` | Apps using the HTTP API |
+| Tools | `@mbrain/tools` | Vercel AI SDK tool helpers |
 
-`@memongo/lib` is also published as a runtime support package because the engine and bridge depend on it, but it is not a primary integration surface.
+`@mbrain/lib` is also published as a runtime support package because the engine and bridge depend on it, but it is not a primary integration surface.
 
 ## Publish mechanics
 
@@ -48,19 +48,19 @@ policy.
 
 ## Recommended publish order
 
-When shipping the coordinated `@memongo/*` package set, publish in dependency
+When shipping the coordinated `@mbrain/*` package set, publish in dependency
 order so install smoke and downstream resolution stay clean:
 
-1. `@memongo/lib`
-2. `@memongo/memory-engine`
-3. `@memongo/memory-bridge`
-4. `@memongo/memory`
-5. `@memongo/client`
-6. `@memongo/tools`
+1. `@mbrain/lib`
+2. `@mbrain/memory-engine`
+3. `@mbrain/memory-bridge`
+4. `@mbrain/memory`
+5. `@mbrain/client`
+6. `@mbrain/tools`
 
 ## Docker
 
-There is no single Memongo all-in-one image in-tree as of this writing. Production deployments typically:
+There is no single Mbrain all-in-one image in-tree as of this writing. Production deployments typically:
 
 - Run MongoDB.
 - Run `apps/api` as a container or process behind a reverse proxy.
@@ -70,7 +70,7 @@ See [self-host.md](self-host.md).
 
 ## Scope and naming
 
-- Do not publish under legacy `@romiluz/*` names for new releases; this repo standardizes on `@memongo/*`.
+- Do not publish under legacy `@romiluz/*` names for new releases; this repo standardizes on `@mbrain/*`.
 - Historical material is kept outside the public launch tree.
 
 ## Related docs

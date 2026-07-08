@@ -7,7 +7,7 @@ const LOCAL_WORKFLOW_ARTIFACT_SEGMENTS = [
 	"cc10x",
 	"v10",
 	"workflows",
-	"memongo-memory-hardening",
+	"mbrain-memory-hardening",
 	"artifacts",
 ] as const
 
@@ -21,7 +21,7 @@ export function resolveProofArtifactDir(params?: {
 }): string | null {
 	const cwd = params?.cwd ?? process.cwd()
 	const env = params?.env ?? process.env
-	const configuredDir = env.MEMONGO_PROOF_ARTIFACT_DIR?.trim()
+	const configuredDir = env.MBRAIN_PROOF_ARTIFACT_DIR?.trim()
 	if (configuredDir) {
 		return path.isAbsolute(configuredDir)
 			? configuredDir

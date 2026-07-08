@@ -1,6 +1,6 @@
-import type { MemongoClient } from "@memongo/client"
+import type { MbrainClient } from "@mbrain/client"
 /**
- * Vercel AI SDK–compatible tool definitions that call the Memongo HTTP API
+ * Vercel AI SDK–compatible tool definitions that call the Mbrain HTTP API
  * (same integration role as @supermemory/tools).
  */
 import { tool, type Tool } from "ai"
@@ -10,7 +10,7 @@ import { z } from "zod"
 /*  SDK middleware re-exports                                          */
 /* ------------------------------------------------------------------ */
 
-export { withMemongo, type MemongoCoreOptions } from "./vercel/index.js"
+export { withMbrain, type MbrainCoreOptions } from "./vercel/index.js"
 export { createOpenAIMiddleware } from "./openai/index.js"
 
 const searchSchema = z.object({
@@ -305,20 +305,20 @@ const accessSummariesSchema = z.object({
 	windowDays: z.number().int().positive().optional(),
 })
 
-export type MemongoToolSet = Record<string, Tool>
+export type MbrainToolSet = Record<string, Tool>
 
-export function createMemongoTools(client: MemongoClient): MemongoToolSet {
+export function createMbrainTools(client: MbrainClient): MbrainToolSet {
 	return {
-		memongo_search: tool({
-			description: "Search Memongo memory (MongoDB-backed hybrid retrieval).",
+		mbrain_search: tool({
+			description: "Search Mbrain memory (MongoDB-backed hybrid retrieval).",
 			inputSchema: searchSchema,
 			execute: async (input) => {
 				const { results } = await client.search(input)
 				return { results }
 			},
 		}),
-		memongo_search_kb: tool({
-			description: "Search Memongo knowledge base chunks only.",
+		mbrain_search_kb: tool({
+			description: "Search Mbrain knowledge base chunks only.",
 			inputSchema: searchKbSchema,
 			execute: async (input) => {
 				const { results } = await client.searchKB({
@@ -329,81 +329,81 @@ export function createMemongoTools(client: MemongoClient): MemongoToolSet {
 				return { results }
 			},
 		}),
-		memongo_read_file: tool({
+		mbrain_read_file: tool({
 			description:
 				"Read a memory file path or structured: URI (memory_get parity).",
 			inputSchema: readFileSchema,
 			execute: async (input) => client.readFile(input),
 		}),
-		memongo_add: tool({
+		mbrain_add: tool({
 			description: "Append a user message to conversational memory.",
 			inputSchema: addSchema,
 			execute: async (input) => client.add(input),
 		}),
-		memongo_write_event: tool({
+		mbrain_write_event: tool({
 			description: "Write a full conversation event (any role).",
 			inputSchema: writeEventSchema,
 			execute: async (input) => client.writeEvent(input),
 		}),
-		memongo_profile: tool({
-			description: "Synthesize a profile from Memongo memory.",
+		mbrain_profile: tool({
+			description: "Synthesize a profile from Mbrain memory.",
 			inputSchema: profileSchema,
 			execute: async (input) => client.profile(input),
 		}),
-		memongo_build_context_bundle: tool({
+		mbrain_build_context_bundle: tool({
 			description:
-				"Build a prompt-ready Memongo context bundle from durable memory and recent events.",
+				"Build a prompt-ready Mbrain context bundle from durable memory and recent events.",
 			inputSchema: contextBundleSchema,
 			execute: async (input) => client.buildContextBundle(input),
 		}),
-		memongo_recall_conversation: tool({
+		mbrain_recall_conversation: tool({
 			description:
 				"Search past conversation messages by content, session, role, and exact time range. Use ISO 8601 timestamps; date-only values should include timezone when local day boundaries matter.",
 			inputSchema: recallConversationSchema,
 			execute: async (input) => client.recallConversation(input),
 		}),
-		memongo_lifecycle_get: tool({
+		mbrain_lifecycle_get: tool({
 			description:
 				"Get the current structured memory or procedure referenced by a stable lifecycle handle.",
 			inputSchema: lifecycleGetSchema,
 			execute: async (input) => client.getLifecycleItem(input),
 		}),
-		memongo_lifecycle_update: tool({
+		mbrain_lifecycle_update: tool({
 			description:
 				"Update a structured memory or procedure via its stable lifecycle handle. Reuses revision history instead of overwriting in place.",
 			inputSchema: lifecycleUpdateSchema,
 			execute: async (input) => client.updateLifecycleItem(input),
 		}),
-		memongo_lifecycle_delete: tool({
+		mbrain_lifecycle_delete: tool({
 			description:
-				"Delete a memory item using Memongo lifecycle semantics. This invalidates the current version and preserves history instead of hard-deleting it.",
+				"Delete a memory item using Mbrain lifecycle semantics. This invalidates the current version and preserves history instead of hard-deleting it.",
 			inputSchema: lifecycleDeleteSchema,
 			execute: async (input) => client.deleteLifecycleItem(input),
 		}),
-		memongo_lifecycle_history: tool({
+		mbrain_lifecycle_history: tool({
 			description:
 				"Fetch ordered revision history for a structured memory or procedure from its stable lifecycle handle.",
 			inputSchema: lifecycleHistorySchema,
 			execute: async (input) => client.getLifecycleHistory(input),
 		}),
-		memongo_procedure_outcome: tool({
+		mbrain_procedure_outcome: tool({
 			description:
 				"Record whether a procedure succeeded or failed using its stable handle. Updates success/failure counters without bypassing the canonical procedure record.",
 			inputSchema: procedureOutcomeSchema,
 			execute: async (input) => client.reportProcedureOutcome(input),
 		}),
-		memongo_memory_feedback: tool({
+		mbrain_memory_feedback: tool({
 			description:
 				"Apply confirm/correct/irrelevant feedback to a structured memory using its stable handle. Confirm reinforces, correct routes through revision-aware updates, and irrelevant invalidates with history.",
 			inputSchema: memoryFeedbackSchema,
 			execute: async (input) => client.applyMemoryFeedback(input),
 		}),
-		memongo_status: tool({
+		mbrain_status: tool({
 			description: "Memory provider status (model, backend, health).",
 			inputSchema: statusSchema,
 			execute: async (input) => client.status(input.agentId),
 		}),
-		memongo_chain_trace: tool({
+		mbrain_chain_trace: tool({
 			description:
 				"Trace the provenance chain of a derived fact back to source events.",
 			inputSchema: z.object({
@@ -414,7 +414,7 @@ export function createMemongoTools(client: MemongoClient): MemongoToolSet {
 			}),
 			execute: async (input) => client.traceChain(input),
 		}),
-		memongo_novelty_scan: tool({
+		mbrain_novelty_scan: tool({
 			description:
 				"Scan for the most novel/surprising events using vector distance scoring.",
 			inputSchema: z.object({
@@ -424,7 +424,7 @@ export function createMemongoTools(client: MemongoClient): MemongoToolSet {
 			}),
 			execute: async (input) => client.scanNovelty(input),
 		}),
-		memongo_consolidate: tool({
+		mbrain_consolidate: tool({
 			description:
 				"Run consolidation pipeline to promote high-value events to structured facts.",
 			inputSchema: z.object({
@@ -435,7 +435,7 @@ export function createMemongoTools(client: MemongoClient): MemongoToolSet {
 			}),
 			execute: async (input) => client.consolidate(input),
 		}),
-		memongo_self_edit: tool({
+		mbrain_self_edit: tool({
 			description:
 				"Edit your own core memory blocks directly. Use 'user' for user preferences/profile, 'persona' for your identity/behavior, 'instructions' for task instructions. Changes persist across sessions.",
 			inputSchema: z.object({
@@ -446,7 +446,7 @@ export function createMemongoTools(client: MemongoClient): MemongoToolSet {
 			}),
 			execute: async (input) => client.selfEdit(input),
 		}),
-		memongo_state_unified: tool({
+		mbrain_state_unified: tool({
 			description:
 				"Get all three state surfaces (profile, blocks, bundle) in one call.",
 			inputSchema: z.object({
@@ -458,31 +458,31 @@ export function createMemongoTools(client: MemongoClient): MemongoToolSet {
 			}),
 			execute: async (input) => client.state(input),
 		}),
-		memongo_benchmark_ingest: tool({
+		mbrain_benchmark_ingest: tool({
 			description:
 				"Replay a benchmark conversation dataset through the canonical writeConversationEvent() pipeline.",
 			inputSchema: benchmarkIngestSchema,
 			execute: async (input) => client.benchmarkIngest(input),
 		}),
-		memongo_import_conversations: tool({
+		mbrain_import_conversations: tool({
 			description:
 				"Import conversation history through the canonical writeConversationEvent() pipeline.",
 			inputSchema: conversationImportSchema,
 			execute: async (input) => client.importConversations(input),
 		}),
-		memongo_admin_access_trends: tool({
+		mbrain_admin_access_trends: tool({
 			description:
 				"Inspect rolling 7-day access trends from the access_events time series collection.",
 			inputSchema: accessTrendsSchema,
 			execute: async (input) => client.accessTrends(input),
 		}),
-		memongo_admin_access_summaries: tool({
+		mbrain_admin_access_summaries: tool({
 			description:
 				"Inspect aggregate access counts and last-access timestamps from the access_events time series collection.",
 			inputSchema: accessSummariesSchema,
 			execute: async (input) => client.accessSummaries(input),
 		}),
-		memongo_admin_list_traces: tool({
+		mbrain_admin_list_traces: tool({
 			description: "List recent recall traces for operator debugging.",
 			inputSchema: z.object({
 				agentId: z.string().optional(),
@@ -490,7 +490,7 @@ export function createMemongoTools(client: MemongoClient): MemongoToolSet {
 			}),
 			execute: async (input) => client.listRecallTraces(input),
 		}),
-		memongo_admin_get_trace: tool({
+		mbrain_admin_get_trace: tool({
 			description: "Fetch one recall trace by traceId.",
 			inputSchema: z.object({
 				traceId: z.string().min(1),
@@ -498,7 +498,7 @@ export function createMemongoTools(client: MemongoClient): MemongoToolSet {
 			}),
 			execute: async (input) => client.getRecallTrace(input),
 		}),
-		memongo_list_jobs: tool({
+		mbrain_list_jobs: tool({
 			description: "List memory background jobs for an agent.",
 			inputSchema: z.object({
 				agentId: z.string().optional(),
@@ -518,7 +518,7 @@ export function createMemongoTools(client: MemongoClient): MemongoToolSet {
 			}),
 			execute: async (input) => client.listJobs(input),
 		}),
-		memongo_get_job: tool({
+		mbrain_get_job: tool({
 			description: "Fetch one memory job by jobId.",
 			inputSchema: z.object({
 				jobId: z.string().min(1),

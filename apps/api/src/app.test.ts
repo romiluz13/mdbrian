@@ -2,52 +2,52 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import contractFixtures from "./__fixtures__/contract-fixtures.js"
 
 const bridgeMocks = vi.hoisted(() => ({
-	memongoBridgeAdd: vi.fn(),
-	memongoBridgeAccessSummaries: vi.fn(),
-	memongoBridgeAccessTrends: vi.fn(),
-	memongoBridgeBenchmarkIngest: vi.fn(),
-	memongoBridgeImportConversations: vi.fn(),
-	memongoBridgeBuildContextBundle: vi.fn(),
-	memongoBridgeBuildDiscoveryProjection: vi.fn(),
-	memongoBridgeDeleteLifecycleItem: vi.fn(),
-	memongoBridgeApplyMemoryFeedback: vi.fn(),
-	memongoBridgeGetState: vi.fn(),
-	memongoBridgeGetDetailedStatus: vi.fn(),
-	memongoBridgeExtractEvent: vi.fn(),
-	memongoBridgeGetLifecycleHistory: vi.fn(),
-	memongoBridgeGetLifecycleItem: vi.fn(),
-	memongoBridgeGetMemoryJob: vi.fn(),
-	memongoBridgeGetRecallTrace: vi.fn(),
-	memongoBridgeHydrateActiveSlate: vi.fn(),
-	memongoBridgeListMemoryJobs: vi.fn(),
-	memongoBridgeListRecallTraces: vi.fn(),
-	memongoBridgeProbeEmbedding: vi.fn(),
-	memongoBridgeProbeVector: vi.fn(),
-	memongoBridgeProfile: vi.fn(),
-	memongoBridgeRecallConversation: vi.fn(),
-	memongoBridgeReadFile: vi.fn(),
-	memongoBridgeRelevanceBenchmark: vi.fn(),
-	memongoBridgeRelevanceExplain: vi.fn(),
-	memongoBridgeRelevanceReport: vi.fn(),
-	memongoBridgeRelevanceSampleRate: vi.fn(),
-	memongoBridgeSearch: vi.fn(),
-	memongoBridgeSearchDetailed: vi.fn(),
-	memongoBridgeSearchKB: vi.fn(),
-	memongoBridgeStats: vi.fn(),
-	memongoBridgeStatus: vi.fn(),
-	memongoBridgeSync: vi.fn(),
-	memongoBridgeUpdateLifecycleItem: vi.fn(),
-	memongoBridgeReportProcedureOutcome: vi.fn(),
-	memongoBridgeWriteConversationEvent: vi.fn(),
-	memongoBridgeWriteProcedure: vi.fn(),
-	memongoBridgeWriteStructuredMemory: vi.fn(),
-	memongoBridgeTraceChain: vi.fn(),
-	memongoBridgeScanNovelty: vi.fn(),
-	memongoBridgeConsolidate: vi.fn(),
-	memongoBridgeSelfEdit: vi.fn(),
+	mbrainBridgeAdd: vi.fn(),
+	mbrainBridgeAccessSummaries: vi.fn(),
+	mbrainBridgeAccessTrends: vi.fn(),
+	mbrainBridgeBenchmarkIngest: vi.fn(),
+	mbrainBridgeImportConversations: vi.fn(),
+	mbrainBridgeBuildContextBundle: vi.fn(),
+	mbrainBridgeBuildDiscoveryProjection: vi.fn(),
+	mbrainBridgeDeleteLifecycleItem: vi.fn(),
+	mbrainBridgeApplyMemoryFeedback: vi.fn(),
+	mbrainBridgeGetState: vi.fn(),
+	mbrainBridgeGetDetailedStatus: vi.fn(),
+	mbrainBridgeExtractEvent: vi.fn(),
+	mbrainBridgeGetLifecycleHistory: vi.fn(),
+	mbrainBridgeGetLifecycleItem: vi.fn(),
+	mbrainBridgeGetMemoryJob: vi.fn(),
+	mbrainBridgeGetRecallTrace: vi.fn(),
+	mbrainBridgeHydrateActiveSlate: vi.fn(),
+	mbrainBridgeListMemoryJobs: vi.fn(),
+	mbrainBridgeListRecallTraces: vi.fn(),
+	mbrainBridgeProbeEmbedding: vi.fn(),
+	mbrainBridgeProbeVector: vi.fn(),
+	mbrainBridgeProfile: vi.fn(),
+	mbrainBridgeRecallConversation: vi.fn(),
+	mbrainBridgeReadFile: vi.fn(),
+	mbrainBridgeRelevanceBenchmark: vi.fn(),
+	mbrainBridgeRelevanceExplain: vi.fn(),
+	mbrainBridgeRelevanceReport: vi.fn(),
+	mbrainBridgeRelevanceSampleRate: vi.fn(),
+	mbrainBridgeSearch: vi.fn(),
+	mbrainBridgeSearchDetailed: vi.fn(),
+	mbrainBridgeSearchKB: vi.fn(),
+	mbrainBridgeStats: vi.fn(),
+	mbrainBridgeStatus: vi.fn(),
+	mbrainBridgeSync: vi.fn(),
+	mbrainBridgeUpdateLifecycleItem: vi.fn(),
+	mbrainBridgeReportProcedureOutcome: vi.fn(),
+	mbrainBridgeWriteConversationEvent: vi.fn(),
+	mbrainBridgeWriteProcedure: vi.fn(),
+	mbrainBridgeWriteStructuredMemory: vi.fn(),
+	mbrainBridgeTraceChain: vi.fn(),
+	mbrainBridgeScanNovelty: vi.fn(),
+	mbrainBridgeConsolidate: vi.fn(),
+	mbrainBridgeSelfEdit: vi.fn(),
 }))
 
-vi.mock("@memongo/memory-bridge", () => bridgeMocks)
+vi.mock("@mbrain/memory-bridge", () => bridgeMocks)
 
 import { createApp } from "./app.js"
 
@@ -56,38 +56,38 @@ describe("createApp", () => {
 
 	beforeEach(() => {
 		process.env = { ...prevEnv }
-		bridgeMocks.memongoBridgeSearch.mockReset()
-		bridgeMocks.memongoBridgeSearchDetailed.mockReset()
-		bridgeMocks.memongoBridgeAdd.mockReset()
-		bridgeMocks.memongoBridgeAccessSummaries.mockReset()
-		bridgeMocks.memongoBridgeAccessTrends.mockReset()
-		bridgeMocks.memongoBridgeBenchmarkIngest.mockReset()
-		bridgeMocks.memongoBridgeImportConversations.mockReset()
-		bridgeMocks.memongoBridgeBuildContextBundle.mockReset()
-		bridgeMocks.memongoBridgeBuildDiscoveryProjection.mockReset()
-		bridgeMocks.memongoBridgeDeleteLifecycleItem.mockReset()
-		bridgeMocks.memongoBridgeApplyMemoryFeedback.mockReset()
-		bridgeMocks.memongoBridgeExtractEvent.mockReset()
-		bridgeMocks.memongoBridgeGetLifecycleHistory.mockReset()
-		bridgeMocks.memongoBridgeGetLifecycleItem.mockReset()
-		bridgeMocks.memongoBridgeGetState.mockReset()
-		bridgeMocks.memongoBridgeGetMemoryJob.mockReset()
-		bridgeMocks.memongoBridgeGetRecallTrace.mockReset()
-		bridgeMocks.memongoBridgeProfile.mockReset()
-		bridgeMocks.memongoBridgeRecallConversation.mockReset()
-		bridgeMocks.memongoBridgeListMemoryJobs.mockReset()
-		bridgeMocks.memongoBridgeListRecallTraces.mockReset()
-		bridgeMocks.memongoBridgeRelevanceBenchmark.mockReset()
-		bridgeMocks.memongoBridgeStatus.mockReset()
-		bridgeMocks.memongoBridgeTraceChain.mockReset()
-		bridgeMocks.memongoBridgeScanNovelty.mockReset()
-		bridgeMocks.memongoBridgeConsolidate.mockReset()
-		bridgeMocks.memongoBridgeSelfEdit.mockReset()
-		bridgeMocks.memongoBridgeUpdateLifecycleItem.mockReset()
-		bridgeMocks.memongoBridgeReportProcedureOutcome.mockReset()
-		bridgeMocks.memongoBridgeWriteConversationEvent.mockReset()
-		bridgeMocks.memongoBridgeSearch.mockResolvedValue([])
-		bridgeMocks.memongoBridgeSearchDetailed.mockResolvedValue({
+		bridgeMocks.mbrainBridgeSearch.mockReset()
+		bridgeMocks.mbrainBridgeSearchDetailed.mockReset()
+		bridgeMocks.mbrainBridgeAdd.mockReset()
+		bridgeMocks.mbrainBridgeAccessSummaries.mockReset()
+		bridgeMocks.mbrainBridgeAccessTrends.mockReset()
+		bridgeMocks.mbrainBridgeBenchmarkIngest.mockReset()
+		bridgeMocks.mbrainBridgeImportConversations.mockReset()
+		bridgeMocks.mbrainBridgeBuildContextBundle.mockReset()
+		bridgeMocks.mbrainBridgeBuildDiscoveryProjection.mockReset()
+		bridgeMocks.mbrainBridgeDeleteLifecycleItem.mockReset()
+		bridgeMocks.mbrainBridgeApplyMemoryFeedback.mockReset()
+		bridgeMocks.mbrainBridgeExtractEvent.mockReset()
+		bridgeMocks.mbrainBridgeGetLifecycleHistory.mockReset()
+		bridgeMocks.mbrainBridgeGetLifecycleItem.mockReset()
+		bridgeMocks.mbrainBridgeGetState.mockReset()
+		bridgeMocks.mbrainBridgeGetMemoryJob.mockReset()
+		bridgeMocks.mbrainBridgeGetRecallTrace.mockReset()
+		bridgeMocks.mbrainBridgeProfile.mockReset()
+		bridgeMocks.mbrainBridgeRecallConversation.mockReset()
+		bridgeMocks.mbrainBridgeListMemoryJobs.mockReset()
+		bridgeMocks.mbrainBridgeListRecallTraces.mockReset()
+		bridgeMocks.mbrainBridgeRelevanceBenchmark.mockReset()
+		bridgeMocks.mbrainBridgeStatus.mockReset()
+		bridgeMocks.mbrainBridgeTraceChain.mockReset()
+		bridgeMocks.mbrainBridgeScanNovelty.mockReset()
+		bridgeMocks.mbrainBridgeConsolidate.mockReset()
+		bridgeMocks.mbrainBridgeSelfEdit.mockReset()
+		bridgeMocks.mbrainBridgeUpdateLifecycleItem.mockReset()
+		bridgeMocks.mbrainBridgeReportProcedureOutcome.mockReset()
+		bridgeMocks.mbrainBridgeWriteConversationEvent.mockReset()
+		bridgeMocks.mbrainBridgeSearch.mockResolvedValue([])
+		bridgeMocks.mbrainBridgeSearchDetailed.mockResolvedValue({
 			results: [],
 			metadata: {
 				mode: "auto",
@@ -109,16 +109,16 @@ describe("createApp", () => {
 				reranked: false,
 			},
 		})
-		bridgeMocks.memongoBridgeAdd.mockResolvedValue({
+		bridgeMocks.mbrainBridgeAdd.mockResolvedValue({
 			eventId: "evt-1",
 			chunkCreated: true,
 		})
-		bridgeMocks.memongoBridgeWriteConversationEvent.mockResolvedValue({
+		bridgeMocks.mbrainBridgeWriteConversationEvent.mockResolvedValue({
 			eventId: "evt-2",
 			chunkCreated: true,
 		})
-		bridgeMocks.memongoBridgeProfile.mockResolvedValue({ profile: [] })
-		bridgeMocks.memongoBridgeHydrateActiveSlate.mockResolvedValue({
+		bridgeMocks.mbrainBridgeProfile.mockResolvedValue({ profile: [] })
+		bridgeMocks.mbrainBridgeHydrateActiveSlate.mockResolvedValue({
 			agentId: "main",
 			scope: "agent",
 			scopeRef: "agent:main",
@@ -132,7 +132,7 @@ describe("createApp", () => {
 			},
 			hydratedAt: "2026-04-05T12:00:00.000Z",
 		})
-		bridgeMocks.memongoBridgeBuildDiscoveryProjection.mockResolvedValue({
+		bridgeMocks.mbrainBridgeBuildDiscoveryProjection.mockResolvedValue({
 			kind: "entity-brief",
 			query: "Phoenix",
 			title: "Phoenix entity brief",
@@ -147,7 +147,7 @@ describe("createApp", () => {
 			},
 			builtAt: "2026-04-05T12:00:00.000Z",
 		})
-		bridgeMocks.memongoBridgeBuildContextBundle.mockResolvedValue({
+		bridgeMocks.mbrainBridgeBuildContextBundle.mockResolvedValue({
 			agentId: "main",
 			query: "Phoenix",
 			scope: "agent",
@@ -166,7 +166,7 @@ describe("createApp", () => {
 			},
 			builtAt: "2026-04-05T12:00:00.000Z",
 		})
-		bridgeMocks.memongoBridgeRecallConversation.mockResolvedValue({
+		bridgeMocks.mbrainBridgeRecallConversation.mockResolvedValue({
 			results: [],
 			metadata: {
 				totalMatched: 0,
@@ -175,7 +175,7 @@ describe("createApp", () => {
 				durationMs: 2,
 			},
 		})
-		bridgeMocks.memongoBridgeGetLifecycleItem.mockResolvedValue({
+		bridgeMocks.mbrainBridgeGetLifecycleItem.mockResolvedValue({
 			family: "structured",
 			handle: {
 				family: "structured",
@@ -197,7 +197,7 @@ describe("createApp", () => {
 			createdAt: "2026-04-09T12:00:00.000Z",
 			updatedAt: "2026-04-10T12:00:00.000Z",
 		})
-		bridgeMocks.memongoBridgeUpdateLifecycleItem.mockImplementation(
+		bridgeMocks.mbrainBridgeUpdateLifecycleItem.mockImplementation(
 			async ({ handle, patch }) => ({
 				family: handle.family,
 				handle: {
@@ -224,7 +224,7 @@ describe("createApp", () => {
 				updatedAt: "2026-04-10T12:05:00.000Z",
 			}),
 		)
-		bridgeMocks.memongoBridgeDeleteLifecycleItem.mockImplementation(
+		bridgeMocks.mbrainBridgeDeleteLifecycleItem.mockImplementation(
 			async ({ handle }) => ({
 				family: handle.family,
 				handle: {
@@ -250,7 +250,7 @@ describe("createApp", () => {
 				updatedAt: "2026-04-10T12:10:00.000Z",
 			}),
 		)
-		bridgeMocks.memongoBridgeGetLifecycleHistory.mockResolvedValue([
+		bridgeMocks.mbrainBridgeGetLifecycleHistory.mockResolvedValue([
 			{
 				family: "structured",
 				handle: {
@@ -291,7 +291,7 @@ describe("createApp", () => {
 				historyKind: "current",
 			},
 		])
-		bridgeMocks.memongoBridgeGetState.mockResolvedValue({
+		bridgeMocks.mbrainBridgeGetState.mockResolvedValue({
 			profile: { profile: [] },
 			blocks: {
 				blocks: [],
@@ -315,16 +315,16 @@ describe("createApp", () => {
 				builtAt: "2026-04-05T12:00:00.000Z",
 			},
 		})
-		bridgeMocks.memongoBridgeStatus.mockResolvedValue({
+		bridgeMocks.mbrainBridgeStatus.mockResolvedValue({
 			backend: "mongodb",
 			provider: "voyage",
 		})
-		bridgeMocks.memongoBridgeExtractEvent.mockResolvedValue({
+		bridgeMocks.mbrainBridgeExtractEvent.mockResolvedValue({
 			jobId: "extraction-evt-1",
 			scheduled: true,
 		})
-		bridgeMocks.memongoBridgeAccessTrends.mockResolvedValue([])
-		bridgeMocks.memongoBridgeBenchmarkIngest.mockResolvedValue({
+		bridgeMocks.mbrainBridgeAccessTrends.mockResolvedValue([])
+		bridgeMocks.mbrainBridgeBenchmarkIngest.mockResolvedValue({
 			datasetPath: "/tmp/benchmark.json",
 			datasetName: "benchmark.json",
 			conversationsIngested: 1,
@@ -333,7 +333,7 @@ describe("createApp", () => {
 			startedAt: "2026-04-09T12:00:00.000Z",
 			completedAt: "2026-04-09T12:00:01.000Z",
 		})
-		bridgeMocks.memongoBridgeImportConversations.mockResolvedValue({
+		bridgeMocks.mbrainBridgeImportConversations.mockResolvedValue({
 			datasetPath: "/tmp/history.json",
 			datasetName: "history.json",
 			datasetKind: "generic",
@@ -345,7 +345,7 @@ describe("createApp", () => {
 			startedAt: "2026-04-11T09:00:00.000Z",
 			completedAt: "2026-04-11T09:00:02.000Z",
 		})
-		bridgeMocks.memongoBridgeRelevanceBenchmark.mockResolvedValue({
+		bridgeMocks.mbrainBridgeRelevanceBenchmark.mockResolvedValue({
 			datasetVersion: "bench-v1",
 			datasetName: "longmemeval.json",
 			datasetKind: "longmemeval",
@@ -430,8 +430,8 @@ describe("createApp", () => {
 				degradations: [],
 			},
 		})
-		bridgeMocks.memongoBridgeListRecallTraces.mockResolvedValue([])
-		bridgeMocks.memongoBridgeListMemoryJobs.mockResolvedValue([])
+		bridgeMocks.mbrainBridgeListRecallTraces.mockResolvedValue([])
+		bridgeMocks.mbrainBridgeListMemoryJobs.mockResolvedValue([])
 	})
 
 	afterEach(() => {
@@ -444,7 +444,7 @@ describe("createApp", () => {
 		expect(res.status).toBe(200)
 		await expect(res.json()).resolves.toEqual({
 			ok: true,
-			service: "memongo-api",
+			service: "mbrain-api",
 		})
 	})
 
@@ -501,20 +501,20 @@ describe("createApp", () => {
 				query: "workspace checkpoint",
 				agentId: "codex",
 				scope: "workspace",
-				scopeRef: "/workspace/memongo",
+				scopeRef: "/workspace/mbrain",
 				limit: 3,
 			}),
 		})
 
 		expect(res.status).toBe(200)
-		expect(bridgeMocks.memongoBridgeSearch).toHaveBeenCalledWith({
+		expect(bridgeMocks.mbrainBridgeSearch).toHaveBeenCalledWith({
 			query: "workspace checkpoint",
 			agentId: "codex",
 			maxResults: 3,
 			minScore: undefined,
 			sessionKey: undefined,
 			scope: "workspace",
-			scopeRef: "/workspace/memongo",
+			scopeRef: "/workspace/mbrain",
 		})
 	})
 
@@ -626,8 +626,8 @@ describe("createApp", () => {
 		expect(json.paths?.["/v1/lifecycle/history"]?.post).toBeDefined()
 	})
 
-	it("protects v1 routes when MEMONGO_API_KEY is set", async () => {
-		process.env.MEMONGO_API_KEY = "secret"
+	it("protects v1 routes when MBRAIN_API_KEY is set", async () => {
+		process.env.MBRAIN_API_KEY = "secret"
 
 		const unauthorized = await createApp().request("/v1/status")
 		expect(unauthorized.status).toBe(401)
@@ -636,7 +636,7 @@ describe("createApp", () => {
 			headers: { Authorization: "Bearer secret" },
 		})
 		expect(authorized.status).toBe(200)
-		expect(bridgeMocks.memongoBridgeStatus).toHaveBeenCalledOnce()
+		expect(bridgeMocks.mbrainBridgeStatus).toHaveBeenCalledOnce()
 	})
 
 	it("logs a prominent warning once when API auth is disabled", async () => {
@@ -651,7 +651,7 @@ describe("createApp", () => {
 			createApp()
 
 			expect(warn).toHaveBeenCalledTimes(1)
-			expect(warn.mock.calls[0]?.[0]).toContain("MEMONGO_API_KEY is not set")
+			expect(warn.mock.calls[0]?.[0]).toContain("MBRAIN_API_KEY is not set")
 		} finally {
 			warn.mockRestore()
 		}
@@ -665,10 +665,10 @@ describe("createApp", () => {
 			)
 			resetUnauthenticatedApiWarningForTests()
 
-			process.env.MEMONGO_API_KEY = "secret"
+			process.env.MBRAIN_API_KEY = "secret"
 			createApp()
-			process.env.MEMONGO_API_KEY = ""
-			process.env.MEMONGO_API_SCOPED_KEYS = JSON.stringify([
+			process.env.MBRAIN_API_KEY = ""
+			process.env.MBRAIN_API_SCOPED_KEYS = JSON.stringify([
 				{ token: "scoped-secret", agentIds: ["agent"] },
 			])
 			createApp()
@@ -766,30 +766,30 @@ describe("createApp", () => {
 	})
 
 	it("fails closed when scoped API key policy JSON is invalid", () => {
-		process.env.MEMONGO_API_SCOPED_KEYS = "not-json"
+		process.env.MBRAIN_API_SCOPED_KEYS = "not-json"
 
 		expect(() => createApp()).toThrow(
-			"MEMONGO_API_SCOPED_KEYS must be valid JSON",
+			"MBRAIN_API_SCOPED_KEYS must be valid JSON",
 		)
 	})
 
 	it("fails closed when scoped API key policies are unconstrained", () => {
-		process.env.MEMONGO_API_SCOPED_KEYS = JSON.stringify([
+		process.env.MBRAIN_API_SCOPED_KEYS = JSON.stringify([
 			{ token: "scoped-secret" },
 		])
 
 		expect(() => createApp()).toThrow(
-			"MEMONGO_API_SCOPED_KEYS policy for token scoped-secret must constrain agentIds, scopes, or scopeRefs",
+			"MBRAIN_API_SCOPED_KEYS policy for token scoped-secret must constrain agentIds, scopes, or scopeRefs",
 		)
 	})
 
 	it("allows scoped API keys only inside their agent and scope policy", async () => {
-		process.env.MEMONGO_API_SCOPED_KEYS = JSON.stringify([
+		process.env.MBRAIN_API_SCOPED_KEYS = JSON.stringify([
 			{
 				token: "scoped-secret",
 				agentIds: ["codex"],
 				scopes: ["workspace"],
-				scopeRefs: ["/workspace/memongo"],
+				scopeRefs: ["/workspace/mbrain"],
 			},
 		])
 
@@ -803,27 +803,27 @@ describe("createApp", () => {
 				query: "scoped gates",
 				agentId: "codex",
 				scope: "workspace",
-				scopeRef: "/workspace/memongo",
+				scopeRef: "/workspace/mbrain",
 			}),
 		})
 
 		expect(res.status).toBe(200)
-		expect(bridgeMocks.memongoBridgeSearch).toHaveBeenCalledWith(
+		expect(bridgeMocks.mbrainBridgeSearch).toHaveBeenCalledWith(
 			expect.objectContaining({
 				agentId: "codex",
 				scope: "workspace",
-				scopeRef: "/workspace/memongo",
+				scopeRef: "/workspace/mbrain",
 			}),
 		)
 	})
 
 	it("rejects scoped API keys outside their allowed scopeRef", async () => {
-		process.env.MEMONGO_API_SCOPED_KEYS = JSON.stringify([
+		process.env.MBRAIN_API_SCOPED_KEYS = JSON.stringify([
 			{
 				token: "scoped-secret",
 				agentIds: ["codex"],
 				scopes: ["workspace"],
-				scopeRefs: ["/workspace/memongo"],
+				scopeRefs: ["/workspace/mbrain"],
 			},
 		])
 
@@ -848,16 +848,16 @@ describe("createApp", () => {
 				message: "scopeRef is not allowed for this API key",
 			},
 		})
-		expect(bridgeMocks.memongoBridgeSearch).not.toHaveBeenCalled()
+		expect(bridgeMocks.mbrainBridgeSearch).not.toHaveBeenCalled()
 	})
 
 	it("requires explicit scoped fields for scoped API keys", async () => {
-		process.env.MEMONGO_API_SCOPED_KEYS = JSON.stringify([
+		process.env.MBRAIN_API_SCOPED_KEYS = JSON.stringify([
 			{
 				token: "scoped-secret",
 				agentIds: ["codex"],
 				scopes: ["workspace"],
-				scopeRefs: ["/workspace/memongo"],
+				scopeRefs: ["/workspace/mbrain"],
 			},
 		])
 
@@ -880,17 +880,17 @@ describe("createApp", () => {
 				message: "scope is required for this API key",
 			},
 		})
-		expect(bridgeMocks.memongoBridgeSearch).not.toHaveBeenCalled()
+		expect(bridgeMocks.mbrainBridgeSearch).not.toHaveBeenCalled()
 	})
 
-	it("keeps MEMONGO_API_KEY as the admin key when scoped keys are configured", async () => {
-		process.env.MEMONGO_API_KEY = "admin-secret"
-		process.env.MEMONGO_API_SCOPED_KEYS = JSON.stringify([
+	it("keeps MBRAIN_API_KEY as the admin key when scoped keys are configured", async () => {
+		process.env.MBRAIN_API_KEY = "admin-secret"
+		process.env.MBRAIN_API_SCOPED_KEYS = JSON.stringify([
 			{
 				token: "scoped-secret",
 				agentIds: ["codex"],
 				scopes: ["workspace"],
-				scopeRefs: ["/workspace/memongo"],
+				scopeRefs: ["/workspace/mbrain"],
 			},
 		])
 
@@ -909,7 +909,7 @@ describe("createApp", () => {
 		})
 
 		expect(res.status).toBe(200)
-		expect(bridgeMocks.memongoBridgeSearch).toHaveBeenCalledWith(
+		expect(bridgeMocks.mbrainBridgeSearch).toHaveBeenCalledWith(
 			expect.objectContaining({
 				agentId: "other-agent",
 				scope: "global",
@@ -932,7 +932,7 @@ describe("createApp", () => {
 		})
 
 		expect(res.status).toBe(200)
-		expect(bridgeMocks.memongoBridgeAdd).toHaveBeenCalledWith(
+		expect(bridgeMocks.mbrainBridgeAdd).toHaveBeenCalledWith(
 			expect.objectContaining({
 				content: "remember the scoped thing",
 				agentId: "codex",
@@ -958,9 +958,7 @@ describe("createApp", () => {
 		})
 
 		expect(res.status).toBe(200)
-		expect(
-			bridgeMocks.memongoBridgeWriteConversationEvent,
-		).toHaveBeenCalledWith(
+		expect(bridgeMocks.mbrainBridgeWriteConversationEvent).toHaveBeenCalledWith(
 			expect.objectContaining({
 				role: "assistant",
 				body: "scoped assistant memory",
@@ -989,7 +987,7 @@ describe("createApp", () => {
 				message: "scope must be session|user|agent|workspace|tenant|global",
 			},
 		})
-		expect(bridgeMocks.memongoBridgeSearch).not.toHaveBeenCalled()
+		expect(bridgeMocks.mbrainBridgeSearch).not.toHaveBeenCalled()
 	})
 
 	it("rejects invalid search-detailed scope values before calling the bridge", async () => {
@@ -1009,7 +1007,7 @@ describe("createApp", () => {
 				message: "scope must be session|user|agent|workspace|tenant|global",
 			},
 		})
-		expect(bridgeMocks.memongoBridgeSearchDetailed).not.toHaveBeenCalled()
+		expect(bridgeMocks.mbrainBridgeSearchDetailed).not.toHaveBeenCalled()
 	})
 
 	it("rejects user and tenant scopes without scopeRef", async () => {
@@ -1029,7 +1027,7 @@ describe("createApp", () => {
 				message: "tenant scope requires scopeRef",
 			},
 		})
-		expect(bridgeMocks.memongoBridgeAdd).not.toHaveBeenCalled()
+		expect(bridgeMocks.mbrainBridgeAdd).not.toHaveBeenCalled()
 	})
 
 	it("rejects state user scope without scopeRef", async () => {
@@ -1042,7 +1040,7 @@ describe("createApp", () => {
 				message: "user scope requires scopeRef",
 			},
 		})
-		expect(bridgeMocks.memongoBridgeGetState).not.toHaveBeenCalled()
+		expect(bridgeMocks.mbrainBridgeGetState).not.toHaveBeenCalled()
 	})
 
 	it("forwards profile scope when provided", async () => {
@@ -1057,7 +1055,7 @@ describe("createApp", () => {
 		})
 
 		expect(res.status).toBe(200)
-		expect(bridgeMocks.memongoBridgeProfile).toHaveBeenCalledWith(
+		expect(bridgeMocks.mbrainBridgeProfile).toHaveBeenCalledWith(
 			expect.objectContaining({
 				scope: "session",
 				scopeRef: "session:demo",
@@ -1067,7 +1065,7 @@ describe("createApp", () => {
 	})
 
 	it("forwards hydrate-active-slate requests with explicit scope", async () => {
-		bridgeMocks.memongoBridgeHydrateActiveSlate.mockResolvedValue({
+		bridgeMocks.mbrainBridgeHydrateActiveSlate.mockResolvedValue({
 			agentId: "agent-42",
 			scope: "workspace",
 			scopeRef: "workspace:demo",
@@ -1119,7 +1117,7 @@ describe("createApp", () => {
 			}),
 			hydratedAt: "2026-04-05T12:00:00.000Z",
 		})
-		expect(bridgeMocks.memongoBridgeHydrateActiveSlate).toHaveBeenCalledWith({
+		expect(bridgeMocks.mbrainBridgeHydrateActiveSlate).toHaveBeenCalledWith({
 			agentId: "agent-42",
 			scope: "workspace",
 			scopeRef: "workspace:demo",
@@ -1128,7 +1126,7 @@ describe("createApp", () => {
 	})
 
 	it("forwards discovery projection requests and returns projection metadata", async () => {
-		bridgeMocks.memongoBridgeBuildDiscoveryProjection.mockResolvedValue({
+		bridgeMocks.mbrainBridgeBuildDiscoveryProjection.mockResolvedValue({
 			kind: "what-changed",
 			query: "routing",
 			title: "What changed for routing",
@@ -1191,7 +1189,7 @@ describe("createApp", () => {
 			builtAt: "2026-04-05T12:00:00.000Z",
 		})
 		expect(
-			bridgeMocks.memongoBridgeBuildDiscoveryProjection,
+			bridgeMocks.mbrainBridgeBuildDiscoveryProjection,
 		).toHaveBeenCalledWith({
 			agentId: "agent-42",
 			kind: "what-changed",
@@ -1204,7 +1202,7 @@ describe("createApp", () => {
 	})
 
 	it("forwards context bundle requests and returns bundle metadata", async () => {
-		bridgeMocks.memongoBridgeBuildContextBundle.mockResolvedValue({
+		bridgeMocks.mbrainBridgeBuildContextBundle.mockResolvedValue({
 			agentId: "agent-42",
 			query: "Phoenix handoff",
 			scope: "agent",
@@ -1269,7 +1267,7 @@ describe("createApp", () => {
 			}),
 			builtAt: "2026-04-05T12:00:00.000Z",
 		})
-		expect(bridgeMocks.memongoBridgeBuildContextBundle).toHaveBeenCalledWith({
+		expect(bridgeMocks.mbrainBridgeBuildContextBundle).toHaveBeenCalledWith({
 			agentId: "agent-42",
 			query: "Phoenix handoff",
 			scope: "agent",
@@ -1300,7 +1298,7 @@ describe("createApp", () => {
 		})
 
 		expect(res.status).toBe(200)
-		expect(bridgeMocks.memongoBridgeBuildContextBundle).toHaveBeenCalledWith({
+		expect(bridgeMocks.mbrainBridgeBuildContextBundle).toHaveBeenCalledWith({
 			agentId: "agent-42",
 			query: undefined,
 			scope: "workspace",
@@ -1319,7 +1317,7 @@ describe("createApp", () => {
 	})
 
 	it("forwards state route requests to the canonical bridge method", async () => {
-		bridgeMocks.memongoBridgeGetState.mockResolvedValue({
+		bridgeMocks.mbrainBridgeGetState.mockResolvedValue({
 			profile: { profile: [] },
 			blocks: {
 				blocks: [
@@ -1369,7 +1367,7 @@ describe("createApp", () => {
 				}),
 			}),
 		)
-		expect(bridgeMocks.memongoBridgeGetState).toHaveBeenCalledWith({
+		expect(bridgeMocks.mbrainBridgeGetState).toHaveBeenCalledWith({
 			agentId: "agent-42",
 			scope: "workspace",
 			scopeRef: "workspace:demo",
@@ -1377,7 +1375,7 @@ describe("createApp", () => {
 	})
 
 	it("traces reasoning chain for a fact via chain-trace", async () => {
-		bridgeMocks.memongoBridgeTraceChain.mockResolvedValue({
+		bridgeMocks.mbrainBridgeTraceChain.mockResolvedValue({
 			factId: "fact-1",
 			collection: "structured",
 			chain: [
@@ -1405,7 +1403,7 @@ describe("createApp", () => {
 				collection: "structured",
 			}),
 		)
-		expect(bridgeMocks.memongoBridgeTraceChain).toHaveBeenCalledWith({
+		expect(bridgeMocks.mbrainBridgeTraceChain).toHaveBeenCalledWith({
 			agentId: "agent-42",
 			factId: "fact-1",
 			collection: "structured",
@@ -1414,7 +1412,7 @@ describe("createApp", () => {
 	})
 
 	it("lists recall traces via admin route", async () => {
-		bridgeMocks.memongoBridgeListRecallTraces.mockResolvedValue([
+		bridgeMocks.mbrainBridgeListRecallTraces.mockResolvedValue([
 			{
 				traceId: "trace-1",
 				agentId: "agent-42",
@@ -1432,7 +1430,7 @@ describe("createApp", () => {
 		await expect(res.json()).resolves.toEqual([
 			expect.objectContaining({ traceId: "trace-1" }),
 		])
-		expect(bridgeMocks.memongoBridgeListRecallTraces).toHaveBeenCalledWith({
+		expect(bridgeMocks.mbrainBridgeListRecallTraces).toHaveBeenCalledWith({
 			agentId: "agent-42",
 			limit: 5,
 		})
@@ -1443,14 +1441,14 @@ describe("createApp", () => {
 			"/v1/admin/traces?agentId=agent-42&limit=999999999",
 		)
 
-		expect(bridgeMocks.memongoBridgeListRecallTraces).toHaveBeenCalledWith({
+		expect(bridgeMocks.mbrainBridgeListRecallTraces).toHaveBeenCalledWith({
 			agentId: "agent-42",
 			limit: 100,
 		})
 	})
 
 	it("gets one recall trace via admin route", async () => {
-		bridgeMocks.memongoBridgeGetRecallTrace.mockResolvedValue({
+		bridgeMocks.mbrainBridgeGetRecallTrace.mockResolvedValue({
 			traceId: "trace-1",
 			agentId: "agent-42",
 			query: "phoenix",
@@ -1465,14 +1463,14 @@ describe("createApp", () => {
 		await expect(res.json()).resolves.toEqual(
 			expect.objectContaining({ traceId: "trace-1" }),
 		)
-		expect(bridgeMocks.memongoBridgeGetRecallTrace).toHaveBeenCalledWith({
+		expect(bridgeMocks.mbrainBridgeGetRecallTrace).toHaveBeenCalledWith({
 			agentId: "agent-42",
 			traceId: "trace-1",
 		})
 	})
 
 	it("returns access trends via admin route", async () => {
-		bridgeMocks.memongoBridgeAccessTrends.mockResolvedValue([
+		bridgeMocks.mbrainBridgeAccessTrends.mockResolvedValue([
 			{
 				collection: "events",
 				memoryId: "evt-1",
@@ -1491,7 +1489,7 @@ describe("createApp", () => {
 		await expect(res.json()).resolves.toEqual([
 			expect.objectContaining({ memoryId: "evt-1" }),
 		])
-		expect(bridgeMocks.memongoBridgeAccessTrends).toHaveBeenCalledWith({
+		expect(bridgeMocks.mbrainBridgeAccessTrends).toHaveBeenCalledWith({
 			agentId: "agent-42",
 			collection: "events",
 			memoryIds: ["evt-1", "evt-2"],
@@ -1501,7 +1499,7 @@ describe("createApp", () => {
 	})
 
 	it("returns access summaries via admin route", async () => {
-		bridgeMocks.memongoBridgeAccessSummaries.mockResolvedValue([
+		bridgeMocks.mbrainBridgeAccessSummaries.mockResolvedValue([
 			{
 				collection: "events",
 				memoryId: "evt-1",
@@ -1518,7 +1516,7 @@ describe("createApp", () => {
 		await expect(res.json()).resolves.toEqual([
 			expect.objectContaining({ memoryId: "evt-1", accessCount: 7 }),
 		])
-		expect(bridgeMocks.memongoBridgeAccessSummaries).toHaveBeenCalledWith({
+		expect(bridgeMocks.mbrainBridgeAccessSummaries).toHaveBeenCalledWith({
 			agentId: "agent-42",
 			collection: "events",
 			memoryIds: ["evt-1", "evt-2"],
@@ -1546,7 +1544,7 @@ describe("createApp", () => {
 				conversationsIngested: 1,
 			}),
 		)
-		expect(bridgeMocks.memongoBridgeBenchmarkIngest).toHaveBeenCalledWith({
+		expect(bridgeMocks.mbrainBridgeBenchmarkIngest).toHaveBeenCalledWith({
 			agentId: "agent-42",
 			datasetPath: "/tmp/benchmark.json",
 			scope: "workspace",
@@ -1576,7 +1574,7 @@ describe("createApp", () => {
 				conversationsImported: 1,
 			}),
 		)
-		expect(bridgeMocks.memongoBridgeImportConversations).toHaveBeenCalledWith({
+		expect(bridgeMocks.mbrainBridgeImportConversations).toHaveBeenCalledWith({
 			agentId: "agent-42",
 			datasetPath: "/tmp/history.json",
 			scope: "workspace",
@@ -1632,7 +1630,7 @@ describe("createApp", () => {
 				}),
 			}),
 		)
-		expect(bridgeMocks.memongoBridgeRelevanceBenchmark).toHaveBeenCalledWith({
+		expect(bridgeMocks.mbrainBridgeRelevanceBenchmark).toHaveBeenCalledWith({
 			agentId: "agent-42",
 			datasetPath: "/tmp/longmemeval.json",
 			maxResults: 10,
@@ -1663,7 +1661,7 @@ describe("createApp", () => {
 		})
 
 		expect(res.status).toBe(200)
-		expect(bridgeMocks.memongoBridgeRelevanceBenchmark).toHaveBeenCalledWith(
+		expect(bridgeMocks.mbrainBridgeRelevanceBenchmark).toHaveBeenCalledWith(
 			expect.objectContaining({
 				agentId: "agent-42",
 				datasetPath: "/tmp/longmemeval.json",
@@ -1722,7 +1720,7 @@ describe("createApp", () => {
 			jobId: "extraction-evt-1",
 			scheduled: true,
 		})
-		expect(bridgeMocks.memongoBridgeExtractEvent).toHaveBeenCalledWith({
+		expect(bridgeMocks.mbrainBridgeExtractEvent).toHaveBeenCalledWith({
 			agentId: "agent-42",
 			eventId: "evt-1",
 		})
@@ -1742,7 +1740,7 @@ describe("createApp", () => {
 	})
 
 	it("lists memory jobs via jobs route", async () => {
-		bridgeMocks.memongoBridgeListMemoryJobs.mockResolvedValue([
+		bridgeMocks.mbrainBridgeListMemoryJobs.mockResolvedValue([
 			{
 				jobId: "consolidation-1",
 				jobType: "consolidation",
@@ -1760,7 +1758,7 @@ describe("createApp", () => {
 		await expect(res.json()).resolves.toEqual([
 			expect.objectContaining({ jobId: "consolidation-1" }),
 		])
-		expect(bridgeMocks.memongoBridgeListMemoryJobs).toHaveBeenCalledWith({
+		expect(bridgeMocks.mbrainBridgeListMemoryJobs).toHaveBeenCalledWith({
 			agentId: "agent-42",
 			status: "running",
 			limit: 10,
@@ -1773,7 +1771,7 @@ describe("createApp", () => {
 			"/v1/jobs?agentId=agent-42&status=running&limit=999999999",
 		)
 
-		expect(bridgeMocks.memongoBridgeListMemoryJobs).toHaveBeenCalledWith({
+		expect(bridgeMocks.mbrainBridgeListMemoryJobs).toHaveBeenCalledWith({
 			agentId: "agent-42",
 			status: "running",
 			limit: 100,
@@ -1782,7 +1780,7 @@ describe("createApp", () => {
 	})
 
 	it("gets one memory job via jobs route", async () => {
-		bridgeMocks.memongoBridgeGetMemoryJob.mockResolvedValue({
+		bridgeMocks.mbrainBridgeGetMemoryJob.mockResolvedValue({
 			jobId: "consolidation-1",
 			jobType: "consolidation",
 			agentId: "agent-42",
@@ -1798,7 +1796,7 @@ describe("createApp", () => {
 		await expect(res.json()).resolves.toEqual(
 			expect.objectContaining({ jobId: "consolidation-1" }),
 		)
-		expect(bridgeMocks.memongoBridgeGetMemoryJob).toHaveBeenCalledWith({
+		expect(bridgeMocks.mbrainBridgeGetMemoryJob).toHaveBeenCalledWith({
 			agentId: "agent-42",
 			jobId: "consolidation-1",
 		})
@@ -1831,7 +1829,7 @@ describe("createApp", () => {
 	})
 
 	it("scans for novel observations via novelty-scan", async () => {
-		bridgeMocks.memongoBridgeScanNovelty.mockResolvedValue({
+		bridgeMocks.mbrainBridgeScanNovelty.mockResolvedValue({
 			novelItems: [
 				{ id: "evt-1", body: "surprising observation", surprisal: 0.95 },
 			],
@@ -1856,7 +1854,7 @@ describe("createApp", () => {
 				totalScanned: 50,
 			}),
 		)
-		expect(bridgeMocks.memongoBridgeScanNovelty).toHaveBeenCalledWith({
+		expect(bridgeMocks.mbrainBridgeScanNovelty).toHaveBeenCalledWith({
 			agentId: "agent-42",
 			limit: 10,
 			scope: "workspace",
@@ -1864,7 +1862,7 @@ describe("createApp", () => {
 	})
 
 	it("runs dreamer consolidation via consolidate", async () => {
-		bridgeMocks.memongoBridgeConsolidate.mockResolvedValue({
+		bridgeMocks.mbrainBridgeConsolidate.mockResolvedValue({
 			factsExtracted: 3,
 			eventsProcessed: 10,
 			skipped: 2,
@@ -1889,7 +1887,7 @@ describe("createApp", () => {
 				eventsProcessed: 10,
 			}),
 		)
-		expect(bridgeMocks.memongoBridgeConsolidate).toHaveBeenCalledWith({
+		expect(bridgeMocks.mbrainBridgeConsolidate).toHaveBeenCalledWith({
 			agentId: "agent-42",
 			maxEvents: 20,
 			minCombinedScore: 0.15,
@@ -1898,7 +1896,7 @@ describe("createApp", () => {
 	})
 
 	it("edits core memory block via self-edit", async () => {
-		bridgeMocks.memongoBridgeSelfEdit.mockResolvedValue({
+		bridgeMocks.mbrainBridgeSelfEdit.mockResolvedValue({
 			upserted: true,
 			id: "core:user",
 		})
@@ -1922,7 +1920,7 @@ describe("createApp", () => {
 				id: "core:user",
 			}),
 		)
-		expect(bridgeMocks.memongoBridgeSelfEdit).toHaveBeenCalledWith({
+		expect(bridgeMocks.mbrainBridgeSelfEdit).toHaveBeenCalledWith({
 			agentId: "agent-42",
 			block: "user",
 			action: "append",
@@ -1960,7 +1958,7 @@ describe("createApp", () => {
 	})
 
 	it("forwards searchDetailed request options and returns bridge metadata", async () => {
-		bridgeMocks.memongoBridgeSearchDetailed.mockResolvedValue({
+		bridgeMocks.mbrainBridgeSearchDetailed.mockResolvedValue({
 			results: [
 				{
 					path: "structured:decision:phoenix",
@@ -2018,7 +2016,7 @@ describe("createApp", () => {
 				query: "what changed",
 				agentId: "agent-42",
 				scope: "workspace",
-				scopeRef: "/workspace/memongo",
+				scopeRef: "/workspace/mbrain",
 				limit: 4,
 				minScore: 0.4,
 				searchMode: "agentic",
@@ -2075,11 +2073,11 @@ describe("createApp", () => {
 				}),
 			}),
 		})
-		expect(bridgeMocks.memongoBridgeSearchDetailed).toHaveBeenCalledWith({
+		expect(bridgeMocks.mbrainBridgeSearchDetailed).toHaveBeenCalledWith({
 			query: "what changed",
 			agentId: "agent-42",
 			scope: "workspace",
-			scopeRef: "/workspace/memongo",
+			scopeRef: "/workspace/mbrain",
 			maxResults: 4,
 			minScore: 0.4,
 			searchMode: "agentic",
@@ -2116,7 +2114,7 @@ describe("createApp", () => {
 	})
 
 	it("forwards recall-conversation filters and returns cited results", async () => {
-		bridgeMocks.memongoBridgeRecallConversation.mockResolvedValue({
+		bridgeMocks.mbrainBridgeRecallConversation.mockResolvedValue({
 			results: [
 				{
 					citation: {
@@ -2188,7 +2186,7 @@ describe("createApp", () => {
 				durationMs: 12,
 			},
 		})
-		expect(bridgeMocks.memongoBridgeRecallConversation).toHaveBeenCalledWith({
+		expect(bridgeMocks.mbrainBridgeRecallConversation).toHaveBeenCalledWith({
 			agentId: "agent-42",
 			query: "phoenix",
 			sessionId: "session-9",
@@ -2227,7 +2225,7 @@ describe("createApp", () => {
 				data: expect.objectContaining({ value: "Use MongoDB Atlas Local" }),
 			}),
 		)
-		expect(bridgeMocks.memongoBridgeGetLifecycleItem).toHaveBeenCalledWith({
+		expect(bridgeMocks.mbrainBridgeGetLifecycleItem).toHaveBeenCalledWith({
 			handle: expect.objectContaining({
 				family: "structured",
 				agentId: "agent-42",
@@ -2267,7 +2265,7 @@ describe("createApp", () => {
 				data: expect.objectContaining({ value: "Use MongoDB Atlas Preview" }),
 			}),
 		)
-		expect(bridgeMocks.memongoBridgeUpdateLifecycleItem).toHaveBeenCalledWith({
+		expect(bridgeMocks.mbrainBridgeUpdateLifecycleItem).toHaveBeenCalledWith({
 			handle: expect.objectContaining({
 				family: "structured",
 				structured: { type: "decision", key: "db" },
@@ -2306,7 +2304,7 @@ describe("createApp", () => {
 				handle: expect.objectContaining({ state: "invalidated" }),
 			}),
 		)
-		expect(bridgeMocks.memongoBridgeDeleteLifecycleItem).toHaveBeenCalledWith({
+		expect(bridgeMocks.mbrainBridgeDeleteLifecycleItem).toHaveBeenCalledWith({
 			handle: expect.objectContaining({
 				family: "structured",
 				structured: { type: "decision", key: "db" },
@@ -2341,7 +2339,7 @@ describe("createApp", () => {
 				expect.objectContaining({ historyKind: "current" }),
 			]),
 		)
-		expect(bridgeMocks.memongoBridgeGetLifecycleHistory).toHaveBeenCalledWith({
+		expect(bridgeMocks.mbrainBridgeGetLifecycleHistory).toHaveBeenCalledWith({
 			handle: expect.objectContaining({
 				family: "structured",
 				structured: { type: "decision", key: "db" },
@@ -2351,7 +2349,7 @@ describe("createApp", () => {
 	})
 
 	it("records procedure outcomes through the stable handle route", async () => {
-		bridgeMocks.memongoBridgeReportProcedureOutcome.mockResolvedValue({
+		bridgeMocks.mbrainBridgeReportProcedureOutcome.mockResolvedValue({
 			family: "procedure",
 			handle: {
 				family: "procedure",
@@ -2401,18 +2399,18 @@ describe("createApp", () => {
 				data: expect.objectContaining({ successCount: 4 }),
 			}),
 		)
-		expect(
-			bridgeMocks.memongoBridgeReportProcedureOutcome,
-		).toHaveBeenCalledWith({
-			handle,
-			success: true,
-			note: "Passed production deploy",
-			actorRole: "assistant",
-		})
+		expect(bridgeMocks.mbrainBridgeReportProcedureOutcome).toHaveBeenCalledWith(
+			{
+				handle,
+				success: true,
+				note: "Passed production deploy",
+				actorRole: "assistant",
+			},
+		)
 	})
 
 	it("applies structured memory feedback through the public feedback route", async () => {
-		bridgeMocks.memongoBridgeApplyMemoryFeedback.mockResolvedValue({
+		bridgeMocks.mbrainBridgeApplyMemoryFeedback.mockResolvedValue({
 			family: "structured",
 			handle: {
 				family: "structured",
@@ -2461,7 +2459,7 @@ describe("createApp", () => {
 				data: expect.objectContaining({ reinforcementCount: 7 }),
 			}),
 		)
-		expect(bridgeMocks.memongoBridgeApplyMemoryFeedback).toHaveBeenCalledWith({
+		expect(bridgeMocks.mbrainBridgeApplyMemoryFeedback).toHaveBeenCalledWith({
 			handle,
 			signal: "confirm",
 			note: "Still true",

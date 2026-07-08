@@ -1,10 +1,10 @@
-# Memongo MongoDB Setup
+# Mbrain MongoDB Setup
 
-Atlas Local preview is the canonical Memongo MongoDB stack.
+Atlas Local preview is the canonical Mbrain MongoDB stack.
 
 ## Recommended: Preview (Single Container)
 
-The fastest way to run Memongo's full MongoDB stack:
+The fastest way to run Mbrain's full MongoDB stack:
 
 ```bash
 # Start (bundles mongod + mongot + Atlas Search + Vector Search)
@@ -17,7 +17,7 @@ VOYAGE_API_KEY=al-your-atlas-model-api-key ./docker/mongodb/start-preview.sh
 ./docker/mongodb/start-preview.sh stop
 ```
 
-This uses `mongodb/mongodb-atlas-local:preview` (~584 MB) -- a single container with everything Memongo needs:
+This uses `mongodb/mongodb-atlas-local:preview` (~584 MB) -- a single container with everything Mbrain needs:
 
 - mongod (MongoDB 8.x, single-node replica set)
 - mongot (community search engine)
@@ -93,9 +93,9 @@ docker compose -f docker/mongodb/docker-compose.mongodb.yml --profile standalone
 
 | Tier       | Connection String                                                                                      |
 | ---------- | ------------------------------------------------------------------------------------------------------ |
-| standalone | `mongodb://localhost:27017/memongo`                                                                   |
-| replicaset | `mongodb://admin:admin@localhost:27017/memongo?authSource=admin&replicaSet=rs0&directConnection=true` |
-| fullstack  | `mongodb://admin:admin@localhost:27017/memongo?authSource=admin&replicaSet=rs0&directConnection=true` |
+| standalone | `mongodb://localhost:27017/mbrain`                                                                   |
+| replicaset | `mongodb://admin:admin@localhost:27017/mbrain?authSource=admin&replicaSet=rs0&directConnection=true` |
+| fullstack  | `mongodb://admin:admin@localhost:27017/mbrain?authSource=admin&replicaSet=rs0&directConnection=true` |
 
 ## Environment Variables
 
@@ -139,20 +139,20 @@ Use the multi-container stack below only if you specifically need separate mongo
 ### Standalone
 
 ```
-[Memongo] --> [mongod-standalone:27017]
+[Mbrain] --> [mongod-standalone:27017]
 ```
 
 ### Replica Set
 
 ```
-[Memongo] --> [mongod:27017 (rs0)]
+[Mbrain] --> [mongod:27017 (rs0)]
                  |-- auth via keyfile
 ```
 
 ### Full Stack
 
 ```
-[Memongo] --> [mongod:27017 (rs0)]
+[Mbrain] --> [mongod:27017 (rs0)]
                  |-- auth via keyfile
                  |-- gRPC --> [mongot:27028]
                                |-- sync from mongod
@@ -170,7 +170,7 @@ Use the multi-container stack below only if you specifically need separate mongo
 
 ```bash
 # Check logs
-docker logs memongo-mongod
+docker logs mbrain-mongod
 
 # Common issue: keyfile permissions
 docker compose -f docker/mongodb/docker-compose.mongodb.yml --profile setup run --rm setup-generator
@@ -184,7 +184,7 @@ docker compose -f docker/mongodb/docker-compose.mongodb.yml --profile setup run 
 
 ```bash
 # Check logs
-docker logs memongo-mongot
+docker logs mbrain-mongot
 
 # mongot depends on mongod being healthy first
 # Wait for mongod health check to pass, then mongot starts automatically
@@ -193,7 +193,7 @@ docker compose -f docker/mongodb/docker-compose.mongodb.yml --profile fullstack 
 
 ### Connection refused
 
-**Symptom:** Memongo cannot connect to MongoDB.
+**Symptom:** Mbrain cannot connect to MongoDB.
 
 **Fix:**
 
@@ -202,10 +202,10 @@ docker compose -f docker/mongodb/docker-compose.mongodb.yml --profile fullstack 
 docker compose -f docker/mongodb/docker-compose.mongodb.yml --profile fullstack ps
 
 # Test connection manually
-docker exec memongo-mongod mongosh --eval "db.adminCommand('ping')"
+docker exec mbrain-mongod mongosh --eval "db.adminCommand('ping')"
 
 # Check port mapping
-docker port memongo-mongod
+docker port mbrain-mongod
 ```
 
 ### Auth errors
@@ -226,10 +226,10 @@ docker port memongo-mongod
 
 ```bash
 # Verify mongot is healthy
-docker exec memongo-mongot wget -qO- http://localhost:9946/metrics | head -5
+docker exec mbrain-mongot wget -qO- http://localhost:9946/metrics | head -5
 
 # Check mongot sync status
-docker logs memongo-mongot | tail -20
+docker logs mbrain-mongot | tail -20
 ```
 
 ## Upgrading Between Tiers

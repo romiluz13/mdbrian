@@ -1,4 +1,4 @@
-import { type MemongoConfig, resolveUserPath } from "@memongo/lib"
+import { type MbrainConfig, resolveUserPath } from "@mbrain/lib"
 
 const SAFE_AGENT_PATH_SEGMENT = /^[A-Za-z0-9._-]+$/
 
@@ -21,14 +21,14 @@ function isAgentConfigShape(value: unknown): value is AgentConfigShape {
 	return typeof value === "object" && value !== null
 }
 
-function getAgents(cfg: MemongoConfig): AgentsShape | undefined {
+function getAgents(cfg: MbrainConfig): AgentsShape | undefined {
 	return typeof cfg.agents === "object" && cfg.agents !== null
 		? (cfg.agents as AgentsShape)
 		: undefined
 }
 
 export function resolveAgentConfig(
-	cfg: MemongoConfig,
+	cfg: MbrainConfig,
 	agentId: string,
 ): AgentConfigShape | undefined {
 	const agents = getAgents(cfg)
@@ -48,7 +48,7 @@ export function resolveAgentConfig(
 }
 
 export function resolveAgentWorkspaceDir(
-	cfg: MemongoConfig,
+	cfg: MbrainConfig,
 	agentId: string,
 ): string {
 	const agentConfig = resolveAgentConfig(cfg, agentId)
@@ -57,7 +57,7 @@ export function resolveAgentWorkspaceDir(
 		agentConfig?.workspace?.trim() || defaults?.workspace?.trim()
 	return workspace
 		? resolveUserPath(workspace)
-		: resolveUserPath(`~/.memongo/agents/${agentIdPathSegment(agentId)}`)
+		: resolveUserPath(`~/.mbrain/agents/${agentIdPathSegment(agentId)}`)
 }
 
 function agentIdPathSegment(agentId: string): string {
@@ -73,7 +73,7 @@ function agentIdPathSegment(agentId: string): string {
 }
 
 export function resolveAgentMemorySearchExtraPaths(
-	cfg: MemongoConfig,
+	cfg: MbrainConfig,
 	agentId: string,
 ): string[] | undefined {
 	const agentConfig = resolveAgentConfig(cfg, agentId)

@@ -1,7 +1,4 @@
-import type {
-	MemongoClient,
-	MemongoSearchDetailedResponse,
-} from "@memongo/client"
+import type { MbrainClient, MbrainSearchDetailedResponse } from "@mbrain/client"
 import {
 	buildPhase6MemoryEvalFixture,
 	type ContextBundleEvalCase,
@@ -103,7 +100,7 @@ function scoreFromChecks(checks: boolean[]): number {
 }
 
 function inferTopConfidence(
-	response: Pick<MemongoSearchDetailedResponse, "metadata">,
+	response: Pick<MbrainSearchDetailedResponse, "metadata">,
 ): TrustConfidence {
 	return response.metadata.trustSummary?.topConfidence ?? null
 }
@@ -180,7 +177,7 @@ function collectContextBundleText(response: {
 
 export function evaluateSearchDetailedCase(
 	testCase: SearchDetailedEvalCase,
-	response: Pick<MemongoSearchDetailedResponse, "results" | "metadata">,
+	response: Pick<MbrainSearchDetailedResponse, "results" | "metadata">,
 	latencyMs: number,
 ): MemoryEvalCaseResult {
 	const failures: string[] = []
@@ -510,7 +507,7 @@ function evaluateContextBundleCase(
 }
 
 async function executeSeedStep(
-	client: MemongoClient,
+	client: MbrainClient,
 	step: MemoryEvalSeedStep,
 ): Promise<void> {
 	switch (step.kind) {
@@ -540,7 +537,7 @@ async function executeSeedStep(
 }
 
 async function runCase(
-	client: MemongoClient,
+	client: MbrainClient,
 	testCase: MemoryEvalCase,
 ): Promise<MemoryEvalCaseResult> {
 	const startedAt = Date.now()
@@ -689,7 +686,7 @@ export function compareEvalRuns(params: {
 }
 
 export async function runMemoryEvalSuite(params: {
-	client: MemongoClient
+	client: MbrainClient
 	label: string
 	seed?: string
 	fixture?: MemoryEvalFixture

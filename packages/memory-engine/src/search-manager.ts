@@ -1,4 +1,4 @@
-import { type MemongoConfig, createSubsystemLogger } from "@memongo/lib"
+import { type MbrainConfig, createSubsystemLogger } from "@mbrain/lib"
 import type {
 	ResolvedMemoryBackendConfig,
 	ResolvedMongoDBConfig,
@@ -28,7 +28,7 @@ export type MemorySearchManagerResult = {
 }
 
 export async function getMemorySearchManager(params: {
-	cfg: MemongoConfig
+	cfg: MbrainConfig
 	agentId: string
 	purpose?: "default" | "status"
 }): Promise<MemorySearchManagerResult> {
@@ -87,7 +87,7 @@ export async function getMemorySearchManager(params: {
 }
 
 async function initializeManager(params: {
-	cfg: MemongoConfig
+	cfg: MbrainConfig
 	agentId: string
 	resolved: ResolvedMemoryBackendConfig
 	extraMemoryPaths?: string[]

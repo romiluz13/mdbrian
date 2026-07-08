@@ -813,9 +813,9 @@ describe("mongoSearch dispatcher", () => {
 		expect(col.aggregate).toHaveBeenCalledTimes(1)
 	})
 
-	it("treats MEMONGO_BENCHMARK_STRICT=true as no-fallback strict mode", async () => {
-		const previousStrict = process.env.MEMONGO_BENCHMARK_STRICT
-		process.env.MEMONGO_BENCHMARK_STRICT = "true"
+	it("treats MBRAIN_BENCHMARK_STRICT=true as no-fallback strict mode", async () => {
+		const previousStrict = process.env.MBRAIN_BENCHMARK_STRICT
+		process.env.MBRAIN_BENCHMARK_STRICT = "true"
 		try {
 			const col = {
 				aggregate: vi.fn(() => ({
@@ -841,9 +841,9 @@ describe("mongoSearch dispatcher", () => {
 			expect(col.aggregate).toHaveBeenCalledTimes(1)
 		} finally {
 			if (previousStrict === undefined) {
-				delete process.env.MEMONGO_BENCHMARK_STRICT
+				delete process.env.MBRAIN_BENCHMARK_STRICT
 			} else {
-				process.env.MEMONGO_BENCHMARK_STRICT = previousStrict
+				process.env.MBRAIN_BENCHMARK_STRICT = previousStrict
 			}
 		}
 	})

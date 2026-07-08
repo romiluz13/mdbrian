@@ -2,14 +2,14 @@
 
 ## Supported Versions
 
-Security fixes are provided for the latest released `@memongo/*` package
+Security fixes are provided for the latest released `@mbrain/*` package
 versions and the current `main` branch.
 
 ## Reporting a Vulnerability
 
 Please do not open a public issue for a suspected vulnerability.
 
-Use [GitHub private vulnerability reporting](https://github.com/romiluz13/memongo/security/advisories/new)
+Use [GitHub private vulnerability reporting](https://github.com/romiluz13/mbrain/security/advisories/new)
 for this repository. If that channel is unavailable, contact the maintainer via
 the GitHub profile at [github.com/romiluz13](https://github.com/romiluz13).
 

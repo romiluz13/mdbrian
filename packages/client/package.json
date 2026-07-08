@@ -1,17 +1,17 @@
 {
-	"name": "@memongo/client",
+	"name": "@mbrain/client",
 	"version": "1.1.0",
-	"description": "TypeScript client SDK for the Memongo HTTP API",
+	"description": "TypeScript client SDK for the Mbrain HTTP API",
 	"type": "module",
 	"license": "Apache-2.0",
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/romiluz13/memongo.git",
+		"url": "git+https://github.com/romiluz13/mbrain.git",
 		"directory": "packages/client"
 	},
 	"author": "Rom Iluz",
 	"keywords": [
-		"memongo",
+		"mbrain",
 		"client",
 		"sdk",
 		"mongodb",
@@ -36,8 +36,8 @@
 	"devDependencies": {
 		"typescript": "^5.8.0"
 	},
-	"homepage": "https://github.com/romiluz13/memongo#readme",
+	"homepage": "https://github.com/romiluz13/mbrain#readme",
 	"bugs": {
-		"url": "https://github.com/romiluz13/memongo/issues"
+		"url": "https://github.com/romiluz13/mbrain/issues"
 	}
 }

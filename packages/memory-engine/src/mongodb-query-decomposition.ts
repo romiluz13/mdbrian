@@ -6,7 +6,7 @@
  * sub-queries that match stored evidence better, then merges results
  * using Reciprocal Rank Fusion (RRF).
  *
- * Behind MEMONGO_QUERY_DECOMPOSITION_MODE flag:
+ * Behind MBRAIN_QUERY_DECOMPOSITION_MODE flag:
  *   - "enabled": decompose queries via LLM before search
  *   - "none" (default): pass query through unchanged
  *

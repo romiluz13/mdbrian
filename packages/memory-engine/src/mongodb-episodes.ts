@@ -1,6 +1,6 @@
 import { randomUUID } from "node:crypto"
 import type { Db, Document } from "mongodb"
-import { type MemoryScope, createSubsystemLogger } from "@memongo/lib"
+import { type MemoryScope, createSubsystemLogger } from "@mbrain/lib"
 import {
 	getEventsByTimeRange,
 	getUnconsolidatedEvents,

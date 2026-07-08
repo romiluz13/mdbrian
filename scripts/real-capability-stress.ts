@@ -4,7 +4,7 @@ import path from "node:path"
 import { randomUUID } from "node:crypto"
 import { spawn } from "node:child_process"
 import { MongoClient } from "mongodb"
-import { MemongoClient } from "@memongo/client"
+import { MbrainClient } from "@mbrain/client"
 import {
 	emptyLaneCoverage,
 	getCacheHitRate,
@@ -20,8 +20,8 @@ import {
 	synthesizeProfile,
 	updateLaneCoverage,
 	writeCache,
-} from "@memongo/memory-engine"
-import { buildMemongoConfig } from "../packages/memory-bridge/src/memory-config.ts"
+} from "@mbrain/memory-engine"
+import { buildMbrainConfig } from "../packages/memory-bridge/src/memory-config.ts"
 import { resolveMemoryBackendConfig } from "../packages/memory-engine/src/backend-config.ts"
 import { writeProofArtifact } from "./proof-artifacts.js"
 import {
@@ -99,21 +99,22 @@ type SearchMetric = {
 	pathsExecuted: string[]
 }
 
-const baseUrl = (
-	process.env.MEMONGO_API_URL ?? "http://127.0.0.1:3847"
-).replace(/\/$/, "")
-const apiKey = process.env.MEMONGO_API_KEY?.trim() || undefined
+const baseUrl = (process.env.MBRAIN_API_URL ?? "http://127.0.0.1:3847").replace(
+	/\/$/,
+	"",
+)
+const apiKey = process.env.MBRAIN_API_KEY?.trim() || undefined
 const agentId =
-	process.env.MEMONGO_AGENT_ID?.trim() ??
+	process.env.MBRAIN_AGENT_ID?.trim() ??
 	`capability-stress-${randomUUID().slice(0, 8)}`
 const sessionId =
-	process.env.MEMONGO_SESSION_ID?.trim() ??
+	process.env.MBRAIN_SESSION_ID?.trim() ??
 	`capability-session-${randomUUID().slice(0, 8)}`
 const workspaceDir =
-	process.env.MEMONGO_WORKSPACE_DIR?.trim() ||
-	path.join(os.tmpdir(), `memongo-workspace-${randomUUID().slice(0, 8)}`)
+	process.env.MBRAIN_WORKSPACE_DIR?.trim() ||
+	path.join(os.tmpdir(), `mbrain-workspace-${randomUUID().slice(0, 8)}`)
 
-const client = new MemongoClient({
+const client = new MbrainClient({
 	baseUrl,
 	apiKey,
 	maxRetries: 2,
@@ -226,11 +227,11 @@ async function fetchJson(pathname: string): Promise<unknown> {
 
 async function runRealAgentLane(): Promise<CapabilityCheck> {
 	if (
-		!process.env.MEMONGO_LLM_API_KEY?.trim() ||
-		!process.env.MEMONGO_LLM_BASE_URL?.trim() ||
-		!process.env.MEMONGO_LLM_MODEL?.trim()
+		!process.env.MBRAIN_LLM_API_KEY?.trim() ||
+		!process.env.MBRAIN_LLM_BASE_URL?.trim() ||
+		!process.env.MBRAIN_LLM_MODEL?.trim()
 	) {
-		return pass("real-agent", "skipped: MEMONGO_LLM_* env not set")
+		return pass("real-agent", "skipped: MBRAIN_LLM_* env not set")
 	}
 
 	const stdoutChunks: string[] = []
@@ -240,10 +241,10 @@ async function runRealAgentLane(): Promise<CapabilityCheck> {
 			cwd: process.cwd(),
 			env: {
 				...process.env,
-				MEMONGO_API_URL: baseUrl,
-				MEMONGO_API_KEY: apiKey,
-				MEMONGO_AGENT_ID: `${agentId}-agent`,
-				MEMONGO_SESSION_ID: `${sessionId}-agent`,
+				MBRAIN_API_URL: baseUrl,
+				MBRAIN_API_KEY: apiKey,
+				MBRAIN_AGENT_ID: `${agentId}-agent`,
+				MBRAIN_SESSION_ID: `${sessionId}-agent`,
 			},
 			stdio: ["ignore", "pipe", "pipe"],
 		})
@@ -291,7 +292,7 @@ async function main() {
 	const workspaceBenchmarkDir = path.join(workspaceDir, "benchmarks")
 	const relevanceDatasetPath = path.join(
 		workspaceBenchmarkDir,
-		`memongo-relevance-${randomUUID().slice(0, 8)}.jsonl`,
+		`mbrain-relevance-${randomUUID().slice(0, 8)}.jsonl`,
 	)
 
 	await mkdir(workspaceMemoryDir, { recursive: true })
@@ -307,9 +308,9 @@ async function main() {
 		"utf8",
 	)
 
-	const cfg = buildMemongoConfig({
+	const cfg = buildMbrainConfig({
 		...process.env,
-		MEMONGO_WORKSPACE_DIR: workspaceDir,
+		MBRAIN_WORKSPACE_DIR: workspaceDir,
 	})
 	const resolved = resolveMemoryBackendConfig({ cfg, agentId })
 	const mongoCfg = resolved.mongodb
@@ -320,7 +321,7 @@ async function main() {
 		connectTimeoutMS: mongoCfg.connectTimeoutMs,
 	})
 
-	const disposableWorkspaceCreated = !process.env.MEMONGO_WORKSPACE_DIR
+	const disposableWorkspaceCreated = !process.env.MBRAIN_WORKSPACE_DIR
 
 	try {
 		await mongo.connect()
@@ -1389,7 +1390,7 @@ async function main() {
 					name: "batch-voyage",
 					classification: "dormant-capability",
 					reason:
-						"The Voyage batch embedding runner exists in the engine, but the supported Memongo contract is atlas-local-preview with embeddingMode=automated, so it is not part of the hot path. batch-openai and batch-gemini were removed as dead code.",
+						"The Voyage batch embedding runner exists in the engine, but the supported Mbrain contract is atlas-local-preview with embeddingMode=automated, so it is not part of the hot path. batch-openai and batch-gemini were removed as dead code.",
 				},
 			],
 			checks,

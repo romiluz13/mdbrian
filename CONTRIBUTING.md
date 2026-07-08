@@ -1,6 +1,6 @@
-# Contributing to Memongo
+# Contributing to Mbrain
 
-Memongo is a focused memory product. The fastest way to keep it clean is to preserve the supported surface and quarantine everything else.
+Mbrain is a focused memory product. The fastest way to keep it clean is to preserve the supported surface and quarantine everything else.
 
 ## How to contribute (external contributors)
 
@@ -8,7 +8,7 @@ Memongo is a focused memory product. The fastest way to keep it clean is to pres
 2. Create a branch from `main`: `git checkout -b my-fix`.
 3. Follow the [local workflow](#local-workflow) to make and verify your change.
 4. Commit with a short, action-oriented message (e.g. `engine: fix graph edge dedup`).
-5. Push your branch and open a pull request against `romiluz13/memongo:main`.
+5. Push your branch and open a pull request against `romiluz13/mbrain:main`.
 6. Fill in the PR template. One logical change per PR keeps review fast.
 7. A maintainer will review; address feedback with new commits, not force-pushes.
 
@@ -24,7 +24,7 @@ These are the packages and apps we actively shape as the product:
 - `apps/docs`
 - `packages/memory-engine`
 - `packages/memory-bridge`
-- `packages/memongo-memory`
+- `packages/mbrain-memory`
 - `packages/client`
 - `packages/tools`
 

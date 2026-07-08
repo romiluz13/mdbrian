@@ -2,7 +2,7 @@
 
 **Date:** 2026-07-08
 **Status:** Draft (pending user review)
-**Baseline:** memongo (MongoDB-native long-term AI memory) → transformed into a wiki-first company brain.
+**Baseline:** mbrain (MongoDB-native long-term AI memory) → transformed into a wiki-first company brain.
 **Inspirations:** LangChain OpenWiki (LLM-maintained code wiki, git-diff incremental), Google Open Knowledge Format / OKF (vendor-neutral concept-per-page interchange spec), arXiv:2606.24535 "Governed Shared Memory for Multi-Agent LLM Systems" (fleet-memory governance primitives).
 
 ---
@@ -11,7 +11,7 @@
 
 The "LLM wiki / company brain" category (crystallized by Karpathy's June 2026 gist) inverts RAG: instead of retrieving chunks at query time, an LLM builds and maintains a persistent, interlinked, pre-synthesized knowledge layer that compounds over time. The category's biggest pain is **knowledge staleness + maintenance burden** (humans abandon wikis because upkeep grows faster than value). The field has bifurcated into file-format systems (OpenWiki, OKF — markdown, no database) and infrastructure-first systems (Mem0, Letta, Graphiti, Cognee — vector+graph+metadata glue). No funded competitor uses MongoDB; the category is Postgres+pgvector dominated (Memclaw, mybrains.ai). The unclaimed position: **one MongoDB system that collapses semantic + structured + temporal into a single consistency boundary**, with OKF as the interchange format bridging both camps.
 
-MBrain is that system. memongo already has ~80% of the infrastructure (hybrid retrieval, $graphLookup, Dreamer consolidation, injection classifier, bi-temporal, provenance, scoped retrieval). MBrain transforms its conceptual center from "memory framework" to "LLM wiki" — wiki pages become the first-class, browsable artifact; the engine serves the wiki.
+MBrain is that system. mbrain already has ~80% of the infrastructure (hybrid retrieval, $graphLookup, Dreamer consolidation, injection classifier, bi-temporal, provenance, scoped retrieval). MBrain transforms its conceptual center from "memory framework" to "LLM wiki" — wiki pages become the first-class, browsable artifact; the engine serves the wiki.
 
 ---
 
@@ -27,7 +27,7 @@ Layer 1: GRAPH+RAW       entities, relations, events, episodes, KB chunks, inges
          │               $graphLookup backbone + $vectorSearch/$search/$rankFusion retrieval
 ```
 
-- **Layer 1 (graph + raw):** the existing memongo engine — entities, relations, events, episodes, KB chunks. The structural backbone + immutable raw sources. `@mbrain/memory-engine`.
+- **Layer 1 (graph + raw):** the existing mbrain engine — entities, relations, events, episodes, KB chunks. The structural backbone + immutable raw sources. `@mbrain/memory-engine`.
 - **Layer 2 (wiki):** NEW — `wiki_pages` collection, the synthesized browsable artifact. Compiled from layer 1 by two maintenance strategies. `@mbrain/wiki-engine`.
 - **Layer 3 (schema):** page-kind definitions, maintenance rules, governance policies (trust tiers, permission rules, contradiction resolution rules). Lives in `@mbrain/wiki-engine` as config/types.
 
@@ -35,7 +35,7 @@ Layer 1: GRAPH+RAW       entities, relations, events, episodes, KB chunks, inges
 
 ## 2. Approach: Transformative Refactor (chosen)
 
-memongo's conceptual center shifts from memory to wiki pages. Proven infrastructure is kept (hybrid retrieval, $graphLookup, Dreamer consolidation, injection classifier, API/MCP/web); the conceptual model is refactored.
+mbrain's conceptual center shifts from memory to wiki pages. Proven infrastructure is kept (hybrid retrieval, $graphLookup, Dreamer consolidation, injection classifier, API/MCP/web); the conceptual model is refactored.
 
 **Transforms inside memory-engine:**
 
@@ -45,7 +45,7 @@ memongo's conceptual center shifts from memory to wiki pages. Proven infrastruct
 
 ---
 
-## 3. Package Structure (rename `@memongo/*` → `@mbrain/*`)
+## 3. Package Structure (rename `@mbrain/*` → `@mbrain/*`)
 
 | Package | Status | Role |
 | --- | --- | --- |
@@ -160,7 +160,7 @@ memongo's conceptual center shifts from memory to wiki pages. Proven infrastruct
   okfConceptId: string,      // file path in OKF bundle (e.g., "tables/users")
   okfBundleId: string,       // which bundle this belongs to
 
-  // Governance (arXIV + memongo)
+  // Governance (arXIV + mbrain)
   scope: "session" | "user" | "agent" | "workspace" | "tenant" | "global",
   scopeRef: string,
   trustTier: "restricted" | "standard" | "admin",   // arXIV trust tiers
@@ -230,7 +230,7 @@ The freshness engine — solves the category's #1 pain (staleness). One pipeline
 4. New/updated claims pass through governance gates.
 5. Triggered by: API call, CLI, or CI webhook.
 
-### Dreamer strategy (event/streaming/conversation sources — memongo adapted)
+### Dreamer strategy (event/streaming/conversation sources — mbrain adapted)
 
 1. Novelty scan over new events/episodes.
 2. $vectorSearch similarity to existing wiki pages + claims.
@@ -254,7 +254,7 @@ The freshness engine — solves the category's #1 pain (staleness). One pipeline
 - **Scoped retrieval on EVERY access path:** scope filter (`scope`+`scopeRef`) applied not just in search but in `wiki_get` by slug, `wiki_get` by id, graph traversal, and export. The arXIV paper disclosed an asymmetric scope-enforcement bug on GET-by-id (remediated) — enforce scope on every read path, not just the API edge. <!-- scar: arXIV:2606.24535 GET-by-id scope leak -->
 - **Trust tiers:** `restricted` / `standard` / `admin`. Determines write visibility + propagation. A `restricted` agent's claims are visible only within its scope; an `admin` agent's claims can propagate cross-scope. Replaces numeric-only `sourceReliability` with a role-based tier (keeps the numeric as a sub-signal).
 - **Permissions:** `permissions.allowedRoles` + `allowedDepartments` + `privacyTier` on every page. Search/get filters by the caller's role+department. (Community suggestion, Dolev: metadata upfront + metadata filtering.)
-- **Temporal supersession:** `supersedesClaimId` + `state: "superseded"` (not deleted) — preserves audit trail. Already in memongo's `structured_mem`; promoted to claim-level + page-level.
+- **Temporal supersession:** `supersedesClaimId` + `state: "superseded"` (not deleted) — preserves audit trail. Already in mbrain's `structured_mem`; promoted to claim-level + page-level.
 
 ---
 
@@ -262,7 +262,7 @@ The freshness engine — solves the category's #1 pain (staleness). One pipeline
 
 ### Connectors
 
-- **Obsidian connector** (bidirectional vault sync): `wiki_pages` ↔ Obsidian `.md` files. A hook watches the vault; changed files → `wiki_pages` (import). Changed `wiki_pages` → vault files (export, OKF format). `wikiSource: "obsidian"`, `vault`, `section` fields already in memongo's KB schema — reused.
+- **Obsidian connector** (bidirectional vault sync): `wiki_pages` ↔ Obsidian `.md` files. A hook watches the vault; changed files → `wiki_pages` (import). Changed `wiki_pages` → vault files (export, OKF format). `wikiSource: "obsidian"`, `vault`, `section` fields already in mbrain's KB schema — reused.
 - **GitHub repo-as-source:** a repo is a source. Git-diff maintenance ingests changed files → wiki pages. Like OpenWiki but the wiki lives in MongoDB, not just markdown.
 - **Confluence connector (read-first, v1):** ingest Confluence spaces → KB chunks + wiki pages. Permission-aware (Confluence space permissions → `permissions` on the page). Write-back deferred to v1.1.
 - **Notion connector (read-first, v1):** ingest Notion workspaces → KB chunks + wiki pages. Block tree → page structure. Write-back deferred to v1.1.
@@ -320,14 +320,14 @@ Sources (git repo, Obsidian vault, Confluence, Notion, Slack, CRM, conversations
 - **Unit:** wiki-engine modules (OKF import/export round-trip, contradiction detector, permission filter, backlink generator, page renderer, each connector's mapper).
 - **Integration:** wiki_pages CRUD through API + MCP; Dreamer promotes events → wiki pages; git-diff regenerates pages from changed sources; scoped retrieval on every access path (the arXIV GET-by-id test).
 - **E2E:** ingest a Confluence space + a Slack channel + a git repo → wiki pages compile → agent searches via MCP → correct scoped results → OKF export round-trips → import preserves structure.
-- **Migration:** existing memongo `structured_mem` + `procedures` records → wiki pages (Dreamer migration pass).
+- **Migration:** existing mbrain `structured_mem` + `procedures` records → wiki pages (Dreamer migration pass).
 - **Governance:** contradiction-before-dedup ordering test (reproduce the arXIV pipeline bug and prove MBrain doesn't have it); cross-scope leak test; trust-tier propagation test.
 
 ---
 
-## 12. Migration Plan (memongo → MBrain)
+## 12. Migration Plan (mbrain → MBrain)
 
-1. Rename packages `@memongo/*` → `@mbrain/*` across all package.json, imports, docs.
+1. Rename packages `@mbrain/*` → `@mbrain/*` across all package.json, imports, docs.
 2. Create `@mbrain/wiki-engine` package with `wiki_pages` schema + collection helpers.
 3. Add `wiki_pages` collection + indexes + search indexes to `mongodb-schema.ts`.
 4. Refactor `memory-engine` exports to serve `wiki-engine` (graph, retrieval, embeddings, injection classifier exposed as internal APIs).
@@ -348,6 +348,6 @@ All research underpinning this design is in `docs/research/llm-wiki/`:
 - `02-github-code.out` — code-level analysis of 10+ OSS repos
 - `03-youtube.out` — YouTube coverage (architectures, pain points, MongoDB perception gap)
 - `04-mongodb-why.md` — the one-system MongoDB argument (semantic+structured+temporal in one consistency boundary)
-- `05-codebase.md` — memongo existing-impl recon
+- `05-codebase.md` — mbrain existing-impl recon
 - `06-commercial.md` — Memclaw/Qontext/mybrains.ai/factory.ai verification
 - `07-academic.md` — arXiv:2606.24535 governance primitives + trained-embedding claim debunk + bidirectional intent prior art

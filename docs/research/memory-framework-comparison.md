@@ -1,12 +1,12 @@
 # Memory framework comparison note
 
-This is a maintainer note for the Memongo framework slice. It is research
+This is a maintainer note for the Mbrain framework slice. It is research
 context, not a public superiority claim. Sources were checked on June 27, 2026
 using upstream GitHub repositories and official docs where available.
 
 ## Positioning rule
 
-Frame Memongo as a MongoDB-native long-term memory framework with a small
+Frame Mbrain as a MongoDB-native long-term memory framework with a small
 supported core:
 
 - API server
@@ -17,7 +17,7 @@ supported core:
 - Web console
 - Docs and release checks
 
-Do not frame Memongo as a universal memory OS, a coding-agent-only product, or a
+Do not frame Mbrain as a universal memory OS, a coding-agent-only product, or a
 benchmark winner outside the exact evidence lane that has been verified.
 
 ## Comparison
@@ -30,11 +30,11 @@ benchmark winner outside the exact evidence lane that has been verified.
 | Zep | Clear split between managed platform and OSS graph core | Treating integration examples as the entire product | <https://github.com/getzep/zep/blob/main/README.md> |
 | Cognee | Persistent cross-session memory with graph plus vector search | Trust or company-brain claims without proof | <https://github.com/topoteretes/cognee/blob/main/README.md> |
 | LangMem | Storage-agnostic memory primitives and hot-path/background separation | Hiding memory management inside prompt-only hacks | <https://github.com/langchain-ai/langmem/blob/main/README.md>, <https://github.com/langchain-ai/langmem/blob/main/src/langmem/knowledge/tools.py> |
-| Letta | Explicit stateful-agent memory blocks | Anthropomorphic or self-improving claims that Memongo does not prove | <https://github.com/letta-ai/letta/blob/main/README.md>, <https://github.com/letta-ai/letta/blob/main/letta/schemas/memory.py> |
+| Letta | Explicit stateful-agent memory blocks | Anthropomorphic or self-improving claims that Mbrain does not prove | <https://github.com/letta-ai/letta/blob/main/README.md>, <https://github.com/letta-ai/letta/blob/main/letta/schemas/memory.py> |
 
-## Memongo fit
+## Mbrain fit
 
-Memongo already has the primitives needed for a Company Brain framework:
+Mbrain already has the primitives needed for a Company Brain framework:
 
 - Context bundles for answer-ready recall.
 - Write-event, structured-memory, and procedure-memory paths.

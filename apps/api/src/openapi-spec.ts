@@ -1,5 +1,5 @@
 /**
- * OpenAPI 3.0 document for the Memongo HTTP API.
+ * OpenAPI 3.0 document for the Mbrain HTTP API.
  * Keep this aligned with the supported route contract in `routes/v1.ts`.
  */
 const benchmarkOfficialRetrievalMetricsSchema = {
@@ -399,10 +399,10 @@ const lifecycleHistoryEntrySchema = {
 export const openApiSpec = {
 	openapi: "3.0.3",
 	info: {
-		title: "Memongo API",
+		title: "Mbrain API",
 		version: "1.0.0",
 		description:
-			"HTTP API for the Memongo memory platform. Configure it with MEMONGO_MONGODB_URI and, optionally, ~/.memongo/memongo.json.",
+			"HTTP API for the Mbrain memory platform. Configure it with MBRAIN_MONGODB_URI and, optionally, ~/.mbrain/mbrain.json.",
 	},
 	servers: [{ url: "/", description: "Default" }],
 	paths: {

@@ -1,7 +1,7 @@
 import type { MemoryConfig } from "./types.memory.js"
 
-/** Minimal Memongo config -- standalone version of the config surface used by the memory engine. */
-export type MemongoConfig = {
+/** Minimal Mbrain config -- standalone version of the config surface used by the memory engine. */
+export type MbrainConfig = {
 	memory?: MemoryConfig
 	models?: {
 		providers?: Record<

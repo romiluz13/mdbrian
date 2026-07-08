@@ -43,7 +43,7 @@ const contractFixtures = {
 		{
 			name: "search alias payload",
 			path: "/v1/search",
-			bridgeMock: "memongoBridgeSearch",
+			bridgeMock: "mbrainBridgeSearch",
 			body: {
 				q: "remember this",
 				containerTag: "user-123",
@@ -58,7 +58,7 @@ const contractFixtures = {
 		{
 			name: "search explicit sessionKey alias",
 			path: "/v1/search",
-			bridgeMock: "memongoBridgeSearch",
+			bridgeMock: "mbrainBridgeSearch",
 			body: {
 				query: "explicit scope",
 				sessionKey: "session-7",
@@ -73,7 +73,7 @@ const contractFixtures = {
 		{
 			name: "add containerTag alias",
 			path: "/v1/add",
-			bridgeMock: "memongoBridgeAdd",
+			bridgeMock: "mbrainBridgeAdd",
 			body: {
 				content: "store this",
 				containerTag: "account-42",
@@ -86,7 +86,7 @@ const contractFixtures = {
 		{
 			name: "add explicit sessionId",
 			path: "/v1/add",
-			bridgeMock: "memongoBridgeAdd",
+			bridgeMock: "mbrainBridgeAdd",
 			body: {
 				content: "store this",
 				sessionId: "session-42",
@@ -99,7 +99,7 @@ const contractFixtures = {
 		{
 			name: "profile containerTag alias",
 			path: "/v1/profile",
-			bridgeMock: "memongoBridgeProfile",
+			bridgeMock: "mbrainBridgeProfile",
 			body: {
 				containerTag: "account-42",
 			},
@@ -110,7 +110,7 @@ const contractFixtures = {
 		{
 			name: "profile explicit scopeRef",
 			path: "/v1/profile",
-			bridgeMock: "memongoBridgeProfile",
+			bridgeMock: "mbrainBridgeProfile",
 			body: {
 				scopeRef: "scope-99",
 			},

@@ -14,7 +14,7 @@ indexing_key="${VOYAGE_API_INDEXING_KEY:-${VOYAGE_API_KEY:-}}"
 mongo_uid="${MONGODB_UID:-1000}"
 mongo_gid="${MONGODB_GID:-1000}"
 
-echo 'Setting up Memongo security files...'
+echo 'Setting up Mbrain security files...'
 mkdir -p "$auth_dir"
 chmod 700 "$auth_dir" 2>/dev/null || true
 

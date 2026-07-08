@@ -262,7 +262,7 @@ describe("mongodb-profile", () => {
 	it("synthesizeProfile returns top entities by relation count", async () => {
 		const entityDocs = [
 			{ name: "Alice", type: "person", relationCount: 5 },
-			{ name: "Memongo", type: "project", relationCount: 3 },
+			{ name: "Mbrain", type: "project", relationCount: 3 },
 		]
 
 		vi.mocked(structuredMemCollection).mockReturnValue(
@@ -282,7 +282,7 @@ describe("mongodb-profile", () => {
 		expect(profile.topEntities[0].name).toBe("Alice")
 		expect(profile.topEntities[0].type).toBe("person")
 		expect(profile.topEntities[0].relationCount).toBe(5)
-		expect(profile.topEntities[1].name).toBe("Memongo")
+		expect(profile.topEntities[1].name).toBe("Mbrain")
 		expect(profile.topEntities[1].relationCount).toBe(3)
 	})
 

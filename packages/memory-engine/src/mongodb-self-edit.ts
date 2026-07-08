@@ -3,7 +3,7 @@
  * blocks (user preferences, persona identity, task instructions).
  */
 import type { Db, MongoClient } from "mongodb"
-import type { MemoryMongoDBEmbeddingMode } from "@memongo/lib"
+import type { MemoryMongoDBEmbeddingMode } from "@mbrain/lib"
 import type { MemorySelfEditBlock, MemorySelfEditAction } from "./types.js"
 import { structuredMemCollection } from "./mongodb-schema.js"
 import {

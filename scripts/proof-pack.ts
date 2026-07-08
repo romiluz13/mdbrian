@@ -1,4 +1,4 @@
-import { MemongoClient } from "@memongo/client"
+import { MbrainClient } from "@mbrain/client"
 import proofPackBaseline from "./proof-pack-baseline.js"
 import { writeProofArtifact } from "./proof-artifacts.js"
 
@@ -8,19 +8,20 @@ type CheckResult = {
 	details: string
 }
 
-const baseUrl = (
-	process.env.MEMONGO_API_URL ?? "http://127.0.0.1:3847"
-).replace(/\/$/, "")
-const apiKey = process.env.MEMONGO_API_KEY
+const baseUrl = (process.env.MBRAIN_API_URL ?? "http://127.0.0.1:3847").replace(
+	/\/$/,
+	"",
+)
+const apiKey = process.env.MBRAIN_API_KEY
 const agentId =
-	process.env.MEMONGO_AGENT_ID ??
+	process.env.MBRAIN_AGENT_ID ??
 	`proof-${new Date().toISOString().replace(/[:.]/g, "-")}`
 const sessionScope =
-	process.env.MEMONGO_SESSION_ID ??
-	process.env.MEMONGO_CONTAINER_TAG ??
+	process.env.MBRAIN_SESSION_ID ??
+	process.env.MBRAIN_CONTAINER_TAG ??
 	`proof-session-${new Date().toISOString().replace(/[:.]/g, "-")}`
 
-const client = new MemongoClient({
+const client = new MbrainClient({
 	baseUrl,
 	apiKey,
 })

@@ -11,7 +11,7 @@ import {
 	signExportBundle,
 	verifyExportBundle,
 	type ExportBundle,
-} from "./memongo-export.js"
+} from "./mbrain-export.js"
 
 const FAST_CHECK_SEED = 20260512
 

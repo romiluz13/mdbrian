@@ -5,8 +5,8 @@ import {
 } from "./test-helpers/fetch-mock.js"
 import { mockPublicPinnedHostname } from "./test-helpers/ssrf.js"
 
-vi.mock("@memongo/lib", async (importOriginal) => {
-	const original = await importOriginal<typeof import("@memongo/lib")>()
+vi.mock("@mbrain/lib", async (importOriginal) => {
+	const original = await importOriginal<typeof import("@mbrain/lib")>()
 	const { createModelAuthMockModule } = await import(
 		"./test-helpers/model-auth-mock.js"
 	)
@@ -24,7 +24,7 @@ const createFetchMock = () => {
 	return withFetchPreconnect(fetchMock)
 }
 
-let authModule: typeof import("@memongo/lib")
+let authModule: typeof import("@mbrain/lib")
 let createVoyageEmbeddingProvider: typeof import("./embeddings-voyage.js").createVoyageEmbeddingProvider
 let normalizeVoyageModel: typeof import("./embeddings-voyage.js").normalizeVoyageModel
 
@@ -32,7 +32,7 @@ beforeEach(async () => {
 	vi.useRealTimers()
 	vi.doUnmock("undici")
 	vi.resetModules()
-	authModule = await import("@memongo/lib")
+	authModule = await import("@mbrain/lib")
 	;({ createVoyageEmbeddingProvider, normalizeVoyageModel } = await import(
 		"./embeddings-voyage.js"
 	))

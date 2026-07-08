@@ -67,9 +67,9 @@ describe("computeDatasetSha256FromPath", () => {
 		const { writeFileSync, mkdtempSync } = await import("node:fs")
 		const { tmpdir } = await import("node:os")
 		const path = await import("node:path")
-		const dir = mkdtempSync(path.join(tmpdir(), "memongo-dataset-sha-"))
+		const dir = mkdtempSync(path.join(tmpdir(), "mbrain-dataset-sha-"))
 		const filePath = path.join(dir, "canary.jsonl")
-		writeFileSync(filePath, "hello-memongo-dataset")
+		writeFileSync(filePath, "hello-mbrain-dataset")
 		const sha = await computeDatasetSha256FromPath(filePath)
 		expect(sha).toMatch(/^[0-9a-f]{64}$/)
 	})
@@ -78,7 +78,7 @@ describe("computeDatasetSha256FromPath", () => {
 		const { writeFileSync, mkdtempSync } = await import("node:fs")
 		const { tmpdir } = await import("node:os")
 		const path = await import("node:path")
-		const dir = mkdtempSync(path.join(tmpdir(), "memongo-dataset-sha-"))
+		const dir = mkdtempSync(path.join(tmpdir(), "mbrain-dataset-sha-"))
 		const a = path.join(dir, "a.jsonl")
 		const b = path.join(dir, "b.jsonl")
 		writeFileSync(a, "same-bytes")
@@ -90,10 +90,10 @@ describe("computeDatasetSha256FromPath", () => {
 })
 
 describe("resolveDatasetSha256", () => {
-	it("prefers MEMONGO_BENCHMARK_DATASET_SHA env over computing from path", async () => {
+	it("prefers MBRAIN_BENCHMARK_DATASET_SHA env over computing from path", async () => {
 		const envSha = "a".repeat(64)
-		const original = process.env.MEMONGO_BENCHMARK_DATASET_SHA
-		process.env.MEMONGO_BENCHMARK_DATASET_SHA = envSha
+		const original = process.env.MBRAIN_BENCHMARK_DATASET_SHA
+		process.env.MBRAIN_BENCHMARK_DATASET_SHA = envSha
 		try {
 			const sha = await resolveDatasetSha256({
 				datasetPath: "/nonexistent/path.json",
@@ -101,9 +101,9 @@ describe("resolveDatasetSha256", () => {
 			expect(sha).toBe(envSha)
 		} finally {
 			if (original === undefined) {
-				delete process.env.MEMONGO_BENCHMARK_DATASET_SHA
+				delete process.env.MBRAIN_BENCHMARK_DATASET_SHA
 			} else {
-				process.env.MEMONGO_BENCHMARK_DATASET_SHA = original
+				process.env.MBRAIN_BENCHMARK_DATASET_SHA = original
 			}
 		}
 	})
@@ -112,49 +112,49 @@ describe("resolveDatasetSha256", () => {
 		const { writeFileSync, mkdtempSync } = await import("node:fs")
 		const { tmpdir } = await import("node:os")
 		const path = await import("node:path")
-		const dir = mkdtempSync(path.join(tmpdir(), "memongo-dataset-sha-"))
+		const dir = mkdtempSync(path.join(tmpdir(), "mbrain-dataset-sha-"))
 		const filePath = path.join(dir, "canary.jsonl")
 		writeFileSync(filePath, "fallback-bytes")
-		const original = process.env.MEMONGO_BENCHMARK_DATASET_SHA
-		process.env.MEMONGO_BENCHMARK_DATASET_SHA = "not-a-real-sha"
+		const original = process.env.MBRAIN_BENCHMARK_DATASET_SHA
+		process.env.MBRAIN_BENCHMARK_DATASET_SHA = "not-a-real-sha"
 		try {
 			const sha = await resolveDatasetSha256({ datasetPath: filePath })
 			expect(sha).toMatch(/^[0-9a-f]{64}$/)
 		} finally {
 			if (original === undefined) {
-				delete process.env.MEMONGO_BENCHMARK_DATASET_SHA
+				delete process.env.MBRAIN_BENCHMARK_DATASET_SHA
 			} else {
-				process.env.MEMONGO_BENCHMARK_DATASET_SHA = original
+				process.env.MBRAIN_BENCHMARK_DATASET_SHA = original
 			}
 		}
 	})
 
 	it("throws in strict mode when no env and no path — zero silent fallback", async () => {
-		const originalEnv = process.env.MEMONGO_BENCHMARK_DATASET_SHA
-		const originalStrict = process.env.MEMONGO_BENCHMARK_STRICT
-		delete process.env.MEMONGO_BENCHMARK_DATASET_SHA
-		process.env.MEMONGO_BENCHMARK_STRICT = "1"
+		const originalEnv = process.env.MBRAIN_BENCHMARK_DATASET_SHA
+		const originalStrict = process.env.MBRAIN_BENCHMARK_STRICT
+		delete process.env.MBRAIN_BENCHMARK_DATASET_SHA
+		process.env.MBRAIN_BENCHMARK_STRICT = "1"
 		try {
 			await expect(
 				resolveDatasetSha256({ datasetPath: undefined }),
 			).rejects.toThrow(/dataset/i)
 		} finally {
 			if (originalEnv === undefined) {
-				delete process.env.MEMONGO_BENCHMARK_DATASET_SHA
+				delete process.env.MBRAIN_BENCHMARK_DATASET_SHA
 			} else {
-				process.env.MEMONGO_BENCHMARK_DATASET_SHA = originalEnv
+				process.env.MBRAIN_BENCHMARK_DATASET_SHA = originalEnv
 			}
 			if (originalStrict === undefined) {
-				delete process.env.MEMONGO_BENCHMARK_STRICT
+				delete process.env.MBRAIN_BENCHMARK_STRICT
 			} else {
-				process.env.MEMONGO_BENCHMARK_STRICT = originalStrict
+				process.env.MBRAIN_BENCHMARK_STRICT = originalStrict
 			}
 		}
 	})
 
 	it("accepts override datasetSha256 arg ahead of env and path", async () => {
-		const original = process.env.MEMONGO_BENCHMARK_DATASET_SHA
-		process.env.MEMONGO_BENCHMARK_DATASET_SHA = "b".repeat(64)
+		const original = process.env.MBRAIN_BENCHMARK_DATASET_SHA
+		process.env.MBRAIN_BENCHMARK_DATASET_SHA = "b".repeat(64)
 		try {
 			const override = "c".repeat(64)
 			const sha = await resolveDatasetSha256({
@@ -164,9 +164,9 @@ describe("resolveDatasetSha256", () => {
 			expect(sha).toBe(override)
 		} finally {
 			if (original === undefined) {
-				delete process.env.MEMONGO_BENCHMARK_DATASET_SHA
+				delete process.env.MBRAIN_BENCHMARK_DATASET_SHA
 			} else {
-				process.env.MEMONGO_BENCHMARK_DATASET_SHA = original
+				process.env.MBRAIN_BENCHMARK_DATASET_SHA = original
 			}
 		}
 	})
@@ -199,9 +199,9 @@ describe("resolveBenchmarkEmbeddingConfig", () => {
 		expect(cfg.quantization).toBe("binary")
 	})
 
-	it("honors MEMONGO_BENCHMARK_EMBEDDING_MODEL env override", () => {
-		const original = process.env.MEMONGO_BENCHMARK_EMBEDDING_MODEL
-		process.env.MEMONGO_BENCHMARK_EMBEDDING_MODEL = "voyage-4-large"
+	it("honors MBRAIN_BENCHMARK_EMBEDDING_MODEL env override", () => {
+		const original = process.env.MBRAIN_BENCHMARK_EMBEDDING_MODEL
+		process.env.MBRAIN_BENCHMARK_EMBEDDING_MODEL = "voyage-4-large"
 		try {
 			const cfg = resolveBenchmarkEmbeddingConfig({
 				numDimensions: 1024,
@@ -210,9 +210,9 @@ describe("resolveBenchmarkEmbeddingConfig", () => {
 			expect(cfg.model).toBe("voyage-4-large")
 		} finally {
 			if (original === undefined) {
-				delete process.env.MEMONGO_BENCHMARK_EMBEDDING_MODEL
+				delete process.env.MBRAIN_BENCHMARK_EMBEDDING_MODEL
 			} else {
-				process.env.MEMONGO_BENCHMARK_EMBEDDING_MODEL = original
+				process.env.MBRAIN_BENCHMARK_EMBEDDING_MODEL = original
 			}
 		}
 	})
@@ -245,7 +245,7 @@ describe("collectStorageFootprint", () => {
 	it("returns populated bytes when collStats succeeds", async () => {
 		const mockDb = {
 			command: async (cmd: Record<string, unknown>) => {
-				expect(cmd).toEqual({ collStats: "memongo_bench_events" })
+				expect(cmd).toEqual({ collStats: "mbrain_bench_events" })
 				return { size: 1234, totalIndexSize: 5678, storageSize: 9000 }
 			},
 		}
@@ -253,7 +253,7 @@ describe("collectStorageFootprint", () => {
 			db: mockDb as unknown as Parameters<
 				typeof collectStorageFootprint
 			>[0]["db"],
-			collectionName: "memongo_bench_events",
+			collectionName: "mbrain_bench_events",
 		})
 		expect(footprint.collectionBytes).toBe(1234)
 		expect(footprint.indexBytes).toBe(5678)
@@ -270,7 +270,7 @@ describe("collectStorageFootprint", () => {
 			db: mockDb as unknown as Parameters<
 				typeof collectStorageFootprint
 			>[0]["db"],
-			collectionName: "memongo_bench_events",
+			collectionName: "mbrain_bench_events",
 		})
 		expect(footprint.collectionBytes).toBeNull()
 		expect(footprint.indexBytes).toBeNull()
@@ -285,7 +285,7 @@ describe("collectStorageFootprint", () => {
 			db: mockDb as unknown as Parameters<
 				typeof collectStorageFootprint
 			>[0]["db"],
-			collectionName: "memongo_bench_events",
+			collectionName: "mbrain_bench_events",
 		})
 		expect(footprint.collectionBytes).toBeNull()
 		expect(footprint.indexBytes).toBeNull()

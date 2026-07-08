@@ -1,5 +1,5 @@
 {
-	"name": "memongo",
+	"name": "mbrain",
 	"private": true,
 	"description": "MongoDB-native long-term AI memory with reasoning chains, novelty detection, and consolidation: engine, SDK, HTTP API, MCP server, and web console",
 	"license": "Apache-2.0",

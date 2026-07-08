@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-echo "Starting Memongo MongoDB initialization..."
+echo "Starting Mbrain MongoDB initialization..."
 
 export MONGOT_PASSWORD=${MONGOT_PASSWORD:-mongotPassword}
 export ADMIN_PASSWORD=${ADMIN_PASSWORD:-admin}
@@ -48,24 +48,24 @@ ENDOFSCRIPT
 mongosh --file "$INIT_SCRIPT"
 rm -f "$INIT_SCRIPT"
 
-# Create Memongo admin user (optional, for authenticated access)
-echo "Creating memongo admin user..."
+# Create Mbrain admin user (optional, for authenticated access)
+echo "Creating mbrain admin user..."
 ADMIN_SCRIPT=$(mktemp /tmp/init-admin-XXXXXX.js)
 cat > "$ADMIN_SCRIPT" << 'ENDOFSCRIPT'
-const memongoDb = db.getSiblingDB('memongo');
+const mbrainDb = db.getSiblingDB('mbrain');
 const adminPwd = process.env.ADMIN_PASSWORD || 'admin';
 try {
-  memongoDb.createUser({
-    user: 'memongo',
+  mbrainDb.createUser({
+    user: 'mbrain',
     pwd: adminPwd,
-    roles: [{ role: 'readWrite', db: 'memongo' }]
+    roles: [{ role: 'readWrite', db: 'mbrain' }]
   });
-  print('User memongo created successfully');
+  print('User mbrain created successfully');
 } catch (error) {
   if (error.code === 11000) {
-    print('User memongo already exists');
+    print('User mbrain already exists');
   } else {
-    print('Warning: Could not create memongo user: ' + error);
+    print('Warning: Could not create mbrain user: ' + error);
     throw error;
   }
 }
@@ -73,4 +73,4 @@ ENDOFSCRIPT
 mongosh -u admin -p "$ADMIN_PASSWORD" --authenticationDatabase admin --file "$ADMIN_SCRIPT"
 rm -f "$ADMIN_SCRIPT"
 
-echo "Memongo MongoDB initialization completed successfully."
+echo "Mbrain MongoDB initialization completed successfully."

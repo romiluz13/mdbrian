@@ -1,10 +1,10 @@
 ---
 title: Memory
-description: How Memongo stores, indexes, and retrieves Company Brain memory using MongoDB.
+description: How Mbrain stores, indexes, and retrieves Company Brain memory using MongoDB.
 icon: "brain"
 ---
 
-Memongo treats memory as a first-class MongoDB data model for AI apps, agents,
+Mbrain treats memory as a first-class MongoDB data model for AI apps, agents,
 and team workflows. Memory documents can participate in automated vector
 embeddings, full-text indexing, hybrid retrieval, lifecycle updates, and graph
 relationships.
@@ -21,7 +21,7 @@ relationships.
 
 ## Hybrid search
 
-Memongo combines two search strategies using MongoDB hybrid search. `$rankFusion`
+Mbrain combines two search strategies using MongoDB hybrid search. `$rankFusion`
 is the default broad retrieval lane; `$scoreFusion` is used only as a supported
 score-normalized lane when that row is explicitly selected and measured:
 
@@ -34,4 +34,4 @@ For the full framework taxonomy, see [Memory Taxonomy](/concepts/memory-taxonomy
 
 ## Automated embeddings
 
-When you add content to Memongo, embeddings are generated automatically using Voyage AI. No manual embedding step is required -- just send text and Memongo handles the rest.
+When you add content to Mbrain, embeddings are generated automatically using Voyage AI. No manual embedding step is required -- just send text and Mbrain handles the rest.

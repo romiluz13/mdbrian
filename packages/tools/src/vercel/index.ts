@@ -4,7 +4,7 @@ import type {
 } from "@ai-sdk/provider"
 import { wrapLanguageModel, type LanguageModelMiddleware } from "ai"
 
-export interface MemongoCoreOptions {
+export interface MbrainCoreOptions {
 	apiUrl: string
 	apiKey: string
 	userId: string
@@ -85,11 +85,11 @@ function extractResponseText(
 }
 
 /* ------------------------------------------------------------------ */
-/*  Core: fetch context bundle from Memongo API                       */
+/*  Core: fetch context bundle from Mbrain API                       */
 /* ------------------------------------------------------------------ */
 
 async function fetchContextBundle(
-	options: MemongoCoreOptions,
+	options: MbrainCoreOptions,
 	userQuery?: string,
 ): Promise<string> {
 	const mode =
@@ -134,7 +134,7 @@ async function fetchContextBundle(
 /* ------------------------------------------------------------------ */
 
 function fireWriteEvent(
-	options: MemongoCoreOptions,
+	options: MbrainCoreOptions,
 	role: "user" | "assistant",
 	body: string,
 ): void {
@@ -150,7 +150,7 @@ function fireWriteEvent(
 			agentId: options.agentId ?? options.userId,
 		}),
 	}).catch((err) => {
-		console.warn("[memongo] write-event failed:", role, err)
+		console.warn("[mbrain] write-event failed:", role, err)
 	})
 }
 
@@ -158,9 +158,9 @@ function fireWriteEvent(
 /*  Public API                                                        */
 /* ------------------------------------------------------------------ */
 
-export function withMemongo(
+export function withMbrain(
 	model: LanguageModelV2,
-	options: MemongoCoreOptions,
+	options: MbrainCoreOptions,
 ): LanguageModelV2 {
 	const middleware: LanguageModelMiddleware = {
 		transformParams: async ({ params }) => {

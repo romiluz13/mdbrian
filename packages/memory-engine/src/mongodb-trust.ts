@@ -1,4 +1,4 @@
-import type { MemoryScope } from "@memongo/lib"
+import type { MemoryScope } from "@mbrain/lib"
 import type {
 	MemoryResultTrust,
 	MemorySearchClassification,

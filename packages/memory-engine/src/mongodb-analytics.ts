@@ -1,5 +1,5 @@
 import type { Db, Document } from "mongodb"
-import { createSubsystemLogger } from "@memongo/lib"
+import { createSubsystemLogger } from "@mbrain/lib"
 import type { EmbeddingStatusCoverage } from "./mongodb-embedding-retry.js"
 import {
 	chunksCollection,

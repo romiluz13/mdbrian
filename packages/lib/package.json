@@ -1,17 +1,17 @@
 {
-	"name": "@memongo/lib",
+	"name": "@mbrain/lib",
 	"version": "1.1.0",
-	"description": "Shared types and utilities for Memongo packages",
+	"description": "Shared types and utilities for Mbrain packages",
 	"type": "module",
 	"license": "Apache-2.0",
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/romiluz13/memongo.git",
+		"url": "git+https://github.com/romiluz13/mbrain.git",
 		"directory": "packages/lib"
 	},
 	"author": "Rom Iluz",
 	"keywords": [
-		"memongo",
+		"mbrain",
 		"runtime",
 		"types",
 		"utilities"
@@ -43,8 +43,8 @@
 	"devDependencies": {
 		"typescript": "^5.8.0"
 	},
-	"homepage": "https://github.com/romiluz13/memongo#readme",
+	"homepage": "https://github.com/romiluz13/mbrain#readme",
 	"bugs": {
-		"url": "https://github.com/romiluz13/memongo/issues"
+		"url": "https://github.com/romiluz13/mbrain/issues"
 	}
 }

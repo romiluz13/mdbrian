@@ -1,4 +1,4 @@
-import type { MemoryScope } from "@memongo/lib"
+import type { MemoryScope } from "@mbrain/lib"
 
 export type MemorySource = "reference" | "conversation" | "structured"
 export type LegacyMemorySource = "memory" | "sessions" | "kb" | "structured"

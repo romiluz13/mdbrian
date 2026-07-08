@@ -11,7 +11,7 @@ import {
 const tempDirs: string[] = []
 
 async function createTempDir(): Promise<string> {
-	const dir = await mkdtemp(path.join(os.tmpdir(), "memongo-proof-artifacts-"))
+	const dir = await mkdtemp(path.join(os.tmpdir(), "mbrain-proof-artifacts-"))
 	tempDirs.push(dir)
 	return dir
 }
@@ -33,14 +33,14 @@ describe("proof-artifacts", () => {
 		expect(resolveProofArtifactDir({ cwd, env: {} })).toBeNull()
 	})
 
-	it("prefers MEMONGO_PROOF_ARTIFACT_DIR when provided", async () => {
+	it("prefers MBRAIN_PROOF_ARTIFACT_DIR when provided", async () => {
 		const cwd = await createTempDir()
 		const artifactDir = path.join(cwd, "custom-artifacts")
 
 		expect(
 			resolveProofArtifactDir({
 				cwd,
-				env: { MEMONGO_PROOF_ARTIFACT_DIR: artifactDir },
+				env: { MBRAIN_PROOF_ARTIFACT_DIR: artifactDir },
 			}),
 		).toBe(artifactDir)
 	})

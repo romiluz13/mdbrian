@@ -2,7 +2,7 @@
 
 ## Executive Summary
 
-The most directly relevant repo is **memongo** — a full MongoDB-native "Company Brain" memory framework with entities, relations, episodes, knowledge base, hybrid search ($vectorSearch + $search + $rankFusion), $graphLookup, consolidation ("Dreamer"), and wiki-source tracking fields. It is the single best foundation to build on.
+The most directly relevant repo is **mbrain** — a full MongoDB-native "Company Brain" memory framework with entities, relations, episodes, knowledge base, hybrid search ($vectorSearch + $search + $rankFusion), $graphLookup, consolidation ("Dreamer"), and wiki-source tracking fields. It is the single best foundation to build on.
 
 **Hybrid-Search-RAG** is a MongoDB-backed LightRAG fork with KG extraction, $vectorSearch, $search, $graphLookup, $rankFusion, Voyage embeddings, and conversation memory — a strong reference for graph-augmented RAG patterns.
 
@@ -12,9 +12,9 @@ The most directly relevant repo is **memongo** — a full MongoDB-native "Compan
 
 ---
 
-## 1. memongo — PRIMARY CANDIDATE
+## 1. mbrain — PRIMARY CANDIDATE
 
-**Path:** `/Users/rom.iluz/Dev/memongo`
+**Path:** `/Users/rom.iluz/Dev/mbrain`
 **What it does:** MongoDB-native long-term AI memory framework ("Company Brain"). Stores conversations, facts, procedures, KB chunks, episodes, and graph relationships in MongoDB. Retrieves with hybrid vector + full-text search + $rankFusion. Ships as monorepo: HTTP API (Hono), MCP server, TypeScript client, AI SDK tools, Next.js web console.
 
 ### MongoDB Collections (prefix-based, ~30 collections)
@@ -73,7 +73,7 @@ The most directly relevant repo is **memongo** — a full MongoDB-native "Compan
 
 ### Dependencies
 - `mongodb: 7.2.0` (Node.js MongoDB driver)
-- `@memongo/lib: 1.1.0` (shared types)
+- `@mbrain/lib: 1.1.0` (shared types)
 - `node-llama-cpp: >=3.0.0` (optional, local embeddings)
 - No langchain/langgraph dependency — pure MongoDB driver
 
@@ -195,13 +195,13 @@ The most directly relevant repo is **memongo** — a full MongoDB-native "Compan
 
 ## 6. Other Repos (Lower Relevance)
 
-### memongo-competitors
-**Path:** `/Users/rom.iluz/Dev/memongo-competitors`
+### mbrain-competitors
+**Path:** `/Users/rom.iluz/Dev/mbrain-competitors`
 Competitor analysis repos: Membench, OpenViking, hindsight, letta, locomo, mastra, mem0, memory-benchmarks, mempalace, openclaw-eval, supermemory, zep. Reference for benchmarking and feature comparison.
 
-### memongo-oss-review-findings
-**Path:** `/Users/rom.iluz/Dev/memongo-oss-review-findings`
-Markdown reports from OSS review of memongo. Useful for understanding known issues and quality gates.
+### mbrain-oss-review-findings
+**Path:** `/Users/rom.iluz/Dev/mbrain-oss-review-findings`
+Markdown reports from OSS review of mbrain. Useful for understanding known issues and quality gates.
 
 ### hermes-agent
 **Path:** `/Users/rom.iluz/Dev/hermes-agent`
@@ -235,16 +235,16 @@ TypeScript AI agent framework (Vercel-based). No MongoDB or vector search. Not r
 
 ## Reuse Recommendations for "LLM Wiki on MongoDB"
 
-### Build directly on memongo
+### Build directly on mbrain
 1. **Reuse the entire memory-engine** as the storage + retrieval layer — it already has entities, relations, episodes, KB, hybrid search, $graphLookup, consolidation
 2. **Add wiki-specific collections or extend KB schema** — `wikiSource`, `vault`, `section` fields already exist in KB_SCHEMA and KB_CHUNKS_SCHEMA
 3. **Borrow openclaw memory-wiki page schema** (entity/concept/synthesis/source/report kinds, claims with evidence, contradictions, questions, relationships, person cards) as the conceptual model for wiki pages stored in MongoDB
-4. **Reuse Hybrid-Search-RAG's GraphRAG patterns** for LLM-based entity extraction and KG construction if memongo's regex extractor is insufficient
+4. **Reuse Hybrid-Search-RAG's GraphRAG patterns** for LLM-based entity extraction and KG construction if mbrain's regex extractor is insufficient
 5. **Reuse SDR-AI's langgraph-store-mongodb pattern** if LangGraph agent integration is needed
 6. **Reuse langchain-mongodb-deepagents-vfs-adapter** for file-system ingestion (S3 → chunk → embed → MongoDB)
 
 ### What's missing (would need to be built)
 - Wiki page rendering/compilation layer (openclaw has this but for markdown files, not MongoDB)
-- Obsidian/Confluence/Notion sync connectors (memongo has schema fields but no connectors)
-- Claim contradiction detection across pages (openclaw has the schema, memongo has injection classification but not cross-page contradiction)
+- Obsidian/Confluence/Notion sync connectors (mbrain has schema fields but no connectors)
+- Claim contradiction detection across pages (openclaw has the schema, mbrain has injection classification but not cross-page contradiction)
 - Backlink/dashboard generation (openclaw has `createBacklinks`, `createDashboards` config flags)

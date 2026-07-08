@@ -241,7 +241,7 @@ describe("writeStructuredMemory", () => {
 		expect(updateCall[1].$set.scope).toBe("agent")
 	})
 
-	it("does not include embedding vectors in Memongo write path", async () => {
+	it("does not include embedding vectors in Mbrain write path", async () => {
 		const col = createMockStructuredCol()
 		const revisionsCol = createMockStructuredCol()
 

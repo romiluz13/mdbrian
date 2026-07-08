@@ -64,13 +64,13 @@ describe("resolveEnrichment runtime knobs", () => {
 
 	it("rejects invalid runtime knob values", () => {
 		expect(() => resolveEnrichmentTimeoutMs("0")).toThrow(
-			"MEMONGO_LLM_ENRICHMENT_TIMEOUT_MS",
+			"MBRAIN_LLM_ENRICHMENT_TIMEOUT_MS",
 		)
 		expect(() => resolveEnrichmentMaxRetries("-1")).toThrow(
-			"MEMONGO_LLM_ENRICHMENT_MAX_RETRIES",
+			"MBRAIN_LLM_ENRICHMENT_MAX_RETRIES",
 		)
 		expect(() => resolveEnrichmentMaxTokens("0")).toThrow(
-			"MEMONGO_LLM_ENRICHMENT_MAX_TOKENS",
+			"MBRAIN_LLM_ENRICHMENT_MAX_TOKENS",
 		)
 	})
 })
@@ -101,9 +101,9 @@ describe("resolveEnrichmentProvider", () => {
 
 	it("creates provider from explicit config", () => {
 		const provider = resolveEnrichmentProvider({
-			MEMONGO_ENRICHMENT_API_KEY: "test-key-123",
-			MEMONGO_ENRICHMENT_BASE_URL: "https://example.com/v1",
-			MEMONGO_ENRICHMENT_MODEL: "gpt-4o-mini",
+			MBRAIN_ENRICHMENT_API_KEY: "test-key-123",
+			MBRAIN_ENRICHMENT_BASE_URL: "https://example.com/v1",
+			MBRAIN_ENRICHMENT_MODEL: "gpt-4o-mini",
 		})
 		expect(provider).not.toBeNull()
 		expect(provider!.name).toBe("http")
@@ -124,25 +124,25 @@ describe("resolveEnrichmentProvider", () => {
 	it("requires explicit base URL and model when an API key is configured", () => {
 		expect(() =>
 			resolveEnrichmentProvider({
-				MEMONGO_ENRICHMENT_API_KEY: "test-key",
-				MEMONGO_ENRICHMENT_MODEL: "gpt-4o-mini",
+				MBRAIN_ENRICHMENT_API_KEY: "test-key",
+				MBRAIN_ENRICHMENT_MODEL: "gpt-4o-mini",
 			}),
-		).toThrow("MEMONGO_ENRICHMENT_BASE_URL")
+		).toThrow("MBRAIN_ENRICHMENT_BASE_URL")
 
 		expect(() =>
 			resolveEnrichmentProvider({
-				MEMONGO_ENRICHMENT_API_KEY: "test-key",
-				MEMONGO_ENRICHMENT_BASE_URL: "https://example.com/v1",
+				MBRAIN_ENRICHMENT_API_KEY: "test-key",
+				MBRAIN_ENRICHMENT_BASE_URL: "https://example.com/v1",
 			}),
-		).toThrow("MEMONGO_ENRICHMENT_MODEL")
+		).toThrow("MBRAIN_ENRICHMENT_MODEL")
 	})
 
 	it("creates Anthropic provider from explicit provider flag", () => {
 		const provider = resolveEnrichmentProvider({
-			MEMONGO_ENRICHMENT_API_KEY: "test-key",
-			MEMONGO_ENRICHMENT_PROVIDER: "anthropic",
-			MEMONGO_ENRICHMENT_BASE_URL: "https://example.com/anthropic/v1/messages",
-			MEMONGO_ENRICHMENT_MODEL: "claude-sonnet-4-6",
+			MBRAIN_ENRICHMENT_API_KEY: "test-key",
+			MBRAIN_ENRICHMENT_PROVIDER: "anthropic",
+			MBRAIN_ENRICHMENT_BASE_URL: "https://example.com/anthropic/v1/messages",
+			MBRAIN_ENRICHMENT_MODEL: "claude-sonnet-4-6",
 		})
 		expect(provider).not.toBeNull()
 		expect(provider!.name).toBe("anthropic")
@@ -369,9 +369,9 @@ describe("extractSessionEnrichment", () => {
 		)
 	})
 
-	it("uses MEMONGO_LLM_ENRICHMENT_MAX_TOKENS for extraction calls", async () => {
-		const previous = process.env.MEMONGO_LLM_ENRICHMENT_MAX_TOKENS
-		process.env.MEMONGO_LLM_ENRICHMENT_MAX_TOKENS = "2048"
+	it("uses MBRAIN_LLM_ENRICHMENT_MAX_TOKENS for extraction calls", async () => {
+		const previous = process.env.MBRAIN_LLM_ENRICHMENT_MAX_TOKENS
+		process.env.MBRAIN_LLM_ENRICHMENT_MAX_TOKENS = "2048"
 		try {
 			const provider = mockProvider(
 				JSON.stringify({
@@ -388,9 +388,9 @@ describe("extractSessionEnrichment", () => {
 			)
 		} finally {
 			if (previous === undefined) {
-				delete process.env.MEMONGO_LLM_ENRICHMENT_MAX_TOKENS
+				delete process.env.MBRAIN_LLM_ENRICHMENT_MAX_TOKENS
 			} else {
-				process.env.MEMONGO_LLM_ENRICHMENT_MAX_TOKENS = previous
+				process.env.MBRAIN_LLM_ENRICHMENT_MAX_TOKENS = previous
 			}
 		}
 	})

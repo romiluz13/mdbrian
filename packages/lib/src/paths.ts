@@ -11,12 +11,12 @@ export function resolveUserPath(p: string): string {
 	return path.resolve(p)
 }
 
-export function memongoDataDir(): string {
-	return resolveUserPath("~/.memongo")
+export function mbrainDataDir(): string {
+	return resolveUserPath("~/.mbrain")
 }
 
-export function memongoAgentDir(agentId: string): string {
-	return path.join(memongoDataDir(), "agents", agentId)
+export function mbrainAgentDir(agentId: string): string {
+	return path.join(mbrainDataDir(), "agents", agentId)
 }
 
 export function ensureTrailingSlash(dir: string): string {

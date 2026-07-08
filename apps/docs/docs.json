@@ -1,6 +1,6 @@
 {
 	"$schema": "https://mintlify.com/docs.json",
-	"name": "Memongo | MongoDB-native AI Memory",
+	"name": "Mbrain | MongoDB-native AI Memory",
 	"colors": {
 		"dark": "#00684A",
 		"light": "#00ED64",
@@ -17,7 +17,7 @@
 	"navbar": {
 		"links": [
 			{
-				"href": "https://github.com/romiluz13/memongo",
+				"href": "https://github.com/romiluz13/mbrain",
 				"label": "GitHub"
 			}
 		]

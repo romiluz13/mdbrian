@@ -36,11 +36,11 @@ type PreflightReport = {
 }
 
 const DEFAULT_REQUIRED_ENV = [
-	"MEMONGO_MONGODB_URI",
+	"MBRAIN_MONGODB_URI",
 	"VOYAGE_API_KEY",
-	"MEMONGO_LLM_BASE_URL",
-	"MEMONGO_LLM_API_KEY",
-	"MEMONGO_LLM_MODEL",
+	"MBRAIN_LLM_BASE_URL",
+	"MBRAIN_LLM_API_KEY",
+	"MBRAIN_LLM_MODEL",
 ] as const
 
 function readArg(name: string): string | undefined {
@@ -51,15 +51,15 @@ function readArg(name: string): string | undefined {
 }
 
 function readDatabaseName(): string {
-	return process.env.MEMONGO_DB_NAME?.trim() || "memongo"
+	return process.env.MBRAIN_DB_NAME?.trim() || "mbrain"
 }
 
 function readPrefix(): string {
 	const prefix =
-		readArg("prefix") || process.env.MEMONGO_MONGODB_COLLECTION_PREFIX?.trim()
+		readArg("prefix") || process.env.MBRAIN_MONGODB_COLLECTION_PREFIX?.trim()
 	if (!prefix) {
 		throw new Error(
-			"pass --prefix=memongo_bench_<lane>_<date>_<suffix>_ or set MEMONGO_MONGODB_COLLECTION_PREFIX",
+			"pass --prefix=mbrain_bench_<lane>_<date>_<suffix>_ or set MBRAIN_MONGODB_COLLECTION_PREFIX",
 		)
 	}
 	validateCollectionPrefix(prefix)
@@ -67,9 +67,9 @@ function readPrefix(): string {
 }
 
 function validateCollectionPrefix(prefix: string): void {
-	if (!/^memongo_bench_[a-z0-9][a-z0-9_-]*_$/.test(prefix)) {
+	if (!/^mbrain_bench_[a-z0-9][a-z0-9_-]*_$/.test(prefix)) {
 		throw new Error(
-			"collection prefix must start with memongo_bench_, contain only lowercase letters, numbers, underscores, and hyphens, and end with _",
+			"collection prefix must start with mbrain_bench_, contain only lowercase letters, numbers, underscores, and hyphens, and end with _",
 		)
 	}
 }
@@ -87,8 +87,8 @@ function readBooleanEnv(name: string): boolean {
 function readRequiredEnvNames(): string[] {
 	const raw =
 		readArg("required-env") ||
-		process.env.MEMONGO_CLUSTER_PREFLIGHT_REQUIRED_ENV?.trim() ||
-		process.env.MEMONGO_BENCHMARK_PREFLIGHT_REQUIRED_ENV?.trim()
+		process.env.MBRAIN_CLUSTER_PREFLIGHT_REQUIRED_ENV?.trim() ||
+		process.env.MBRAIN_BENCHMARK_PREFLIGHT_REQUIRED_ENV?.trim()
 	if (!raw) return [...DEFAULT_REQUIRED_ENV]
 	return raw
 		.split(",")
@@ -133,7 +133,7 @@ async function verifyAtlasModelKey(): Promise<{
 				"Content-Type": "application/json",
 			},
 			body: JSON.stringify({
-				input: "Memongo MongoDB preflight probe",
+				input: "Mbrain MongoDB preflight probe",
 				model: "voyage-4-lite",
 				input_type: "document",
 			}),
@@ -180,7 +180,7 @@ async function listActiveOperations(
 					$match: {
 						$or: [
 							{ ns: { $regex: `^${escapedDatabase}\\.` } },
-							{ appName: { $regex: "memongo|benchmark", $options: "i" } },
+							{ appName: { $regex: "mbrain|benchmark", $options: "i" } },
 						],
 					},
 				},
@@ -249,8 +249,8 @@ const warnings: string[] = []
 const requireEmptyDb = hasArg("require-empty-db")
 const shouldVerifyAtlasModelKey =
 	hasArg("verify-atlas-model-key") ||
-	readBooleanEnv("MEMONGO_CLUSTER_PREFLIGHT_VERIFY_ATLAS_MODEL_KEY") ||
-	readBooleanEnv("MEMONGO_BENCHMARK_VERIFY_ATLAS_MODEL_KEY")
+	readBooleanEnv("MBRAIN_CLUSTER_PREFLIGHT_VERIFY_ATLAS_MODEL_KEY") ||
+	readBooleanEnv("MBRAIN_BENCHMARK_VERIFY_ATLAS_MODEL_KEY")
 
 const atlasModelKeyProbe = shouldVerifyAtlasModelKey
 	? await verifyAtlasModelKey()
@@ -286,11 +286,11 @@ let report: PreflightReport = {
 	warnings,
 }
 
-if (!process.env.MEMONGO_MONGODB_URI?.trim()) {
-	report.warnings.push("MEMONGO_MONGODB_URI is required for publication runs")
+if (!process.env.MBRAIN_MONGODB_URI?.trim()) {
+	report.warnings.push("MBRAIN_MONGODB_URI is required for publication runs")
 } else {
-	const client = new MongoClient(process.env.MEMONGO_MONGODB_URI.trim(), {
-		appName: "memongo-mongodb-cluster-preflight-readonly",
+	const client = new MongoClient(process.env.MBRAIN_MONGODB_URI.trim(), {
+		appName: "mbrain-mongodb-cluster-preflight-readonly",
 		serverSelectionTimeoutMS: 10_000,
 	})
 	await client.connect()
@@ -302,7 +302,7 @@ if (!process.env.MEMONGO_MONGODB_URI?.trim()) {
 		const names = collections.map((collection) => collection.name).sort()
 		const nonSystem = names.filter((name) => !isSystemCollection(name))
 		const benchmarkNames = names.filter((name) =>
-			name.startsWith("memongo_bench_"),
+			name.startsWith("mbrain_bench_"),
 		)
 		const matchingPrefixNames = names.filter((name) => name.startsWith(prefix))
 		const active = await listActiveOperations(client, database)

@@ -1,4 +1,4 @@
-import { createSubsystemLogger, type MemoryScope } from "@memongo/lib"
+import { createSubsystemLogger, type MemoryScope } from "@mbrain/lib"
 import type {
 	MemoryBenchmarkConversation,
 	MemoryBenchmarkDatasetKind,

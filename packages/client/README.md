@@ -1,11 +1,11 @@
-# @memongo/client
+# @mbrain/client
 
-TypeScript HTTP client for the Memongo API. Use this package when you want to call the supported public API from an app, job, or integration.
+TypeScript HTTP client for the Mbrain API. Use this package when you want to call the supported public API from an app, job, or integration.
 
 ## Install
 
 ```bash
-npm install @memongo/client
+npm install @mbrain/client
 ```
 
 ## When to use this package
@@ -17,9 +17,9 @@ npm install @memongo/client
 ## Example
 
 ```ts
-import { MemongoClient } from "@memongo/client"
+import { MbrainClient } from "@mbrain/client"
 
-const client = new MemongoClient({
+const client = new MbrainClient({
 	baseUrl: "http://127.0.0.1:3847",
 })
 
@@ -40,4 +40,4 @@ const results = await client.search({
 - `client.scanNovelty()` -- surprisal novelty detection (`POST /v1/novelty-scan`)
 - `client.consolidate()` -- trigger consolidation agent (`POST /v1/consolidate`)
 
-If you need server-side helpers or direct engine access, use [`@memongo/memory-bridge`](../memory-bridge/README.md) or [`@memongo/memory-engine`](../memory-engine/README.md).
+If you need server-side helpers or direct engine access, use [`@mbrain/memory-bridge`](../memory-bridge/README.md) or [`@mbrain/memory-engine`](../memory-engine/README.md).

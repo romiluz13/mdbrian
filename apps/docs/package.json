@@ -1,5 +1,5 @@
 {
-	"name": "@memongo/docs",
+	"name": "@mbrain/docs",
 	"private": true,
 	"type": "module",
 	"scripts": {

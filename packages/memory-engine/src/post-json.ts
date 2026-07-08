@@ -1,4 +1,4 @@
-import type { SsrFPolicy } from "@memongo/lib"
+import type { SsrFPolicy } from "@mbrain/lib"
 import { withRemoteHttpResponse } from "./remote-http.js"
 
 export async function postJson<T>(params: {

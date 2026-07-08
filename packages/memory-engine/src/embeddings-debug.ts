@@ -1,6 +1,6 @@
-import { isTruthyEnvValue, createSubsystemLogger } from "@memongo/lib"
+import { isTruthyEnvValue, createSubsystemLogger } from "@mbrain/lib"
 
-const debugEmbeddings = isTruthyEnvValue(process.env.MEMONGO_DEBUG_EMBEDDINGS)
+const debugEmbeddings = isTruthyEnvValue(process.env.MBRAIN_DEBUG_EMBEDDINGS)
 const log = createSubsystemLogger("memory/embeddings")
 
 export function debugEmbeddingsLog(

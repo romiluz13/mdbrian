@@ -11,7 +11,7 @@ export type {
 	MemorySourceToggleConfig,
 } from "./types.memory.js"
 
-export type { MemongoConfig, SecretInput } from "./types.js"
+export type { MbrainConfig, SecretInput } from "./types.js"
 
 export {
 	isTruthyEnvValue,
@@ -60,8 +60,8 @@ export {
 } from "./auth.js"
 export {
 	resolveUserPath,
-	memongoDataDir,
-	memongoAgentDir,
+	mbrainDataDir,
+	mbrainAgentDir,
 	ensureTrailingSlash,
 } from "./paths.js"
 export {

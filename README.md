@@ -1,7 +1,7 @@
-# Memongo
+# Mbrain
 
 <p align="center">
-  <img src="./docs/assets/README-hero.png" alt="Memongo - MongoDB-native long-term AI memory" width="100%">
+  <img src="./docs/assets/README-hero.png" alt="Mbrain - MongoDB-native long-term AI memory" width="100%">
 </p>
 
 <p align="center">
@@ -13,18 +13,18 @@
   <a href="./apps/docs/concepts/framework.mdx">Framework</a> ·
   <a href="./apps/docs/concepts/architecture.mdx">Architecture</a> ·
   <a href="./apps/docs/api/overview.mdx">API</a> ·
-  <a href="https://memongo.rom-88f.workers.dev">Live Site</a> ·
+  <a href="https://mbrain.rom-88f.workers.dev">Live Site</a> ·
   <a href="./docs/benchmarks/BENCHMARKS.md">Benchmarks</a> ·
   <a href="./docs/platform/PRODUCTION-READY.md">Release Gate</a>
 </p>
 
 <p align="center">
-  <a href="https://www.npmjs.com/package/@memongo/memory"><img alt="@memongo/memory npm version" src="https://img.shields.io/npm/v/%40memongo%2Fmemory?label=%40memongo%2Fmemory"></a>
-  <a href="https://www.npmjs.com/package/@memongo/client"><img alt="@memongo/client npm version" src="https://img.shields.io/npm/v/%40memongo%2Fclient?label=%40memongo%2Fclient"></a>
-  <a href="https://www.npmjs.com/package/@memongo/tools"><img alt="@memongo/tools npm version" src="https://img.shields.io/npm/v/%40memongo%2Ftools?label=%40memongo%2Ftools"></a>
+  <a href="https://www.npmjs.com/package/@mbrain/memory"><img alt="@mbrain/memory npm version" src="https://img.shields.io/npm/v/%40mbrain%2Fmemory?label=%40mbrain%2Fmemory"></a>
+  <a href="https://www.npmjs.com/package/@mbrain/client"><img alt="@mbrain/client npm version" src="https://img.shields.io/npm/v/%40mbrain%2Fclient?label=%40mbrain%2Fclient"></a>
+  <a href="https://www.npmjs.com/package/@mbrain/tools"><img alt="@mbrain/tools npm version" src="https://img.shields.io/npm/v/%40mbrain%2Ftools?label=%40mbrain%2Ftools"></a>
 </p>
 
-Memongo gives AI systems durable Company Brain memory on top of MongoDB. It
+Mbrain gives AI systems durable Company Brain memory on top of MongoDB. It
 stores conversations, facts, procedures, knowledge-base chunks, episodes, and
 graph relationships in one MongoDB-backed memory engine, then retrieves context
 with vector search, full-text search, and hybrid ranking.
@@ -40,8 +40,8 @@ Prerequisites:
 - Docker (for the local MongoDB path — uses MongoDB Atlas Local Preview with mongot for Atlas Search)
 
 ```bash
-git clone https://github.com/romiluz13/memongo.git
-cd memongo
+git clone https://github.com/romiluz13/mbrain.git
+cd mbrain
 bun install
 ```
 
@@ -49,8 +49,8 @@ Start MongoDB:
 
 ```bash
 docker compose -f docker/docker-compose.yml up -d
-export MEMONGO_MONGODB_URI="mongodb://127.0.0.1:27017/?directConnection=true"
-export MEMONGO_API_KEY="local-dev-secret"
+export MBRAIN_MONGODB_URI="mongodb://127.0.0.1:27017/?directConnection=true"
+export MBRAIN_API_KEY="local-dev-secret"
 # Required for semantic search results below (Atlas Model API key, `al-...` prefix):
 export VOYAGE_API_KEY="al-your-atlas-model-api-key"
 ```
@@ -100,11 +100,11 @@ For a guided setup, see [Quickstart](apps/docs/quickstart.mdx).
 | Bridge | `packages/memory-bridge` | Stable facade over the engine |
 | Client SDK | `packages/client` | TypeScript HTTP client |
 | AI tools | `packages/tools` | Vercel AI SDK tool helpers |
-| Published barrel | `packages/memongo-memory` | `@memongo/memory` convenience package |
+| Published barrel | `packages/mbrain-memory` | `@mbrain/memory` convenience package |
 
 ## Memory Framework
 
-Memongo's framework contract is:
+Mbrain's framework contract is:
 
 - Memory taxonomy: episodic events, semantic facts, procedural playbooks,
   profile preferences, workspace knowledge, and provenance.
@@ -120,13 +120,13 @@ See [Memory Framework](apps/docs/concepts/framework.mdx), [Memory Taxonomy](apps
 
 ```text
 App / Agent / MCP client
-  -> Memongo HTTP API or TypeScript client
+  -> Mbrain HTTP API or TypeScript client
   -> Memory bridge
   -> MongoDB memory engine
   -> MongoDB Search, Vector Search, collections, indexes, and telemetry
 ```
 
-Memongo keeps the product interface small while the engine handles:
+Mbrain keeps the product interface small while the engine handles:
 
 - Conversation and event memory
 - Structured facts and revisions
@@ -138,34 +138,34 @@ Memongo keeps the product interface small while the engine handles:
 
 ## Configuration
 
-Memongo reads environment variables and an optional config file at `~/.memongo/memongo.json`.
+Mbrain reads environment variables and an optional config file at `~/.mbrain/mbrain.json`.
 
 Common variables:
 
 | Variable | Purpose |
 |---|---|
-| `MEMONGO_MONGODB_URI` | MongoDB connection string |
-| `MEMONGO_API_HOST` | API bind host, default `127.0.0.1` |
-| `MEMONGO_API_PORT` | API port, default `3847` |
-| `MEMONGO_API_KEY` | Recommended bearer token for API requests |
-| `MEMONGO_AGENT_ID` | Default memory isolation key |
-| `MEMONGO_MONGODB_RECALL_PROFILE` | `latency`, `balanced`, or `proof`; default `balanced` |
+| `MBRAIN_MONGODB_URI` | MongoDB connection string |
+| `MBRAIN_API_HOST` | API bind host, default `127.0.0.1` |
+| `MBRAIN_API_PORT` | API port, default `3847` |
+| `MBRAIN_API_KEY` | Recommended bearer token for API requests |
+| `MBRAIN_AGENT_ID` | Default memory isolation key |
+| `MBRAIN_MONGODB_RECALL_PROFILE` | `latency`, `balanced`, or `proof`; default `balanced` |
 | `VOYAGE_API_KEY` | Atlas Model API key for MongoDB auto-embed lanes |
-| `MEMONGO_ENRICHMENT_BASE_URL` | Optional OpenAI-compatible or Anthropic endpoint for LLM enrichment |
-| `MEMONGO_ENRICHMENT_API_KEY` | API key for the enrichment endpoint |
-| `MEMONGO_ENRICHMENT_MODEL` | Model used by enrichment when enabled |
+| `MBRAIN_ENRICHMENT_BASE_URL` | Optional OpenAI-compatible or Anthropic endpoint for LLM enrichment |
+| `MBRAIN_ENRICHMENT_API_KEY` | API key for the enrichment endpoint |
+| `MBRAIN_ENRICHMENT_MODEL` | Model used by enrichment when enabled |
 
 OpenAI-compatible enrichment defaults to `Authorization: Bearer`. Gateways that
 require provider-specific headers can set
-`MEMONGO_ENRICHMENT_AUTH_STYLE=api-key` or `x-api-key`; gateways that require
+`MBRAIN_ENRICHMENT_AUTH_STYLE=api-key` or `x-api-key`; gateways that require
 newer completion token naming can set
-`MEMONGO_ENRICHMENT_TOKEN_PARAM=max_completion_tokens`.
+`MBRAIN_ENRICHMENT_TOKEN_PARAM=max_completion_tokens`.
 
 For managed Atlas and Atlas Local Preview notes, see [Configuration](apps/docs/guides/memory-config.mdx) and [Self-hosting](docs/platform/self-host.md).
 
 ## Benchmarks
 
-Memongo benchmark evidence is scoped by lane. Current public evidence supports selected MemPalace P0 retrieval-lane comparisons only. Broader ecosystem benchmarks, including Mem0 LongMemEval judged-answer rows, are still under audit. No Mem0 LongMemEval win is claimed.
+Mbrain benchmark evidence is scoped by lane. Current public evidence supports selected MemPalace P0 retrieval-lane comparisons only. Broader ecosystem benchmarks, including Mem0 LongMemEval judged-answer rows, are still under audit. No Mem0 LongMemEval win is claimed.
 
 Read the evidence page before quoting any number: [Benchmark Evidence](docs/benchmarks/BENCHMARKS.md).
 
@@ -201,18 +201,18 @@ See [Production-ready Checklist](docs/platform/PRODUCTION-READY.md), [Validation
 ## Packages
 
 ```bash
-npm install @memongo/memory
-npm install @memongo/client
-npm install @memongo/tools
+npm install @mbrain/memory
+npm install @mbrain/client
+npm install @mbrain/tools
 ```
 
 Package READMEs:
 
-- [@memongo/client](packages/client/README.md)
-- [@memongo/tools](packages/tools/README.md)
-- [@memongo/memory](packages/memongo-memory/README.md)
-- [@memongo/memory-bridge](packages/memory-bridge/README.md)
-- [@memongo/memory-engine](packages/memory-engine/README.md)
+- [@mbrain/client](packages/client/README.md)
+- [@mbrain/tools](packages/tools/README.md)
+- [@mbrain/memory](packages/mbrain-memory/README.md)
+- [@mbrain/memory-bridge](packages/memory-bridge/README.md)
+- [@mbrain/memory-engine](packages/memory-engine/README.md)
 
 ## License
 

@@ -3,7 +3,7 @@ import type { Stats } from "node:fs"
 import fsSync from "node:fs"
 import fs from "node:fs/promises"
 import path from "node:path"
-import { detectMime, runTasksWithConcurrency } from "@memongo/lib"
+import { detectMime, runTasksWithConcurrency } from "@mbrain/lib"
 import { estimateStructuredEmbeddingInputBytes } from "./embedding-input-limits.js"
 import {
 	buildTextEmbeddingInput,

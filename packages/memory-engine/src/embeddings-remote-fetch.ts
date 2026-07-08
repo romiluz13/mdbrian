@@ -1,4 +1,4 @@
-import type { SsrFPolicy } from "@memongo/lib"
+import type { SsrFPolicy } from "@mbrain/lib"
 import { postJson } from "./post-json.js"
 
 export async function fetchRemoteEmbeddingVectors(params: {

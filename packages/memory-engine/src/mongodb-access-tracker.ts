@@ -8,7 +8,7 @@
  */
 
 import type { AnyBulkWriteOperation, Db, Document } from "mongodb"
-import { createSubsystemLogger } from "@memongo/lib"
+import { createSubsystemLogger } from "@mbrain/lib"
 import {
 	accessEventsCollection,
 	entitiesCollection,

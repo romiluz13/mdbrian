@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to Memongo will be documented in this file.
+All notable changes to Mbrain will be documented in this file.
 
 ## 1.1.0 - 2026-06-24
 

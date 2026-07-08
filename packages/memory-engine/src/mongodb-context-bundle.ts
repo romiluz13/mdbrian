@@ -1,5 +1,5 @@
 import type { Db, Document } from "mongodb"
-import { type MemoryScope, createSubsystemLogger } from "@memongo/lib"
+import { type MemoryScope, createSubsystemLogger } from "@mbrain/lib"
 import { buildDiscoveryProjection } from "./mongodb-discovery-projections.js"
 import { hydrateActiveSlate } from "./mongodb-active-slate.js"
 import { synthesizeProfile, type ProfileSynthesis } from "./mongodb-profile.js"

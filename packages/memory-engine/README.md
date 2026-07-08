@@ -1,23 +1,23 @@
-# @memongo/memory-engine
+# @mbrain/memory-engine
 
-MongoDB-native memory engine for Memongo. Use this package when you need direct access to search, graph, episodes, structured memory, procedures, sync, telemetry, reasoning chains, novelty detection, access tracking, memory consolidation, and retrieval internals.
+MongoDB-native memory engine for Mbrain. Use this package when you need direct access to search, graph, episodes, structured memory, procedures, sync, telemetry, reasoning chains, novelty detection, access tracking, memory consolidation, and retrieval internals.
 
 ## Install
 
 ```bash
-npm install @memongo/memory-engine
+npm install @mbrain/memory-engine
 ```
 
 ## When to use this package
 
-- You are building server-side infrastructure around Memongo.
+- You are building server-side infrastructure around Mbrain.
 - You need direct engine access instead of the HTTP API.
 - You want the lowest-level supported memory primitives in this repo.
 
 ## Example
 
 ```ts
-import { getMemorySearchManager } from "@memongo/memory-engine"
+import { getMemorySearchManager } from "@mbrain/memory-engine"
 
 const { manager } = await getMemorySearchManager({
 	cfg,
@@ -25,7 +25,7 @@ const { manager } = await getMemorySearchManager({
 })
 
 if (!manager) {
-	throw new Error("Memongo memory unavailable")
+	throw new Error("Mbrain memory unavailable")
 }
 
 const results = await manager.search("release notes")
@@ -40,4 +40,4 @@ const results = await manager.search("release notes")
 - `mongodb-consolidator.ts` -- offline consolidation agent (Dreamer) with rule-based pattern matching
 - KB schema fields: `wikiSource`, `vault`, `section` for wiki source categorization
 
-Most apps should use [`@memongo/memory-bridge`](../memory-bridge/README.md) or [`@memongo/client`](../client/README.md) instead of calling the engine directly.
+Most apps should use [`@mbrain/memory-bridge`](../memory-bridge/README.md) or [`@mbrain/client`](../client/README.md) instead of calling the engine directly.

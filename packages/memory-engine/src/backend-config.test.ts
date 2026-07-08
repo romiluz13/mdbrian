@@ -1,17 +1,17 @@
 import { describe, expect, it, vi } from "vitest"
-import type { MemongoConfig } from "@memongo/lib"
+import type { MbrainConfig } from "@mbrain/lib"
 import { resolveMemoryBackendConfig } from "./backend-config.js"
 
 describe("resolveMemoryBackendConfig", () => {
 	it("defaults to mongodb backend when config missing and env URI is set", () => {
-		vi.stubEnv("MEMONGO_MONGODB_URI", "mongodb://env-default:27017/memongo")
+		vi.stubEnv("MBRAIN_MONGODB_URI", "mongodb://env-default:27017/mbrain")
 		const cfg = {
 			agents: { defaults: { workspace: "/tmp/memory-test" } },
-		} as MemongoConfig
+		} as MbrainConfig
 		const resolved = resolveMemoryBackendConfig({ cfg, agentId: "main" })
 		expect(resolved.backend).toBe("mongodb")
 		expect(resolved.citations).toBe("auto")
-		expect(resolved.mongodb?.uri).toBe("mongodb://env-default:27017/memongo")
+		expect(resolved.mongodb?.uri).toBe("mongodb://env-default:27017/mbrain")
 		vi.unstubAllEnvs()
 	})
 
@@ -19,7 +19,7 @@ describe("resolveMemoryBackendConfig", () => {
 		const cfg = {
 			agents: { defaults: { workspace: "/tmp/memory-test" } },
 			memory: { backend: "custom" as never },
-		} as unknown as MemongoConfig
+		} as unknown as MbrainConfig
 		expect(() => resolveMemoryBackendConfig({ cfg, agentId: "main" })).toThrow(
 			/Unsupported memory\.backend "custom"/,
 		)
@@ -38,13 +38,13 @@ describe("resolveMemoryBackendConfig", () => {
 					uri: "mongodb://localhost:27017",
 				},
 			},
-		} as unknown as MemongoConfig
+		} as unknown as MbrainConfig
 		const resolved = resolveMemoryBackendConfig({ cfg, agentId: "main" })
 		expect(resolved.backend).toBe("mongodb")
 		expect(resolved.mongodb).toBeDefined()
 		expect(resolved.mongodb!.uri).toBe("mongodb://localhost:27017")
-		expect(resolved.mongodb!.database).toBe("memongo")
-		expect(resolved.mongodb!.collectionPrefix).toBe("memongo_main_")
+		expect(resolved.mongodb!.database).toBe("mbrain")
+		expect(resolved.mongodb!.collectionPrefix).toBe("mbrain_main_")
 		expect(resolved.mongodb!.deploymentProfile).toBe("atlas-local-preview")
 		expect(resolved.mongodb!.embeddingMode).toBe("automated")
 		expect(resolved.mongodb!.fusionMethod).toBe("rankFusion")
@@ -67,7 +67,7 @@ describe("resolveMemoryBackendConfig", () => {
 		expect(resolved.mongodb!.relevance.retention.days).toBe(14)
 		expect(resolved.mongodb!.relevance.benchmark.enabled).toBe(true)
 		expect(resolved.mongodb!.relevance.benchmark.datasetPath).toContain(
-			".memongo/relevance/golden.jsonl",
+			".mbrain/relevance/golden.jsonl",
 		)
 	})
 
@@ -87,7 +87,7 @@ describe("resolveMemoryBackendConfig", () => {
 					quantization: "scalar",
 				},
 			},
-		} as unknown as MemongoConfig
+		} as unknown as MbrainConfig
 		const resolved = resolveMemoryBackendConfig({ cfg, agentId: "main" })
 		expect(resolved.mongodb!.uri).toBe("mongodb://localhost:27017")
 		expect(resolved.mongodb!.database).toBe("mydb")
@@ -100,7 +100,7 @@ describe("resolveMemoryBackendConfig", () => {
 	})
 
 	it("resolves MongoDB recall profile from env and ignores invalid values", () => {
-		vi.stubEnv("MEMONGO_MONGODB_RECALL_PROFILE", "proof")
+		vi.stubEnv("MBRAIN_MONGODB_RECALL_PROFILE", "proof")
 		try {
 			const cfg = {
 				agents: { defaults: { workspace: "/tmp/memory-test" } },
@@ -108,14 +108,14 @@ describe("resolveMemoryBackendConfig", () => {
 					backend: "mongodb",
 					mongodb: { uri: "mongodb://localhost:27017" },
 				},
-			} as unknown as MemongoConfig
+			} as unknown as MbrainConfig
 			const resolved = resolveMemoryBackendConfig({ cfg, agentId: "main" })
 			expect(resolved.mongodb!.recallProfile).toBe("proof")
 		} finally {
 			vi.unstubAllEnvs()
 		}
 
-		vi.stubEnv("MEMONGO_MONGODB_RECALL_PROFILE", "not-real")
+		vi.stubEnv("MBRAIN_MONGODB_RECALL_PROFILE", "not-real")
 		try {
 			const cfg = {
 				agents: { defaults: { workspace: "/tmp/memory-test" } },
@@ -123,7 +123,7 @@ describe("resolveMemoryBackendConfig", () => {
 					backend: "mongodb",
 					mongodb: { uri: "mongodb://localhost:27017" },
 				},
-			} as unknown as MemongoConfig
+			} as unknown as MbrainConfig
 			const resolved = resolveMemoryBackendConfig({ cfg, agentId: "main" })
 			expect(resolved.mongodb!.recallProfile).toBe("balanced")
 		} finally {
@@ -131,8 +131,8 @@ describe("resolveMemoryBackendConfig", () => {
 		}
 	})
 
-	it("allows MEMONGO_MONGODB_COLLECTION_PREFIX to override config for benchmark isolation", () => {
-		vi.stubEnv("MEMONGO_MONGODB_COLLECTION_PREFIX", "bench_run_")
+	it("allows MBRAIN_MONGODB_COLLECTION_PREFIX to override config for benchmark isolation", () => {
+		vi.stubEnv("MBRAIN_MONGODB_COLLECTION_PREFIX", "bench_run_")
 		const cfg = {
 			agents: { defaults: { workspace: "/tmp/memory-test" } },
 			memory: {
@@ -142,7 +142,7 @@ describe("resolveMemoryBackendConfig", () => {
 					collectionPrefix: "custom_",
 				},
 			},
-		} as unknown as MemongoConfig
+		} as unknown as MbrainConfig
 
 		const resolved = resolveMemoryBackendConfig({ cfg, agentId: "main" })
 
@@ -178,7 +178,7 @@ describe("resolveMemoryBackendConfig", () => {
 					},
 				},
 			},
-		} as unknown as MemongoConfig
+		} as unknown as MbrainConfig
 		const resolved = resolveMemoryBackendConfig({ cfg, agentId: "main" })
 		expect(resolved.mongodb!.relevance.enabled).toBe(false)
 		expect(resolved.mongodb!.relevance.telemetry.enabled).toBe(true)
@@ -199,8 +199,8 @@ describe("resolveMemoryBackendConfig", () => {
 		)
 	})
 
-	it("resolves mongodb URI from MEMONGO_MONGODB_URI env var", () => {
-		vi.stubEnv("MEMONGO_MONGODB_URI", "mongodb://from-env:27017")
+	it("resolves mongodb URI from MBRAIN_MONGODB_URI env var", () => {
+		vi.stubEnv("MBRAIN_MONGODB_URI", "mongodb://from-env:27017")
 		try {
 			const cfg = {
 				agents: { defaults: { workspace: "/tmp/memory-test" } },
@@ -208,7 +208,7 @@ describe("resolveMemoryBackendConfig", () => {
 					backend: "mongodb",
 					mongodb: {},
 				},
-			} as MemongoConfig
+			} as MbrainConfig
 			const resolved = resolveMemoryBackendConfig({ cfg, agentId: "main" })
 			expect(resolved.mongodb!.uri).toBe("mongodb://from-env:27017")
 		} finally {
@@ -216,23 +216,20 @@ describe("resolveMemoryBackendConfig", () => {
 		}
 	})
 
-	it("MEMONGO_FORCE_MONGODB_URI overrides memory.mongodb.uri from config", () => {
-		vi.stubEnv(
-			"MEMONGO_FORCE_MONGODB_URI",
-			"mongodb://from-force:27017/memongo",
-		)
+	it("MBRAIN_FORCE_MONGODB_URI overrides memory.mongodb.uri from config", () => {
+		vi.stubEnv("MBRAIN_FORCE_MONGODB_URI", "mongodb://from-force:27017/mbrain")
 		try {
 			const cfg = {
 				agents: { defaults: { workspace: "/tmp/memory-test" } },
 				memory: {
 					backend: "mongodb",
 					mongodb: {
-						uri: "mongodb://from-file:27017/memongo",
+						uri: "mongodb://from-file:27017/mbrain",
 					},
 				},
-			} as unknown as MemongoConfig
+			} as unknown as MbrainConfig
 			const resolved = resolveMemoryBackendConfig({ cfg, agentId: "main" })
-			expect(resolved.mongodb!.uri).toBe("mongodb://from-force:27017/memongo")
+			expect(resolved.mongodb!.uri).toBe("mongodb://from-force:27017/mbrain")
 		} finally {
 			vi.unstubAllEnvs()
 		}
@@ -245,7 +242,7 @@ describe("resolveMemoryBackendConfig", () => {
 				backend: "mongodb",
 				mongodb: { uri: "mongodb://localhost:27017" },
 			},
-		} as unknown as MemongoConfig
+		} as unknown as MbrainConfig
 		const resolved = resolveMemoryBackendConfig({ cfg, agentId: "main" })
 		expect(resolved.mongodb!.numDimensions).toBe(1024)
 	})
@@ -257,7 +254,7 @@ describe("resolveMemoryBackendConfig", () => {
 				backend: "mongodb",
 				mongodb: { uri: "mongodb://localhost:27017", numDimensions: 768 },
 			},
-		} as unknown as MemongoConfig
+		} as unknown as MbrainConfig
 		const resolved = resolveMemoryBackendConfig({ cfg, agentId: "main" })
 		expect(resolved.mongodb!.numDimensions).toBe(768)
 	})
@@ -269,7 +266,7 @@ describe("resolveMemoryBackendConfig", () => {
 				backend: "mongodb",
 				mongodb: { uri: "mongodb://localhost:27017" },
 			},
-		} as unknown as MemongoConfig
+		} as unknown as MbrainConfig
 		const resolved = resolveMemoryBackendConfig({ cfg, agentId: "main" })
 		expect(resolved.mongodb!.maxPoolSize).toBe(10)
 	})
@@ -281,30 +278,30 @@ describe("resolveMemoryBackendConfig", () => {
 				backend: "mongodb",
 				mongodb: { uri: "mongodb://localhost:27017", maxPoolSize: 20 },
 			},
-		} as unknown as MemongoConfig
+		} as unknown as MbrainConfig
 		const resolved = resolveMemoryBackendConfig({ cfg, agentId: "main" })
 		expect(resolved.mongodb!.maxPoolSize).toBe(20)
 	})
 
 	it("resolves MongoDB connection pool overrides from env", () => {
-		vi.stubEnv("MEMONGO_MONGODB_MAX_POOL_SIZE", "6")
-		vi.stubEnv("MEMONGO_MONGODB_MIN_POOL_SIZE", "0")
-		vi.stubEnv("MEMONGO_MONGODB_MAX_CONNECTING", "2")
-		vi.stubEnv("MEMONGO_MONGODB_MAX_IDLE_TIME_MS", "120000")
-		vi.stubEnv("MEMONGO_MONGODB_SOCKET_TIMEOUT_MS", "180000")
-		vi.stubEnv("MEMONGO_MONGODB_WAIT_QUEUE_TIMEOUT_MS", "30000")
-		vi.stubEnv("MEMONGO_MONGODB_CONNECT_TIMEOUT_MS", "30000")
-		vi.stubEnv("MEMONGO_MONGODB_SERVER_SELECTION_TIMEOUT_MS", "120000")
-		vi.stubEnv("MEMONGO_MONGODB_HEARTBEAT_FREQUENCY_MS", "5000")
-		vi.stubEnv("MEMONGO_MONGODB_SERVER_MONITORING_MODE", "poll")
-		vi.stubEnv("MEMONGO_MONGODB_NETWORK_FAMILY", "4")
+		vi.stubEnv("MBRAIN_MONGODB_MAX_POOL_SIZE", "6")
+		vi.stubEnv("MBRAIN_MONGODB_MIN_POOL_SIZE", "0")
+		vi.stubEnv("MBRAIN_MONGODB_MAX_CONNECTING", "2")
+		vi.stubEnv("MBRAIN_MONGODB_MAX_IDLE_TIME_MS", "120000")
+		vi.stubEnv("MBRAIN_MONGODB_SOCKET_TIMEOUT_MS", "180000")
+		vi.stubEnv("MBRAIN_MONGODB_WAIT_QUEUE_TIMEOUT_MS", "30000")
+		vi.stubEnv("MBRAIN_MONGODB_CONNECT_TIMEOUT_MS", "30000")
+		vi.stubEnv("MBRAIN_MONGODB_SERVER_SELECTION_TIMEOUT_MS", "120000")
+		vi.stubEnv("MBRAIN_MONGODB_HEARTBEAT_FREQUENCY_MS", "5000")
+		vi.stubEnv("MBRAIN_MONGODB_SERVER_MONITORING_MODE", "poll")
+		vi.stubEnv("MBRAIN_MONGODB_NETWORK_FAMILY", "4")
 		const cfg = {
 			agents: { defaults: { workspace: "/tmp/memory-test" } },
 			memory: {
 				backend: "mongodb",
 				mongodb: { uri: "mongodb://localhost:27017", maxPoolSize: 20 },
 			},
-		} as unknown as MemongoConfig
+		} as unknown as MbrainConfig
 
 		const resolved = resolveMemoryBackendConfig({ cfg, agentId: "main" })
 
@@ -329,7 +326,7 @@ describe("resolveMemoryBackendConfig", () => {
 				backend: "mongodb",
 				mongodb: { uri: "mongodb://localhost:27017" },
 			},
-		} as unknown as MemongoConfig
+		} as unknown as MbrainConfig
 		const resolved = resolveMemoryBackendConfig({ cfg, agentId: "main" })
 		expect(resolved.mongodb!.embeddingCacheTtlDays).toBe(30)
 	})
@@ -341,7 +338,7 @@ describe("resolveMemoryBackendConfig", () => {
 				backend: "mongodb",
 				mongodb: { uri: "mongodb://localhost:27017", embeddingCacheTtlDays: 7 },
 			},
-		} as unknown as MemongoConfig
+		} as unknown as MbrainConfig
 		const resolved = resolveMemoryBackendConfig({ cfg, agentId: "main" })
 		expect(resolved.mongodb!.embeddingCacheTtlDays).toBe(7)
 	})
@@ -353,7 +350,7 @@ describe("resolveMemoryBackendConfig", () => {
 				backend: "mongodb",
 				mongodb: { uri: "mongodb://localhost:27017" },
 			},
-		} as unknown as MemongoConfig
+		} as unknown as MbrainConfig
 		const resolved = resolveMemoryBackendConfig({ cfg, agentId: "main" })
 		expect(resolved.mongodb!.memoryTtlDays).toBe(0)
 	})
@@ -365,7 +362,7 @@ describe("resolveMemoryBackendConfig", () => {
 				backend: "mongodb",
 				mongodb: { uri: "mongodb://localhost:27017" },
 			},
-		} as MemongoConfig
+		} as MbrainConfig
 		const resolved = resolveMemoryBackendConfig({ cfg, agentId: "main" })
 		expect(resolved.mongodb!.enableChangeStreams).toBe(false)
 	})
@@ -380,7 +377,7 @@ describe("resolveMemoryBackendConfig", () => {
 					enableChangeStreams: true,
 				},
 			},
-		} as MemongoConfig
+		} as MbrainConfig
 		const resolved = resolveMemoryBackendConfig({ cfg, agentId: "main" })
 		expect(resolved.mongodb!.enableChangeStreams).toBe(true)
 	})
@@ -392,7 +389,7 @@ describe("resolveMemoryBackendConfig", () => {
 				backend: "mongodb",
 				mongodb: { uri: "mongodb://localhost:27017" },
 			},
-		} as MemongoConfig
+		} as MbrainConfig
 		const resolved = resolveMemoryBackendConfig({ cfg, agentId: "main" })
 		expect(resolved.mongodb!.changeStreamDebounceMs).toBe(1000)
 	})
@@ -407,7 +404,7 @@ describe("resolveMemoryBackendConfig", () => {
 					deploymentProfile: "atlas-local-preview",
 				},
 			},
-		} as MemongoConfig
+		} as MbrainConfig
 		const resolved = resolveMemoryBackendConfig({ cfg, agentId: "main" })
 		expect(resolved.mongodb!.embeddingMode).toBe("automated")
 	})
@@ -418,10 +415,10 @@ describe("resolveMemoryBackendConfig", () => {
 			memory: {
 				backend: "mongodb",
 				mongodb: {
-					uri: "mongodb+srv://user:pass@example.mongodb.net/?appName=memongo",
+					uri: "mongodb+srv://user:pass@example.mongodb.net/?appName=mbrain",
 				},
 			},
-		} as MemongoConfig
+		} as MbrainConfig
 		const resolved = resolveMemoryBackendConfig({ cfg, agentId: "main" })
 		expect(resolved.mongodb!.deploymentProfile).toBe("atlas-managed")
 		expect(resolved.mongodb!.embeddingMode).toBe("automated")
@@ -433,11 +430,11 @@ describe("resolveMemoryBackendConfig", () => {
 			memory: {
 				backend: "mongodb",
 				mongodb: {
-					uri: "mongodb+srv://user:pass@example.mongodb.net/?appName=memongo",
+					uri: "mongodb+srv://user:pass@example.mongodb.net/?appName=mbrain",
 					deploymentProfile: "atlas-managed",
 				},
 			},
-		} as MemongoConfig
+		} as MbrainConfig
 		const resolved = resolveMemoryBackendConfig({ cfg, agentId: "main" })
 		expect(resolved.mongodb!.deploymentProfile).toBe("atlas-managed")
 	})
@@ -452,7 +449,7 @@ describe("resolveMemoryBackendConfig", () => {
 					deploymentProfile: "community-bare",
 				},
 			},
-		} as unknown as MemongoConfig
+		} as unknown as MbrainConfig
 		expect(() => resolveMemoryBackendConfig({ cfg, agentId: "main" })).toThrow(
 			/deploymentProfile "community-bare" is not supported/,
 		)
@@ -468,7 +465,7 @@ describe("resolveMemoryBackendConfig", () => {
 					deploymentProfile: "atlas-m0",
 				},
 			},
-		} as unknown as MemongoConfig
+		} as unknown as MbrainConfig
 		expect(() => resolveMemoryBackendConfig({ cfg, agentId: "main" })).toThrow(
 			/deploymentProfile "atlas-m0" is not supported/,
 		)
@@ -485,7 +482,7 @@ describe("resolveMemoryBackendConfig", () => {
 					embeddingMode: "managed",
 				},
 			},
-		} as unknown as MemongoConfig
+		} as unknown as MbrainConfig
 		expect(() => resolveMemoryBackendConfig({ cfg, agentId: "main" })).toThrow(
 			/embeddingMode "managed" is not supported/,
 		)
@@ -501,7 +498,7 @@ describe("resolveMemoryBackendConfig", () => {
 					numCandidates: 15000,
 				},
 			},
-		} as MemongoConfig
+		} as MbrainConfig
 		const resolved = resolveMemoryBackendConfig({ cfg, agentId: "main" })
 		expect(resolved.mongodb!.numCandidates).toBe(10000)
 	})
@@ -513,7 +510,7 @@ describe("resolveMemoryBackendConfig", () => {
 				backend: "mongodb",
 				mongodb: { uri: "mongodb://localhost:27017" },
 			},
-		} as MemongoConfig
+		} as MbrainConfig
 		const resolved = resolveMemoryBackendConfig({ cfg, agentId: "main" })
 		expect(resolved.mongodb!.fusionMethod).toBe("rankFusion")
 	})
@@ -528,13 +525,13 @@ describe("resolveMemoryBackendConfig", () => {
 					fusionMethod: "scoreFusion",
 				},
 			},
-		} as MemongoConfig
+		} as MbrainConfig
 		const resolved = resolveMemoryBackendConfig({ cfg, agentId: "main" })
 		expect(resolved.mongodb!.fusionMethod).toBe("scoreFusion")
 	})
 
-	it("allows fusionMethod override via MEMONGO_MONGODB_FUSION_METHOD env var", () => {
-		vi.stubEnv("MEMONGO_MONGODB_FUSION_METHOD", "js-merge")
+	it("allows fusionMethod override via MBRAIN_MONGODB_FUSION_METHOD env var", () => {
+		vi.stubEnv("MBRAIN_MONGODB_FUSION_METHOD", "js-merge")
 		const cfg = {
 			agents: { defaults: { workspace: "/tmp/memory-test" } },
 			memory: {
@@ -544,7 +541,7 @@ describe("resolveMemoryBackendConfig", () => {
 					fusionMethod: "rankFusion",
 				},
 			},
-		} as MemongoConfig
+		} as MbrainConfig
 		const resolved = resolveMemoryBackendConfig({ cfg, agentId: "main" })
 		expect(resolved.mongodb!.fusionMethod).toBe("js-merge")
 	})
@@ -556,14 +553,14 @@ describe("resolveMemoryBackendConfig", () => {
 				backend: "mongodb",
 				mongodb: {},
 			},
-		} as MemongoConfig
+		} as MbrainConfig
 		expect(() => resolveMemoryBackendConfig({ cfg, agentId: "main" })).toThrow(
 			/MongoDB URI required/,
 		)
 	})
 
 	it("config URI takes precedence over env var", () => {
-		vi.stubEnv("MEMONGO_MONGODB_URI", "mongodb://from-env:27017")
+		vi.stubEnv("MBRAIN_MONGODB_URI", "mongodb://from-env:27017")
 		try {
 			const cfg = {
 				agents: { defaults: { workspace: "/tmp/memory-test" } },
@@ -573,7 +570,7 @@ describe("resolveMemoryBackendConfig", () => {
 						uri: "mongodb://from-config:27017",
 					},
 				},
-			} as MemongoConfig
+			} as MbrainConfig
 			const resolved = resolveMemoryBackendConfig({ cfg, agentId: "main" })
 			expect(resolved.mongodb!.uri).toBe("mongodb://from-config:27017")
 		} finally {
@@ -592,7 +589,7 @@ describe("resolveMemoryBackendConfig", () => {
 				backend: "mongodb",
 				mongodb: { uri: "mongodb://localhost:27017" },
 			},
-		} as MemongoConfig
+		} as MbrainConfig
 		const resolved = resolveMemoryBackendConfig({ cfg, agentId: "main" })
 		expect(resolved.mongodb!.kb).toBeDefined()
 		expect(resolved.mongodb!.kb.enabled).toBe(true)
@@ -613,7 +610,7 @@ describe("resolveMemoryBackendConfig", () => {
 				backend: "mongodb",
 				mongodb: { uri: "mongodb://localhost:27017" },
 			},
-		} as MemongoConfig
+		} as MbrainConfig
 		const resolved = resolveMemoryBackendConfig({ cfg, agentId: "main" })
 		expect(resolved.mongodb!.maxSessionChunks).toBe(50)
 	})
@@ -625,7 +622,7 @@ describe("resolveMemoryBackendConfig", () => {
 				backend: "mongodb",
 				mongodb: { uri: "mongodb://localhost:27017", maxSessionChunks: 100 },
 			},
-		} as MemongoConfig
+		} as MbrainConfig
 		const resolved = resolveMemoryBackendConfig({ cfg, agentId: "main" })
 		expect(resolved.mongodb!.maxSessionChunks).toBe(100)
 	})
@@ -637,7 +634,7 @@ describe("resolveMemoryBackendConfig", () => {
 				backend: "mongodb",
 				mongodb: { uri: "mongodb://localhost:27017", maxSessionChunks: -5 },
 			},
-		} as MemongoConfig
+		} as MbrainConfig
 		const resolved = resolveMemoryBackendConfig({ cfg, agentId: "main" })
 		expect(resolved.mongodb!.maxSessionChunks).toBe(50)
 	})
@@ -649,7 +646,7 @@ describe("resolveMemoryBackendConfig", () => {
 				backend: "mongodb",
 				mongodb: { uri: "mongodb://localhost:27017", maxSessionChunks: 75.9 },
 			},
-		} as MemongoConfig
+		} as MbrainConfig
 		const resolved = resolveMemoryBackendConfig({ cfg, agentId: "main" })
 		expect(resolved.mongodb!.maxSessionChunks).toBe(75)
 	})
@@ -665,7 +662,7 @@ describe("resolveMemoryBackendConfig", () => {
 				backend: "mongodb",
 				mongodb: { uri: "mongodb://localhost:27017" },
 			},
-		} as unknown as MemongoConfig
+		} as unknown as MbrainConfig
 		const resolved = resolveMemoryBackendConfig({ cfg, agentId: "main" })
 		expect(resolved.mongodb!.episodes.enabled).toBe(true)
 		expect(resolved.mongodb!.graph.enabled).toBe(true)
@@ -681,7 +678,7 @@ describe("resolveMemoryBackendConfig", () => {
 					episodes: { enabled: false },
 				},
 			},
-		} as unknown as MemongoConfig
+		} as unknown as MbrainConfig
 		const resolved = resolveMemoryBackendConfig({ cfg, agentId: "main" })
 		expect(resolved.mongodb!.episodes.enabled).toBe(false)
 	})
@@ -696,7 +693,7 @@ describe("resolveMemoryBackendConfig", () => {
 					graph: { enabled: false },
 				},
 			},
-		} as unknown as MemongoConfig
+		} as unknown as MbrainConfig
 		const resolved = resolveMemoryBackendConfig({ cfg, agentId: "main" })
 		expect(resolved.mongodb!.graph.enabled).toBe(false)
 	})
@@ -709,7 +706,7 @@ describe("resolveMemoryBackendConfig", () => {
 				runtimeMode: "mongo_v2",
 				mongodb: { uri: "mongodb://localhost:27017" },
 			},
-		} as unknown as MemongoConfig
+		} as unknown as MbrainConfig
 		// Should not throw
 		const resolved = resolveMemoryBackendConfig({ cfg, agentId: "main" })
 		expect(resolved.mongodb).toBeDefined()
@@ -728,7 +725,7 @@ describe("resolveMemoryBackendConfig", () => {
 					graph: { enabled: false, maxGraphDepth: 5 },
 				},
 			},
-		} as unknown as MemongoConfig
+		} as unknown as MbrainConfig
 		const resolved = resolveMemoryBackendConfig({ cfg, agentId: "main" })
 		expect(resolved.mongodb!.episodes).toEqual({
 			enabled: false,
@@ -756,7 +753,7 @@ describe("resolveMemoryBackendConfig", () => {
 					},
 				},
 			},
-		} as MemongoConfig
+		} as MbrainConfig
 		const resolved = resolveMemoryBackendConfig({ cfg, agentId: "main" })
 		expect(resolved.mongodb!.kb.enabled).toBe(false)
 		expect(resolved.mongodb!.kb.chunking.tokens).toBe(800)
@@ -776,7 +773,7 @@ describe("resolveMemoryBackendConfig", () => {
 				backend: "mongodb",
 				mongodb: { uri: "mongodb://localhost:27017" },
 			},
-		} as unknown as MemongoConfig
+		} as unknown as MbrainConfig
 		const resolved = resolveMemoryBackendConfig({ cfg, agentId: "main" })
 		expect(resolved.mongodb!.cache.enabled).toBe(true)
 		expect(resolved.mongodb!.cache.conversationTtlSec).toBe(300)
@@ -799,7 +796,7 @@ describe("resolveMemoryBackendConfig", () => {
 					},
 				},
 			},
-		} as unknown as MemongoConfig
+		} as unknown as MbrainConfig
 		const resolved = resolveMemoryBackendConfig({ cfg, agentId: "main" })
 		expect(resolved.mongodb!.cache.enabled).toBe(true)
 		expect(resolved.mongodb!.cache.conversationTtlSec).toBe(600)
@@ -817,7 +814,7 @@ describe("resolveMemoryBackendConfig", () => {
 					cache: { enabled: false },
 				},
 			},
-		} as unknown as MemongoConfig
+		} as unknown as MbrainConfig
 		const resolved = resolveMemoryBackendConfig({ cfg, agentId: "main" })
 		expect(resolved.mongodb!.cache.enabled).toBe(false)
 		// Defaults still apply for other fields
@@ -833,7 +830,7 @@ describe("resolveMemoryBackendConfig", () => {
 				backend: "mongodb",
 				mongodb: { uri: "mongodb://localhost:27017" },
 			},
-		} as unknown as MemongoConfig
+		} as unknown as MbrainConfig
 		const resolved = resolveMemoryBackendConfig({ cfg, agentId: "main" })
 		// cache?.enabled !== false => true when undefined
 		expect(resolved.mongodb!.cache.enabled).toBe(true)
@@ -849,7 +846,7 @@ describe("resolveMemoryBackendConfig", () => {
 					cache: { kbTtlSec: 1800 },
 				},
 			},
-		} as unknown as MemongoConfig
+		} as unknown as MbrainConfig
 		const resolved = resolveMemoryBackendConfig({ cfg, agentId: "main" })
 		expect(resolved.mongodb!.cache.enabled).toBe(true) // default
 		expect(resolved.mongodb!.cache.conversationTtlSec).toBe(300) // default
@@ -870,7 +867,7 @@ describe("resolveMemoryBackendConfig", () => {
 					},
 				},
 			},
-		} as unknown as MemongoConfig
+		} as unknown as MbrainConfig
 		const resolved = resolveMemoryBackendConfig({ cfg, agentId: "main" })
 		// The resolved config stores both TTLs; the search() method decides which to use
 		expect(resolved.mongodb!.cache.conversationTtlSec).toBe(120)
@@ -886,7 +883,7 @@ describe("resolveMemoryBackendConfig", () => {
 				backend: "mongodb",
 				mongodb: { uri: "mongodb://localhost:27017", cache: {} },
 			},
-		} as unknown as MemongoConfig
+		} as unknown as MbrainConfig
 		expect(
 			resolveMemoryBackendConfig({ cfg: cfgUndefined, agentId: "main" })
 				.mongodb!.cache.enabled,
@@ -898,7 +895,7 @@ describe("resolveMemoryBackendConfig", () => {
 				backend: "mongodb",
 				mongodb: { uri: "mongodb://localhost:27017", cache: { enabled: true } },
 			},
-		} as unknown as MemongoConfig
+		} as unknown as MbrainConfig
 		expect(
 			resolveMemoryBackendConfig({ cfg: cfgTrue, agentId: "main" }).mongodb!
 				.cache.enabled,
@@ -913,7 +910,7 @@ describe("resolveMemoryBackendConfig", () => {
 					cache: { enabled: false },
 				},
 			},
-		} as unknown as MemongoConfig
+		} as unknown as MbrainConfig
 		expect(
 			resolveMemoryBackendConfig({ cfg: cfgFalse, agentId: "main" }).mongodb!
 				.cache.enabled,
@@ -931,7 +928,7 @@ describe("resolveMemoryBackendConfig", () => {
 				backend: "mongodb",
 				mongodb: { uri: "mongodb://localhost:27017" },
 			},
-		} as unknown as MemongoConfig
+		} as unknown as MbrainConfig
 		const resolved = resolveMemoryBackendConfig({ cfg, agentId: "main" })
 		expect(resolved.mongodb!.queryRewriting.enabled).toBe(false)
 		expect(resolved.mongodb!.queryRewriting.method).toBe("synonym-expansion")
@@ -952,7 +949,7 @@ describe("resolveMemoryBackendConfig", () => {
 					},
 				},
 			},
-		} as unknown as MemongoConfig
+		} as unknown as MbrainConfig
 		const resolved = resolveMemoryBackendConfig({ cfg, agentId: "main" })
 		expect(resolved.mongodb!.queryRewriting.enabled).toBe(true)
 		expect(resolved.mongodb!.queryRewriting.method).toBe("synonym-expansion")
@@ -969,7 +966,7 @@ describe("resolveMemoryBackendConfig", () => {
 					queryRewriting: { enabled: true, method: "hyde", maxTokens: 256 },
 				},
 			},
-		} as unknown as MemongoConfig
+		} as unknown as MbrainConfig
 
 		expect(() => resolveMemoryBackendConfig({ cfg, agentId: "main" })).toThrow(
 			/synonym-expansion/,
@@ -989,7 +986,7 @@ describe("resolveMemoryBackendConfig", () => {
 					backend: "mongodb",
 					mongodb: { uri: "mongodb://localhost:27017" },
 				},
-			} as unknown as MemongoConfig
+			} as unknown as MbrainConfig
 			const resolved = resolveMemoryBackendConfig({ cfg, agentId: "main" })
 			expect(resolved.mongodb!.reranking.enabled).toBe(true)
 			expect(resolved.mongodb!.reranking.model).toBe("rerank-2.5")
@@ -1018,7 +1015,7 @@ describe("resolveMemoryBackendConfig", () => {
 					},
 				},
 			},
-		} as unknown as MemongoConfig
+		} as unknown as MbrainConfig
 		const resolved = resolveMemoryBackendConfig({ cfg, agentId: "main" })
 		expect(resolved.mongodb!.reranking.enabled).toBe(true)
 		expect(resolved.mongodb!.reranking.model).toBe("rerank-2.5-lite")
@@ -1036,7 +1033,7 @@ describe("resolveMemoryBackendConfig", () => {
 					backend: "mongodb",
 					mongodb: { uri: "mongodb://localhost:27017" },
 				},
-			} as unknown as MemongoConfig
+			} as unknown as MbrainConfig
 			const resolved = resolveMemoryBackendConfig({ cfg, agentId: "main" })
 			expect(resolved.mongodb!.reranking.voyageApiKey).toBe("voy-from-env")
 		} finally {
@@ -1044,8 +1041,8 @@ describe("resolveMemoryBackendConfig", () => {
 		}
 	})
 
-	it("allows reranking.enabled override via MEMONGO_RERANKING_ENABLED env var", () => {
-		vi.stubEnv("MEMONGO_RERANKING_ENABLED", "false")
+	it("allows reranking.enabled override via MBRAIN_RERANKING_ENABLED env var", () => {
+		vi.stubEnv("MBRAIN_RERANKING_ENABLED", "false")
 		try {
 			const cfg = {
 				agents: { defaults: { workspace: "/tmp/memory-test" } },
@@ -1053,7 +1050,7 @@ describe("resolveMemoryBackendConfig", () => {
 					backend: "mongodb",
 					mongodb: { uri: "mongodb://localhost:27017" },
 				},
-			} as unknown as MemongoConfig
+			} as unknown as MbrainConfig
 			const resolved = resolveMemoryBackendConfig({ cfg, agentId: "main" })
 			expect(resolved.mongodb!.reranking.enabled).toBe(false)
 		} finally {
@@ -1072,7 +1069,7 @@ describe("resolveMemoryBackendConfig", () => {
 				backend: "mongodb",
 				mongodb: { uri: "mongodb://localhost:27017" },
 			},
-		} as unknown as MemongoConfig
+		} as unknown as MbrainConfig
 		const resolved = resolveMemoryBackendConfig({ cfg, agentId: "main" })
 		expect(resolved.mongodb!.graph.entityExtraction.method).toBe("regex")
 		expect(resolved.mongodb!.graph.entityExtraction.model).toBeUndefined()
@@ -1095,7 +1092,7 @@ describe("resolveMemoryBackendConfig", () => {
 					},
 				},
 			},
-		} as unknown as MemongoConfig
+		} as unknown as MbrainConfig
 		const resolved = resolveMemoryBackendConfig({ cfg, agentId: "main" })
 		expect(resolved.mongodb!.graph.entityExtraction.method).toBe("llm")
 		expect(resolved.mongodb!.graph.entityExtraction.model).toBe(
@@ -1118,7 +1115,7 @@ describe("resolveMemoryBackendConfig", () => {
 					},
 				},
 			},
-		} as unknown as MemongoConfig
+		} as unknown as MbrainConfig
 		const resolved = resolveMemoryBackendConfig({ cfg, agentId: "main" })
 		// Existing graph fields preserved
 		expect(resolved.mongodb!.graph.enabled).toBe(false)
@@ -1129,7 +1126,7 @@ describe("resolveMemoryBackendConfig", () => {
 
 	// H2 audit fix: warn when entity extraction method is 'llm' but no LLM function injected
 	it("logs warning when entityExtraction.method is 'llm'", () => {
-		vi.stubEnv("MEMONGO_MONGODB_URI", "mongodb://localhost:27017/test")
+		vi.stubEnv("MBRAIN_MONGODB_URI", "mongodb://localhost:27017/test")
 		const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {})
 		const cfg = {
 			agents: { defaults: { workspace: "/tmp/memory-test" } },
@@ -1138,7 +1135,7 @@ describe("resolveMemoryBackendConfig", () => {
 					graph: { entityExtraction: { method: "llm" } },
 				},
 			},
-		} as unknown as MemongoConfig
+		} as unknown as MbrainConfig
 		const resolved = resolveMemoryBackendConfig({ cfg, agentId: "main" })
 		expect(resolved.mongodb!.graph.entityExtraction.method).toBe("llm")
 		// The warning is logged via createSubsystemLogger, which we cannot easily spy on
@@ -1158,7 +1155,7 @@ describe("resolveMemoryBackendConfig", () => {
 				backend: "mongodb",
 				mongodb: { uri: "mongodb://localhost:27017" },
 			},
-		} as MemongoConfig
+		} as MbrainConfig
 		const resolved = resolveMemoryBackendConfig({ cfg, agentId: "main" })
 		expect(resolved.mongodb!.numCandidates).toBe(500)
 	})
@@ -1170,34 +1167,34 @@ describe("resolveMemoryBackendConfig", () => {
 				backend: "mongodb",
 				mongodb: { uri: "mongodb://localhost:27017" },
 			},
-		} as unknown as MemongoConfig
+		} as unknown as MbrainConfig
 		const resolved = resolveMemoryBackendConfig({ cfg, agentId: "main" })
 		expect(resolved.mongodb!.reranking.minScore).toBe(0.01)
 	})
 
-	it("allows numCandidates override via MEMONGO_NUM_CANDIDATES env var", () => {
-		vi.stubEnv("MEMONGO_NUM_CANDIDATES", "300")
+	it("allows numCandidates override via MBRAIN_NUM_CANDIDATES env var", () => {
+		vi.stubEnv("MBRAIN_NUM_CANDIDATES", "300")
 		const cfg = {
 			agents: { defaults: { workspace: "/tmp/memory-test" } },
 			memory: {
 				backend: "mongodb",
 				mongodb: { uri: "mongodb://localhost:27017" },
 			},
-		} as MemongoConfig
+		} as MbrainConfig
 		const resolved = resolveMemoryBackendConfig({ cfg, agentId: "main" })
 		expect(resolved.mongodb!.numCandidates).toBe(300)
 		vi.unstubAllEnvs()
 	})
 
-	it("allows reranking.minScore override via MEMONGO_RERANK_MIN_SCORE env var", () => {
-		vi.stubEnv("MEMONGO_RERANK_MIN_SCORE", "0.05")
+	it("allows reranking.minScore override via MBRAIN_RERANK_MIN_SCORE env var", () => {
+		vi.stubEnv("MBRAIN_RERANK_MIN_SCORE", "0.05")
 		const cfg = {
 			agents: { defaults: { workspace: "/tmp/memory-test" } },
 			memory: {
 				backend: "mongodb",
 				mongodb: { uri: "mongodb://localhost:27017" },
 			},
-		} as unknown as MemongoConfig
+		} as unknown as MbrainConfig
 		const resolved = resolveMemoryBackendConfig({ cfg, agentId: "main" })
 		expect(resolved.mongodb!.reranking.minScore).toBe(0.05)
 		vi.unstubAllEnvs()

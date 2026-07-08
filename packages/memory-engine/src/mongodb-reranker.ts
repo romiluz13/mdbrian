@@ -1,5 +1,5 @@
 import type { Db } from "mongodb"
-import { createSubsystemLogger } from "@memongo/lib"
+import { createSubsystemLogger } from "@mbrain/lib"
 import { emitTelemetry } from "./mongodb-telemetry.js"
 import type { MemorySearchResult } from "./types.js"
 
@@ -42,10 +42,10 @@ function resolveRerankUrl(apiKey: string): string {
 }
 
 function isStrictRerankMode(): boolean {
-	const benchmarkStrict = process.env.MEMONGO_BENCHMARK_STRICT
+	const benchmarkStrict = process.env.MBRAIN_BENCHMARK_STRICT
 	return (
-		process.env.MEMONGO_RERANK_STRICT === "1" ||
-		process.env.MEMONGO_RERANK_STRICT?.toLowerCase() === "true" ||
+		process.env.MBRAIN_RERANK_STRICT === "1" ||
+		process.env.MBRAIN_RERANK_STRICT?.toLowerCase() === "true" ||
 		benchmarkStrict === "1" ||
 		benchmarkStrict?.toLowerCase() === "true"
 	)

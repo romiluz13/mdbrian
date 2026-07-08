@@ -57,8 +57,8 @@ function makeConfig(
 ): ResolvedMongoDBConfig {
 	return {
 		backend: "mongodb",
-		uri: "mongodb://localhost:27017/memongo",
-		database: "memongo",
+		uri: "mongodb://localhost:27017/mbrain",
+		database: "mbrain",
 		collectionPrefix: "test_",
 		deploymentProfile: "atlas-local-preview",
 		embeddingMode: "manual",

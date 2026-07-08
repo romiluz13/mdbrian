@@ -1,8 +1,8 @@
 /**
- * Stable entry for the Memongo HTTP product layer: loads standalone config and
+ * Stable entry for the Mbrain HTTP product layer: loads standalone config and
  * delegates to the MongoDB memory manager.
  */
-import type { MemoryScope } from "@memongo/lib/types/memory"
+import type { MemoryScope } from "@mbrain/lib/types/memory"
 import type {
 	ConversationRecallResponse,
 	MemoryProviderStatus,
@@ -33,12 +33,12 @@ import type {
 	StructuredMemoryLifecyclePatch,
 	StructuredMemoryEntry,
 	V2Status,
-} from "@memongo/memory-engine"
+} from "@mbrain/memory-engine"
 import {
 	closeAllMemorySearchManagers,
 	getMemorySearchManager,
 	materializeBlocks,
-} from "@memongo/memory-engine"
+} from "@mbrain/memory-engine"
 import { resolveBridgeConfig } from "./memory-config.js"
 
 /**
@@ -48,11 +48,11 @@ import { resolveBridgeConfig } from "./memory-config.js"
  * via `closeAllMemorySearchManagers` so one failing manager does not block
  * the rest.
  */
-export async function memongoBridgeShutdown(): Promise<void> {
+export async function mbrainBridgeShutdown(): Promise<void> {
 	await closeAllMemorySearchManagers()
 }
 
-type MemongoBridgeActiveSlate = {
+type MbrainBridgeActiveSlate = {
 	agentId: string
 	scope: MemoryScope
 	scopeRef: string
@@ -81,7 +81,7 @@ type MemongoBridgeActiveSlate = {
 	hydratedAt: Date
 }
 
-type MemongoBridgeDiscoveryProjection = {
+type MbrainBridgeDiscoveryProjection = {
 	kind: "entity-brief" | "topic-brief" | "what-changed" | "contradiction-report"
 	query?: string
 	title: string
@@ -116,7 +116,7 @@ type MemongoBridgeDiscoveryProjection = {
 	builtAt: Date
 }
 
-type MemongoBridgeContextBundle = {
+type MbrainBridgeContextBundle = {
 	agentId: string
 	query?: string
 	scope: MemoryScope
@@ -193,7 +193,7 @@ type ActiveSlateCapableManager = MongoDBMemoryManager & {
 		scope?: MemoryScope
 		scopeRef?: string
 		maxItems?: number
-	}) => Promise<MemongoBridgeActiveSlate>
+	}) => Promise<MbrainBridgeActiveSlate>
 }
 
 type DiscoveryProjectionCapableManager = MongoDBMemoryManager & {
@@ -212,7 +212,7 @@ type DiscoveryProjectionCapableManager = MongoDBMemoryManager & {
 			start?: string
 			end?: string
 		}
-	}) => Promise<MemongoBridgeDiscoveryProjection>
+	}) => Promise<MbrainBridgeDiscoveryProjection>
 }
 
 type ContextBundleCapableManager = MongoDBMemoryManager & {
@@ -238,7 +238,7 @@ type ContextBundleCapableManager = MongoDBMemoryManager & {
 			end?: string
 		}
 		mode?: "full" | "wake-up"
-	}) => Promise<MemongoBridgeContextBundle>
+	}) => Promise<MbrainBridgeContextBundle>
 }
 
 type ConversationRecallCapableManager = MongoDBMemoryManager & {
@@ -346,15 +346,15 @@ type ConversationImportCapableManager = MongoDBMemoryManager & {
 	}) => Promise<MemoryConversationImportResult>
 }
 
-export type MemongoBridgeContext = {
+export type MbrainBridgeContext = {
 	agentId: string
 }
 
 function resolveAgentId(explicit?: string): string {
-	return (explicit ?? process.env.MEMONGO_AGENT_ID ?? "main").trim() || "main"
+	return (explicit ?? process.env.MBRAIN_AGENT_ID ?? "main").trim() || "main"
 }
 
-export async function memongoBridgeGetManager(
+export async function mbrainBridgeGetManager(
 	agentId?: string,
 ): Promise<MongoDBMemoryManager> {
 	const id = resolveAgentId(agentId)
@@ -366,7 +366,7 @@ export async function memongoBridgeGetManager(
 	return manager as MongoDBMemoryManager
 }
 
-export async function memongoBridgeSearch(params: {
+export async function mbrainBridgeSearch(params: {
 	query: string
 	agentId?: string
 	maxResults?: number
@@ -375,7 +375,7 @@ export async function memongoBridgeSearch(params: {
 	scope?: MemoryScope
 	scopeRef?: string
 }) {
-	const m = await memongoBridgeGetManager(params.agentId)
+	const m = await mbrainBridgeGetManager(params.agentId)
 	return m.search(params.query, {
 		maxResults: params.maxResults,
 		minScore: params.minScore,
@@ -385,14 +385,14 @@ export async function memongoBridgeSearch(params: {
 	})
 }
 
-export async function memongoBridgeWaitForBenchmarkSearchReadiness(params: {
+export async function mbrainBridgeWaitForBenchmarkSearchReadiness(params: {
 	agentId?: string
 	retrievalLane?: "native" | "raw-session"
 	scope?: MemoryScope
 	scopeRef?: string
 	sessionId?: string
 }) {
-	const m = await memongoBridgeGetManager(params.agentId)
+	const m = await mbrainBridgeGetManager(params.agentId)
 	await m.waitForBenchmarkSearchReadiness({
 		retrievalLane: params.retrievalLane,
 		scope: params.scope,
@@ -401,14 +401,14 @@ export async function memongoBridgeWaitForBenchmarkSearchReadiness(params: {
 	})
 }
 
-export async function memongoBridgeSearchKB(params: {
+export async function mbrainBridgeSearchKB(params: {
 	query: string
 	agentId?: string
 	maxResults?: number
 	minScore?: number
 	filter?: { tags?: string[]; category?: string; source?: string }
 }) {
-	const m = await memongoBridgeGetManager(params.agentId)
+	const m = await mbrainBridgeGetManager(params.agentId)
 	return m.searchKB(params.query, {
 		maxResults: params.maxResults,
 		minScore: params.minScore,
@@ -416,13 +416,13 @@ export async function memongoBridgeSearchKB(params: {
 	})
 }
 
-export async function memongoBridgeReadFile(params: {
+export async function mbrainBridgeReadFile(params: {
 	relPath: string
 	from?: number
 	lines?: number
 	agentId?: string
 }) {
-	const m = await memongoBridgeGetManager(params.agentId)
+	const m = await mbrainBridgeGetManager(params.agentId)
 	return m.readFile({
 		relPath: params.relPath,
 		from: params.from,
@@ -431,7 +431,7 @@ export async function memongoBridgeReadFile(params: {
 }
 
 /** Legacy: append a user message (same as `writeConversationEvent` with role user). */
-export async function memongoBridgeAdd(params: {
+export async function mbrainBridgeAdd(params: {
 	content: string
 	agentId?: string
 	sessionId?: string
@@ -439,7 +439,7 @@ export async function memongoBridgeAdd(params: {
 	scope?: MemoryScope
 	scopeRef?: string
 }) {
-	return memongoBridgeWriteConversationEvent({
+	return mbrainBridgeWriteConversationEvent({
 		agentId: params.agentId,
 		role: "user",
 		body: params.content,
@@ -450,7 +450,7 @@ export async function memongoBridgeAdd(params: {
 	})
 }
 
-export async function memongoBridgeWriteConversationEvent(params: {
+export async function mbrainBridgeWriteConversationEvent(params: {
 	agentId?: string
 	role: "user" | "assistant" | "system" | "tool"
 	body: string
@@ -460,7 +460,7 @@ export async function memongoBridgeWriteConversationEvent(params: {
 	scope?: MemoryScope
 	scopeRef?: string
 }) {
-	const m = await memongoBridgeGetManager(params.agentId)
+	const m = await mbrainBridgeGetManager(params.agentId)
 	const timestamp = params.timestamp ? new Date(params.timestamp) : undefined
 	return m.writeConversationEvent({
 		role: params.role,
@@ -473,11 +473,11 @@ export async function memongoBridgeWriteConversationEvent(params: {
 	})
 }
 
-export async function memongoBridgeExtractEvent(params: {
+export async function mbrainBridgeExtractEvent(params: {
 	agentId?: string
 	eventId: string
 }): Promise<{ jobId: string; scheduled: boolean }> {
-	const m = (await memongoBridgeGetManager(
+	const m = (await mbrainBridgeGetManager(
 		params.agentId,
 	)) as ExtractionCapableManager
 	if (!m.extractEvent) {
@@ -486,11 +486,11 @@ export async function memongoBridgeExtractEvent(params: {
 	return m.extractEvent({ eventId: params.eventId })
 }
 
-export async function memongoBridgeWriteStructuredMemory(params: {
+export async function mbrainBridgeWriteStructuredMemory(params: {
 	agentId?: string
 	entry: StructuredMemoryEntry
 }) {
-	const m = await memongoBridgeGetManager(params.agentId)
+	const m = await mbrainBridgeGetManager(params.agentId)
 	const id = resolveAgentId(params.agentId)
 	return m.writeStructuredMemory({
 		...params.entry,
@@ -498,11 +498,11 @@ export async function memongoBridgeWriteStructuredMemory(params: {
 	})
 }
 
-export async function memongoBridgeWriteProcedure(params: {
+export async function mbrainBridgeWriteProcedure(params: {
 	agentId?: string
 	entry: ProcedureEntry
 }) {
-	const m = await memongoBridgeGetManager(params.agentId)
+	const m = await mbrainBridgeGetManager(params.agentId)
 	const id = resolveAgentId(params.agentId)
 	return m.writeProcedure({
 		...params.entry,
@@ -510,7 +510,7 @@ export async function memongoBridgeWriteProcedure(params: {
 	})
 }
 
-export async function memongoBridgeProfile(params: {
+export async function mbrainBridgeProfile(params: {
 	agentId?: string
 	scope?: MemoryScope
 	scopeRef?: string
@@ -519,7 +519,7 @@ export async function memongoBridgeProfile(params: {
 	maxPerType?: number
 	activityWindowMs?: number
 }) {
-	const m = await memongoBridgeGetManager(params.agentId)
+	const m = await mbrainBridgeGetManager(params.agentId)
 	return m.synthesizeProfile({
 		scope: params.scope,
 		scopeRef: params.scopeRef,
@@ -530,13 +530,13 @@ export async function memongoBridgeProfile(params: {
 	})
 }
 
-export async function memongoBridgeHydrateActiveSlate(params: {
+export async function mbrainBridgeHydrateActiveSlate(params: {
 	agentId?: string
 	scope?: MemoryScope
 	scopeRef?: string
 	maxItems?: number
-}): Promise<MemongoBridgeActiveSlate> {
-	const m = (await memongoBridgeGetManager(
+}): Promise<MbrainBridgeActiveSlate> {
+	const m = (await mbrainBridgeGetManager(
 		params.agentId,
 	)) as ActiveSlateCapableManager
 	if (!m.hydrateActiveSlate) {
@@ -549,7 +549,7 @@ export async function memongoBridgeHydrateActiveSlate(params: {
 	})
 }
 
-export async function memongoBridgeBuildDiscoveryProjection(params: {
+export async function mbrainBridgeBuildDiscoveryProjection(params: {
 	agentId?: string
 	kind: "entity-brief" | "topic-brief" | "what-changed" | "contradiction-report"
 	query?: string
@@ -561,8 +561,8 @@ export async function memongoBridgeBuildDiscoveryProjection(params: {
 		start?: string
 		end?: string
 	}
-}): Promise<MemongoBridgeDiscoveryProjection> {
-	const m = (await memongoBridgeGetManager(
+}): Promise<MbrainBridgeDiscoveryProjection> {
+	const m = (await mbrainBridgeGetManager(
 		params.agentId,
 	)) as DiscoveryProjectionCapableManager
 	if (!m.buildDiscoveryProjection) {
@@ -578,7 +578,7 @@ export async function memongoBridgeBuildDiscoveryProjection(params: {
 	})
 }
 
-export async function memongoBridgeBuildContextBundle(params: {
+export async function mbrainBridgeBuildContextBundle(params: {
 	agentId?: string
 	query?: string
 	scope?: MemoryScope
@@ -601,8 +601,8 @@ export async function memongoBridgeBuildContextBundle(params: {
 		end?: string
 	}
 	mode?: "full" | "wake-up"
-}): Promise<MemongoBridgeContextBundle> {
-	const m = (await memongoBridgeGetManager(
+}): Promise<MbrainBridgeContextBundle> {
+	const m = (await mbrainBridgeGetManager(
 		params.agentId,
 	)) as ContextBundleCapableManager
 	if (!m.buildContextBundle) {
@@ -625,7 +625,7 @@ export async function memongoBridgeBuildContextBundle(params: {
 	})
 }
 
-export async function memongoBridgeRecallConversation(params: {
+export async function mbrainBridgeRecallConversation(params: {
 	agentId?: string
 	query?: string
 	sessionId?: string
@@ -636,7 +636,7 @@ export async function memongoBridgeRecallConversation(params: {
 	includeToolMessages?: boolean
 	limit?: number
 }): Promise<ConversationRecallResponse> {
-	const m = (await memongoBridgeGetManager(
+	const m = (await mbrainBridgeGetManager(
 		params.agentId,
 	)) as ConversationRecallCapableManager
 	if (!m.recallConversation) {
@@ -654,10 +654,10 @@ export async function memongoBridgeRecallConversation(params: {
 	})
 }
 
-export async function memongoBridgeGetLifecycleItem(params: {
+export async function mbrainBridgeGetLifecycleItem(params: {
 	handle: MemoryStableHandle
 }): Promise<MemoryLifecycleItem | null> {
-	const m = (await memongoBridgeGetManager(
+	const m = (await mbrainBridgeGetManager(
 		params.handle.agentId,
 	)) as LifecycleCapableManager
 	if (!m.getLifecycleItem) {
@@ -666,11 +666,11 @@ export async function memongoBridgeGetLifecycleItem(params: {
 	return m.getLifecycleItem(params.handle)
 }
 
-export async function memongoBridgeUpdateLifecycleItem(params: {
+export async function mbrainBridgeUpdateLifecycleItem(params: {
 	handle: MemoryStableHandle
 	patch: StructuredMemoryLifecyclePatch | ProcedureLifecyclePatch
 }): Promise<MemoryLifecycleItem | null> {
-	const m = (await memongoBridgeGetManager(
+	const m = (await mbrainBridgeGetManager(
 		params.handle.agentId,
 	)) as LifecycleCapableManager
 	if (!m.updateLifecycleItem) {
@@ -679,11 +679,11 @@ export async function memongoBridgeUpdateLifecycleItem(params: {
 	return m.updateLifecycleItem(params.handle, params.patch)
 }
 
-export async function memongoBridgeDeleteLifecycleItem(params: {
+export async function mbrainBridgeDeleteLifecycleItem(params: {
 	handle: MemoryStableHandle
 	invalidatedBy?: Record<string, unknown>
 }): Promise<MemoryLifecycleItem | null> {
-	const m = (await memongoBridgeGetManager(
+	const m = (await mbrainBridgeGetManager(
 		params.handle.agentId,
 	)) as LifecycleCapableManager
 	if (!m.invalidateLifecycleItem) {
@@ -692,11 +692,11 @@ export async function memongoBridgeDeleteLifecycleItem(params: {
 	return m.invalidateLifecycleItem(params.handle, params.invalidatedBy)
 }
 
-export async function memongoBridgeGetLifecycleHistory(params: {
+export async function mbrainBridgeGetLifecycleHistory(params: {
 	handle: MemoryStableHandle
 	limit?: number
 }): Promise<MemoryLifecycleHistoryEntry[]> {
-	const m = (await memongoBridgeGetManager(
+	const m = (await mbrainBridgeGetManager(
 		params.handle.agentId,
 	)) as LifecycleCapableManager
 	if (!m.getLifecycleHistory) {
@@ -708,13 +708,13 @@ export async function memongoBridgeGetLifecycleHistory(params: {
 	})
 }
 
-export async function memongoBridgeReportProcedureOutcome(params: {
+export async function mbrainBridgeReportProcedureOutcome(params: {
 	handle: Extract<MemoryStableHandle, { family: "procedure" }>
 	success: boolean
 	note?: string
 	actorRole?: MemoryActorRole
 }): Promise<Extract<MemoryLifecycleItem, { family: "procedure" }> | null> {
-	const m = (await memongoBridgeGetManager(
+	const m = (await mbrainBridgeGetManager(
 		params.handle.agentId,
 	)) as LifecycleCapableManager
 	if (!m.reportProcedureOutcome) {
@@ -723,7 +723,7 @@ export async function memongoBridgeReportProcedureOutcome(params: {
 	return m.reportProcedureOutcome(params)
 }
 
-export async function memongoBridgeApplyMemoryFeedback(params: {
+export async function mbrainBridgeApplyMemoryFeedback(params: {
 	handle: Extract<MemoryStableHandle, { family: "structured" }>
 	signal: MemoryFeedbackSignal
 	patch?: StructuredMemoryLifecyclePatch
@@ -731,7 +731,7 @@ export async function memongoBridgeApplyMemoryFeedback(params: {
 	note?: string
 	actorRole?: MemoryActorRole
 }): Promise<Extract<MemoryLifecycleItem, { family: "structured" }> | null> {
-	const m = (await memongoBridgeGetManager(
+	const m = (await mbrainBridgeGetManager(
 		params.handle.agentId,
 	)) as LifecycleCapableManager
 	if (!m.applyMemoryFeedback) {
@@ -740,7 +740,7 @@ export async function memongoBridgeApplyMemoryFeedback(params: {
 	return m.applyMemoryFeedback(params)
 }
 
-export async function memongoBridgeSearchDetailed(params: {
+export async function mbrainBridgeSearchDetailed(params: {
 	agentId?: string
 	query: string
 	scope?: MemoryScope
@@ -789,7 +789,7 @@ export async function memongoBridgeSearchDetailed(params: {
 		lexicalPrefilter?: "disabled" | "experimental"
 	}
 }) {
-	const m = await memongoBridgeGetManager(params.agentId)
+	const m = await mbrainBridgeGetManager(params.agentId)
 	if (!m.searchDetailed) {
 		throw new Error("searchDetailed is not available on this manager")
 	}
@@ -869,52 +869,50 @@ export async function memongoBridgeSearchDetailed(params: {
 	})
 }
 
-export async function memongoBridgeStatus(params: {
+export async function mbrainBridgeStatus(params: {
 	agentId?: string
 }): Promise<MemoryProviderStatus> {
-	const m = await memongoBridgeGetManager(params.agentId)
+	const m = await mbrainBridgeGetManager(params.agentId)
 	return m.status()
 }
 
-export async function memongoBridgeGetDetailedStatus(params: {
+export async function mbrainBridgeGetDetailedStatus(params: {
 	agentId?: string
 }): Promise<V2Status> {
-	const m = await memongoBridgeGetManager(params.agentId)
+	const m = await mbrainBridgeGetManager(params.agentId)
 	return m.getDetailedStatus()
 }
 
-export async function memongoBridgeStats(params: {
+export async function mbrainBridgeStats(params: {
 	agentId?: string
 }): Promise<MemoryStats> {
-	const m = await memongoBridgeGetManager(params.agentId)
+	const m = await mbrainBridgeGetManager(params.agentId)
 	return m.stats()
 }
 
-export async function memongoBridgeSync(params: {
+export async function mbrainBridgeSync(params: {
 	agentId?: string
 	reason?: string
 	force?: boolean
 }) {
-	const m = await memongoBridgeGetManager(params.agentId)
+	const m = await mbrainBridgeGetManager(params.agentId)
 	return m.sync({
 		reason: params.reason,
 		force: params.force,
 	})
 }
 
-export async function memongoBridgeProbeEmbedding(params: {
-	agentId?: string
-}) {
-	const m = await memongoBridgeGetManager(params.agentId)
+export async function mbrainBridgeProbeEmbedding(params: { agentId?: string }) {
+	const m = await mbrainBridgeGetManager(params.agentId)
 	return m.probeEmbeddingAvailability()
 }
 
-export async function memongoBridgeProbeVector(params: { agentId?: string }) {
-	const m = await memongoBridgeGetManager(params.agentId)
+export async function mbrainBridgeProbeVector(params: { agentId?: string }) {
+	const m = await mbrainBridgeGetManager(params.agentId)
 	return m.probeVectorAvailability()
 }
 
-export async function memongoBridgeRelevanceExplain(params: {
+export async function mbrainBridgeRelevanceExplain(params: {
 	agentId?: string
 	query: string
 	sourceScope?: RelevanceSourceScope
@@ -923,7 +921,7 @@ export async function memongoBridgeRelevanceExplain(params: {
 	minScore?: number
 	deep?: boolean
 }): Promise<RelevanceExplainResult> {
-	const m = await memongoBridgeGetManager(params.agentId)
+	const m = await mbrainBridgeGetManager(params.agentId)
 	return m.relevanceExplain({
 		query: params.query,
 		sourceScope: params.sourceScope,
@@ -934,7 +932,7 @@ export async function memongoBridgeRelevanceExplain(params: {
 	})
 }
 
-export async function memongoBridgeRelevanceBenchmark(params: {
+export async function mbrainBridgeRelevanceBenchmark(params: {
 	agentId?: string
 	datasetPath?: string
 	maxResults?: number
@@ -953,7 +951,7 @@ export async function memongoBridgeRelevanceBenchmark(params: {
 	}
 	retrievalLane?: "native" | "raw-session"
 }): Promise<RelevanceBenchmarkResult> {
-	const m = await memongoBridgeGetManager(params.agentId)
+	const m = await mbrainBridgeGetManager(params.agentId)
 	return m.relevanceBenchmark({
 		datasetPath: params.datasetPath,
 		maxResults: params.maxResults,
@@ -967,29 +965,29 @@ export async function memongoBridgeRelevanceBenchmark(params: {
 	})
 }
 
-export async function memongoBridgeRelevanceReport(params: {
+export async function mbrainBridgeRelevanceReport(params: {
 	agentId?: string
 	windowMs?: number
 }): Promise<RelevanceReport> {
-	const m = await memongoBridgeGetManager(params.agentId)
+	const m = await mbrainBridgeGetManager(params.agentId)
 	return m.relevanceReport({ windowMs: params.windowMs })
 }
 
-export async function memongoBridgeRelevanceSampleRate(params: {
+export async function mbrainBridgeRelevanceSampleRate(params: {
 	agentId?: string
 }): Promise<RelevanceSampleState> {
-	const m = await memongoBridgeGetManager(params.agentId)
+	const m = await mbrainBridgeGetManager(params.agentId)
 	return m.relevanceSampleRate()
 }
 
-export async function memongoBridgeBenchmarkIngest(params: {
+export async function mbrainBridgeBenchmarkIngest(params: {
 	agentId?: string
 	datasetPath: string
 	scope?: MemoryScope
 	limitConversations?: number
 	limitTurnsPerConversation?: number
 }): Promise<MemoryBenchmarkIngestResult> {
-	const m = await memongoBridgeGetManager(params.agentId)
+	const m = await mbrainBridgeGetManager(params.agentId)
 	return m.benchmarkIngest({
 		datasetPath: params.datasetPath,
 		scope: params.scope,
@@ -998,14 +996,14 @@ export async function memongoBridgeBenchmarkIngest(params: {
 	})
 }
 
-export async function memongoBridgeImportConversations(params: {
+export async function mbrainBridgeImportConversations(params: {
 	agentId?: string
 	datasetPath: string
 	scope?: MemoryScope
 	limitConversations?: number
 	limitTurnsPerConversation?: number
 }): Promise<MemoryConversationImportResult> {
-	const m = (await memongoBridgeGetManager(
+	const m = (await mbrainBridgeGetManager(
 		params.agentId,
 	)) as ConversationImportCapableManager
 	if (!m.importConversations) {
@@ -1019,14 +1017,14 @@ export async function memongoBridgeImportConversations(params: {
 	})
 }
 
-export async function memongoBridgeAccessTrends(params: {
+export async function mbrainBridgeAccessTrends(params: {
 	agentId?: string
 	collection?: AccessEventCollection
 	memoryIds?: string[]
 	windowDays?: number
 	limit?: number
 }): Promise<MemoryAccessTrend[]> {
-	const m = await memongoBridgeGetManager(params.agentId)
+	const m = await mbrainBridgeGetManager(params.agentId)
 	return m.accessTrends({
 		collection: params.collection,
 		memoryIds: params.memoryIds,
@@ -1035,13 +1033,13 @@ export async function memongoBridgeAccessTrends(params: {
 	})
 }
 
-export async function memongoBridgeAccessSummaries(params: {
+export async function mbrainBridgeAccessSummaries(params: {
 	agentId?: string
 	collection: AccessEventCollection
 	memoryIds: string[]
 	windowDays?: number
 }): Promise<MemoryAccessSummary[]> {
-	const m = await memongoBridgeGetManager(params.agentId)
+	const m = await mbrainBridgeGetManager(params.agentId)
 	if (!m.accessSummaries) {
 		return []
 	}
@@ -1052,13 +1050,13 @@ export async function memongoBridgeAccessSummaries(params: {
 	})
 }
 
-export async function memongoBridgeTraceChain(params: {
+export async function mbrainBridgeTraceChain(params: {
 	agentId?: string
 	factId: string
 	collection: string
 	maxDepth?: number
 }) {
-	const m = (await memongoBridgeGetManager(
+	const m = (await mbrainBridgeGetManager(
 		params.agentId,
 	)) as ChainCapableManager
 	if (!m.traceChain) {
@@ -1072,12 +1070,12 @@ export async function memongoBridgeTraceChain(params: {
 	})
 }
 
-export async function memongoBridgeScanNovelty(params: {
+export async function mbrainBridgeScanNovelty(params: {
 	agentId?: string
 	limit?: number
 	scope?: string
 }) {
-	const m = (await memongoBridgeGetManager(
+	const m = (await mbrainBridgeGetManager(
 		params.agentId,
 	)) as NoveltyCapableManager
 	if (!m.scanNovelty) {
@@ -1089,13 +1087,13 @@ export async function memongoBridgeScanNovelty(params: {
 	})
 }
 
-export async function memongoBridgeConsolidate(params: {
+export async function mbrainBridgeConsolidate(params: {
 	agentId?: string
 	maxEvents?: number
 	minCombinedScore?: number
 	scope?: string
 }) {
-	const m = (await memongoBridgeGetManager(
+	const m = (await mbrainBridgeGetManager(
 		params.agentId,
 	)) as ConsolidateCapableManager
 	if (!m.consolidate) {
@@ -1108,13 +1106,13 @@ export async function memongoBridgeConsolidate(params: {
 	})
 }
 
-export async function memongoBridgeSelfEdit(params: {
+export async function mbrainBridgeSelfEdit(params: {
 	agentId?: string
 	block: "user" | "persona" | "instructions"
 	action: "append" | "replace" | "prepend"
 	content: string
 }): Promise<{ upserted: boolean; id: string }> {
-	const m = (await memongoBridgeGetManager(
+	const m = (await mbrainBridgeGetManager(
 		params.agentId,
 	)) as SelfEditCapableManager
 	if (!m.selfEditBlock) {
@@ -1127,23 +1125,23 @@ export async function memongoBridgeSelfEdit(params: {
 	})
 }
 
-export async function memongoBridgeGetState(params: {
+export async function mbrainBridgeGetState(params: {
 	agentId?: string
 	scope?: MemoryScope
 	scopeRef?: string
 }): Promise<MemoryStateFamily & { partial?: boolean }> {
 	const results = await Promise.allSettled([
-		memongoBridgeProfile({
+		mbrainBridgeProfile({
 			agentId: params.agentId,
 			scope: params.scope,
 			scopeRef: params.scopeRef,
 		}),
-		memongoBridgeHydrateActiveSlate({
+		mbrainBridgeHydrateActiveSlate({
 			agentId: params.agentId,
 			scope: params.scope,
 			scopeRef: params.scopeRef,
 		}),
-		memongoBridgeBuildContextBundle({
+		mbrainBridgeBuildContextBundle({
 			agentId: params.agentId,
 			scope: params.scope,
 			scopeRef: params.scopeRef,
@@ -1161,11 +1159,11 @@ export async function memongoBridgeGetState(params: {
 	return { profile, blocks, bundle, ...(partial ? { partial: true } : {}) }
 }
 
-export async function memongoBridgeListRecallTraces(params: {
+export async function mbrainBridgeListRecallTraces(params: {
 	agentId?: string
 	limit?: number
 }): Promise<RecallTrace[]> {
-	const m = (await memongoBridgeGetManager(
+	const m = (await mbrainBridgeGetManager(
 		params.agentId,
 	)) as RecallTraceCapableManager
 	if (!m.listRecallTraces) {
@@ -1174,11 +1172,11 @@ export async function memongoBridgeListRecallTraces(params: {
 	return m.listRecallTraces({ limit: params.limit })
 }
 
-export async function memongoBridgeGetRecallTrace(params: {
+export async function mbrainBridgeGetRecallTrace(params: {
 	agentId?: string
 	traceId: string
 }): Promise<RecallTrace | null> {
-	const m = (await memongoBridgeGetManager(
+	const m = (await mbrainBridgeGetManager(
 		params.agentId,
 	)) as RecallTraceCapableManager
 	if (!m.getRecallTrace) {
@@ -1187,13 +1185,13 @@ export async function memongoBridgeGetRecallTrace(params: {
 	return m.getRecallTrace({ traceId: params.traceId })
 }
 
-export async function memongoBridgeListMemoryJobs(params: {
+export async function mbrainBridgeListMemoryJobs(params: {
 	agentId?: string
 	status?: MemoryJobStatus
 	limit?: number
 	jobType?: MemoryJobType
 }): Promise<MemoryJob[]> {
-	const m = (await memongoBridgeGetManager(
+	const m = (await mbrainBridgeGetManager(
 		params.agentId,
 	)) as MemoryJobsCapableManager
 	if (!m.listMemoryJobs) {
@@ -1206,11 +1204,11 @@ export async function memongoBridgeListMemoryJobs(params: {
 	})
 }
 
-export async function memongoBridgeGetMemoryJob(params: {
+export async function mbrainBridgeGetMemoryJob(params: {
 	agentId?: string
 	jobId: string
 }): Promise<MemoryJob | null> {
-	const m = (await memongoBridgeGetManager(
+	const m = (await mbrainBridgeGetManager(
 		params.agentId,
 	)) as MemoryJobsCapableManager
 	if (!m.getMemoryJob) {
@@ -1226,4 +1224,4 @@ export type {
 	MemoryStableHandle,
 	ProcedureEntry,
 	StructuredMemoryEntry,
-} from "@memongo/memory-engine"
+} from "@mbrain/memory-engine"

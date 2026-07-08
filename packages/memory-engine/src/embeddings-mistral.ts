@@ -1,4 +1,4 @@
-import type { SsrFPolicy } from "@memongo/lib"
+import type { SsrFPolicy } from "@mbrain/lib"
 import { normalizeEmbeddingModelWithPrefixes } from "./embeddings-model-normalize.js"
 import {
 	createRemoteEmbeddingProvider,

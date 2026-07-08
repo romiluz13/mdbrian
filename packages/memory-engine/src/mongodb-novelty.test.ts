@@ -1,7 +1,7 @@
 import type { Db, Document } from "mongodb"
 import { describe, expect, it, vi } from "vitest"
 
-vi.mock("@memongo/lib", () => ({
+vi.mock("@mbrain/lib", () => ({
 	createSubsystemLogger: () => ({
 		info: vi.fn(),
 		warn: vi.fn(),
@@ -89,7 +89,7 @@ describe("computeCentroid", () => {
 describe("eventsVectorIndex", () => {
 	it("returns prefix-aware index name", () => {
 		expect(eventsVectorIndex("test_")).toBe("test_events_vector")
-		expect(eventsVectorIndex("memongo_")).toBe("memongo_events_vector")
+		expect(eventsVectorIndex("mbrain_")).toBe("mbrain_events_vector")
 	})
 })
 

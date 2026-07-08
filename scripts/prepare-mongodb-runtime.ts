@@ -8,7 +8,7 @@ import {
 	isSearchIndexQueryable,
 	type SearchIndexDescription,
 } from "../packages/memory-engine/src/mongodb-schema.ts"
-import type { MemoryMongoDBDeploymentProfile } from "@memongo/lib"
+import type { MemoryMongoDBDeploymentProfile } from "@mbrain/lib"
 
 type PrepareOptions = {
 	uri: string
@@ -26,7 +26,7 @@ function readRequiredEnv(name: string): string {
 }
 
 function readProfile(uri: string): MemoryMongoDBDeploymentProfile {
-	const explicit = process.env.MEMONGO_MONGODB_DEPLOYMENT_PROFILE?.trim()
+	const explicit = process.env.MBRAIN_MONGODB_DEPLOYMENT_PROFILE?.trim()
 	if (explicit === "atlas-managed" || explicit === "atlas-local-preview") {
 		return explicit
 	}
@@ -109,7 +109,7 @@ async function waitForSearchIndexes(db: Db, options: PrepareOptions) {
 
 async function prepareRuntime(options: PrepareOptions) {
 	const client = new MongoClient(options.uri, {
-		appName: "memongo-runtime-prepare",
+		appName: "mbrain-runtime-prepare",
 		serverSelectionTimeoutMS: 10_000,
 	})
 	await client.connect()
@@ -149,16 +149,16 @@ async function prepareRuntime(options: PrepareOptions) {
 }
 
 const uri =
-	process.env.MEMONGO_MONGODB_URI?.trim() ||
-	process.env.MEMONGO_CLOUD_MONGODB_URI?.trim() ||
+	process.env.MBRAIN_MONGODB_URI?.trim() ||
+	process.env.MBRAIN_CLOUD_MONGODB_URI?.trim() ||
 	readRequiredEnv("MDB_MCP_CONNECTION_STRING")
 const options: PrepareOptions = {
 	uri,
-	database: process.env.MEMONGO_DB_NAME?.trim() || "memongo",
-	prefix: readRequiredEnv("MEMONGO_MONGODB_COLLECTION_PREFIX"),
+	database: process.env.MBRAIN_DB_NAME?.trim() || "mbrain",
+	prefix: readRequiredEnv("MBRAIN_MONGODB_COLLECTION_PREFIX"),
 	profile: readProfile(uri),
-	waitMs: readPositiveInt("MEMONGO_PREPARE_WAIT_MS", 120_000),
-	pollMs: readPositiveInt("MEMONGO_PREPARE_POLL_MS", 5_000),
+	waitMs: readPositiveInt("MBRAIN_PREPARE_WAIT_MS", 120_000),
+	pollMs: readPositiveInt("MBRAIN_PREPARE_POLL_MS", 5_000),
 }
 
 const report = await prepareRuntime(options)

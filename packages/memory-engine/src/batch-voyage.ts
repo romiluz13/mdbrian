@@ -118,7 +118,7 @@ async function submitVoyageBatch(params: {
 				input_type: "document",
 			},
 			metadata: {
-				source: "memongo",
+				source: "mbrain",
 				agent: params.agentId,
 			},
 		},

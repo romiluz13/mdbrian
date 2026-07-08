@@ -429,7 +429,7 @@ import type { ProfileSynthesis } from "./mongodb-profile.js"
 import type { MemoryBlocks, MemoryContextBundle } from "./types.js"
 
 /**
- * The Memongo State Family — three coordinated views over the same memory system.
+ * The Mbrain State Family — three coordinated views over the same memory system.
  * - `profile`: synthesized summary of structured memory (preferences, decisions, facts)
  * - `blocks`: always-loaded hot context for the current session (materialized from active-slate)
  * - `bundle`: token-budgeted assembly of all state views for LLM consumption

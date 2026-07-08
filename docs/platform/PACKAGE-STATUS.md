@@ -12,7 +12,7 @@ Use this table to decide whether something belongs in the public product story.
 | `apps/docs` | supported | Product docs sources |
 | `packages/memory-engine` | supported | Core MongoDB memory runtime |
 | `packages/memory-bridge` | supported | Stable facade |
-| `packages/memongo-memory` | supported | Convenience barrel |
+| `packages/mbrain-memory` | supported | Convenience barrel |
 | `packages/client` | supported | TypeScript SDK |
 | `packages/tools` | supported | AI SDK helpers |
 

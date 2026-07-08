@@ -1,4 +1,4 @@
-import { createSubsystemLogger } from "@memongo/lib"
+import { createSubsystemLogger } from "@mbrain/lib"
 import type { EpisodeSummarizer } from "./mongodb-episodes.js"
 
 const log = createSubsystemLogger("memory:mongodb:tiered-summary")

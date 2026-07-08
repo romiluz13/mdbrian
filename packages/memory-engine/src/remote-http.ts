@@ -1,4 +1,4 @@
-import { type SsrFPolicy, defaultSsrfPolicy } from "@memongo/lib"
+import { type SsrFPolicy, defaultSsrfPolicy } from "@mbrain/lib"
 
 export function buildRemoteBaseUrlPolicy(
 	baseUrl: string,

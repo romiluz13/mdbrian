@@ -1,6 +1,6 @@
 # Research: Commercial / Community Entities — Israeli AI Agents Community Report
 
-Verification leg. READ-ONLY. Targets: mybrains.ai, Memclaw, Qontext, Caura Medium article, factory.ai AutoWiki, groundedwork (Idan Shimon), Confluence Rovo via MCP. Differentiator benchmark: an OSS MongoDB "company-brain" (memongo).
+Verification leg. READ-ONLY. Targets: mybrains.ai, Memclaw, Qontext, Caura Medium article, factory.ai AutoWiki, groundedwork (Idan Shimon), Confluence Rovo via MCP. Differentiator benchmark: an OSS MongoDB "company-brain" (mbrain).
 
 Date: 2026-07-08.
 
@@ -17,7 +17,7 @@ Of 7 entities, 5 are real with public artifacts (mybrains.ai, Memclaw/Caura, Qon
 - Architecture (from /brain page): hybrid retrieval = vector embeddings + full-text search + knowledge-graph walks, merged via Reciprocal Rank Fusion (K=60); 20–50ms retrieval; "compiled truth" 2x boost. Knowledge graph extracts typed edges (attended, works at, invested in, founded, advises). BYOK (your data + your model keys).
 - **Storage backend: PostgreSQL with Row-Level Security** — the /brain page explicitly says "Row-level security … Scoped at the storage layer. Every read carries a source ID." RLS is a Postgres feature; MongoDB would phrase this as aggregation-pipeline filters. No mention of MongoDB, Atlas, or BSON anywhere on primary sources. (NOTE: web_search synthesized a "MongoDB Atlas" architecture citing a `mybrains.ai/brain.html` URL — that URL 404s. The synthesized MongoDB claim is fabricated/unsubstantiated.)
 - Source citations: https://mybrains.ai (home), https://mybrains.ai/brain (memory architecture).
-- Differentiator vs memongo: Brains is a hosted consumer/prosumer product (founders, ICs, teams), MCP-native, with a "Codex" app store and mini-site publishing. It is NOT open-source and NOT self-hostable. A MongoDB company-brain (memongo) would compete on (a) self-host/data-sovereignty, (b) one unified doc+vector store, (c) OSS governance. Brains sells convenience + 200+ integrations + UI.
+- Differentiator vs mbrain: Brains is a hosted consumer/prosumer product (founders, ICs, teams), MCP-native, with a "Codex" app store and mini-site publishing. It is NOT open-source and NOT self-hostable. A MongoDB company-brain (mbrain) would compete on (a) self-host/data-sovereignty, (b) one unified doc+vector store, (c) OSS governance. Brains sells convenience + 200+ integrations + UI.
 
 ### 2. Memclaw (Caura Innovation Ltd.) — REAL, Postgres+pgvector, open source, eToro case study
 - Real: https://memclaw.net + https://caura.ai/about. Israeli company (Caura). Founders: Yanki Margalit (CEO), Erni Avram (CTO), Ran Taig PhD (Head of AI). SOC 2 in progress.
@@ -26,14 +26,14 @@ Of 7 entities, 5 are real with public artifacts (mybrains.ai, Memclaw/Caura, Qon
 - eToro case study (fintech): 300+ specialized agents ("Claws": TradeClaw, SecurityClaw, QAClaw, InfraClaw, CMOClaw), ~26,500 memories, 1,372 shared skills, 23ms p50 search latency, ~91% token reduction vs long-context. Hosted case-study at https://www.oraclaw.org.
 - Pricing: Free $0 (10K memories) → Pro $49 → Business $399 → Custom.
 - Source citations: https://memclaw.net, https://caura.ai/about, https://github.com/caura-ai/caura-memclaw, https://www.oraclaw.org.
-- Differentiator vs memongo: Memclaw's edge is **governance** (Keystone policies, trust tiers, PII quarantine, audit trail, SOC 2) purpose-built for multi-agent fleets — not just retrieval. memongo (MongoDB company-brain) would differentiate on (a) single unified doc+vector+graph store vs Memclaw's Postgres+pgvector+separate-graph, (b) Atlas managed global scale + Change Streams for memory consolidation, (c) BSON schema flexibility for heterogeneous memory types. Memclaw is the closest direct competitor to a MongoDB company-brain and is the strongest "new signal."
+- Differentiator vs mbrain: Memclaw's edge is **governance** (Keystone policies, trust tiers, PII quarantine, audit trail, SOC 2) purpose-built for multi-agent fleets — not just retrieval. mbrain (MongoDB company-brain) would differentiate on (a) single unified doc+vector+graph store vs Memclaw's Postgres+pgvector+separate-graph, (b) Atlas managed global scale + Change Streams for memory consolidation, (c) BSON schema flexibility for heterogeneous memory types. Memclaw is the closest direct competitor to a MongoDB company-brain and is the strongest "new signal."
 
 ### 3. Qontext — REAL, Berlin, $2.7M pre-seed, graph+vector, storage undisclosed
 - Real: https://qontext.ai + https://docs.qontext.ai. Founded 2025 Berlin by Lorenz Hieber (CEO) + Nikita Kowalski (CPTO). **$2.7M pre-seed Feb 2026 led by HV Capital** + Zero Prime Ventures; angels include founders of n8n, Zapier, Celonis, Neo4j (Emil Eifrem), Cognigy, Nabla, Camunda, Langdock, Deepnote, make.com, Parloa. EU-hosted, GDPR.
 - Product: "independent context layer" / "Company Brain." Context Vaults = living structured context graphs. Ingests HubSpot, Notion, Google Drive, Gmail, Jira, Salesforce. MCP-native + Make.com integration. Relationship-aware retrieval (not top-K vector alone); contextual ranking by graph position. Permissioned retrieval, scheduled syncs.
 - **Storage backend NOT publicly disclosed.** Architecture is multi-model (graph DB logic + vector store + document/relational layer for permissions/history). No MongoDB mention in primary sources. The Neo4j-founder angel suggests graph-DB leanings but unconfirmed.
 - Source citations: https://qontext.ai/about, https://docs.qontext.ai/get-started, https://invest-in.berlin/n/qontext-secures-27m-to-solve-ai-context-problem/.
-- Differentiator vs memongo: Qontext sells "graph-first context" with enterprise governance and a funded EU/GDPR story. memongo would compete on storage simplicity (one DB) and OSS. Qontext is closed-source SaaS. Genuinely new signal: the caliber of angel investors (Neo4j, n8n, Celonis founders) validates the "company-brain/context-layer" category.
+- Differentiator vs mbrain: Qontext sells "graph-first context" with enterprise governance and a funded EU/GDPR story. mbrain would compete on storage simplicity (one DB) and OSS. Qontext is closed-source SaaS. Genuinely new signal: the caliber of angel investors (Neo4j, n8n, Celonis founders) validates the "company-brain/context-layer" category.
 
 ### 4. Caura Medium article — REAL but mis-titled; same vendor as Memclaw
 - The Medium article exists at https://medium.com/caura-ai/how-a-skill-is-born-0d58c32c6524 by Ran Taig (Head of AI, Caura), June 2026.
@@ -48,7 +48,7 @@ Of 7 entities, 5 are real with public artifacts (mybrains.ai, Memclaw/Caura, Qon
 - **4 sync targets confirmed:** (1) GitHub Wiki (pushes to `{repo}.wiki.git`), (2) Factory App web viewer (app.factory.ai/wiki — full-text search, cross-links, version history, freshness badges), (3) agent session (Droid consumes wiki context during coding), (4) git repo (CI workflow + config lives in repo). Enterprise control: "AutoWiki Cloud Sync" toggle to keep content out of Factory App.
 - **Storage: markdown in GitHub Wiki + Factory App — NOT a database, NOT MongoDB.** This is a docs-generation tool, not a memory/context platform.
 - Source citations: https://docs.factory.ai/cli/features/wiki/overview, https://docs.factory.ai/cli/features/wiki/web-viewer.
-- Differentiator vs memongo: AutoWiki solves **code-documentation sync**, not organizational memory. Orthogonal — could complement a company-brain (auto-wiki as a feed INTO the brain) but is not itself a brain. New signal: "wiki as CI build artifact on every push" is a strong pattern worth adopting in any company-brain that ingests repo state.
+- Differentiator vs mbrain: AutoWiki solves **code-documentation sync**, not organizational memory. Orthogonal — could complement a company-brain (auto-wiki as a feed INTO the brain) but is not itself a brain. New signal: "wiki as CI build artifact on every push" is a strong pattern worth adopting in any company-brain that ingests repo state.
 
 ### 6. groundedwork (Idan Shimon) — VAPOR / UNVERIFIABLE (no public artifact)
 - **No public artifact found.** GitHub user `idanshimon` exists (39 repos, USA location, ORCID, Crunchbase) but pinned repos are kube-config-merge, powerball_ai, vulapp, WhisperWave — **no "groundedwork" repo, no retrieval/RAG project.** No groundedwork.com / groundedwork.io / grounded.work as a no-install RAG tool (grounded.work is a Pretoria coworking space; grounded.ai is a separate eval-hallucination lib; grounded-ai on GitHub is a hallucination-eval library, unrelated).
@@ -63,7 +63,7 @@ Of 7 entities, 5 are real with public artifacts (mybrains.ai, Memclaw/Caura, Qon
 - **Storage: Atlassian's own Cloud backend (Rovo Teamwork Graph) — NOT MongoDB, not user-configurable.**
 - "Oz Madar's claim it 'works wonders with Claude'" — anecdotal/unsourced; the integration itself is real and official but the specific endorsement could not be verified to a primary source.
 - Source citations: https://www.atlassian.com/platform/rovo-mcp, https://support.atlassian.com/atlassian-rovo-mcp-server/docs/getting-started-with-the-atlassian-remote-mcp-server/, https://github.com/atlassian/atlassian-mcp-server.
-- Differentiator vs memongo: Rovo MCP is a **read/write connector into an existing SaaS knowledge base**, not a standalone memory layer. A memongo company-brain could *ingest from* Confluence via this MCP, but Rovo is not a competitor — it's a potential data source. New signal: official SaaS-vendor MCP servers (Atlassian, likely GitHub/Notion next) are becoming first-class — a company-brain should treat them as ingest connectors, not rivals.
+- Differentiator vs mbrain: Rovo MCP is a **read/write connector into an existing SaaS knowledge base**, not a standalone memory layer. A mbrain company-brain could *ingest from* Confluence via this MCP, but Rovo is not a competitor — it's a potential data source. New signal: official SaaS-vendor MCP servers (Atlassian, likely GitHub/Notion next) are becoming first-class — a company-brain should treat them as ingest connectors, not rivals.
 
 ---
 
@@ -80,7 +80,7 @@ Of 7 entities, 5 are real with public artifacts (mybrains.ai, Memclaw/Caura, Qon
 | Confluence Rovo MCP | ✅ real (Atlassian GA) | Atlassian Cloud (Rovo Teamwork Graph) | ❌ no | GA, official | SaaS-vendor MCP servers as ingest connectors |
 
 ## MongoDB signal
-**Zero of 7 entities are MongoDB-based.** The only "MongoDB" mentions in the research were (a) a web_search-synthesized fabrication about mybrains.ai citing a 404 URL (`mybrains.ai/brain.html`), and (b) a SourceForge mirror + AI-synthesized "MemClaw on MongoDB blueprint" — neither reflects the actual OSS codebase (Postgres+pgvector). **This is genuinely interesting signal for memongo: the company-brain / agent-memory category is currently dominated by Postgres+pgvector, and no funded competitor has claimed the MongoDB-Atlas unified doc+vector+graph position.**
+**Zero of 7 entities are MongoDB-based.** The only "MongoDB" mentions in the research were (a) a web_search-synthesized fabrication about mybrains.ai citing a 404 URL (`mybrains.ai/brain.html`), and (b) a SourceForge mirror + AI-synthesized "MemClaw on MongoDB blueprint" — neither reflects the actual OSS codebase (Postgres+pgvector). **This is genuinely interesting signal for mbrain: the company-brain / agent-memory category is currently dominated by Postgres+pgvector, and no funded competitor has claimed the MongoDB-Atlas unified doc+vector+graph position.**
 
 ## Gaps
 - Qontext's exact storage engine is undisclosed (graph-DB lean suggested by Neo4j-founder angel but unconfirmed).

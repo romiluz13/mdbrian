@@ -2,7 +2,7 @@
  * Exportable-memory guarantee.
  *
  * Users can export every memory scoped to an `agentId` as a signed JSON
- * bundle. The bundle is HMAC-SHA256 signed using `MEMONGO_EXPORT_SIGNING_KEY`
+ * bundle. The bundle is HMAC-SHA256 signed using `MBRAIN_EXPORT_SIGNING_KEY`
  * so consumers can verify integrity and authenticity off-line.
  *
  * The invariant (Provable Property 14): two exports of the same scopeRef with
@@ -131,7 +131,7 @@ export function signExportBundle(
 ): string {
 	if (!signingKey || signingKey.length === 0) {
 		throw new Error(
-			"signExportBundle: signing key (MEMONGO_EXPORT_SIGNING_KEY) must be set and non-empty",
+			"signExportBundle: signing key (MBRAIN_EXPORT_SIGNING_KEY) must be set and non-empty",
 		)
 	}
 	const canonical = canonicalizeExportBundle(bundle)

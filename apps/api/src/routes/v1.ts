@@ -1,52 +1,52 @@
 import { Hono } from "hono"
 import {
-	memongoBridgeAdd,
-	memongoBridgeAccessSummaries,
-	memongoBridgeBuildContextBundle,
-	memongoBridgeBuildDiscoveryProjection,
-	memongoBridgeBenchmarkIngest,
-	memongoBridgeImportConversations,
-	memongoBridgeAccessTrends,
-	memongoBridgeGetDetailedStatus,
-	memongoBridgeGetMemoryJob,
-	memongoBridgeGetRecallTrace,
-	memongoBridgeHydrateActiveSlate,
-	memongoBridgeListMemoryJobs,
-	memongoBridgeListRecallTraces,
-	memongoBridgeProbeEmbedding,
-	memongoBridgeProbeVector,
-	memongoBridgeProfile,
-	memongoBridgeRecallConversation,
-	memongoBridgeReadFile,
-	memongoBridgeRelevanceBenchmark,
-	memongoBridgeRelevanceExplain,
-	memongoBridgeRelevanceReport,
-	memongoBridgeRelevanceSampleRate,
-	memongoBridgeTraceChain,
-	memongoBridgeScanNovelty,
-	memongoBridgeConsolidate,
-	memongoBridgeApplyMemoryFeedback,
-	memongoBridgeDeleteLifecycleItem,
-	memongoBridgeExtractEvent,
-	memongoBridgeGetLifecycleHistory,
-	memongoBridgeGetLifecycleItem,
-	memongoBridgeSelfEdit,
-	memongoBridgeGetState,
-	memongoBridgeSearch,
-	memongoBridgeSearchDetailed,
-	memongoBridgeSearchKB,
-	memongoBridgeStats,
-	memongoBridgeStatus,
-	memongoBridgeSync,
-	memongoBridgeUpdateLifecycleItem,
-	memongoBridgeReportProcedureOutcome,
-	memongoBridgeWriteConversationEvent,
-	memongoBridgeWriteProcedure,
-	memongoBridgeWriteStructuredMemory,
+	mbrainBridgeAdd,
+	mbrainBridgeAccessSummaries,
+	mbrainBridgeBuildContextBundle,
+	mbrainBridgeBuildDiscoveryProjection,
+	mbrainBridgeBenchmarkIngest,
+	mbrainBridgeImportConversations,
+	mbrainBridgeAccessTrends,
+	mbrainBridgeGetDetailedStatus,
+	mbrainBridgeGetMemoryJob,
+	mbrainBridgeGetRecallTrace,
+	mbrainBridgeHydrateActiveSlate,
+	mbrainBridgeListMemoryJobs,
+	mbrainBridgeListRecallTraces,
+	mbrainBridgeProbeEmbedding,
+	mbrainBridgeProbeVector,
+	mbrainBridgeProfile,
+	mbrainBridgeRecallConversation,
+	mbrainBridgeReadFile,
+	mbrainBridgeRelevanceBenchmark,
+	mbrainBridgeRelevanceExplain,
+	mbrainBridgeRelevanceReport,
+	mbrainBridgeRelevanceSampleRate,
+	mbrainBridgeTraceChain,
+	mbrainBridgeScanNovelty,
+	mbrainBridgeConsolidate,
+	mbrainBridgeApplyMemoryFeedback,
+	mbrainBridgeDeleteLifecycleItem,
+	mbrainBridgeExtractEvent,
+	mbrainBridgeGetLifecycleHistory,
+	mbrainBridgeGetLifecycleItem,
+	mbrainBridgeSelfEdit,
+	mbrainBridgeGetState,
+	mbrainBridgeSearch,
+	mbrainBridgeSearchDetailed,
+	mbrainBridgeSearchKB,
+	mbrainBridgeStats,
+	mbrainBridgeStatus,
+	mbrainBridgeSync,
+	mbrainBridgeUpdateLifecycleItem,
+	mbrainBridgeReportProcedureOutcome,
+	mbrainBridgeWriteConversationEvent,
+	mbrainBridgeWriteProcedure,
+	mbrainBridgeWriteStructuredMemory,
 	type MemoryStableHandle,
 	type ProcedureEntry,
 	type StructuredMemoryEntry,
-} from "@memongo/memory-bridge"
+} from "@mbrain/memory-bridge"
 import { jsonError } from "../lib/errors.js"
 
 const MAX_LIST_LIMIT = 100
@@ -671,7 +671,7 @@ export function createV1Router(): Hono {
 			return jsonError(c, 400, "VALIDATION_ERROR", scopeError)
 		}
 		try {
-			const results = await memongoBridgeSearch({
+			const results = await mbrainBridgeSearch({
 				query,
 				agentId: readAgentId(body),
 				maxResults: readLimit(body),
@@ -707,7 +707,7 @@ export function createV1Router(): Hono {
 							source?: string
 						})
 					: undefined
-			const results = await memongoBridgeSearchKB({
+			const results = await mbrainBridgeSearchKB({
 				query,
 				agentId: readAgentId(body),
 				maxResults: readLimit(body),
@@ -736,7 +736,7 @@ export function createV1Router(): Hono {
 			)
 		}
 		try {
-			const result = await memongoBridgeRecallConversation({
+			const result = await mbrainBridgeRecallConversation({
 				agentId: readAgentId(body),
 				query: typeof body.query === "string" ? body.query : undefined,
 				sessionId:
@@ -774,7 +774,7 @@ export function createV1Router(): Hono {
 			return jsonError(c, 400, "VALIDATION_ERROR", "datasetPath is required")
 		}
 		try {
-			const result = await memongoBridgeImportConversations({
+			const result = await mbrainBridgeImportConversations({
 				agentId: readAgentId(body),
 				datasetPath: body.datasetPath,
 				scope: readScope(body),
@@ -809,7 +809,7 @@ export function createV1Router(): Hono {
 			)
 		}
 		try {
-			const item = await memongoBridgeGetLifecycleItem({ handle })
+			const item = await mbrainBridgeGetLifecycleItem({ handle })
 			if (!item) {
 				return jsonError(c, 404, "NOT_FOUND", "memory not found")
 			}
@@ -847,7 +847,7 @@ export function createV1Router(): Hono {
 			)
 		}
 		try {
-			const item = await memongoBridgeUpdateLifecycleItem({ handle, patch })
+			const item = await mbrainBridgeUpdateLifecycleItem({ handle, patch })
 			if (!item) {
 				return jsonError(c, 404, "NOT_FOUND", "memory not found")
 			}
@@ -881,7 +881,7 @@ export function createV1Router(): Hono {
 			)
 		}
 		try {
-			const item = await memongoBridgeDeleteLifecycleItem({
+			const item = await mbrainBridgeDeleteLifecycleItem({
 				handle,
 				...(isRecord(body.invalidatedBy)
 					? { invalidatedBy: body.invalidatedBy }
@@ -922,7 +922,7 @@ export function createV1Router(): Hono {
 				? Math.max(1, Math.min(MAX_HISTORY_LIMIT, Math.floor(body.limit)))
 				: undefined
 		try {
-			const history = await memongoBridgeGetLifecycleHistory({
+			const history = await mbrainBridgeGetLifecycleHistory({
 				handle,
 				limit,
 			})
@@ -966,7 +966,7 @@ export function createV1Router(): Hono {
 			)
 		}
 		try {
-			const item = await memongoBridgeReportProcedureOutcome({
+			const item = await mbrainBridgeReportProcedureOutcome({
 				handle,
 				success: body.success,
 				...(typeof body.note === "string" ? { note: body.note } : {}),
@@ -1043,7 +1043,7 @@ export function createV1Router(): Hono {
 			)
 		}
 		try {
-			const item = await memongoBridgeApplyMemoryFeedback({
+			const item = await mbrainBridgeApplyMemoryFeedback({
 				handle,
 				signal,
 				...(patch ? { patch } : {}),
@@ -1117,7 +1117,7 @@ export function createV1Router(): Hono {
 				!Array.isArray(body.searchConfig)
 					? (body.searchConfig as Record<string, unknown>)
 					: undefined
-			const result = await memongoBridgeSearchDetailed({
+			const result = await mbrainBridgeSearchDetailed({
 				query,
 				agentId: readAgentId(body),
 				scope: readScope(body),
@@ -1195,7 +1195,7 @@ export function createV1Router(): Hono {
 			return jsonError(c, 400, "VALIDATION_ERROR", scopeError)
 		}
 		try {
-			const slate = await memongoBridgeHydrateActiveSlate({
+			const slate = await mbrainBridgeHydrateActiveSlate({
 				agentId: readAgentId(body),
 				scope: readScope(body),
 				scopeRef: readScopeRef(body),
@@ -1234,7 +1234,7 @@ export function createV1Router(): Hono {
 				!Array.isArray(body.timeRange)
 					? (body.timeRange as Record<string, unknown>)
 					: undefined
-			const projection = await memongoBridgeBuildDiscoveryProjection({
+			const projection = await mbrainBridgeBuildDiscoveryProjection({
 				agentId: readAgentId(body),
 				kind,
 				query: readQuery(body) || undefined,
@@ -1280,7 +1280,7 @@ export function createV1Router(): Hono {
 				!Array.isArray(body.timeRange)
 					? (body.timeRange as Record<string, unknown>)
 					: undefined
-			const bundle = await memongoBridgeBuildContextBundle({
+			const bundle = await mbrainBridgeBuildContextBundle({
 				agentId: readAgentId(body),
 				query: readQuery(body) || undefined,
 				scope: readScope(body),
@@ -1331,7 +1331,7 @@ export function createV1Router(): Hono {
 			return jsonError(c, 400, "VALIDATION_ERROR", "relPath is required")
 		}
 		try {
-			const out = await memongoBridgeReadFile({
+			const out = await mbrainBridgeReadFile({
 				relPath,
 				from: typeof body.from === "number" ? body.from : undefined,
 				lines: typeof body.lines === "number" ? body.lines : undefined,
@@ -1364,7 +1364,7 @@ export function createV1Router(): Hono {
 				? (body.metadata as Record<string, unknown>)
 				: undefined
 		try {
-			const out = await memongoBridgeAdd({
+			const out = await mbrainBridgeAdd({
 				content,
 				agentId: readAgentId(body),
 				sessionId: readSessionId(body),
@@ -1418,7 +1418,7 @@ export function createV1Router(): Hono {
 				: undefined
 		const scope = readScope(body)
 		try {
-			const out = await memongoBridgeWriteConversationEvent({
+			const out = await mbrainBridgeWriteConversationEvent({
 				agentId: readAgentId(body),
 				role,
 				body: bodyText,
@@ -1450,7 +1450,7 @@ export function createV1Router(): Hono {
 			return jsonError(c, 400, "VALIDATION_ERROR", "eventId is required")
 		}
 		try {
-			const out = await memongoBridgeExtractEvent({
+			const out = await mbrainBridgeExtractEvent({
 				agentId: readAgentId(body),
 				eventId,
 			})
@@ -1471,7 +1471,7 @@ export function createV1Router(): Hono {
 			return jsonError(c, 400, "VALIDATION_ERROR", "entry object is required")
 		}
 		try {
-			const out = await memongoBridgeWriteStructuredMemory({
+			const out = await mbrainBridgeWriteStructuredMemory({
 				agentId: readAgentId(body),
 				entry: entry as StructuredMemoryEntry,
 			})
@@ -1492,7 +1492,7 @@ export function createV1Router(): Hono {
 			return jsonError(c, 400, "VALIDATION_ERROR", "entry object is required")
 		}
 		try {
-			const out = await memongoBridgeWriteProcedure({
+			const out = await mbrainBridgeWriteProcedure({
 				agentId: readAgentId(body),
 				entry: entry as ProcedureEntry,
 			})
@@ -1513,7 +1513,7 @@ export function createV1Router(): Hono {
 			return jsonError(c, 400, "VALIDATION_ERROR", scopeError)
 		}
 		try {
-			const profile = await memongoBridgeProfile({
+			const profile = await mbrainBridgeProfile({
 				agentId: readAgentId(body),
 				scope: readScope(body),
 				scopeRef: readScopeRef(body),
@@ -1545,7 +1545,7 @@ export function createV1Router(): Hono {
 		const scope = readScope(query)
 		const scopeRef = readScopeRef(query)
 		try {
-			const state = await memongoBridgeGetState({ agentId, scope, scopeRef })
+			const state = await mbrainBridgeGetState({ agentId, scope, scopeRef })
 			return c.json(state)
 		} catch (err) {
 			const message = err instanceof Error ? err.message : String(err)
@@ -1556,7 +1556,7 @@ export function createV1Router(): Hono {
 	v1.get("/status", async (c) => {
 		const agentId = c.req.query("agentId") ?? undefined
 		try {
-			const status = await memongoBridgeStatus({ agentId })
+			const status = await mbrainBridgeStatus({ agentId })
 			return c.json(status)
 		} catch (err) {
 			const message = err instanceof Error ? err.message : String(err)
@@ -1567,7 +1567,7 @@ export function createV1Router(): Hono {
 	v1.get("/status/detailed", async (c) => {
 		const agentId = c.req.query("agentId") ?? undefined
 		try {
-			const status = await memongoBridgeGetDetailedStatus({ agentId })
+			const status = await mbrainBridgeGetDetailedStatus({ agentId })
 			return c.json(status)
 		} catch (err) {
 			const message = err instanceof Error ? err.message : String(err)
@@ -1578,7 +1578,7 @@ export function createV1Router(): Hono {
 	v1.get("/stats", async (c) => {
 		const agentId = c.req.query("agentId") ?? undefined
 		try {
-			const stats = await memongoBridgeStats({ agentId })
+			const stats = await mbrainBridgeStats({ agentId })
 			return c.json(stats)
 		} catch (err) {
 			const message = err instanceof Error ? err.message : String(err)
@@ -1592,7 +1592,7 @@ export function createV1Router(): Hono {
 			unknown
 		>
 		try {
-			await memongoBridgeSync({
+			await mbrainBridgeSync({
 				agentId: readAgentId(body),
 				reason: typeof body.reason === "string" ? body.reason : undefined,
 				force: typeof body.force === "boolean" ? body.force : undefined,
@@ -1607,7 +1607,7 @@ export function createV1Router(): Hono {
 	v1.get("/probes/embedding", async (c) => {
 		const agentId = c.req.query("agentId") ?? undefined
 		try {
-			const result = await memongoBridgeProbeEmbedding({ agentId })
+			const result = await mbrainBridgeProbeEmbedding({ agentId })
 			return c.json(result)
 		} catch (err) {
 			const message = err instanceof Error ? err.message : String(err)
@@ -1618,7 +1618,7 @@ export function createV1Router(): Hono {
 	v1.get("/probes/vector", async (c) => {
 		const agentId = c.req.query("agentId") ?? undefined
 		try {
-			const ok = await memongoBridgeProbeVector({ agentId })
+			const ok = await mbrainBridgeProbeVector({ agentId })
 			return c.json({ ok })
 		} catch (err) {
 			const message = err instanceof Error ? err.message : String(err)
@@ -1643,7 +1643,7 @@ export function createV1Router(): Hono {
 				? body.sourceScope
 				: undefined
 		try {
-			const out = await memongoBridgeRelevanceExplain({
+			const out = await mbrainBridgeRelevanceExplain({
 				agentId: readAgentId(body),
 				query,
 				sourceScope,
@@ -1677,7 +1677,7 @@ export function createV1Router(): Hono {
 			const rerankerConfig = parseRerankerConfig(body.rerankerConfig)
 			const retrievalLane = parseBenchmarkRetrievalLane(body.retrievalLane)
 
-			const out = await memongoBridgeRelevanceBenchmark({
+			const out = await mbrainBridgeRelevanceBenchmark({
 				agentId: readAgentId(body),
 				datasetPath:
 					typeof body.datasetPath === "string" ? body.datasetPath : undefined,
@@ -1750,7 +1750,7 @@ export function createV1Router(): Hono {
 			return jsonError(c, 400, "VALIDATION_ERROR", "datasetPath is required")
 		}
 		try {
-			const out = await memongoBridgeBenchmarkIngest({
+			const out = await mbrainBridgeBenchmarkIngest({
 				agentId: readAgentId(body),
 				datasetPath,
 				scope: readScope(body),
@@ -1775,7 +1775,7 @@ export function createV1Router(): Hono {
 		const windowMsRaw = c.req.query("windowMs")
 		const windowMs = windowMsRaw ? Number(windowMsRaw) : undefined
 		try {
-			const out = await memongoBridgeRelevanceReport({
+			const out = await mbrainBridgeRelevanceReport({
 				agentId,
 				windowMs: Number.isFinite(windowMs) ? windowMs : undefined,
 			})
@@ -1789,7 +1789,7 @@ export function createV1Router(): Hono {
 	v1.get("/admin/relevance/sample-rate", async (c) => {
 		const agentId = c.req.query("agentId") ?? undefined
 		try {
-			const out = await memongoBridgeRelevanceSampleRate({ agentId })
+			const out = await mbrainBridgeRelevanceSampleRate({ agentId })
 			return c.json(out)
 		} catch (err) {
 			const message = err instanceof Error ? err.message : String(err)
@@ -1813,7 +1813,7 @@ export function createV1Router(): Hono {
 		const windowDays = windowDaysRaw ? Number(windowDaysRaw) : undefined
 		const limit = parseListLimit(c.req.query("limit"))
 		try {
-			const out = await memongoBridgeAccessTrends({
+			const out = await mbrainBridgeAccessTrends({
 				agentId,
 				collection,
 				memoryIds,
@@ -1848,7 +1848,7 @@ export function createV1Router(): Hono {
 		const windowDaysRaw = c.req.query("windowDays")
 		const windowDays = windowDaysRaw ? Number(windowDaysRaw) : undefined
 		try {
-			const out = await memongoBridgeAccessSummaries({
+			const out = await mbrainBridgeAccessSummaries({
 				agentId,
 				collection,
 				memoryIds,
@@ -1865,7 +1865,7 @@ export function createV1Router(): Hono {
 		const agentId = c.req.query("agentId")
 		const limit = parseListLimit(c.req.query("limit"))
 		try {
-			const traces = await memongoBridgeListRecallTraces({
+			const traces = await mbrainBridgeListRecallTraces({
 				agentId: agentId || undefined,
 				limit,
 			})
@@ -1882,7 +1882,7 @@ export function createV1Router(): Hono {
 			return jsonError(c, 400, "VALIDATION_ERROR", "traceId is required")
 		}
 		try {
-			const trace = await memongoBridgeGetRecallTrace({
+			const trace = await mbrainBridgeGetRecallTrace({
 				agentId: c.req.query("agentId") || undefined,
 				traceId,
 			})
@@ -1902,7 +1902,7 @@ export function createV1Router(): Hono {
 		const jobType = c.req.query("jobType")
 		const limit = parseListLimit(c.req.query("limit"))
 		try {
-			const jobs = await memongoBridgeListMemoryJobs({
+			const jobs = await mbrainBridgeListMemoryJobs({
 				agentId: agentId || undefined,
 				status:
 					status === "pending" ||
@@ -1935,7 +1935,7 @@ export function createV1Router(): Hono {
 			return jsonError(c, 400, "VALIDATION_ERROR", "jobId is required")
 		}
 		try {
-			const job = await memongoBridgeGetMemoryJob({
+			const job = await mbrainBridgeGetMemoryJob({
 				agentId: c.req.query("agentId") || undefined,
 				jobId,
 			})
@@ -1964,7 +1964,7 @@ export function createV1Router(): Hono {
 			return jsonError(c, 400, "VALIDATION_ERROR", "collection is required")
 		}
 		try {
-			const chain = await memongoBridgeTraceChain({
+			const chain = await mbrainBridgeTraceChain({
 				agentId: readAgentId(body),
 				factId,
 				collection,
@@ -1983,7 +1983,7 @@ export function createV1Router(): Hono {
 			unknown
 		>
 		try {
-			const report = await memongoBridgeScanNovelty({
+			const report = await mbrainBridgeScanNovelty({
 				agentId: readAgentId(body),
 				limit: typeof body.limit === "number" ? body.limit : undefined,
 				scope: typeof body.scope === "string" ? body.scope : undefined,
@@ -2001,7 +2001,7 @@ export function createV1Router(): Hono {
 			unknown
 		>
 		try {
-			const result = await memongoBridgeConsolidate({
+			const result = await mbrainBridgeConsolidate({
 				agentId: readAgentId(body),
 				maxEvents:
 					typeof body.maxEvents === "number" ? body.maxEvents : undefined,
@@ -2048,7 +2048,7 @@ export function createV1Router(): Hono {
 			return jsonError(c, 400, "VALIDATION_ERROR", "content is required")
 		}
 		try {
-			const result = await memongoBridgeSelfEdit({
+			const result = await mbrainBridgeSelfEdit({
 				agentId: readAgentId(body),
 				block: block as "user" | "persona" | "instructions",
 				action: action as "append" | "replace" | "prepend",

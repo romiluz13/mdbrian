@@ -2,7 +2,7 @@
  * MongoDB E2E tests — requires a running MongoDB 8.2+ instance.
  *
  * Run manually:
- *   MONGODB_TEST_URI="mongodb://admin:admin@localhost:27017/memongo?authSource=admin&replicaSet=rs0&directConnection=true" \
+ *   MONGODB_TEST_URI="mongodb://admin:admin@localhost:27017/mbrain?authSource=admin&replicaSet=rs0&directConnection=true" \
  *     pnpm vitest run --config vitest.e2e.config.ts src/memory/mongodb-e2e.e2e.test.ts --reporter=verbose
  *
  * These tests exercise the real MongoDB driver and server operations.
@@ -60,9 +60,9 @@ import { resolvePreviewMongoTestUri } from "./test-helpers/preview-env.js"
 // ---------------------------------------------------------------------------
 
 const TEST_URI = resolvePreviewMongoTestUri(
-	"mongodb://admin:admin@localhost:27017/memongo?authSource=admin&replicaSet=rs0&directConnection=true",
+	"mongodb://admin:admin@localhost:27017/mbrain?authSource=admin&replicaSet=rs0&directConnection=true",
 )
-const TEST_DB = "memongo_e2e_test"
+const TEST_DB = "mbrain_e2e_test"
 const TEST_PREFIX = "e2e_"
 const EXPECTED_COLLECTION_SUFFIXES = [
 	"chunks",
@@ -131,7 +131,7 @@ beforeEach(async () => {
 // ---------------------------------------------------------------------------
 
 async function setupWorkspace(files: Record<string, string>): Promise<string> {
-	tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), "memongo-e2e-"))
+	tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), "mbrain-e2e-"))
 	const memDir = path.join(tmpDir, "memory")
 	await fs.mkdir(memDir, { recursive: true })
 	for (const [name, content] of Object.entries(files)) {
@@ -770,7 +770,7 @@ describe("E2E: Chunk IDs and Deduplication", () => {
 		await chunksCollection(db, TEST_PREFIX).deleteMany({})
 		await filesCollection(db, TEST_PREFIX).deleteMany({})
 
-		dedupWorkspace = await fs.mkdtemp(path.join(os.tmpdir(), "memongo-dedup-"))
+		dedupWorkspace = await fs.mkdtemp(path.join(os.tmpdir(), "mbrain-dedup-"))
 		const memDir = path.join(dedupWorkspace, "memory")
 		await fs.mkdir(memDir, { recursive: true })
 		await fs.writeFile(
@@ -1252,7 +1252,7 @@ describe("E2E v2: event -> chunk projection", () => {
 			event: {
 				agentId,
 				role: "user",
-				body: "Memongo uses MongoDB for canonical event storage and chunk projection",
+				body: "Mbrain uses MongoDB for canonical event storage and chunk projection",
 				scope: "agent",
 			},
 		})
@@ -1273,7 +1273,7 @@ describe("E2E v2: event -> chunk projection", () => {
 		})
 		expect(chunk).not.toBeNull()
 		expect(chunk!.source).toBe("conversation")
-		expect(chunk!.text).toContain("Memongo")
+		expect(chunk!.text).toContain("Mbrain")
 
 		// 4. Verify $text search finds the chunk
 		const textResults = await chunksCollection(db, TEST_PREFIX)
@@ -1431,13 +1431,13 @@ describe("E2E v2: graph expansion", () => {
 		})
 		expect(romResult.upserted).toBe(true)
 
-		// 2. upsertEntity("Memongo", project)
+		// 2. upsertEntity("Mbrain", project)
 		const projectResult = await upsertEntity({
 			db,
 			prefix: TEST_PREFIX,
 			entity: {
 				entityId: projectEntityId,
-				name: "Memongo",
+				name: "Mbrain",
 				type: "project",
 				agentId,
 				scope: "agent",
@@ -1446,7 +1446,7 @@ describe("E2E v2: graph expansion", () => {
 		})
 		expect(projectResult.upserted).toBe(true)
 
-		// 3. upsertRelation(Rom -> works_on -> Memongo)
+		// 3. upsertRelation(Rom -> works_on -> Mbrain)
 		const relResult = await upsertRelation({
 			db,
 			prefix: TEST_PREFIX,
@@ -1461,7 +1461,7 @@ describe("E2E v2: graph expansion", () => {
 		})
 		expect(relResult.upserted).toBe(true)
 
-		// 4. expandGraph from Rom entityId -> finds Memongo
+		// 4. expandGraph from Rom entityId -> finds Mbrain
 		const expansion = await expandGraph({
 			db,
 			prefix: TEST_PREFIX,
@@ -1473,7 +1473,7 @@ describe("E2E v2: graph expansion", () => {
 		expect(expansion).not.toBeNull()
 		expect(expansion!.rootEntity.name).toBe("Rom")
 		expect(expansion!.connections.length).toBe(1)
-		expect(expansion!.connections[0].entity.name).toBe("Memongo")
+		expect(expansion!.connections[0].entity.name).toBe("Mbrain")
 		expect(expansion!.connections[0].relation.type).toBe("works_on")
 		expect(expansion!.connections[0].depth).toBe(0)
 	})
@@ -1608,7 +1608,7 @@ describe("E2E v2: episode materialization", () => {
 				event: {
 					agentId,
 					role: i % 2 === 0 ? "user" : "assistant",
-					body: `Message number ${i + 1} about Memongo memory architecture`,
+					body: `Message number ${i + 1} about Mbrain memory architecture`,
 					scope: "agent",
 					timestamp: new Date(
 						`2026-03-15T${String(8 + i).padStart(2, "0")}:00:00Z`,
@@ -1631,29 +1631,29 @@ describe("E2E v2: episode materialization", () => {
 			type: "daily",
 			timeRange: { start: dayStart, end: dayEnd },
 			summarizer: async (events) => ({
-				title: "Daily Memongo Discussion",
-				summary: `Discussion about Memongo memory architecture with ${events.length} messages`,
-				tags: ["memongo", "memory"],
+				title: "Daily Mbrain Discussion",
+				summary: `Discussion about Mbrain memory architecture with ${events.length} messages`,
+				tags: ["mbrain", "memory"],
 			}),
 		})
 
 		// 3. Verify episode created with correct sourceEventCount
 		expect(episode).not.toBeNull()
 		expect(episode!.sourceEventCount).toBe(5)
-		expect(episode!.title).toBe("Daily Memongo Discussion")
+		expect(episode!.title).toBe("Daily Mbrain Discussion")
 		expect(episode!.type).toBe("daily")
-		expect(episode!.tags).toEqual(["memongo", "memory"])
+		expect(episode!.tags).toEqual(["mbrain", "memory"])
 
 		// 4. searchEpisodes finds the episode
 		const searchResults = await searchEpisodes({
 			db,
 			prefix: TEST_PREFIX,
-			query: "Memongo",
+			query: "Mbrain",
 			agentId,
 		})
 
 		expect(searchResults.length).toBe(1)
-		expect(searchResults[0].title).toBe("Daily Memongo Discussion")
+		expect(searchResults[0].title).toBe("Daily Mbrain Discussion")
 	})
 })
 
@@ -1678,7 +1678,7 @@ describe("E2E v2: migration backfill", () => {
 					import("mongodb").Document
 				>,
 				path: "memory/notes.md",
-				text: "Project notes about Memongo v1 architecture",
+				text: "Project notes about Mbrain v1 architecture",
 				hash: "abc123hash",
 				source: "conversation",
 				startLine: 1,
@@ -1720,7 +1720,7 @@ describe("E2E v2: migration backfill", () => {
 			.sort({ timestamp: 1 })
 			.toArray()
 		expect(events.length).toBe(2)
-		expect(events[0].body).toBe("Project notes about Memongo v1 architecture")
+		expect(events[0].body).toBe("Project notes about Mbrain v1 architecture")
 		expect(events[1].body).toBe("Decision to use MongoDB-only backend")
 
 		// 4. Run backfill again -> verify idempotent (no duplicates)

@@ -8,13 +8,13 @@
  *   - "userfact-evidence" with extractionMethod "llm" (replaces regex when available)
  *   - "qa-evidence" (new synthetic QA pairs for EnrichIndex-style retrieval)
  *
- * Behind MEMONGO_LLM_ENRICHMENT_MODE flag:
+ * Behind MBRAIN_LLM_ENRICHMENT_MODE flag:
  *   - "enabled": extract facts + QA pairs
  *   - "facts-only": extract facts only (no QA pairs)
  *   - "none" (default): fall back to regex-only userfact extraction
  */
 
-import { type MemoryScope, createSubsystemLogger } from "@memongo/lib"
+import { type MemoryScope, createSubsystemLogger } from "@mbrain/lib"
 import type {
 	MemoryBenchmarkConversation,
 	MemoryBenchmarkTurn,
@@ -213,7 +213,7 @@ function resolveAuthStyle(
 		return normalized
 	}
 	throw new Error(
-		`MEMONGO_ENRICHMENT_AUTH_STYLE must be authorization-bearer, api-key, or x-api-key, got ${value}`,
+		`MBRAIN_ENRICHMENT_AUTH_STYLE must be authorization-bearer, api-key, or x-api-key, got ${value}`,
 	)
 }
 
@@ -224,7 +224,7 @@ function resolveTokenParam(value: string | undefined): EnrichmentTokenParam {
 		return normalized
 	}
 	throw new Error(
-		`MEMONGO_ENRICHMENT_TOKEN_PARAM must be max_tokens or max_completion_tokens, got ${value}`,
+		`MBRAIN_ENRICHMENT_TOKEN_PARAM must be max_tokens or max_completion_tokens, got ${value}`,
 	)
 }
 
@@ -242,7 +242,7 @@ function buildAuthHeaders(
 }
 
 export function resolveEnrichmentTimeoutMs(
-	envValue: string | undefined = process.env.MEMONGO_LLM_ENRICHMENT_TIMEOUT_MS,
+	envValue: string | undefined = process.env.MBRAIN_LLM_ENRICHMENT_TIMEOUT_MS,
 ): number {
 	if (envValue === undefined || envValue.trim() === "") {
 		return DEFAULT_LLM_TIMEOUT_MS
@@ -250,14 +250,14 @@ export function resolveEnrichmentTimeoutMs(
 	const parsed = Number(envValue)
 	if (!Number.isFinite(parsed) || parsed <= 0) {
 		throw new Error(
-			`MEMONGO_LLM_ENRICHMENT_TIMEOUT_MS must be a positive number, got ${envValue}`,
+			`MBRAIN_LLM_ENRICHMENT_TIMEOUT_MS must be a positive number, got ${envValue}`,
 		)
 	}
 	return Math.floor(parsed)
 }
 
 export function resolveEnrichmentMaxRetries(
-	envValue: string | undefined = process.env.MEMONGO_LLM_ENRICHMENT_MAX_RETRIES,
+	envValue: string | undefined = process.env.MBRAIN_LLM_ENRICHMENT_MAX_RETRIES,
 ): number {
 	if (envValue === undefined || envValue.trim() === "") {
 		return DEFAULT_MAX_RETRIES
@@ -265,14 +265,14 @@ export function resolveEnrichmentMaxRetries(
 	const parsed = Number(envValue)
 	if (!Number.isFinite(parsed) || parsed < 0) {
 		throw new Error(
-			`MEMONGO_LLM_ENRICHMENT_MAX_RETRIES must be a non-negative number, got ${envValue}`,
+			`MBRAIN_LLM_ENRICHMENT_MAX_RETRIES must be a non-negative number, got ${envValue}`,
 		)
 	}
 	return Math.floor(parsed)
 }
 
 export function resolveEnrichmentMaxTokens(
-	envValue: string | undefined = process.env.MEMONGO_LLM_ENRICHMENT_MAX_TOKENS,
+	envValue: string | undefined = process.env.MBRAIN_LLM_ENRICHMENT_MAX_TOKENS,
 ): number {
 	if (envValue === undefined || envValue.trim() === "") {
 		return DEFAULT_LLM_MAX_TOKENS
@@ -280,7 +280,7 @@ export function resolveEnrichmentMaxTokens(
 	const parsed = Number(envValue)
 	if (!Number.isFinite(parsed) || parsed <= 0) {
 		throw new Error(
-			`MEMONGO_LLM_ENRICHMENT_MAX_TOKENS must be a positive number, got ${envValue}`,
+			`MBRAIN_LLM_ENRICHMENT_MAX_TOKENS must be a positive number, got ${envValue}`,
 		)
 	}
 	return Math.floor(parsed)
@@ -472,33 +472,33 @@ export class EnrichmentParseError extends Error {
 export function resolveEnrichmentProvider(
 	env: Record<string, string | undefined>,
 ): EnrichmentProvider | null {
-	const apiKey = env.MEMONGO_ENRICHMENT_API_KEY?.trim()
+	const apiKey = env.MBRAIN_ENRICHMENT_API_KEY?.trim()
 	if (!apiKey) return null
 
-	const baseUrl = env.MEMONGO_ENRICHMENT_BASE_URL?.trim()
+	const baseUrl = env.MBRAIN_ENRICHMENT_BASE_URL?.trim()
 	if (!baseUrl) {
 		throw new Error(
-			"MEMONGO_ENRICHMENT_BASE_URL is required when MEMONGO_ENRICHMENT_API_KEY is set",
+			"MBRAIN_ENRICHMENT_BASE_URL is required when MBRAIN_ENRICHMENT_API_KEY is set",
 		)
 	}
-	const model = env.MEMONGO_ENRICHMENT_MODEL?.trim()
+	const model = env.MBRAIN_ENRICHMENT_MODEL?.trim()
 	if (!model) {
 		throw new Error(
-			"MEMONGO_ENRICHMENT_MODEL is required when MEMONGO_ENRICHMENT_API_KEY is set",
+			"MBRAIN_ENRICHMENT_MODEL is required when MBRAIN_ENRICHMENT_API_KEY is set",
 		)
 	}
 	const provider =
-		env.MEMONGO_ENRICHMENT_PROVIDER === "anthropic" ||
+		env.MBRAIN_ENRICHMENT_PROVIDER === "anthropic" ||
 		baseUrl.includes("/anthropic/")
 			? "anthropic"
 			: "openai-compatible"
 	const authStyle = resolveAuthStyle(
-		env.MEMONGO_ENRICHMENT_AUTH_STYLE,
+		env.MBRAIN_ENRICHMENT_AUTH_STYLE,
 		provider === "anthropic"
 			? DEFAULT_ANTHROPIC_AUTH_STYLE
 			: DEFAULT_OPENAI_COMPATIBLE_AUTH_STYLE,
 	)
-	const tokenParam = resolveTokenParam(env.MEMONGO_ENRICHMENT_TOKEN_PARAM)
+	const tokenParam = resolveTokenParam(env.MBRAIN_ENRICHMENT_TOKEN_PARAM)
 
 	return createHttpProvider({
 		baseUrl,

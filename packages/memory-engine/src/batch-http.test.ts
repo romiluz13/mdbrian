@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
-vi.mock("@memongo/lib", async (importOriginal) => {
-	const original = await importOriginal<typeof import("@memongo/lib")>()
+vi.mock("@mbrain/lib", async (importOriginal) => {
+	const original = await importOriginal<typeof import("@mbrain/lib")>()
 	return {
 		...original,
 		retryAsync: vi.fn(async (run: () => Promise<unknown>) => await run()),
@@ -14,7 +14,7 @@ vi.mock("./post-json.js", () => ({
 
 describe("postJsonWithRetry", () => {
 	let retryAsyncMock: ReturnType<
-		typeof vi.mocked<typeof import("@memongo/lib").retryAsync>
+		typeof vi.mocked<typeof import("@mbrain/lib").retryAsync>
 	>
 	let postJsonMock: ReturnType<
 		typeof vi.mocked<typeof import("./post-json.js").postJson>
@@ -26,7 +26,7 @@ describe("postJsonWithRetry", () => {
 		vi.clearAllMocks()
 		vi.resetModules()
 		;({ postJsonWithRetry } = await import("./batch-http.js"))
-		const retryModule = await import("@memongo/lib")
+		const retryModule = await import("@mbrain/lib")
 		const postJsonModule = await import("./post-json.js")
 		retryAsyncMock = vi.mocked(retryModule.retryAsync)
 		postJsonMock = vi.mocked(postJsonModule.postJson)
