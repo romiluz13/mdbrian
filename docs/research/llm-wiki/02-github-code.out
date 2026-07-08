@@ -1,0 +1,531 @@
+# Research: LLM Wiki / Company Brain / Agent Memory — GitHub Code Analysis
+
+## Summary
+
+This brief analyzes how 10+ OSS projects implement agent memory / knowledge systems by reading **actual source code** on GitHub. The dominant patterns are: (1) pluggable storage backends with vector+graph hybrid architectures, (2) LLM-driven entity extraction during ingestion, (3) bi-temporal versioning for stale knowledge (Graphiti) or LLM-based ADD/UPDATE/DELETE conflict resolution (Mem0), and (4) multi-tenant isolation via `group_id`/`user_id`/`tenant_id` partition keys. MongoDB is used natively only by **Mem0** (as a first-class vector store with Atlas Vector Search); **Letta** supports MongoDB as external archival memory. No other repo uses MongoDB or a document store as a primary backend — the field is split between graph databases (Neo4j/Kuzu/FalkorDB), vector databases (Qdrant/LanceDB), and file-based markdown (OpenWiki/OKF/Cline).
+
+---
+
+## Per-Repo Findings (from CODE)
+
+### 1. LangChain OpenWiki (`langchain-ai/openwiki`)
+
+**Data Model/Schema:**
+- File-based. No database. The core TypeScript types are in `src/agent/types.ts`.
+- `UpdateMetadata` interface: `{ updatedAt: string; command: OpenWikiCommand; gitHead?: string; model: string }` — tracks last Git commit SHA for incremental updates.
+  - [src/agent/types.ts#L29-34](https://github.com/langchain-ai/openwiki/blob/main/src/agent/types.ts#L29-L34)
+- `RunContext`: `{ lastUpdate: UpdateMetadata | null; gitSummary: string }` — ephemeral state per execution.
+  - [src/agent/types.ts#L36-39](https://github.com/langchain-ai/openwiki/blob/main/src/agent/types.ts#L36-L39)
+- `OpenWikiCommand = "chat" | "init" | "update"` — three operational modes.
+  - [src/agent/types.ts#L1](https://github.com/langchain-ai/openwiki/blob/main/src/agent/types.ts#L1)
+
+**Storage Backend:** Files (Markdown) + Git. No vector/graph/doc store. Knowledge is stored as structured Markdown in `openwiki/` directory with cross-references for LLM retrieval. Storage choice: human-readable, diffable, agent-readable without SDK.
+
+**Ingestion Pipeline:** Git-diff driven. Compares current HEAD to `gitHead` in `.last-update.json`, sends relevant code snippets + current wiki state to LLM, LLM generates updated Markdown.
+
+**Retrieval Pipeline:** No programmatic retrieval — relies on LLM agent reading the `openwiki/` markdown files directly. `AGENTS.md`/`CLAUDE.md` gets a reference section pointing agents to the wiki.
+
+**Updates/Stale Knowledge:** Incremental via Git. `gitHead` SHA in metadata tracks last-documented commit. Only changed code since last SHA is re-documented.
+
+**Multi-Tenant:** None — per-repository only. No user/company isolation.
+
+**MongoDB:** No.
+
+---
+
+### 2. Google Open Knowledge Format / OKF (`GoogleCloudPlatform/knowledge-catalog`)
+
+**Data Model/Schema:**
+- Spec at `okf/SPEC.md`. Format: directory of Markdown files with YAML frontmatter. No database, no schema registry.
+- **Knowledge Bundle** = self-contained hierarchical collection of knowledge documents (the unit of distribution).
+  - [okf/SPEC.md#L40-42](https://github.com/GoogleCloudPlatform/knowledge-catalog/blob/main/okf/SPEC.md#L40-L42)
+- **Concept** = single unit of knowledge = one markdown document. May describe a tangible asset (table, API) or abstract idea (metric, playbook).
+  - [okf/SPEC.md#L44-47](https://github.com/GoogleCloudPlatform/knowledge-catalog/blob/main/okf/SPEC.md#L44-L47)
+- **Concept ID** = file path with `.md` removed (e.g., `tables/users.md` → concept ID `tables/users`).
+  - [okf/SPEC.md#L49-51](https://github.com/GoogleCloudPlatform/knowledge-catalog/blob/main/okf/SPEC.md#L49-L51)
+- **Frontmatter schema** (§4.1):
+  - Required: `type` (short string, not centrally registered — producers pick descriptive values, consumers tolerate unknown types)
+  - Recommended: `title`, `description`, `resource` (canonical URI), `tags` (list of strings), `timestamp` (ISO 8601)
+  - Extensions: producers MAY include any additional keys; consumers SHOULD preserve unknown keys
+  - [okf/SPEC.md#L104-134](https://github.com/GoogleCloudPlatform/knowledge-catalog/blob/main/okf/SPEC.md#L104-L134)
+- **Reserved filenames**: `index.md` (directory listing for progressive disclosure), `log.md` (update history).
+  - [okf/SPEC.md#L82-89](https://github.com/GoogleCloudPlatform/knowledge-catalog/blob/main/okf/SPEC.md#L82-L89)
+- **Body**: standard markdown. Conventional headings: `# Schema`, `# Examples`, `# Citations`.
+  - [okf/SPEC.md#L151-157](https://github.com/GoogleCloudPlatform/knowledge-catalog/blob/main/okf/SPEC.md#L151-L157)
+- **Links** = standard markdown links between concepts (expresses relationships beyond parent/child hierarchy).
+  - [okf/SPEC.md#L53](https://github.com/GoogleCloudPlatform/knowledge-catalog/blob/main/okf/SPEC.md#L53)
+
+**Storage Backend:** Files only. Markdown + YAML frontmatter. Distributable as git repo (recommended — provides history, attribution, diffs), tarball, or subdirectory. Storage choice: "If you can `cat` a file, you can read OKF; if you can `git clone` a repo, you can ship it." Explicitly a non-goal: "Prescribing storage, serving, or query infrastructure."
+  - [okf/SPEC.md#L12-14](https://github.com/GoogleCloudPlatform/knowledge-catalog/blob/main/okf/SPEC.md#L12-L14)
+  - [okf/SPEC.md#L33-34](https://github.com/GoogleCloudPlatform/knowledge-catalog/blob/main/okf/SPEC.md#L33-L34)
+
+**Ingestion Pipeline:** N/A — OKF is a format spec, not a pipeline. Authored by people or generated by agents.
+
+**Retrieval Pipeline:** N/A — format only. Consumption agents traverse directory structure, read frontmatter for routing/filtering, follow markdown links.
+
+**Updates/Stale Knowledge:** `timestamp` field in frontmatter (ISO 8601 last-modified). `log.md` for chronological update history. Git provides versioning/diffs.
+
+**Multi-Tenant:** Bundle-level isolation — each Knowledge Bundle is self-contained and distributable independently.
+
+**MongoDB:** No.
+
+---
+
+### 3. Mem0 (`mem0ai/mem0`)
+
+**Data Model/Schema:**
+- `MemoryItem` (Pydantic BaseModel) in `mem0/configs/base.py`:
+  - `id: str`, `memory: str` (extracted fact), `hash: Optional[str]` (MD5 dedup), `metadata: Optional[Dict[str, Any]]` (user_id, agent_id, app_id, run_id, category), `score: Optional[float]`, `created_at: Optional[str]`, `updated_at: Optional[str]`
+  - [mem0/configs/base.py#L17-26](https://github.com/mem0ai/mem0/blob/main/mem0/configs/base.py#L17-L26)
+- `MemoryConfig` (Pydantic): `vector_store`, `llm`, `embedder`, `history_db_path` (SQLite at `~/.mem0/history.db`), `reranker: Optional[RerankerConfig]`, `version: str = "v1.1"`, `custom_instructions`
+  - [mem0/configs/base.py#L29-57](https://github.com/mem0ai/mem0/blob/main/mem0/configs/base.py#L29-L57)
+
+**Storage Backend:** Pluggable provider pattern:
+- **Vector stores**: Qdrant (primary), ChromaDB, Pinecone, Weaviate, Milvus, Redis, Valkey, PGVector, **MongoDB** (Atlas Vector Search)
+- **Relational/metadata**: SQLite (default local), PostgreSQL
+- **Graph**: Neo4j, Amazon Neptune, Memgraph (optional, restructured in recent versions)
+- Storage choice rationale: modular — each DB has its own implementation file in `mem0/vector_stores/`
+
+**Ingestion Pipeline:** Three-stage:
+1. **Extraction**: LLM (GPT-4o default) processes conversation to extract discrete facts. Single-pass ADD-only in v1.1+.
+2. **Consolidation**: System determines if facts contradict/update/supplement existing memories (A.U.D.N. cycle via `DEFAULT_UPDATE_MEMORY_PROMPT` in `mem0/configs/prompts.py`).
+3. **Embedding**: OpenAI `text-embedding-3-small` default (1536 dims), pluggable via `EmbedderConfig`.
+
+**Retrieval Pipeline:** Multi-signal hybrid search:
+- Vector similarity (cosine) via configured vector store
+- Exact keyword matching (BM25 / Atlas Search text index)
+- Entity linking for multi-hop boost
+- Optional reranker (`RerankerConfig`)
+  - [mem0/configs/base.py#L48-51](https://github.com/mem0ai/mem0/blob/main/mem0/configs/base.py#L48-L51)
+
+**Updates/Stale Knowledge/Conflict Resolution:**
+- LLM-driven A.U.D.N. cycle: ADD (new fact), UPDATE (enriches old), DELETE (contradicts old), NOOP (redundant)
+- MD5 hash dedup before LLM step (saves cost) — `hash` field on MemoryItem
+- "Latest truth wins" — most recent user input is canonical when contradiction detected
+- `created_at`/`updated_at` timestamps for temporal reasoning
+- No bi-temporal model — old memories are overwritten/deleted, not versioned
+
+**Multi-Tenant:** Via metadata scoping: `user_id`, `agent_id`, `app_id`, `run_id` in metadata dict. Data is logically isolated by these IDs — personalized memory per user or shared across agent fleet.
+
+**MongoDB Usage (CONFIRMED IN CODE):**
+- `mem0/vector_stores/mongodb.py` — first-class `MongoDB(VectorStoreBase)` implementation
+- Uses `pymongo` + Atlas Vector Search (`SearchIndexModel` with `type="vectorSearch"`, `similarity="cosine"`)
+- Also creates Atlas Search text index for keyword search (fields: `payload.data`, `payload.text_lemmatized`)
+- Document schema: `{"_id": id, "embedding": vector, "payload": payload}` — unifies document + vector in single collection
+  - [mem0/vector_stores/mongodb.py#L1-16](https://github.com/mem0ai/mem0/blob/main/mem0/vector_stores/mongodb.py#L1-L16)
+  - [mem0/vector_stores/mongodb.py#L38-44](https://github.com/mem0ai/mem0/blob/main/mem0/vector_stores/mongodb.py#L38-L44)
+  - [mem0/vector_stores/mongodb.py#L81-110](https://github.com/mem0ai/mem0/blob/main/mem0/vector_stores/mongodb.py#L81-L110)
+  - [mem0/vector_stores/mongodb.py#L141-148](https://github.com/mem0ai/mem0/blob/main/mem0/vector_stores/mongodb.py#L141-L148) (insert: document = {"_id", "embedding", "payload"})
+
+---
+
+### 4. Letta / MemGPT (`letta-ai/letta`)
+
+**Data Model/Schema:**
+- **Memory Block** = primary abstraction (always visible to agent in context window):
+  - `label: str` (unique ID, e.g., "human", "persona"), `description: str` (instructions for agent), `value: str` (actual content), `limit: int` (character limit), `metadata: dict` (e.g., `chars_current` for budgeting)
+- Memory blocks compiled into XML-like format and prepended to system prompt (non-retrieval based)
+- **Context Repositories (MemFS)**: memory stored in git-backed directory (`~/.letta/agents/<id>/memory/`), each block projected as Markdown file — enables version control, audit trails, human editing that syncs back
+
+**Storage Backend:**
+- **Internal state** (agent metadata, message history, tool definitions): PostgreSQL or SQLite (Prisma ORM)
+- **External archival memory**: pluggable — MongoDB Atlas, PgVector, ChromaDB, etc. (agent queries via tool calls = "Agentic RAG")
+- Storage choice: in-context blocks = "RAM", archival = "hard drive" — LLM swaps context in/out
+
+**Ingestion Pipeline:** Agent self-edits memory blocks via tool calls (`core_memory_append`, `core_memory_replace`, `core_memory_remove`). No automated extraction pipeline — the agent decides what to remember.
+
+**Retrieval Pipeline:**
+- Core memory: always in context (no retrieval needed)
+- Archival memory: agent uses `archival_memory_search` tool (vector search via configured backend)
+- "Agentic RAG" — agent decides when/what to retrieve, not pre-fetched by developer
+
+**Updates/Stale Knowledge:** Agent self-manages via tool calls. Git-backed MemFS provides version history. No automatic conflict resolution — agent is responsible for updating its own blocks.
+
+**Multi-Tenant:** Per-agent isolation (each agent has own ID, own memory blocks, own archival store). No explicit company/tenant partitioning at the storage level.
+
+**MongoDB:** Supported as external archival memory provider (tool-based, not internal state). Not used for core memory blocks.
+
+---
+
+### 5. Graphiti / Zep (`getzep/graphiti`)
+
+**Data Model/Schema:**
+- `graphiti_core/nodes.py` — Pydantic models:
+  - **`Node` (ABC)**: `uuid: str`, `name: str`, `group_id: str` (partition key), `labels: list[str]`, `created_at: datetime`
+    - [graphiti_core/nodes.py#L53-59](https://github.com/getzep/graphiti/blob/main/graphiti_core/nodes.py#L53-L59)
+  - **`EpisodeType` (Enum)**: `message`, `json`, `text`, `fact_triple`
+    - [graphiti_core/nodes.py#L39-52](https://github.com/getzep/graphiti/blob/main/graphiti_core/nodes.py#L39-L52)
+  - **`EpisodicNode(Node)`**: `source: EpisodeType`, `source_description: str`, `content: str` (raw episode data), `valid_at: datetime` (when original document was created), `entity_edges: list[str]`, `episode_metadata: dict[str, Any] | None`
+    - [graphiti_core/nodes.py#L321-331](https://github.com/getzep/graphiti/blob/main/graphiti_core/nodes.py#L321-L331)
+  - **`EntityNode(Node)`**: `name_embedding: list[float] | None`, `summary: str` (regional summary of surrounding edges), `attributes: dict[str, Any]`
+    - [graphiti_core/nodes.py#L251-256](https://github.com/getzep/graphiti/blob/main/graphiti_core/nodes.py#L251-L256)
+- `graphiti_core/edges.py` — Pydantic models:
+  - **`Edge` (ABC)**: `uuid: str`, `group_id: str`, `source_node_uuid: str`, `target_node_uuid: str`, `created_at: datetime`
+    - [graphiti_core/edges.py#L42-46](https://github.com/getzep/graphiti/blob/main/graphiti_core/edges.py#L42-L46)
+  - **`EntityEdge(Edge)`**: `name: str` (relation name), `fact: str` (fact representing edge + connected nodes), `fact_embedding: list[float] | None`, `episodes: list[str]`, **`expired_at: datetime | None`** (system invalidation), **`valid_at: datetime | None`** (fact became true), **`invalid_at: datetime | None`** (fact stopped being true), `reference_time: datetime | None`, `attributes: dict[str, Any]`
+    - [graphiti_core/edges.py#L257-276](https://github.com/getzep/graphiti/blob/main/graphiti_core/edges.py#L257-L276)
+
+**Storage Backend:** Graph database only. Supports: **Neo4j**, **Kuzu**, **FalkorDB**, **Amazon Neptune**. No vector store — embeddings stored as node/edge properties within graph (`name_embedding`, `fact_embedding`). Storage choice: temporal knowledge graph requires relationship traversal + bi-temporal queries that graph DBs excel at.
+
+**Ingestion Pipeline:**
+1. Episode ingested (message/json/text/fact_triple)
+2. LLM extracts entities and relationships (edges/facts)
+3. Entity name embeddings generated via `EmbedderClient`
+4. Edge fact embeddings generated
+5. Nodes/edges saved to graph DB with provider-specific Cypher queries
+
+**Retrieval Pipeline:**
+- Hybrid: vector similarity (fact/name embeddings stored in graph) + graph traversal
+- Entity edges retrieved by embedding similarity, then graph traversal for connected context
+- Episodic nodes linked to entities via `MENTIONS` edges
+- Community nodes for clustered summaries
+
+**Updates/Stale Knowledge/Temporal Versioning (KEY DIFFERENTIATOR):**
+- **Bi-temporal model**: 4 timestamps per edge:
+  - `valid_at` (real-world: when fact became true)
+  - `invalid_at` (real-world: when fact stopped being true)
+  - `created_at` (system: when fact was ingested)
+  - `expired_at` (system: when system learned fact was superseded)
+    - [graphiti_core/edges.py#L265-272](https://github.com/getzep/graphiti/blob/main/graphiti_core/edges.py#L265-L272)
+- **Conflict resolution**: Old edge NOT deleted — `expired_at` set to current time. New edge created. Supersession pointer links new→old. Creates versioned chain of facts.
+- **Point-in-time queries**: World-state ("what was true on Jan 1?") filters `valid_at <= date AND (invalid_at > date OR null)`. Knowledge-state ("what did system believe?") filters `created_at <= date AND (expired_at > date OR null)`.
+
+**Multi-Tenant:** `group_id` field on every Node and Edge — partition of the graph. All queries filter by `group_id`. `delete_by_group_id` for full tenant deletion.
+  - [graphiti_core/nodes.py#L55](https://github.com/getzep/graphiti/blob/main/graphiti_core/nodes.py#L55)
+  - [graphiti_core/nodes.py#L139-174](https://github.com/getzep/graphiti/blob/main/graphiti_core/nodes.py#L139-L174)
+
+**MongoDB:** No.
+
+---
+
+### 6. Cognee (`topoteretes/cognee`)
+
+**Data Model/Schema:**
+- `cognee/modules/data/models/data.py` — **`Data` (SQLAlchemy ORM)**:
+  - `id: UUID`, `label: str`, `name: str`, `extension: str`, `mime_type: str`, `loader_engine: str`, `raw_data_location: str`, `owner_id: UUID` (indexed), `tenant_id: UUID` (indexed, nullable), `content_hash: str`, `raw_content_hash: str`, `external_metadata: JSON`, `node_set: JSON`, `pipeline_status: MutableDict(JSON)`, `token_count: int`, `data_size: int`, `created_at: DateTime`, `updated_at: DateTime`, `last_accessed: DateTime`, `importance_weight: Float`
+  - Relationship to `Dataset` via `DatasetData` junction table
+  - [cognee/modules/data/models/data.py#L13-43](https://github.com/topoteretes/cognee/blob/main/cognee/modules/data/models/data.py#L13-L43)
+- `cognee/modules/graph/models/Node.py` — **`Node` (SQLAlchemy ORM)**:
+  - `id: UUID`, `slug: UUID`, `user_id: UUID`, `data_id: UUID`, `dataset_id: UUID` (indexed), `pipeline_run_id: UUID | None` (indexed), `label: str | None`, `type: str`, `indexed_fields: list(JSON)`, `attributes: dict | None(JSON)`, `created_at: DateTime`
+  - Indexes: `index_node_dataset_slug(dataset_id, slug)`, `index_node_dataset_data(dataset_id, data_id)`
+  - **Commented-out RLS**: `ALTER TABLE nodes ENABLE ROW LEVEL SECURITY` + policy `user_id = current_setting('app.current_user_id')::uuid` — present in code but disabled
+  - [cognee/modules/graph/models/Node.py#L17-47](https://github.com/topoteretes/cognee/blob/main/cognee/modules/graph/models/Node.py#L17-L47)
+- `cognee/modules/graph/models/Edge.py` — **`Edge` (SQLAlchemy ORM)**:
+  - `id: UUID`, `slug: UUID`, `user_id: UUID`, `data_id: UUID` (indexed), `dataset_id: UUID` (indexed), `pipeline_run_id: UUID | None`, `source_node_id: UUID`, `destination_node_id: UUID`, `relationship_name: str`, `label: str | None`, `attributes: dict | None(JSON)`, `created_at: DateTime`
+  - **Commented-out RLS** same pattern as Node
+  - [cognee/modules/graph/models/Edge.py#L17-44](https://github.com/topoteretes/cognee/blob/main/cognee/modules/graph/models/Edge.py#L17-L44)
+
+**Storage Backend:** Hybrid triple-store:
+- **Relational**: SQLAlchemy/PostgreSQL (Data, Node, Edge tables) — metadata, indexing, user isolation
+- **Graph**: Neo4j, Kuzu, Memgraph, ArcadeDB — relationship traversal, multi-hop reasoning
+- **Vector**: Qdrant, LanceDB, Milvus, PGVector — semantic search
+- Storage choice: graph for reasoning + relational for metadata + vector for recall
+
+**Ingestion Pipeline:**
+1. Data added via `cognee.add()` → stored as `Data` entity with content_hash for dedup
+2. `cognee.cognify()` pipeline: chunking → entity extraction (LLM) → relationship extraction → graph construction → vector embedding
+3. Pipeline runs tracked via `pipeline_run_id` on nodes/edges
+4. `importance_weight` on Data for ranking
+
+**Retrieval Pipeline:** GraphRAG — graph traversal + vector search hybrid. Multi-hop reasoning via graph DB. Cognee-specific search combines graph relationships with vector similarity.
+
+**Updates/Stale Knowledge:**
+- `content_hash` / `raw_content_hash` for change detection
+- `pipeline_status` JSON field tracks processing state
+- `last_accessed` timestamp for LRU-style eviction
+- `importance_weight` for relevance ranking
+- Incremental loading via `1daae0df1866_incremental_loading` migration
+- No bi-temporal model — nodes/edges are updated/replaced, not versioned
+
+**Multi-Tenant:**
+- `tenant_id` on Data table (indexed, nullable)
+- `user_id` on Node/Edge tables (required, non-null)
+- `owner_id` on Data table (indexed)
+- **RLS (Row-Level Security) code present but commented out** — would enforce `user_id = current_setting('app.current_user_id')::uuid` at PostgreSQL level
+- Migration `c946955da633_multi_tenant_support.py` exists
+  - [cognee/modules/graph/models/Node.py#L49-57](https://github.com/topoteretes/cognee/blob/main/cognee/modules/graph/models/Node.py#L49-L57) (commented RLS)
+
+**MongoDB:** No native support. Requires custom adapter. (Confirmed via docs + codebase scan — no MongoDB files found.)
+
+---
+
+### 7. Microsoft GraphRAG (`microsoft/graphrag`)
+
+**Data Model/Schema:**
+- `python/graphrag/graphrag/model/entity.py` — **`Entity` (dataclass)**:
+  - `id: str`, `title: str`, `short_id: str | None`, `type: str | None`, `description: str | None`, `description_embedding: list[float] | None`, `graph_embedding: list[float] | None`, `community_ids: list[str] | None`, `text_unit_ids: list[str] | None`, `document_ids: list[str] | None`, `rank: int | None`, `attributes: dict[str, Any] | None`
+  - [entity.py#L8-43](https://github.com/microsoft/graphrag/blob/main/python/graphrag/graphrag/model/entity.py#L8-L43)
+- Additional model types (from docs/parquet outputs): **Document** (original input file, contains TextUnits), **TextUnit** (chunk ~300-1200 tokens), **Relationship** (edge: source, target, weight, description), **Community** (hierarchical cluster of entities), **CommunityReport** (LLM-generated summary of community), **Covariate** (optional temporal/claim entities)
+
+**Storage Backend:**
+- **Tabular**: Parquet files (entities.parquet, relationships.parquet, text_units.parquet, documents.parquet, communities.parquet, community_reports.parquet, covariates.parquet) — output of indexing pipeline
+- **Vector**: LanceDB (embedded, `.lance` files) — for entity_description, text_unit_text, community_full_content embeddings
+- **Graph**: outputs as Parquet (not a live graph DB) — graph structure is materialized during indexing, queried via search engines
+- Storage choice: Parquet for portability + LanceDB for local vector search. No server-side database required.
+
+**Ingestion Pipeline:**
+1. Documents → TextUnits (chunking, default ~300-1200 tokens)
+2. LLM entity extraction from TextUnits (entities + types + descriptions)
+3. LLM relationship extraction (source, target, description, weight)
+4. Entity summarization (merge duplicate entities across chunks)
+5. Hierarchical clustering (Leiden algorithm) → Communities
+6. Community report generation (LLM summarizes each community)
+7. Embedding generation (entity descriptions, text units, community reports)
+8. Output to Parquet + LanceDB
+
+**Retrieval Pipeline:**
+- **Global search**: maps query to communities → community reports → LLM generates answer from community summaries
+- **Local search**: entity vector search → related relationships + text units + community context → LLM
+- **DRIFT search**: hybrid global+local with iterative exploration
+- No reranker in core — relies on embedding similarity + graph structure
+
+**Updates/Stale Knowledge:** No built-in update mechanism — indexing is a batch pipeline. To update, re-run indexing (or use incremental indexing in newer versions). No temporal versioning, no conflict resolution. `attributes` dict on Entity for extensibility.
+
+**Multi-Tenant:** None in core — single corpus per index. No user/company isolation.
+
+**MongoDB:** No.
+
+---
+
+### 8. LightRAG (`HKUDS/LightRAG`)
+
+**Data Model/Schema:**
+- `lightrag/base.py` — storage abstractions:
+  - `StorageNameSpace(ABC)`: `namespace: str`, `workspace: str`, `global_config: dict` — base for all storage
+  - `BaseVectorStorage`: `embedding_func: EmbeddingFunc`, `cosine_better_than_threshold: float = 0.2`, `meta_fields: set[str]` — abstract `query()`, `upsert()`, `delete_entity()`, `delete_entity_relation()`
+    - [lightrag/base.py#L172-182](https://github.com/HKUDS/LightRAG/blob/main/lightrag/base.py#L172-L182)
+  - `QueryParam`: `mode: Literal["local", "global", "hybrid", "naive", "mix", "bypass"] = "mix"`, `top_k: int`, `chunk_top_k: int`, `enable_rerank: bool = True`
+    - [lightrag/base.py#L78-90](https://github.com/HKUDS/LightRAG/blob/main/lightrag/base.py#L78-L90)
+  - `TextChunkSchema(TypedDict)`: `tokens: int`, `content: str`, `full_doc_id: str`, `chunk_order_index: int`
+- `lightrag/types.py` — Pydantic models for LLM extraction:
+  - `ExtractedEntity`: `entity_name: str` (title case), `entity_type: str`, `entity_description: str`
+  - `ExtractedRelationship`: `source_entity: str`, `target_entity: str`, `relationship_keywords: str`, `relationship_description: str`
+  - `EntityExtractionResult`: `entities: list[ExtractedEntity]`, `relationships: list[ExtractedRelationship]`
+  - `KnowledgeGraphNode`: `id: str`, `labels: list[str]`, `properties: dict[str, Any]`
+  - `KnowledgeGraphEdge`: `id: str`, `type: Optional[str]`, `source: str`, `target: str`, `properties: dict[str, Any]`
+  - `KnowledgeGraph`: `nodes: list[KnowledgeGraphNode]`, `edges: list[KnowledgeGraphEdge]`, `is_truncated: bool`
+
+**Storage Backend:** Triple pluggable:
+- **KV storage**: JSON files (default), Redis, Postgres, MongoDB (via `KVStorage` abstractions)
+- **Vector storage**: NanoVectorDB (default in-memory), HNSW, FAISS, Milvus, Qdrant, ChromaDB, LanceDB
+- **Graph storage**: NetworkX (default, in-memory + GraphML persistence), Neo4j, Memgraph
+- `workspace` field on StorageNameSpace for namespace isolation
+- Storage choice: pluggable to support local-first (JSON/NetworkX) to production (Postgres/Neo4j/Milvus)
+
+**Ingestion Pipeline:**
+1. Text chunking (token-based, configurable)
+2. LLM entity + relationship extraction (structured output via `ExtractedEntity`/`ExtractedRelationship` Pydantic models)
+3. Entity/relationship deduplication and merging
+4. Embedding generation (configurable model)
+5. Storage to KV (chunks, docs), Vector (entity descriptions, relationships, chunks), Graph (nodes, edges)
+
+**Retrieval Pipeline:**
+- **6 modes**: `local` (context-dependent), `global` (global knowledge), `hybrid` (local+global), `naive` (basic RAG), `mix` (KG + vector, default), `bypass` (direct LLM)
+- Token budget system: `max_entity_tokens`, `max_relation_tokens`, `max_total_tokens`
+- Reranking enabled by default (`enable_rerank: bool = True`)
+- Low-level + high-level keyword extraction for retrieval focus
+  - [lightrag/base.py#L90-120](https://github.com/HKUDS/LightRAG/blob/main/lightrag/base.py#L90-L120)
+
+**Updates/Stale Knowledge:**
+- `delete_entity()` and `delete_entity_relation()` on vector storage — explicit deletion, not versioning
+- `drop_pending_index_ops()` for aborting failed batches
+- No temporal versioning, no automatic conflict resolution
+- Upsert semantics: `upsert()` inserts or updates by key
+
+**Multi-Tenant:** `workspace` field on `StorageNameSpace` — namespace for isolation. Each workspace has its own KV/vector/graph storage instances.
+
+**MongoDB:** Possible via KV storage adapter (MongoDB is listed as a supported KV backend in docs), but not a primary or documented vector store. Not confirmed in core code as a first-class vector store.
+
+---
+
+### 9. nano-graphrag (`gusye1234/nano-graphrag`)
+
+**Data Model/Schema:**
+- `nano_graphrag/base.py` — dataclass/TypedDict abstractions:
+  - `QueryParam`: `mode: Literal["local", "global", "naive"] = "global"`, `top_k: int = 20`, with per-mode token budgets
+  - `TextChunkSchema(TypedDict)`: `tokens: int`, `content: str`, `full_doc_id: str`, `chunk_order_index: int`
+  - `SingleCommunitySchema(TypedDict)`: `level: int`, `title: str`, `edges: list[list[str,str]]`, `nodes: list[str]`, `chunk_ids: list[str]`, `occurrence: float`, `sub_communities: list[str]`
+  - `CommunitySchema(SingleCommunitySchema)`: adds `report_string: str`, `report_json: dict`
+  - `BaseVectorStorage`, `BaseKVStorage(Generic[T])`, `BaseGraphStorage` — abstract storage interfaces
+    - [nano_graphrag/base.py#L1-200](https://github.com/gusye1234/nano-graphrag/blob/main/nano_graphrag/base.py#L1-L200)
+
+**Storage Backend:** Pluggable:
+- **Graph**: NetworkX (default, in-memory + GraphML), Neo4j (`_storage/gdb_neo4j.py`)
+- **Vector**: NanoVectorDB (default, in-memory), HNSW (`_storage/vdb_hnswlib.py`), FAISS, Milvus, Qdrant
+- **KV**: JSON files (`_storage/kv_json.py`)
+- Storage choice: minimal dependencies — defaults are pure Python (NetworkX, NanoVectorDB, JSON)
+
+**Ingestion Pipeline:**
+1. Text chunking (`_splitter.py`)
+2. Entity + relationship extraction via LLM (`entity_extraction/extract.py`)
+3. Community detection (clustering algorithm on graph)
+4. Community report generation
+5. Embedding + storage
+
+**Retrieval Pipeline:**
+- `local`: entity-centric, retrieves related text units + community context
+- `global`: community report-based, maps query to communities
+- `naive`: basic vector RAG (top-k chunks)
+- Token budget allocation per mode (e.g., `local_max_token_for_text_unit: 4000`, `local_max_token_for_local_context: 4800`)
+
+**Updates/Stale Knowledge:** `filter_keys()` on KV storage to check existing keys. Upsert semantics. No temporal versioning or conflict resolution.
+
+**Multi-Tenant:** `namespace: str` on `StorageNameSpace` — basic namespace isolation. No user/tenant partitioning.
+
+**MongoDB:** No.
+
+---
+
+### 10. Cline (`cline/cline`)
+
+**Data Model/Schema:**
+- No code-level schema. Memory Bank = set of Markdown files in project directory:
+  - `projectbrief.md`, `productContext.md`, `activeContext.md`, `systemPatterns.md`, `techContext.md`, `progress.md`
+- Each file is free-form Markdown with conventional purpose
+
+**Storage Backend:** Files only (Markdown). No database. Memory stored in `.clinerules/` or `memory-bank/` directory.
+
+**Ingestion Pipeline:** Agent reads all memory bank files at task start, updates relevant files at task end. Driven by custom instructions, not code.
+
+**Retrieval Pipeline:** Agent reads files at task start — no programmatic retrieval, no vector search.
+
+**Updates/Stale Knowledge:** Agent updates `activeContext.md` and `progress.md` after significant changes. No versioning, no conflict resolution — manual/agent-managed.
+
+**Multi-Tenant:** None — per-project only.
+
+**MongoDB:** No.
+
+---
+
+### 11. Continue.dev (`continuedev/continue`)
+
+**Data Model/Schema:**
+- No explicit schema class — data is implicit in SQLite tables + LanceDB collections:
+  - SQLite `files` table: file paths, SHA-256 hashes, timestamps, indexing tags
+  - LanceDB collections: `entity_description.lance`, `text_unit_text.lance`, `community_full_content.lance` (in GraphRAG example data) — vectors with metadata (file paths, line numbers)
+
+**Storage Backend:**
+- **Vector**: LanceDB (embedded, disk-persistent) — `.lance` files at `~/.continue/index/lancedb/`
+- **Relational/metadata**: SQLite at `~/.continue/index/index.sqlite`
+- Storage choice: local-first, privacy-centric — code never leaves machine (unless using cloud embedding)
+
+**Ingestion Pipeline:**
+1. **Scanning & hashing**: SHA-256 hashes per file, compared against SQLite — only changed/new files processed
+2. **Semantic chunking**: Tree-sitter AST parsing → meaningful chunks (functions, classes) — `core/indexing/chunk/code.ts`
+3. **Embedding**: `all-MiniLM-L6-v2` via transformers.js (local default), or Voyage AI / OpenAI / Ollama
+4. **Storage**: vectors to LanceDB, metadata to SQLite
+
+**Retrieval Pipeline:**
+- **Agentic Search** (newer): LLM uses `codebase_tool` to query LanceDB + grep/glob for exact matches
+- **Legacy `@Codebase`**: top-k vector retrieval
+- Repo mapping for high-level structure before deep search
+
+**Updates/Stale Knowledge:** Incremental via SHA-256 file hash comparison. Changed files re-indexed. No temporal versioning. SQLite tracks file hashes + timestamps for staleness detection.
+
+**Multi-Tenant:** None — per-machine, per-workspace. No user/company isolation.
+
+**MongoDB:** No.
+
+---
+
+## Cross-Cutting Analysis
+
+### Data Model Patterns
+
+| Pattern | Repos |
+|---------|-------|
+| **Pydantic/dataclass models** (code-first schema) | Mem0, Graphiti, Cognee, GraphRAG, LightRAG, nano-graphrag |
+| **SQLAlchemy ORM** (relational schema) | Cognee (Node, Edge, Data tables) |
+| **Markdown + YAML frontmatter** (file-based) | OpenWiki, OKF, Cline |
+| **Implicit schema** (in storage format) | Continue (SQLite + LanceDB) |
+
+### Storage Backend Patterns
+
+| Pattern | Repos |
+|---------|-------|
+| **Graph DB only** | Graphiti (Neo4j/Kuzu/FalkorDB/Neptune) |
+| **Vector + relational hybrid** | Mem0, Continue (LanceDB+SQLite) |
+| **Graph + vector + relational triple** | Cognee, LightRAG |
+| **Parquet + vector (file-based)** | GraphRAG (Parquet + LanceDB) |
+| **Pure in-memory + file persistence** | nano-graphrag (NetworkX + NanoVectorDB + JSON) |
+| **Files only (Markdown)** | OpenWiki, OKF, Cline |
+| **In-context + archival** | Letta (memory blocks + external store) |
+
+### Update/Conflict Resolution Patterns
+
+| Pattern | Repos |
+|---------|-------|
+| **Bi-temporal versioning** (valid_at/invalid_at/created_at/expired_at) | Graphiti only |
+| **LLM-driven ADD/UPDATE/DELETE/NOOP** | Mem0 |
+| **Hash-based dedup + incremental** | Continue (SHA-256), Cognee (content_hash), Mem0 (MD5) |
+| **Git-based versioning** | OpenWiki (gitHead), OKF (git repo), Letta (MemFS) |
+| **Batch re-indexing** (no updates) | GraphRAG, nano-graphrag |
+| **Agent self-managed** | Letta, Cline |
+
+### Multi-Tenant Isolation Patterns
+
+| Pattern | Repos |
+|---------|-------|
+| **`group_id` partition key** on every node/edge | Graphiti |
+| **`user_id` + `tenant_id` + `owner_id` columns** | Cognee (RLS commented out) |
+| **Metadata dict scoping** (user_id/agent_id/app_id) | Mem0 |
+| **`workspace`/`namespace` isolation** | LightRAG, nano-graphrag |
+| **Per-repository/per-project** | OpenWiki, OKF, Cline, Continue |
+| **Per-agent** | Letta |
+
+### MongoDB / Document Store Usage
+
+| Repo | MongoDB? | Details |
+|------|----------|---------|
+| **Mem0** | ✅ **YES — first-class** | `mem0/vector_stores/mongodb.py`: Atlas Vector Search (`vectorSearch` index type, cosine similarity) + Atlas Search text index. Document schema: `{"_id", "embedding", "payload"}`. Unifies document + vector in single collection. |
+| **Letta** | ✅ External only | MongoDB as archival memory tool (agent queries via tool call). Not for internal state (Postgres/SQLite). |
+| **LightRAG** | ⚠️ Possible via KV adapter | MongoDB listed as supported KV backend in docs, not confirmed as vector store in core code. |
+| **Cognee** | ❌ No | No MongoDB adapter. Uses Postgres/Neo4j/Qdrant. |
+| **Graphiti** | ❌ No | Graph DB only (Neo4j/Kuzu/FalkorDB/Neptune). |
+| **GraphRAG** | ❌ No | Parquet + LanceDB. |
+| **nano-graphrag** | ❌ No | NetworkX/Neo4j + NanoVectorDB/HNSW + JSON. |
+| **OpenWiki** | ❌ No | Files only. |
+| **OKF** | ❌ No | Files only. |
+| **Cline** | ❌ No | Files only. |
+| **Continue** | ❌ No | LanceDB + SQLite. |
+
+---
+
+## Sources
+
+### Kept (primary code sources read):
+- `langchain-ai/openwiki` — `src/agent/types.ts` — core TypeScript data model
+- `GoogleCloudPlatform/knowledge-catalog` — `okf/SPEC.md` — OKF format specification (v0.1 Draft)
+- `mem0ai/mem0` — `mem0/configs/base.py` — MemoryItem + MemoryConfig schema
+- `mem0ai/mem0` — `mem0/vector_stores/mongodb.py` — MongoDB Atlas Vector Search implementation (CONFIRMED MongoDB usage)
+- `getzep/graphiti` — `graphiti_core/nodes.py` — Node/EntityNode/EpisodicNode schema with group_id
+- `getzep/graphiti` — `graphiti_core/edges.py` — EntityEdge with bi-temporal versioning (valid_at/invalid_at/created_at/expired_at)
+- `topoteretes/cognee` — `cognee/modules/data/models/data.py` — Data ORM with tenant_id/owner_id
+- `topoteretes/cognee` — `cognee/modules/graph/models/Node.py` — Graph Node ORM with user_id, commented-out RLS
+- `topoteretes/cognee` — `cognee/modules/graph/models/Edge.py` — Graph Edge ORM with relationship_name
+- `microsoft/graphrag` — `python/graphrag/graphrag/model/entity.py` — Entity dataclass with embeddings + community_ids
+- `HKUDS/LightRAG` — `lightrag/base.py` — Storage abstractions + QueryParam with 6 modes
+- `HKUDS/LightRAG` — `lightrag/types.py` — ExtractedEntity/ExtractedRelationship/KnowledgeGraph Pydantic models
+- `gusye1234/nano-graphrag` — `nano_graphrag/base.py` — Base storage interfaces + schemas
+
+### Dropped:
+- Various blog posts and tutorials — secondary commentary, not primary code
+- `d.foundation` Mem0 breakdown — good analysis but not primary source
+- MongoDB marketing pages — vendor content, not OSS code
+
+---
+
+## Gaps
+
+1. **Letta memory block code**: Could not read the actual TypeScript memory block schema from `letta-ai/letta` repo (relied on web search summary). The `label`/`description`/`value`/`limit`/`metadata` schema should be verified against actual source.
+2. **GraphRAG Relationship/Community/Document model files**: Only read `entity.py` from raw GitHub. The Relationship, Community, CommunityReport, TextUnit, Document dataclass definitions were inferred from docs + parquet outputs, not read from source.
+3. **LightRAG MongoDB KV adapter**: Web sources mention MongoDB as a KV backend, but the actual adapter code was not found/read. Should verify `lightrag/kg/` or `lightrag/storage/` directories for a MongoDB implementation.
+4. **Mem0 graph store**: Recent versions restructured graph support. The Neo4j/Neptune/Memgraph graph implementation details were not read from code.
+5. **gpt-researcher**: No memory/knowledge storage implementation found — it's a research agent, not a memory system. Excluded from detailed analysis.
+6. **Cline**: The "Memory Bank" is a methodology/custom-instructions pattern, not actual code in the `cline/cline` repo. The memory bank files are user-created, not shipped with the extension.
+
+### Suggested next steps:
+- Read Letta's `core/memory.py` or equivalent for exact memory block TypeScript interface
+- Read GraphRAG's `relationship.py`, `community.py`, `document.py`, `text_unit.py` model files
+- Search LightRAG repo for MongoDB adapter code (`find . -name "*mongo*"`)
+- Read Mem0's `mem0/graphs/` directory for graph store implementations

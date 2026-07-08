@@ -1,0 +1,301 @@
+# Research: The Landscape of LLM Wikis / Company Brain / Agent Knowledge Bases
+
+## Summary
+
+The "LLM wiki / company brain" category crystallized around Andrej Karpathy's June 2026 "LLM Wiki" gist, which inverts RAG: instead of retrieving chunks at query time, an LLM builds and maintains a persistent, interlinked, pre-synthesized knowledge layer that compounds over time. The field has bifurcated into (a) **file-format / wiki-first** systems (LangChain OpenWiki, Google OKF) that use plain markdown + frontmatter as a portable, vendor-neutral contract, and (b) **infrastructure-first** memory/knowledge-graph systems (Mem0, Letta, Graphiti/Zep, Cognee, GraphRAG, LightRAG, Glean, Notion AI) that solve extraction, temporal consistency, and retrieval at scale. The single biggest category-level pain point is **knowledge staleness + maintenance burden** (humans abandon wikis because upkeep grows faster than value); the field's answer is LLM-driven self-maintenance and temporal versioning, but the unsolved gap is **cross-system interoperability and provenance/verification at scale** — most "brains" are bespoke and siloed.
+
+---
+
+## The Founding Pattern: Karpathy's LLM Wiki
+
+Andrej Karpathy published a gist ([gist](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f)) proposing the "LLM Wiki": instead of RAG (retrieving chunks at query time), have the LLM build and maintain a persistent wiki. Three layers: (1) raw sources (immutable), (2) the wiki (LLM-generated synthesis), (3) the schema (instructions telling the LLM how to maintain the wiki). Key quote: "Humans abandon wikis because the maintenance burden grows faster than the value. LLMs don't get bored, don't forget to update a cross-reference, and can touch 15 files in one pass." This gist is explicitly cited as the origin by both LangChain OpenWiki and Google OKF. [Source: themenonlab.blog](https://themenonlab.blog/blog/openwiki-langchain-agent-documentation/); [Source: cloud.google.com](https://cloud.google.com/blog/products/data-analytics/how-the-open-knowledge-format-can-improve-data-sharing)
+
+---
+
+## Per-System Analysis
+
+### 1. LangChain OpenWiki
+
+1. **Problem solved.** Coding agents don't *understand* a repo the way a human teammate would after weeks on the project. Docs are written for humans to browse, not for agents to consume in context windows. OpenWiki generates agent-native documentation that compounds. [Source](https://themenonlab.blog/blog/openwiki-langchain-agent-documentation/)
+2. **Data model / schema.** An `openwiki/` directory at repo root: `architecture.md` (system overview, entry points, stack), `patterns.md` (coding conventions, error-handling), `components.md` (file→responsibility mapping with cross-references), `summaries/` (granular per-package markdown), `.metadata.json` (file hashes for incremental sync). Content is "agent-native markdown": zero-filler headers, one-paragraph dense summaries, explicit cross-linking for retrieval hops. [Source](https://themenonlab.blog/blog/openwiki-langchain-agent-documentation/)
+3. **Storage backend.** Files (markdown) in the repo + Git. No vector DB, no graph DB. [Source](https://themenonlab.blog/blog/openwiki-langchain-agent-documentation/)
+4. **Write path (ingest/extract/embed).** CLI (`openwiki --init`, `openwiki "Generate documentation..."`) built on LangChain DeepAgents + LangGraph. An LLM reads the codebase and synthesizes the wiki. A GitHub Action (`openwiki-update.yml`, daily cron) detects changed files via `git diff` + `.metadata.json` hashes and opens a PR with updates — incremental, not full rebuild. Supports OpenRouter, Fireworks, Anthropic, OpenAI. [Source](https://themenonlab.blog/blog/openwiki-langchain-agent-documentation/)
+5. **Read path.** Not RAG. OpenWiki injects a "Map & Pointer" block into `AGENTS.md` / `CLAUDE.md` telling the agent to `read_file` specific wiki pages before large refactors. The agent navigates via markdown cross-links (retrieval hops). [Source](https://themenonlab.blog/blog/openwiki-langchain-agent-documentation/)
+6. **BIGGEST PAIN POINT solved and HOW.** Documentation drift / maintenance burden. Solved by making the LLM self-maintain the wiki via scheduled GitHub Actions — maintenance cost near zero, wiki stays current with code. Verification via LangSmith LLM-as-a-judge. [Source](https://themenonlab.blog/blog/openwiki-langchain-agent-documentation/)
+7. **License / maturity / adoption.** Open source (GitHub: langchain-ai/openwiki). Very new (~late June 2026). Integrates with Claude Code, Codex, Cursor via AGENTS.md/CLAUDE.md convention. Early adoption; concrete maturity metrics not published. [Source](https://github.com/langchain-ai/openwiki)
+
+### 2. Google Open Knowledge Format (OKF)
+
+1. **Problem solved.** Fragmented context: organizational knowledge atoms (table schemas, metric definitions, runbooks, join paths, API deprecations) live in mutually incompatible surfaces — metadata catalogs with their own APIs, wikis, code comments, senior engineers' heads. Every agent builder re-solves context-assembly from scratch; knowledge is locked behind whichever surface created it. [Source: cloud.google.com](https://cloud.google.com/blog/products/data-analytics/how-the-open-knowledge-format-can-improve-data-sharing)
+2. **Data model / schema.** A **bundle** = directory of markdown **concept** files (one concept per file; file path is the concept's identity). YAML frontmatter with required field `type` + optional `title`, `description`, `resource` (URI to original asset), `tags`, `timestamp`. Markdown body = free-form "wisdom." Concepts link via standard markdown links → graph. Reserved files: `index.md` (progressive disclosure / TOC) and `log.md` (chronological change history). v0.1 spec "fits on a single page." [Source: cloud.google.com](https://cloud.google.com/blog/products/data-analytics/how-the-open-knowledge-format-can-improve-data-sharing)
+3. **Storage backend.** Files (markdown + YAML) in Git. "Just markdown, just files, just YAML frontmatter." No runtime, no SDK, no database required. [Source: cloud.google.com](https://cloud.google.com/blog/products/data-analytics/how-the-open-knowledge-format-can-improve-data-sharing)
+4. **Write path.** Producer-agnostic. Reference implementation: an **enrichment agent** walks a BigQuery dataset, drafts an OKF concept per table/view, then a second LLM pass crawls authoritative docs and enriches with citations, schemas, join paths. Humans can also hand-author. [Source: cloud.google.com](https://cloud.google.com/blog/products/data-analytics/how-the-open-knowledge-format-can-improve-data-sharing)
+5. **Read path.** Agent navigates `index.md` for progressive disclosure, then reads specific concept files and follows markdown cross-links. No vector search in the spec itself — consumers can build their own indexes. A **static HTML visualizer** renders any bundle as an interactive graph (self-contained, no backend). [Source: cloud.google.com](https://cloud.google.com/blog/products/data-analytics/how-the-open-knowledge-format-can-improve-data-sharing)
+6. **BIGGEST PAIN POINT solved and HOW.** Interoperability / vendor lock-in / siloed knowledge. OKF solves it by being a **format, not a platform** — minimally opinionated (only `type` is required), producer/consumer independent, no proprietary SDK, lives in version control. The value comes from "how many parties speak it." [Source: cloud.google.com](https://cloud.google.com/blog/products/data-analytics/how-the-open-knowledge-format-can-improve-data-sharing)
+7. **License / maturity / adoption.** Open specification (v0.1), published by Google Cloud Data Cloud team. Repo + spec at [GitHub: GoogleCloudPlatform/knowledge-catalog](https://github.com/GoogleCloudPlatform/knowledge-catalog/tree/main/okf). Three sample bundles (GA4 e-commerce, Stack Overflow, Bitcoin). Google Cloud Knowledge Catalog updated to ingest OKF. Early-stage standard; adoption beyond Google not yet established. [Source: cloud.google.com](https://cloud.google.com/blog/products/data-analytics/how-the-open-knowledge-format-can-improve-data-sharing)
+
+### 3. Mem0
+
+1. **Problem solved.** Adding persistent, personalized memory to SaaS apps / agents without building memory infra from scratch. "Universal memory layer." [Source: github.com/mem0ai/mem0](https://github.com/mem0ai/mem0)
+2. **Data model / schema.** Hybrid vector + graph. Memory segmented into three tiers: **User**, **Session**, **Agent**. Automatic conflict resolution (e.g., updating a user's address). [Source: particula.tech](https://particula.tech/blog/agent-memory-frameworks-tested-mem0-zep-letta-cognee-2026)
+3. **Storage backend.** Cloud/managed + PostgreSQL + Qdrant (vector). [Source: particula.tech](https://particula.tech/blog/agent-memory-frameworks-tested-mem0-zep-letta-cognee-2026)
+4. **Write path.** Hierarchical extraction algorithm (2026 update improved temporal reasoning ~29%, multi-hop ~23% over 2025 baseline). ~3 lines of code to integrate. [Source: mem0.ai](https://mem0.ai/blog/state-of-ai-agent-memory-2026)
+5. **Read path.** Hybrid: vector similarity + graph entity relationships. [Source: particula.tech](https://particula.tech/blog/agent-memory-frameworks-tested-mem0-zep-letta-cognee-2026)
+6. **BIGGEST PAIN POINT solved and HOW.** Ease of integration + conflict resolution for personalization. Solved by managed API + automatic fact updating. [Source: mem0.ai](https://mem0.ai/blog/state-of-ai-agent-memory-2026)
+7. **License / maturity / adoption.** Apache-2.0 (OSS core) + managed cloud. Significant adoption (widely used OSS memory layer). [Source: github.com/mem0ai/mem0](https://github.com/mem0ai/mem0)
+
+### 4. Letta (MemGPT)
+
+1. **Problem solved.** Long-lived autonomous agents that need to self-manage context beyond the fixed context window. Treats memory as an OS problem. [Source: letta.com](https://www.letta.com/blog/memgpt-and-letta/)
+2. **Data model / schema.** OS-style tiered memory: **Core Memory** (RAM — persona + user profile, agent self-edits via tool calls), **Recall Memory** (disk cache — searchable full conversation history), **Archival Memory** (cold storage — vector DB for long-term knowledge). Agent has *agency* over memory via `edit_memory`, `archive_memory` tools. [Source: letta.com/docs](https://docs.letta.com/guides/core-concepts/memory/archival-memory)
+3. **Storage backend.** Local SQLite/Disk + vector DB (LanceDB). [Source: particula.tech](https://particula.tech/blog/agent-memory-frameworks-tested-mem0-zep-letta-cognee-2026)
+4. **Write path.** Agent autonomously decides what to keep via tool calls. **Sleep-time Compute** (2025): agents process/summarize context while "offline." **Agent File (.af)** format for serializing stateful agents. [Source: rywalker.com](https://rywalker.com/research/letta)
+5. **Read path.** Agent queries Recall Memory (search) and Archival Memory (vector semantic search) via tool calls. [Source: letta.com/docs](https://docs.letta.com/guides/core-concepts/memory/archival-memory)
+6. **BIGGEST PAIN POINT solved and HOW.** Context window limits for long-lived agents. Solved by virtual context management (OS-style paging) + sleep-time compute to compress/organize offline. [Source: letta.com](https://www.letta.com/blog/memgpt-and-letta/)
+7. **License / maturity / adoption.** Apache-2.0 (core framework + Letta Code). From UC Berkeley BAIR. Letta Cloud (managed). Roadmap: Git-based context repos (Feb 2026), memory-native RL models (Jun 2026). Significant research lineage. [Source: github.com/letta-ai/letta](https://github.com/letta-ai/letta)
+
+### 5. Graphiti (Zep)
+
+1. **Problem solved.** Facts change over time and most memory systems fail when they do (e.g., "I used to like coffee, now I prefer tea"). Graphiti is a bi-temporal knowledge graph for AI agent memory. [Source: github.com/getzep/graphiti](https://github.com/getzep/graphiti)
+2. **Data model / schema.** Bi-temporal: tracks **valid time** (when fact was true in real world) and **transaction time** (when system learned it). Three subgraphs: **Episodic** (raw interactions as episodes), **Semantic** (extracted entities + relationships), **Community** (cluster summaries). Edges carry 4 timestamps: `valid_at`, `invalid_at`, `created_at`, `expired_at`. [Source: github.com/getzep/graphiti](https://github.com/getzep/graphiti); [Source: medium.com](https://medium.com/@pankaj_pandey/graphiti-give-every-fact-in-our-knowledge-graph-an-expiration-date-090f0de93ff2)
+3. **Storage backend.** Pluggable graph DBs: Neo4j, FalkorDB, Amazon Neptune, Kuzu. [Source: github.com/getzep/graphiti](https://github.com/getzep/graphiti)
+4. **Write path.** Message-by-message incremental updates (no full rebuild). When new info contradicts an existing fact, old edge gets `invalid_at` set; new edge created with `valid_at`. Conflict resolution via temporal logic. [Source: github.com/getzep/graphiti](https://github.com/getzep/graphiti)
+5. **Read path.** Hybrid: vector similarity (semantic) + BM25 (keyword) + graph traversal. Temporal filtering by time windows. MCP server for plug-and-play use with Claude/Cursor. [Source: github.com/getzep/graphiti](https://github.com/getzep/graphiti)
+6. **BIGGEST PAIN POINT solved and HOW.** Temporal consistency / fact evolution. Solved by bi-temporal edge metadata — no fact is deleted, only invalidated with timestamps, enabling historical queries. Leads LongMemEval benchmark (~63.8% vs Mem0 ~49% on temporal tasks). [Source: particula.tech](https://particula.tech/blog/agent-memory-frameworks-tested-mem0-zep-letta-cognee-2026)
+7. **License / maturity / adoption.** Apache-2.0. Core engine for Zep's "Context Lake." Active development, MCP support, significant benchmark visibility. [Source: github.com/getzep/graphiti](https://github.com/getzep/graphiti)
+
+### 6. Cognee
+
+1. **Problem solved.** Turning a massive library of unstructured files (PDFs, Slack, Notion, GitHub) into a queryable "company brain" with relational understanding. [Source: github.com/topoteretes/cognee](https://github.com/topoteretes/cognee)
+2. **Data model / schema.** Graph-native: transforms unstructured docs into a **typed knowledge graph** grounded in RDF/OWL ontologies. Distinguishes Session Memory (transient) vs Permanent Memory (evolving KG). [Source: cognee.ai/docs](https://docs.cognee.ai/getting-started/introduction)
+3. **Storage backend.** Triple-storage: PostgreSQL (relational/metadata) + LanceDB/Qdrant/PGVector (vector) + Neo4j/FalkorDB/NetworkX (graph). 2026: "single Postgres" deployment via PGVector + Postgres graph adapter. Rust core (`cognee-rs`). [Source: weavai.app](https://weavai.app/blog/en/2026/05/09/cognee-2026-review-graphrag-ontology-ai-memory-layer/)
+4. **Write path.** ECL pipeline (Extract, Cognify, Load). 2026 "Four Verbs" API: `.remember(data)` (ingest + cognify), `.recall(query)`, `.improve()` (self-correcting feedback loop, promotes session→permanent), `.forget(data)` (precise deletion). [Source: cognee.ai/docs](https://docs.cognee.ai/getting-started/introduction)
+5. **Read path.** Auto-selects Graph / Vector / Hybrid retrieval. Ontology validation enables multi-hop reasoning. 0.93 on HotPotQA benchmark. [Source: weavai.app](https://weavai.app/blog/en/2026/05/09/cognee-2026-review-graphrag-ontology-ai-memory-layer/)
+6. **BIGGEST PAIN POINT solved and HOW.** Multi-hop reasoning across unstructured org knowledge. Solved by ontology-grounded KG extraction + hybrid retrieval, not flat vector chunks. [Source: cognee.ai/docs](https://docs.cognee.ai/getting-started/introduction)
+7. **License / maturity / adoption.** Apache-2.0. 27k+ GitHub stars. $7.5M seed (Feb 2026, Pebblebed). Cognee Cloud (Cogwit) managed. [Source: github.com/topoteretes/cognee](https://github.com/topoteretes/cognee)
+
+### 7. OpenMemory
+
+1. **Problem solved.** Cross-application, local-first, private memory shared across AI tools (Claude Desktop, Cursor, VS Code) without sending data to a third-party cloud. [Source: github.com/CaviraOSS/OpenMemory](https://github.com/CaviraOSS/OpenMemory)
+2. **Data model / schema.** Sectorized memory: Episodic (events), Semantic (facts), Procedural (how-to). Also exists as Mem0's local-first MCP implementation. [Source: landscape.jimmysong.io](https://landscape.jimmysong.io/projects/open-memory/); [Source: particula.tech](https://particula.tech/blog/agent-memory-frameworks-tested-mem0-zep-letta-cognee-2026)
+3. **Storage backend.** Local SQLite / Postgres. [Source: particula.tech](https://particula.tech/blog/agent-memory-frameworks-tested-mem0-zep-letta-cognee-2026)
+4. **Write path.** MCP server — tools write memories; explainable traces show why a memory was recalled. [Source: github.com/CaviraOSS/OpenMemory](https://github.com/CaviraOSS/OpenMemory)
+5. **Read path.** MCP-based retrieval with explainability traces. [Source: github.com/CaviraOSS/OpenMemory](https://github.com/CaviraOSS/OpenMemory)
+6. **BIGGEST PAIN POINT solved and HOW.** Privacy + cross-tool memory fragmentation. Solved by local-first MCP server shared across apps without cloud dependency. [Source: github.com/CaviraOSS/OpenMemory](https://github.com/CaviraOSS/OpenMemory)
+7. **License / maturity / adoption.** OSS (Mem0 local variant + standalone CaviraOSS). MCP-native. Growing adoption among privacy-conscious devs. [Source: github.com/CaviraOSS/OpenMemory](https://github.com/CaviraOSS/OpenMemory)
+
+### 8. ChatGPT Memory (OpenAI)
+
+1. **Problem solved.** Persistent personalization across sessions without manual management. [Source: reddit.com/r/OpenAI](https://www.reddit.com/r/OpenAI/comments/1jy3e6z/eli5_how_does_chatgpts_memory_actually_work/)
+2. **Data model / schema.** "Bio" tool: model calls a tool to save/load facts. Structured context window per message: system/developer instructions → user memory (from bio) → recent summary → raw history. [Source: reddit.com/r/OpenAI](https://www.reddit.com/r/OpenAI/comments/1jy3e6z/eli5_how_does_chatgpts_memory_actually_work/)
+3. **Storage backend.** OpenAI server-side (proprietary). [Source: reddit.com/r/OpenAI](https://www.reddit.com/r/OpenAI/comments/1jy3e6z/eli5_how_does_chatgpts_memory_actually_work/)
+4. **Write path.** **"Dreaming"**: background process periodically reviews conversation history to synthesize, update, and prune memory profile while user is idle. Semi-automated. [Source: reddit.com/r/OpenAI](https://www.reddit.com/r/OpenAI/comments/1jy3e6z/eli5_how_does_chatgpts_memory_actually_work/)
+5. **Read path.** RAG-like: pre-loaded user memory summary injected into prompt context per message. [Source: reddit.com/r/OpenAI](https://www.reddit.com/r/OpenAI/comments/1jy3e6z/eli5_how_does_chatgpts_memory_actually_work/)
+6. **BIGGEST PAIN POINT solved and HOW.** Memory maintenance without user effort. Solved by background "Dreaming" consolidation. [Source: reddit.com/r/OpenAI](https://www.reddit.com/r/OpenAI/comments/1jy3e6z/eli5_how_does_chatgpts_memory_actually_work/)
+7. **License / maturity / adoption.** Proprietary, production, massive adoption (all ChatGPT users). [Source: reddit.com/r/OpenAI](https://www.reddit.com/r/OpenAI/comments/1jy3e6z/eli5_how_does_chatgpts_memory_actually_work/)
+
+### 9. Claude Memory (Anthropic)
+
+1. **Problem solved.** Transparent, tool-centric, project-based persistent memory for professional workflows. [Source: skywork.ai](https://skywork.ai/blog/claude-memory-a-deep-dive-into-anthropics-persistent-context-solution/)
+2. **Data model / schema.** Client-side file system: `/memories` directory of files. Claude creates, reads, updates, deletes files via tools. [Source: platform.claude.com](https://platform.claude.com/docs/en/agents-and-tools/tool-use/memory-tool)
+3. **Storage backend.** Local filesystem (files). [Source: platform.claude.com](https://platform.claude.com/docs/en/agents-and-tools/tool-use/memory-tool)
+4. **Write path.** Real-time "add to memory" tool calls. **"Auto Dream"** / "Claude Code Dreams" consolidation merges fragmented notes, removes contradictions, prunes old data. [Source: skywork.ai](https://skywork.ai/blog/claude-memory-a-deep-dive-into-anthropics-persistent-context-solution/)
+5. **Read path.** Real-time `conversation_search` tool searches raw conversation history logs (not just pre-loaded summary). [Source: skywork.ai](https://skywork.ai/blog/claude-memory-a-deep-dive-into-anthropics-persistent-context-solution/)
+6. **BIGGEST PAIN POINT solved and HOW.** Transparency + control (vs ChatGPT's opacity). Solved by file-based memory the user can inspect/edit + real-time search over raw logs. [Source: skywork.ai](https://skywork.ai/blog/claude-memory-a-deep-dive-into-anthropics-persistent-context-solution/)
+7. **License / maturity / adoption.** Proprietary (Claude API / Claude Code). Production. [Source: platform.claude.com](https://platform.claude.com/docs/en/agents-and-tools/tool-use/memory-tool)
+
+### 10. Gemini Memory (Google)
+
+1. **Problem solved.** Cross-session memory leveraging massive context + ecosystem integration. [Source: shloked.com](https://www.shloked.com/writing/gemini-memory)
+2. **Data model / schema.** "Saved Info" (explicit user facts) + "User_Context" (background-generated profile from past chats). Enterprise: Memory Bank with vector similarity search per user/project identity. [Source: shloked.com](https://www.shloked.com/writing/gemini-memory)
+3. **Storage backend.** Server-side vector store (enterprise). Context window itself (1M–2M tokens) as primary "memory." [Source: shloked.com](https://www.shloked.com/writing/gemini-memory); [Source: ai.google.dev](https://ai.google.dev/gemini-api/docs/long-context)
+4. **Write path.** Background summarization distills past chats into User_Context. Explicit user "Saved Info" entries. [Source: shloked.com](https://www.shloked.com/writing/gemini-memory)
+5. **Read path.** Context-packing (massive window holds everything) + vector similarity search (enterprise Memory Bank). [Source: shloked.com](https://www.shloked.com/writing/gemini-memory)
+6. **BIGGEST PAIN POINT solved and HOW.** Need for memory without external infra. Solved by relying on industry-leading 1M–2M token context window as "universal workspace" rather than sophisticated retrieval. [Source: shloked.com](https://www.shloked.com/writing/gemini-memory)
+7. **License / maturity / adoption.** Proprietary. Production, massive adoption. [Source: ai.google.dev](https://ai.google.dev/gemini-api/docs/long-context)
+
+### 11. Cursor Memories
+
+1. **Problem solved.** Giving the coding agent project conventions + indexed external docs + codebase-wide semantic search. [Source: medium.com](https://medium.com/@jlandure/boosting-your-dev-workflow-with-cursor-docs-e4bcfd1c9efe)
+2. **Data model / schema.** `.cursor/rules/*.mdc` (project rules), `@docs` (crawled external doc URLs), `@codebase` (semantic index of local files). [Source: medium.com](https://medium.com/@jlandure/boosting-your-dev-workflow-with-cursor-docs-e4bcfd1c9efe)
+3. **Storage backend.** Local/embeddings index (proprietary). [Source: medium.com](https://medium.com/@jlandure/boosting-your-dev-workflow-with-cursor-docs-e4bcfd1c9efe)
+4. **Write path.** URL crawl + index for `@docs`. Local embedding for codebase. Rules are hand-authored markdown. [Source: medium.com](https://medium.com/@jlandure/boosting-your-dev-workflow-with-cursor-docs-e4bcfd1c9efe)
+5. **Read path.** RAG (semantic retrieval via `@codebase`, `@docs`). [Source: medium.com](https://medium.com/@jlandure/boosting-your-dev-workflow-with-cursor-docs-e4bcfd1c9efe)
+6. **BIGGEST PAIN POINT solved and HOW.** External doc access + codebase understanding. Solved by `@docs` URL crawling + semantic codebase indexing. [Source: medium.com](https://medium.com/@jlandure/boosting-your-dev-workflow-with-cursor-docs-e4bcfd1c9efe)
+7. **License / maturity / adoption.** Proprietary, commercial, massive adoption. [Source: medium.com](https://medium.com/@jlandure/boosting-your-dev-workflow-with-cursor-docs-e4bcfd1c9efe)
+
+### 12. Cline (Memory Bank)
+
+1. **Problem solved.** Explicit, human-readable project state tracking across sessions (origin of the "Memory Bank" methodology). [Source: dev.to](https://dev.to/harsh-joshi/docs-in-cursor-a-life-saver-1fi4)
+2. **Data model / schema.** `memory-bank/` folder of markdown files: `projectbrief.md` (goals), `activeContext.md` (current task, updated frequently), `systemPatterns.md` (architecture decisions). Plus `.clinerules` for behavioral guidelines. [Source: dev.to](https://dev.to/harsh-joshi/docs-in-cursor-a-life-saver-1fi4)
+3. **Storage backend.** Files (markdown) in repo. [Source: dev.to](https://dev.to/harsh-joshi/docs-in-cursor-a-life-saver-1fi4)
+4. **Write path.** Agent manually updates markdown files (human-editable, very high editability). No auto-crawl of external docs. [Source: dev.to](https://dev.to/harsh-joshi/docs-in-cursor-a-life-saver-1fi4)
+5. **Read path.** Agent reads markdown files at session start. No RAG/vector — explicit file reading. [Source: dev.to](https://dev.to/harsh-joshi/docs-in-cursor-a-life-saver-1fi4)
+6. **BIGGEST PAIN POINT solved and HOW.** Session continuity / losing context between sessions. Solved by structured, human-readable memory bank files that persist state. [Source: dev.to](https://dev.to/harsh-joshi/docs-in-cursor-a-life-saver-1fi4)
+7. **License / maturity / adoption.** OSS, significant adoption (memory bank pattern widely copied). [Source: dev.to](https://dev.to/harsh-joshi/docs-in-cursor-a-life-saver-1fi4)
+
+### 13. Aider
+
+1. **Problem solved.** Giving terminal-based coding agent structural codebase understanding without token explosion. [Source: dev.to](https://dev.to/superorange0707/the-complete-developers-guide-to-graphrag-lightrag-and-agenticrag-14go)
+2. **Data model / schema.** "Repo map" via tree-sitter: structural skeleton (classes, function names, call graph) of entire codebase. `/read-only` flag attaches reference files (API specs, style guides) that agent won't edit. [Source: dev.to](https://dev.to/superorange0707/the-complete-developers-guide-to-graphrag-lightrag-and-agenticrag-14go)
+3. **Storage backend.** In-memory repo map (tree-sitter parsed). Files for read-only context. [Source: dev.to](https://dev.to/superorange0707/the-complete-developers-guide-to-graphrag-lightrag-and-agenticrag-14go)
+4. **Write path.** Tree-sitter parses codebase → structural map. No persistent auto-updating memory file (users manually use AGENTS.md). [Source: dev.to](https://dev.to/superorange0707/the-complete-developers-guide-to-graphrag-lightrag-and-agenticrag-14go)
+5. **Read path.** Repo map injected into context (not RAG — structural, not semantic). Read-only files attached on demand. [Source: dev.to](https://dev.to/superorange0707/the-complete-developers-guide-to-graphrag-lightrag-and-agenticrag-14go)
+6. **BIGGEST PAIN POINT solved and HOW.** Token-efficient codebase understanding. Solved by tree-sitter repo map (skeleton, not full source) fitting in context. [Source: dev.to](https://dev.to/superorange0707/the-complete-developers-guide-to-graphrag-lightrag-and-agenticrag-14go)
+7. **License / maturity / adoption.** OSS, mature, strong adoption among terminal-first devs. [Source: dev.to](https://dev.to/superorange0707/the-complete-developers-guide-to-graphrag-lightrag-and-agenticrag-14go)
+
+### 14. Continue
+
+1. **Problem solved.** Modular, open-source coding assistant with extensible knowledge via MCP. [Source: docs.continue.dev](https://docs.continue.dev/guides/codebase-documentation-awareness)
+2. **Data model / schema.** `.continuerules` (project rules). Context7 MCP for on-demand public doc retrieval. Local embeddings for codebase questions. [Source: docs.continue.dev](https://docs.continue.dev/guides/codebase-documentation-awareness)
+3. **Storage backend.** Local embeddings index + MCP server connections. [Source: docs.continue.dev](https://docs.continue.dev/guides/codebase-documentation-awareness)
+4. **Write path.** MCP servers fetch docs on demand (Context7). Local embedding for codebase. Rules hand-authored. [Source: docs.continue.dev](https://docs.continue.dev/guides/codebase-documentation-awareness)
+5. **Read path.** RAG (local embeddings) + MCP on-demand retrieval. [Source: docs.continue.dev](https://docs.continue.dev/guides/codebase-documentation-awareness)
+6. **BIGGEST PAIN POINT solved and HOW.** Doc access modularity. Solved by moving from built-in `@Docs` indexing to Context7 MCP (on-demand, no pre-indexing). [Source: docs.continue.dev](https://docs.continue.dev/guides/codebase-documentation-awareness)
+7. **License / maturity / adoption.** OSS, adopted, MCP-forward. [Source: docs.continue.dev](https://docs.continue.dev/guides/codebase-documentation-awareness)
+
+### 15. Devin Memory
+
+1. **Problem solved.** Autonomous software engineering with deep repo understanding + session handoff. [Source: docs.devin.ai](https://docs.devin.ai/work-with-devin/deepwiki)
+2. **Data model / schema.** **DeepWiki**: auto-generated wiki with architecture diagrams, summaries, source links; steerable via `.devin/wiki.json`. **Episodic memory**: continuous work log of past attempts within session for handoff. [Source: docs.devin.ai](https://docs.devin.ai/work-with-devin/deepwiki)
+3. **Storage backend.** Proprietary (Devin platform). Wiki config as JSON. [Source: docs.devin.ai](https://docs.devin.ai/work-with-devin/deepwiki)
+4. **Write path.** Auto-indexes repo → generates DeepWiki (diagrams, summaries). DeepResearch agents browse web for task-specific temp knowledge. [Source: docs.devin.ai](https://docs.devin.ai/work-with-devin/deepwiki)
+5. **Read path.** DeepWiki navigation + episodic memory for session continuity. [Source: docs.devin.ai](https://docs.devin.ai/work-with-devin/deepwiki)
+6. **BIGGEST PAIN POINT solved and HOW.** Autonomous repo onboarding + session handoff. Solved by auto-generated DeepWiki + episodic work logs. [Source: docs.devin.ai](https://docs.devin.ai/work-with-devin/deepwiki)
+7. **License / maturity / adoption.** Proprietary, commercial (Cognition). Production. [Source: docs.devin.ai](https://docs.devin.ai/work-with-devin/deepwiki)
+
+### 16. Notion AI (Company Brain)
+
+1. **Problem solved.** Transforming Notion from document editor into an agentic Enterprise Knowledge Management (EKM) "company brain." [Source: alexlockey.com](https://www.alexlockey.com/writing/the-company-brain-four-builders-one-architecture/)
+2. **Data model / schema.** Understands workspace relational structure (databases, parent-child page hierarchies, property tags). AI Connectors ingest from Slack, Google Drive, GitHub, Jira. Custom Agents with multi-step workflows. AI Properties auto-populate database columns. [Source: alexlockey.com](https://www.alexlockey.com/writing/the-company-brain-four-builders-one-architecture/)
+3. **Storage backend.** Turbopuffer (vector DB) for semantic embeddings of every page block. Serverless sharding by `workspace_id`. Kafka consumers for real-time updates. Offline path: Apache Spark batch. [Source: alexlockey.com](https://www.alexlockey.com/writing/the-company-brain-four-builders-one-architecture/)
+4. **Write path.** Offline batch (Spark) + online real-time (Kafka) indexing of page edits. OpenAI zero-retention embeddings API. [Source: alexlockey.com](https://www.alexlockey.com/writing/the-company-brain-four-builders-one-architecture/)
+5. **Read path.** Native RAG with permission-aware retrieval (filters by user's Notion permissions in real-time). Model Router selects LLM per task. Hosted MCP server lets external agents (Claude Desktop, Cursor) plug into Notion as long-term memory. [Source: developers.notion.com](https://developers.notion.com/guides/mcp/overview)
+6. **BIGGEST PAIN POINT solved and HOW.** Permission-safe enterprise knowledge access. Solved by security-at-retrieval (real-time permission filtering) + zero-data-retention + build-from-nothing agent guardrails. [Source: alexlockey.com](https://www.alexlockey.com/writing/the-company-brain-four-builders-one-architecture/)
+7. **License / maturity / adoption.** Proprietary, commercial, massive enterprise adoption. MCP server production. [Source: developers.notion.com](https://developers.notion.com/guides/mcp/overview)
+
+### 17. Glean
+
+1. **Problem solved.** Enterprise-wide federated search + agentic work execution across 100+ connectors with strict permission enforcement. [Source: glean.com](https://www.glean.com/blog/knowledge-graph-agentic-engine)
+2. **Data model / schema.** Three graphs: **Enterprise Graph** (canonical relationships: engineer→Jira ticket→project), **Personal Graph** (per-user writing style, collaborators, priorities), **Context/Trace Graph** (temporal record of how work happens — incident resolution steps). [Source: glean.com](https://www.glean.com/blog/knowledge-graph-agentic-engine)
+3. **Storage backend.** Proprietary graph + vector + hybrid search infra. Single-tenant option (customer's own AWS/GCP/Azure). [Source: glean.com](https://www.glean.com/blog/knowledge-graph-agentic-engine)
+4. **Write path.** Connectors ingest from Jira, Slack, GitHub, ServiceNow, etc. Real-time permission mirroring. "Waldo" (30B MoE model on Nvidia Nemotron 3 Nano) handles search planning — decomposes queries, iterates searches, gathers evidence before waking frontier model. [Source: glean.com](https://www.glean.com/blog/waldo-launch)
+5. **Read path.** Verified RAG (restricted to SME-verified Knowledge Cards for high-stakes), Algorithmic RAG (hybrid lexical + vector, Reciprocal Rank Fusion), Deep Research (multi-hop reasoning across Enterprise Graph). [Source: glean.com](https://www.glean.com/blog/knowledge-graph-agentic-engine)
+6. **BIGGEST PAIN POINT solved and HOW.** Permission enforcement at scale + retrieval latency/cost. Solved by separating search (Waldo, 10x faster, ~50% latency reduction, ~25% token cost reduction) from synthesis (frontier model), + real-time permission mirroring. 94% task completeness rate. [Source: glean.com](https://www.glean.com/blog/waldo-launch)
+7. **License / maturity / adoption.** Proprietary, commercial. Enterprise standard for 500+ employee companies. MCP support. [Source: glean.com](https://www.glean.com/blog/knowledge-graph-agentic-engine)
+
+### 18. Microsoft GraphRAG
+
+1. **Problem solved.** Global corpus reasoning — answering thematic questions across massive document collections (e.g., "What are the top 5 themes?"). [Source: microsoft.github.io/graphrag](https://microsoft.github.io/graphrag/query/global_search/)
+2. **Data model / schema.** Hierarchical communities: Leiden algorithm detects clusters; LLM pre-writes "Community Reports" summarizing each cluster. Entity/relation extraction builds the graph. [Source: towardsai.net](https://towardsai.net/p/machine-learning/lightrag-and-graphrag-the-new-area-of-rag-applications-2)
+3. **Storage backend.** Graph (entities/relations) + community summaries. Typically Neo4j or similar. [Source: towardsai.net](https://towardsai.net/p/machine-learning/lightrag-and-graphrag-the-new-area-of-rag-applications-2)
+4. **Write path.** Heavy indexing: entity/relation extraction + Leiden clustering + LLM community report generation. Static — new data requires rebuild or heavy restructuring. [Source: towardsai.net](https://towardsai.net/p/machine-learning/lightrag-and-graphrag-the-new-area-of-rag-applications-2)
+5. **Read path.** **Global Search**: map-reduce over all community summaries. **Local Search**: entity-centric nearest-neighbor graph traversal. [Source: microsoft.github.io/graphrag](https://microsoft.github.io/graphrag/query/global_search/)
+6. **BIGGEST PAIN POINT solved and HOW.** "Big picture" / thematic questions that chunk-based RAG can't answer. Solved by hierarchical community summarization + map-reduce global search. PAIN POINT remaining: extremely expensive to index and query; slow to adapt to new data. [Source: towardsai.net](https://towardsai.net/p/machine-learning/lightrag-and-graphrag-the-new-area-of-rag-applications-2)
+7. **License / maturity / adoption.** MIT (OSS). Microsoft. Significant enterprise/research adoption. [Source: github.com/microsoft/graphrag](https://github.com/microsoft/graphrag/discussions/721)
+
+### 19. LightRAG
+
+1. **Problem solved.** GraphRAG's cost cliff — eliminating expensive community summaries while maintaining global awareness. [Source: github.com/hkuds/lightrag](https://github.com/hkuds/lightrag)
+2. **Data model / schema.** Dual-level hybrid: fuses vector search with graph structure. Keyword-value profiling of entities/relations into key-value store. [Source: github.com/hkuds/lightrag](https://github.com/hkuds/lightrag)
+3. **Storage backend.** Graph + key-value store + vector. Pluggable backends. [Source: github.com/hkuds/lightrag](https://github.com/hkuds/lightrag)
+4. **Write path.** Entity/relation extraction + deduplication. **Incremental**: supports set merging of new nodes/edges without rebuilding global index. [Source: github.com/hkuds/lightrag](https://github.com/hkuds/lightrag)
+5. **Read path.** Dual-level simultaneous: low-level (specific entities — who/what) + high-level (conceptual themes — why/how). Hybrid: graph traversal + vector similarity. [Source: neo4j.com](https://neo4j.com/blog/developer/under-the-covers-with-lightrag-retrieval/)
+6. **BIGGEST PAIN POINT solved and HOW.** Cost + incremental updates. Claims up to 6000x fewer tokens per query vs Microsoft GraphRAG; 90% fewer API calls; real-time incremental updates. [Source: towardsai.net](https://towardsai.net/p/machine-learning/lightrag-and-graphrag-the-new-area-of-rag-applications-2)
+7. **License / maturity / adoption.** OSS (HKUDS). Production-ready, strong adoption. [Source: github.com/hkuds/lightrag](https://github.com/hkuds/lightrag)
+
+### 20. nano-graphrag
+
+1. **Problem solved.** GraphRAG concept made readable, hackable, integrable in an afternoon (~1,100 lines). [Source: github.com/gusye1234/nano-graphrag](https://github.com/gusye1234/nano-graphrag)
+2. **Data model / schema.** Simplified GraphRAG: LLM-based entity/relation extraction, no complex hierarchical summarization. [Source: github.com/gusye1234/nano-graphrag](https://github.com/gusye1234/nano-graphrag)
+3. **Storage backend.** Pluggable (Neo4j, Faiss, etc.). [Source: github.com/gusye1234/nano-graphrag](https://github.com/gusye1234/nano-graphrag)
+4. **Write path.** LLM extraction. Basic incremental inserts without redundant computation. [Source: github.com/gusye1234/nano-graphrag](https://github.com/gusye1234/nano-graphrag)
+5. **Read path.** Local/Global modes. Global: selects top-K most central communities (not map-reduce over all). [Source: github.com/gusye1234/nano-graphrag](https://github.com/gusye1234/nano-graphrag)
+6. **BIGGEST PAIN POINT solved and HOW.** Transparency/hackability of GraphRAG. Solved by stripping covariates and heavy pipelines to 1,100 lines. [Source: github.com/gusye1234/nano-graphrag](https://github.com/gusye1234/nano-graphrag)
+7. **License / maturity / adoption.** OSS. Developer tool, not enterprise. Popular for prototyping. [Source: github.com/gusye1234/nano-graphrag](https://github.com/gusye1234/nano-graphrag)
+
+### 21. Company-Brain Startups (Lore, Savant, Cerenovus, Screenpipe)
+
+1. **Problem solved.** Capturing undocumented tribal knowledge (Slack, employee heads) and serving it to agents at decision time. [Source: colrows.com](https://colrows.com/blogs/yc-company-brain-rfs/)
+2. **Data model / schema.** Lore: native MCP server + scheduled agents + reusable skills. Savant (YC S26): tribal knowledge capture. Cerenovus: unified markdown knowledge graph (PDFs, emails, meeting notes as system map). Screenpipe: 24/7 screen/audio capture → searchable work memory. [Source: colrows.com](https://colrows.com/blogs/yc-company-brain-rfs/)
+3. **Storage backend.** Varies (MCP-based, markdown, local-first for Screenpipe). [Source: colrows.com](https://colrows.com/blogs/yc-company-brain-rfs/)
+4. **Write path.** MCP connectors, screen capture, tribal knowledge extraction. [Source: colrows.com](https://colrows.com/blogs/yc-company-brain-rfs/)
+5. **Read path.** MCP-based retrieval to Claude/ChatGPT/Cursor. Agentic RAG (iterative query refinement, cross-referencing multiple sources). [Source: colrows.com](https://colrows.com/blogs/yc-company-brain-rfs/)
+6. **BIGGEST PAIN POINT solved and HOW.** Tribal knowledge loss + "silent wrong answers" (agents and humans compute metrics differently due to missing semantic layer). New sub-sector for "metric consistency." [Source: colrows.com](https://colrows.com/blogs/yc-company-brain-rfs/)
+7. **License / maturity / adoption.** Early-stage startups (YC S26 batch). Market ~$9.1B (2026), CAGR 9.1% through 2034. [Source: colrows.com](https://colrows.com/blogs/yc-company-brain-rfs/)
+
+---
+
+## Category-Level Synthesis
+
+### The Biggest Category-Level Pain Point
+
+**Knowledge staleness + maintenance burden.** Humans abandon wikis because upkeep grows faster than value. Every system in this landscape attacks this from a different angle:
+- **File-format systems (OpenWiki, OKF):** LLM-driven self-maintenance via scheduled GitHub Actions / enrichment agents. "LLMs don't get bored."
+- **Memory systems (Mem0, Letta, Graphiti, Cognee):** Incremental, message-by-message updates + temporal versioning (Graphiti's bi-temporal edges) + sleep-time compute (Letta) + background "Dreaming" (ChatGPT/Claude).
+- **Enterprise (Glean, Notion):** Real-time Kafka/connector ingestion + permission-aware retrieval.
+- **Graph RAG (LightRAG):** Incremental set merging vs GraphRAG's static rebuild.
+
+### How Solved Across the Field
+1. **Self-maintenance:** LLMs update their own knowledge (OpenWiki PRs, ChatGPT Dreaming, Claude Auto Dream, Letta sleep-time compute).
+2. **Temporal consistency:** Graphiti's bi-temporal model (valid_at/invalid_at) is the gold standard; others use simpler conflict resolution (Mem0) or background consolidation (ChatGPT/Claude).
+3. **Interoperability:** OKF attempts a vendor-neutral format; MCP is the de facto protocol for connecting brains to agents.
+4. **Cost efficiency:** LightRAG (6000x fewer tokens), Glean's Waldo (search/synthesis separation), Gemini (brute-force context window).
+
+### Unsolved Gaps
+1. **Cross-system interoperability:** OKF is v0.1 with negligible adoption beyond Google. Most brains are bespoke and siloed. No agreed-upon exchange format has critical mass.
+2. **Provenance / verification at scale:** LLM-generated wikis can hallucinate. OpenWiki uses LangSmith LLM-as-a-judge; Glean uses Verified RAG (SME-verified Knowledge Cards); but most systems lack robust fact-checking against source.
+3. **"Silent wrong answers":** Agents and humans compute metrics differently because brains lack a unified semantic/metric layer (driving a new "metric consistency" startup sub-sector).
+4. **Permission-aware retrieval for file-based wikis:** OKF/OpenWiki have no permission model — enterprise-grade access control (Glean/Notion strength) is absent from the file-format camp.
+5. **Conflict resolution across multiple producers:** OKF separates producers from consumers but doesn't define what happens when two producers write contradictory concepts.
+6. **Standardized benchmarks:** LongMemEval / LoCoMo / HotPotQA exist but measure different things; no unified "company brain" benchmark.
+
+---
+
+## Sources
+
+### Kept (primary / authoritative)
+- Karpathy LLM Wiki gist (https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f) — founding pattern, cited by OpenWiki + OKF
+- LangChain OpenWiki blog/analysis (https://themenonlab.blog/blog/openwiki-langchain-agent-documentation/) — schema, write/read path, GitHub Action
+- Google Cloud OKF blog (https://cloud.google.com/blog/products/data-analytics/how-the-open-knowledge-format-can-improve-data-sharing) — primary source for spec, design principles, reference implementations
+- Graphiti GitHub (https://github.com/getzep/graphiti) — bi-temporal KG architecture, license
+- Letta docs/blog (https://docs.letta.com/guides/core-concepts/memory/archival-memory, https://www.letta.com/blog/memgpt-and-letta/) — OS-style memory tiers, sleep-time compute, license
+- Cognee GitHub/docs (https://github.com/topoteretes/cognee, https://docs.cognee.ai/getting-started/introduction) — ECL pipeline, ontology grounding, license, funding
+- Mem0 GitHub (https://github.com/mem0ai/mem0) — hybrid vector+graph, license
+- OpenMemory/CaviraOSS GitHub (https://github.com/CaviraOSS/OpenMemory) — local-first MCP memory
+- Claude memory tool docs (https://platform.claude.com/docs/en/agents-and-tools/tool-use/memory-tool) — file-based memory, search tool
+- Glean blog (https://www.glean.com/blog/knowledge-graph-agentic-engine, https://www.glean.com/blog/waldo-launch) — enterprise graph, Waldo, permission enforcement
+- Notion MCP docs (https://developers.notion.com/guides/mcp/overview) — hosted MCP server, permission-aware retrieval
+- Microsoft GraphRAG docs (https://microsoft.github.io/graphrag/query/global_search/) — global/local search, community reports
+- LightRAG GitHub (https://github.com/hkuds/lightrag) — dual-level hybrid, incremental updates
+- nano-graphrag GitHub (https://github.com/gusye1234/nano-graphrag) — lightweight GraphRAG
+- Devin DeepWiki docs (https://docs.devin.ai/work-with-devin/deepwiki) — auto-generated wiki, episodic memory
+- Continue docs (https://docs.continue.dev/guides/codebase-documentation-awareness) — MCP-based doc retrieval
+- Mem0 State of AI Agent Memory 2026 (https://mem0.ai/blog/state-of-ai-agent-memory-2026) — benchmark comparisons
+- particula.tech comparison (https://particula.tech/blog/agent-memory-frameworks-tested-mem0-zep-letta-cognee-2026) — architecture comparison table
+- YC Company Brain RFS (https://colrows.com/blogs/yc-company-brain-rfs/) — startup landscape, market size
+- alexlockey.com Notion architecture (https://www.alexlockey.com/writing/the-company-brain-four-builders-one-architecture/) — Turbopuffer, Kafka, permission-aware RAG
+
+### Dropped
+- Various YouTube videos — no transcript extraction, secondary commentary
+- mariehaynes.com OKF — SEO-heavy secondary summary, superseded by Google's primary blog
+- timesofai.com OpenWiki — secondary aggregator, superseded by themenonlab primary analysis
+- Reddit threads — anecdotal, used only for ChatGPT memory where primary docs are sparse
+
+---
+
+## Gaps
+
+1. **OpenWiki primary repo/GitHub README** not directly fetched — details sourced from detailed secondary analysis (themenonlab) which quotes the repo and LangChain blog. The LangChain blog URL (langchain.com/blog/introducing-openwiki...) was referenced but not fetched directly.
+2. **ChatGPT "Dreaming" mechanism** — sourced from Reddit ELI5 + secondary blogs; OpenAI has not published a detailed architecture paper. The "bio tool" and "Dreaming" terminology may be community-reported, not officially documented.
+3. **Exact adoption metrics** for most OSS projects (star counts, production deployments) — Cognee (27k+ stars) and the general maturity claims are from secondary sources; not independently verified from GitHub API.
+4. **OKF adoption beyond Google** — no evidence of third-party producers/consumers yet; the spec is v0.1 and days/weeks old.
+5. **Aider, Cursor, Cline licenses** — not explicitly verified from repos; inferred from general knowledge + secondary sources.
+6. **Screenpipe, Lore, Savant, Cerenovus** — very early, limited public documentation; details from YC/company pages only.
+
+### Suggested next steps
+- Fetch the LangChain OpenWiki GitHub README and the official LangChain blog post for primary schema details.
+- Fetch Graphiti's README/docs directly for the exact edge schema and MCP server interface.
+- Search for OpenAI's official "Dreaming" / memory architecture documentation (may exist in system card or API docs).
+- Verify GitHub star counts and license files via API for all OSS projects.
+- Search for OKF third-party adoption / community producers as the spec ages.

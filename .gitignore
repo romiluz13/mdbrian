@@ -1,0 +1,48 @@
+node_modules
+.envrc
+.direnv/
+**/node_modules/
+.env
+.env.local
+.env.*.local
+.env.production
+.env.staging
+*.env
+dist
+coverage
+*.tsbuildinfo
+.pnpm-store
+.DS_Store
+**/.DS_Store
+__pycache__/
+**/__pycache__/
+*.py[cod]
+.turbo
+**/.turbo/
+.next
+**/.next/
+.open-next
+**/.open-next/
+.wrangler
+**/.wrangler/
+out
+**/out/
+artifacts/
+
+# Local-only (not part of published OSS tree)
+.claude/
+.cc10x/
+.cursor/
+archive/
+
+# Docker runtime
+docker/mongodb/.runtime/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+Thumbs.db

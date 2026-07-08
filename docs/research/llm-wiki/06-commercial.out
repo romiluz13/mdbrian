@@ -1,0 +1,105 @@
+# Research: Commercial / Community Entities — Israeli AI Agents Community Report
+
+Verification leg. READ-ONLY. Full findings at /tmp/llm-wiki-research/06-commercial.md.
+
+## Summary
+Of 7 entities, 5 are real with public artifacts (mybrains.ai, Memclaw/Caura, Qontext, factory.ai AutoWiki, Atlassian Rovo MCP). The "Caura Medium article" is real but is the same vendor as Memclaw and its actual title is "How a Skill Is Born" — not "How to build a company brain with exactly one skill." **None use MongoDB.** Memclaw and mybrains.ai are both Postgres + pgvector (RLS language). Qontext uses an undisclosed graph+vector backend. factory.ai AutoWiki stores markdown in GitHub Wiki + Factory App. Atlassian Rovo uses Atlassian's own backend. **groundedwork (Idan Shimon) appears to be vapor/stealth** — no public repo, no website, no artifact under that name on GitHub/LinkedIn.
+
+## Verdict (5 lines)
+1. REAL: mybrains.ai (Postgres+pgvector, hosted consumer MCP memory), Memclaw/Caura (Postgres+pgvector+Redis, OSS Apache-2.0, eToro 300-agent case), Qontext (graph+vector, $2.7M pre-seed Berlin), factory.ai AutoWiki (markdown in GitHub Wiki+Factory App, CI-on-push), Atlassian Rovo MCP (GA, Atlassian Cloud backend).
+2. VAPOR/UNVERIFIABLE: groundedwork (Idan Shimon) — no repo, no site, no artifact; GitHub user idanshimon has only WhisperWave/kube-config/powerball/vulapp. Flag for re-check with original report author.
+3. MONGO DB-BASED: ZERO of 7. The only MongoDB mentions were web_search-synthesized fabrications (a 404 mybrains.ai/brain.html URL; a SourceForge "MemClaw on MongoDB" blueprint). The actual Memclaw OSS repo is Postgres+pgvector+Redis.
+4. GENUINELY NEW SIGNAL: (a) Memclaw SKILL.md open portable skill standard; (b) Qontext $2.7M pre-seed with Neo4j/n8n/Celonis-founder angels validating the company-brain category; (c) factory.ai "wiki as CI build artifact on every push"; (d) Atlassian Rovo MCP GA = SaaS-vendor MCP servers becoming first-class ingest connectors.
+5. CATEGORY OPPORTUNITY for memongo: the company-brain / agent-memory space is Postgres+pgvector dominated; no funded competitor has claimed the MongoDB Atlas unified doc+vector+graph position — open whitespace.
+
+## Findings
+
+### 1. mybrains.ai (Brains) — REAL, Postgres-based, NOT MongoDB
+- Real product: "Brains — One memory. Any AI." at https://mybrains.ai. Connects Gmail, Drive, Calendar, Slack, GitHub, calls; exposes typed memory via MCP to Claude/web/Telegram/WhatsApp/Slack/Discord.
+- Architecture (from /brain page): hybrid retrieval = vector embeddings + full-text search + knowledge-graph walks, merged via Reciprocal Rank Fusion (K=60); 20–50ms retrieval; "compiled truth" 2x boost. Knowledge graph extracts typed edges (attended, works at, invested in, founded, advises). BYOK (your data + your model keys).
+- **Storage backend: PostgreSQL with Row-Level Security** — the /brain page explicitly says "Row-level security … Scoped at the storage layer. Every read carries a source ID." RLS is a Postgres feature; MongoDB would phrase this as aggregation-pipeline filters. No mention of MongoDB/Atlas/BSON on primary sources. (NOTE: web_search synthesized a "MongoDB Atlas" architecture citing `mybrains.ai/brain.html` — that URL 404s. Fabricated.)
+- Sources: https://mybrains.ai, https://mybrains.ai/brain.
+- vs memongo: Brains is hosted consumer/prosumer, MCP-native, with "Codex" app store + mini-site publishing. NOT open-source, NOT self-hostable. memongo competes on self-host/data-sovereignty, one unified doc+vector store, OSS governance.
+
+### 2. Memclaw (Caura Innovation Ltd.) — REAL, Postgres+pgvector, OSS, eToro case
+- Real: https://memclaw.net + https://caura.ai/about. Israeli (Caura). Founders: Yanki Margalit (CEO), Erni Avram (CTO), Ran Taig PhD (Head of AI). SOC 2 in progress.
+- Product: governed shared memory for AI agent fleets. Vector store + knowledge graph + LLM enrichment. MCP-native (12 tools). Multi-tenant row-level isolation, visibility scopes, trust tiers, "Keystone" governance. Self-improving retrieval, "crystallizer" merges near-dupes, contradiction checker, 8-status lifecycle.
+- **OSS: github.com/caura-ai/caura-memclaw, Apache 2.0** (verified — repo cloned; README confirms Python/FastAPI, Postgres + pgvector, Redis, Docker, optional self-hosted embedder BAAI/bge-m3 for air-gapped). Default storage is **Postgres + pgvector + Redis — NOT MongoDB.**
+- eToro case (fintech): 300+ agents (TradeClaw, SecurityClaw, QAClaw, InfraClaw, CMOClaw), ~26,500 memories, 1,372 skills, 23ms p50 latency, ~91% token reduction. Case study: https://www.oraclaw.org.
+- Pricing: Free $0 (10K memories) → Pro $49 → Business $399 → Custom.
+- Sources: https://memclaw.net, https://caura.ai/about, https://github.com/caura-ai/caura-memclaw, https://www.oraclaw.org.
+- vs memongo: Memclaw's edge is governance (Keystones, trust tiers, PII quarantine, audit trail, SOC 2) for multi-agent fleets. memongo differentiates on single unified doc+vector+graph store vs Memclaw's Postgres+pgvector+separate-graph, Atlas managed global scale + Change Streams, BSON schema flexibility. **Memclaw is the closest direct competitor to a MongoDB company-brain — strongest new signal.**
+
+### 3. Qontext — REAL, Berlin, $2.7M pre-seed, graph+vector, storage undisclosed
+- Real: https://qontext.ai + https://docs.qontext.ai. Founded 2025 Berlin by Lorenz Hieber (CEO) + Nikita Kowalski (CPTO). **$2.7M pre-seed Feb 2026 led by HV Capital** + Zero Prime Ventures; angels = founders of n8n, Zapier, Celonis, Neo4j (Emil Eifrem), Cognigy, Nabla, Camunda, Langdock, Deepnote, make.com, Parloa. EU-hosted, GDPR.
+- Product: "independent context layer" / "Company Brain." Context Vaults = living structured context graphs. Ingests HubSpot, Notion, Drive, Gmail, Jira, Salesforce. MCP-native + Make.com. Relationship-aware retrieval (graph position, not top-K vector alone). Permissioned retrieval, scheduled syncs.
+- **Storage backend NOT publicly disclosed.** Multi-model (graph DB + vector + document/relational for permissions). No MongoDB mention in primary sources.
+- Sources: https://qontext.ai/about, https://docs.qontext.ai/get-started, https://invest-in.berlin/n/qontext-secures-27m-to-solve-ai-context-problem/.
+- vs memongo: graph-first context + enterprise governance + funded EU/GDPR story; closed-source SaaS. New signal: angel caliber (Neo4j, n8n, Celonis founders) validates the company-brain category.
+
+### 4. Caura Medium article — REAL but mis-titled; same vendor as Memclaw
+- Exists: https://medium.com/caura-ai/how-a-skill-is-born-0d58c32c6524 by Ran Taig (Head of AI, Caura), June 2026.
+- **Actual title: "How a Skill Is Born? From one agent's hard-won lesson to a governed capability your whole fleet can use."** NOT "How to build a company brain with exactly one skill" — report's title is paraphrased/inaccurate.
+- Content: Company Brain = "metabolism"; introduces **`SKILL.md` open portable format** (skills = folders scanned for prompt-injection/PII before fleet promotion); MemClaw is the engine. Same vendor as #2.
+- Source: https://medium.com/caura-ai/how-a-skill-is-born-0d58c32c6524.
+- New signal: SKILL.md open standard for portable governed agent skills — track separately from Memclaw storage.
+
+### 5. factory.ai AutoWiki — REAL, official docs, syncs to 4 places, NOT MongoDB
+- Real: https://docs.factory.ai/cli/features/wiki/overview + https://docs.factory.ai/cli/features/wiki/web-viewer. Factory "Droid" generates living wiki.
+- **CI integration confirmed:** `/install-wiki` creates `.github/workflows/autowiki.yml` (or GitLab CI); triggers on every push to default branch; Droid does incremental analysis (only affected pages). Requires FACTORY_API_KEY + `contents: write` + GitHub Wiki pre-initialized.
+- **4 sync targets confirmed:** (1) GitHub Wiki (`{repo}.wiki.git`), (2) Factory App web viewer (app.factory.ai/wiki — search, cross-links, version history, freshness badges), (3) agent session (Droid consumes wiki context), (4) git repo (CI workflow + config). Enterprise: "AutoWiki Cloud Sync" toggle.
+- **Storage: markdown in GitHub Wiki + Factory App — NOT a database, NOT MongoDB.** Docs-gen tool, not a memory platform.
+- Sources: https://docs.factory.ai/cli/features/wiki/overview, https://docs.factory.ai/cli/features/wiki/web-viewer.
+- vs memongo: solves code-doc sync, not org memory. Orthogonal — could feed INTO a company-brain. New signal: "wiki as CI build artifact on every push" is a strong pattern to adopt.
+
+### 6. groundedwork (Idan Shimon) — VAPOR / UNVERIFIABLE
+- **No public artifact found.** GitHub `idanshimon` (39 repos, USA, ORCID, Crunchbase) pinned repos = kube-config-merge, powerball_ai, vulapp, WhisperWave — **no groundedwork repo, no retrieval/RAG project.** No groundedwork.com/.io/.work as a no-install RAG tool (grounded.work = Pretoria coworking; grounded.ai = separate hallucination-eval lib; grounded-ai GitHub org = hallucination-eval library, unrelated).
+- Described features ("says 'I don't have that' instead of hallucinating, 99% fewer tokens, no install") match no discoverable repo/site. A different "Idan Shimon" is CEO of Wonder Robotics / Incert Intelligence (Israeli drone/surveillance) — likely different person; no link to a no-install retrieval tool.
+- **Verdict: vapor/stealth or misattribution.** Cannot confirm existence, architecture, storage, or MongoDB use. Flag for follow-up with original report author.
+- Source: https://github.com/idanshimon (only to confirm NO groundedwork artifact).
+
+### 7. Confluence Rovo via MCP — REAL, Atlassian GA, NOT MongoDB
+- Real and **GA**: Atlassian Remote MCP Server at https://mcp.atlassian.com/v1/sse. Docs: https://www.atlassian.com/platform/rovo-mcp + https://support.atlassian.com/atlassian-rovo-mcp-server/. GA: https://www.atlassian.com/blog/announcements/atlassian-rovo-mcp-ga. OSS: https://github.com/atlassian/atlassian-mcp-server.
+- Integration: Claude Desktop (`npx -y @atlassian/mcp-server`), Claude Code (`claude mcp add --transport sse atlassian https://mcp.atlassian.com/v1/sse` → `/mcp` OAuth), Claude.ai web (Connectors, Pro/Team). OAuth 2.1, permission-scoped.
+- Capabilities: semantic search Confluence + Jira, summarize, create/update pages + issues. **Limitation:** gives Claude Rovo search index access — does NOT let Claude trigger internal custom Rovo Agents. Admin must enable "Rovo MCP Server." Rate limits ~1,000/hr Standard.
+- **Storage: Atlassian Cloud (Rovo Teamwork Graph) — NOT MongoDB, not user-configurable.**
+- "Oz Madar's claim 'works wonders with Claude'" — anecdotal; the integration is real/official but the specific endorsement could not be verified to a primary source.
+- Sources: https://www.atlassian.com/platform/rovo-mcp, https://support.atlassian.com/atlassian-rovo-mcp-server/, https://github.com/atlassian/atlassian-mcp-server.
+- vs memongo: Rovo MCP is a read/write connector into an existing SaaS knowledge base, not a standalone memory layer. A memongo company-brain could *ingest from* Confluence via this MCP. New signal: official SaaS-vendor MCP servers are becoming first-class — treat as ingest connectors, not rivals.
+
+## Verdict Matrix
+
+| Entity | Real? | Storage | MongoDB? | Maturity | New signal |
+|---|---|---|---|---|---|
+| mybrains.ai (Brains) | ✅ | Postgres+pgvector (RLS) | ❌ | Live hosted product | Consumer MCP memory + Codex app store + mini-sites |
+| Memclaw / Caura | ✅ | Postgres+pgvector+Redis | ❌ (OSS Apache-2.0) | OSS+managed, eToro case, SOC2-in-progress | Governance (Keystones, trust tiers) + SKILL.md open standard |
+| Qontext | ✅ | Graph+vector (undisclosed) | ❌ unconfirmed | $2.7M pre-seed, Berlin | Graph-first context vaults; top-tier angel validation |
+| Caura Medium article | ✅ (same as Memclaw) | n/a | n/a | Blog | SKILL.md portable skill format |
+| factory.ai AutoWiki | ✅ | Markdown (GitHub Wiki + Factory App) | ❌ | Live, official docs | "Wiki as CI build artifact on every push" |
+| groundedwork (Idan Shimon) | ❌ vapor | unknown | unknown | No public artifact | none — flag for re-check |
+| Confluence Rovo MCP | ✅ (Atlassian GA) | Atlassian Cloud (Rovo Teamwork Graph) | ❌ | GA, official | SaaS-vendor MCP servers as ingest connectors |
+
+## MongoDB signal
+**Zero of 7 entities are MongoDB-based.** The only MongoDB mentions were (a) a web_search-synthesized fabrication about mybrains.ai citing a 404 URL (`mybrains.ai/brain.html`), and (b) a SourceForge mirror + AI-synthesized "MemClaw on MongoDB blueprint" — neither reflects actual code (Postgres+pgvector). **Open whitespace for memongo: the company-brain / agent-memory category is Postgres+pgvector dominated; no funded competitor has claimed the MongoDB Atlas unified doc+vector+graph position.**
+
+## Gaps
+- Qontext exact storage engine undisclosed (graph-DB lean from Neo4j-founder angel, unconfirmed).
+- groundedwork: cannot confirm existence — needs original report author to supply URL/repo/screenshot. Possibly private/stealth or misremembered name.
+- Oz Madar Rovo "works wonders with Claude" quote: no primary source; integration real, testimonial unverifiable.
+- mybrains.ai: "Postgres" inferred from RLS language, not literally stated — recommend checking their jobs page/engineering blog for stack confirmation.
+
+## Sources
+- Kept: mybrains.ai home + /brain (primary architecture) — https://mybrains.ai, https://mybrains.ai/brain
+- Kept: memclaw.net + caura.ai/about (primary product+company) — https://memclaw.net, https://caura.ai/about
+- Kept: github.com/caura-ai/caura-memclaw (primary OSS repo, README confirms Postgres+pgvector+Redis) — https://github.com/caura-ai/caura-memclaw
+- Kept: oraclaw.org (eToro case study) — https://www.oraclaw.org
+- Kept: qontext.ai/about + docs.qontext.ai (primary) — https://qontext.ai/about, https://docs.qontext.ai/get-started
+- Kept: invest-in.berlin funding announcement — https://invest-in.berlin/n/qontext-secures-27m-to-solve-ai-context-problem/
+- Kept: Medium "How a Skill Is Born" — https://medium.com/caura-ai/how-a-skill-is-born-0d58c32c6524
+- Kept: docs.factory.ai AutoWiki overview + web-viewer (primary) — https://docs.factory.ai/cli/features/wiki/overview, https://docs.factory.ai/cli/features/wiki/web-viewer
+- Kept: Atlassian Rovo MCP official platform + support + GA blog + GitHub — https://www.atlassian.com/platform/rovo-mcp, https://support.atlassian.com/atlassian-rovo-mcp-server/, https://www.atlassian.com/blog/announcements/atlassian-rovo-mcp-ga, https://github.com/atlassian/atlassian-mcp-server
+- Kept: github.com/idanshimon (only to confirm NO groundedwork artifact) — https://github.com/idanshimon
+- Dropped: silverline-ai.com/mybrain, busybrains.ai, multiverza.ai — SEO/AI-generated aggregators; conflated mybrains.ai with fabricated "MongoDB Atlas" architecture.
+- Dropped: SourceForge memclaw mirror + v3rsai.com — mirrors/aggregators; promoted unsubstantiated "MemClaw on MongoDB" blueprint.
+- Dropped: aitoolsreview.co.uk Rovo-Claude article — secondary blog; superseded by official Atlassian docs.
+- Dropped: groundedat.co.za — Pretoria coworking space, unrelated.

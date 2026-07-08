@@ -1,0 +1,37 @@
+---
+title: Memory
+description: How Memongo stores, indexes, and retrieves Company Brain memory using MongoDB.
+icon: "brain"
+---
+
+Memongo treats memory as a first-class MongoDB data model for AI apps, agents,
+and team workflows. Memory documents can participate in automated vector
+embeddings, full-text indexing, hybrid retrieval, lifecycle updates, and graph
+relationships.
+
+## Memory types
+
+| Type | Description | Use case |
+|------|-------------|----------|
+| **Episodes** | Conversation turns and workflow events | Chat history, task history, interaction logs |
+| **Structured** | Key-value facts with metadata | Preferences, decisions, current state |
+| **Procedures** | Step-by-step instructions | Workflows, runbooks, playbooks |
+| **Graph entities** | Nodes and edges in a knowledge graph | Relationships, concepts |
+| **Knowledge base** | Ingested documents and files | Reference material, docs |
+
+## Hybrid search
+
+Memongo combines two search strategies using MongoDB hybrid search. `$rankFusion`
+is the default broad retrieval lane; `$scoreFusion` is used only as a supported
+score-normalized lane when that row is explicitly selected and measured:
+
+1. **Vector search** -- semantic similarity via automated Voyage AI embeddings
+2. **Full-text search** -- keyword matching via MongoDB Atlas Search / mongot
+
+This hybrid approach finds results that are both semantically relevant and keyword-accurate.
+
+For the full framework taxonomy, see [Memory Taxonomy](/concepts/memory-taxonomy).
+
+## Automated embeddings
+
+When you add content to Memongo, embeddings are generated automatically using Voyage AI. No manual embedding step is required -- just send text and Memongo handles the rest.

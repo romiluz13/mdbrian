@@ -1,0 +1,41 @@
+{
+	"name": "memongo",
+	"private": true,
+	"description": "MongoDB-native long-term AI memory with reasoning chains, novelty detection, and consolidation: engine, SDK, HTTP API, MCP server, and web console",
+	"license": "Apache-2.0",
+	"packageManager": "bun@1.2.5",
+	"engines": {
+		"node": ">=20.19.0"
+	},
+	"workspaces": [
+		"apps/*",
+		"packages/*"
+	],
+	"scripts": {
+		"build": "turbo run build",
+		"dev": "turbo run dev",
+		"test": "turbo run test",
+		"check-types": "turbo run check-types",
+		"check-publishability": "bun scripts/check-publishability.ts",
+		"lint": "biome check . --diagnostic-level=error",
+		"lint:fix": "biome check . --diagnostic-level=error --write",
+		"format": "biome format .",
+		"format:fix": "biome format --write .",
+		"web:preview": "bun run --cwd apps/web preview",
+		"web:deploy": "bun run --cwd apps/web deploy",
+		"proof-pack": "bun scripts/proof-pack.ts",
+		"mongodb:parity": "bun scripts/check-mongodb-runtime-parity.ts",
+		"mongodb:prepare": "bun scripts/prepare-mongodb-runtime.ts",
+		"mongodb:cluster-preflight": "bun scripts/mongodb-cluster-preflight.ts",
+		"memory-eval": "bun scripts/real-memory-eval.ts",
+		"compare-memory-eval": "bun scripts/compare-memory-eval.ts",
+		"agent-smoke": "bun scripts/real-agent-smoke.ts",
+		"capability-stress": "bun scripts/real-capability-stress.ts"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "^2.4.0",
+		"fast-check": "^4.8.0",
+		"turbo": "^2.5.0",
+		"typescript": "^5.8.0"
+	}
+}

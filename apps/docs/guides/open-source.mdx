@@ -1,0 +1,40 @@
+---
+title: "Open source map"
+description: "What Memongo supports publicly and where maintainers should start."
+icon: "folders"
+---
+
+Memongo is open source under Apache-2.0. The public repo is intentionally focused
+on the supported runtime and documentation needed to run it.
+
+## Supported public product
+
+- `apps/api` - HTTP API server
+- `apps/mcp` - MCP stdio adapter over the HTTP API
+- `apps/web` - operator console
+- `apps/docs` - public documentation
+- `packages/memory-engine` - MongoDB memory core
+- `packages/memory-bridge` - stable facade over the engine
+- `packages/memongo-memory` - `@memongo/memory` convenience package
+- `packages/client` - TypeScript HTTP client
+- `packages/tools` - AI SDK tool helpers
+
+## Runtime support
+
+- `packages/lib` - shared types and utilities used by published packages
+- `docker/mongodb` - local MongoDB and Atlas Local Preview setup
+- `.github/workflows` - CI and package publish workflows
+- `scripts/check-publishability.ts` - package validation
+- `scripts/proof-pack.ts` - live API proof checks
+
+## Not in the launch tree
+
+Internal research, diagnostic runs, raw benchmark artifacts, and historical planning
+notes are preserved privately rather than shipped in the public source tree.
+
+## Maintainer links
+
+- [Maintainer map](../../../docs/platform/MAINTAINER-MAP.md)
+- [Package status](../../../docs/platform/PACKAGE-STATUS.md)
+- [Production-ready checklist](../../../docs/platform/PRODUCTION-READY.md)
+- [Publishing guide](../../../docs/platform/publish.md)
