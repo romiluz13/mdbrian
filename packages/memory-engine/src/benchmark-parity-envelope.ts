@@ -34,7 +34,7 @@ import type {
 export type BenchmarkRetrievalLane = "native" | "raw-session"
 
 /**
- * Engine-wide retrieval unit. Mbrain retrieves over the `events` collection
+ * Engine-wide retrieval unit. Mdbrian retrieves over the `events` collection
  * (turn-level documents), so the unit is `turn`. Exported as a constant so
  * we never hardcode the literal in two places.
  */
@@ -53,7 +53,7 @@ export function resolveBenchmarkRetrievalLane(
 export function resolveRetrievalUnit(
 	_datasetKind?: MemoryBenchmarkDatasetKind | "legacy-query",
 	retrievalLane: BenchmarkRetrievalLane = resolveBenchmarkRetrievalLane(
-		process.env.MBRAIN_BENCHMARK_RETRIEVAL_LANE,
+		process.env.MDBRAIN_BENCHMARK_RETRIEVAL_LANE,
 	),
 ): BenchmarkRetrievalUnit {
 	if (retrievalLane === "raw-session") {
@@ -81,14 +81,14 @@ export async function computeDatasetSha256FromPath(
 }
 
 function isStrictBenchmarkMode(): boolean {
-	const v = process.env.MBRAIN_BENCHMARK_STRICT
+	const v = process.env.MDBRAIN_BENCHMARK_STRICT
 	return v === "1" || v?.toLowerCase() === "true"
 }
 
 /**
  * Resolve dataset SHA-256. Precedence:
  *   1. `override` argument (e.g., route-body `datasetSha256`)
- *   2. `MBRAIN_BENCHMARK_DATASET_SHA` env var (matches bootstrap.json)
+ *   2. `MDBRAIN_BENCHMARK_DATASET_SHA` env var (matches bootstrap.json)
  *   3. compute from `datasetPath` bytes
  *
  * In strict mode, throws if no source is available — zero silent fallback.
@@ -100,7 +100,7 @@ export async function resolveDatasetSha256(params: {
 	if (params.override && SHA256_REGEX.test(params.override)) {
 		return params.override
 	}
-	const envSha = process.env.MBRAIN_BENCHMARK_DATASET_SHA
+	const envSha = process.env.MDBRAIN_BENCHMARK_DATASET_SHA
 	if (envSha && SHA256_REGEX.test(envSha)) {
 		return envSha
 	}
@@ -109,7 +109,7 @@ export async function resolveDatasetSha256(params: {
 	}
 	if (isStrictBenchmarkMode()) {
 		throw new Error(
-			"resolveDatasetSha256: cannot resolve dataset SHA-256 — no override, no MBRAIN_BENCHMARK_DATASET_SHA env, and no dataset path (strict mode rejects silent fallback)",
+			"resolveDatasetSha256: cannot resolve dataset SHA-256 — no override, no MDBRAIN_BENCHMARK_DATASET_SHA env, and no dataset path (strict mode rejects silent fallback)",
 		)
 	}
 	// Non-strict: fall back to zero-SHA only when no strict requirement.
@@ -136,7 +136,7 @@ function projectQuantization(
 export function resolveBenchmarkEmbeddingConfig(
 	mongoCfg: ResolvedEmbeddingInput,
 ): BenchmarkEmbeddingConfig {
-	const envModel = process.env.MBRAIN_BENCHMARK_EMBEDDING_MODEL?.trim()
+	const envModel = process.env.MDBRAIN_BENCHMARK_EMBEDDING_MODEL?.trim()
 	const model = envModel && envModel.length > 0 ? envModel : "voyage-4-large"
 	return {
 		model,

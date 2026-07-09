@@ -1,4 +1,4 @@
-import type { SsrFPolicy } from "@mbrain/lib"
+import type { SsrFPolicy } from "@mdbrian/lib"
 import { postJson } from "./post-json.js"
 
 export async function fetchRemoteEmbeddingVectors(params: {

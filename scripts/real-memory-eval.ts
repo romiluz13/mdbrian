@@ -1,19 +1,19 @@
 import { randomUUID } from "node:crypto"
-import { MbrainClient } from "@mbrain/client"
+import { MdbrianClient } from "@mdbrian/client"
 
 import { runMemoryEvalSuite } from "./memory-eval-core.js"
 import { writeProofArtifact } from "./proof-artifacts.js"
 
 const baseUrl = (
-	process.env.MBRAIN_API_URL?.trim() ?? "http://127.0.0.1:3847"
+	process.env.MDBRAIN_API_URL?.trim() ?? "http://127.0.0.1:3847"
 ).replace(/\/$/, "")
-const apiKey = process.env.MBRAIN_API_KEY?.trim() || undefined
-const label = process.env.MBRAIN_EVAL_LABEL?.trim() ?? "candidate"
+const apiKey = process.env.MDBRAIN_API_KEY?.trim() || undefined
+const label = process.env.MDBRAIN_EVAL_LABEL?.trim() ?? "candidate"
 const seed =
-	process.env.MBRAIN_EVAL_SEED?.trim() ?? `eval-${randomUUID().slice(0, 8)}`
+	process.env.MDBRAIN_EVAL_SEED?.trim() ?? `eval-${randomUUID().slice(0, 8)}`
 
 async function main() {
-	const client = new MbrainClient({
+	const client = new MdbrianClient({
 		baseUrl,
 		apiKey,
 		maxRetries: 2,

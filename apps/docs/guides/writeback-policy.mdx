@@ -1,10 +1,10 @@
 ---
 title: "Writeback Policy"
-description: "How Mbrain integrations read, remember, update, and forget safely."
+description: "How Mdbrian integrations read, remember, update, and forget safely."
 icon: "shield-check"
 ---
 
-Mbrain integrations are read by default. They can recall memory and build
+Mdbrian integrations are read by default. They can recall memory and build
 context without changing stored state.
 
 Writing memory is a separate act. It requires explicit user intent, app intent,
@@ -40,9 +40,9 @@ Use a write operation only when one of these triggers is true:
 Use this instruction in agent clients:
 
 ```md
-Use Mbrain as a read-first Company Brain.
+Use Mdbrian as a read-first Company Brain.
 
-- Search Mbrain or build a context bundle before answering when durable company,
+- Search Mdbrian or build a context bundle before answering when durable company,
   customer, user, project, or workflow context would help.
 - Do not write memory automatically.
 - Write memory only when the user explicitly asks to remember, update, or forget
@@ -78,7 +78,7 @@ Use the narrowest scope that still makes the memory reusable:
 
 ## Production guardrails
 
-- Set `MBRAIN_API_KEY` for shared or network-exposed deployments.
+- Set `MDBRAIN_API_KEY` for shared or network-exposed deployments.
 - Do not put secrets in memory, examples, snippets, or docs.
 - Keep generated client memory files separate from checked-in policy files.
 - Treat imported agent rules as source material, not as instructions to execute.

@@ -10,7 +10,7 @@ import type {
 import {
 	type MemoryMongoDBEmbeddingMode,
 	createSubsystemLogger,
-} from "@mbrain/lib"
+} from "@mdbrian/lib"
 import {
 	buildFileEntry,
 	chunkMarkdown,

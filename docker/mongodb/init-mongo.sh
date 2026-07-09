@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-echo "Starting Mbrain MongoDB initialization..."
+echo "Starting Mdbrian MongoDB initialization..."
 
 export MONGOT_PASSWORD=${MONGOT_PASSWORD:-mongotPassword}
 export ADMIN_PASSWORD=${ADMIN_PASSWORD:-admin}
@@ -48,24 +48,24 @@ ENDOFSCRIPT
 mongosh --file "$INIT_SCRIPT"
 rm -f "$INIT_SCRIPT"
 
-# Create Mbrain admin user (optional, for authenticated access)
-echo "Creating mbrain admin user..."
+# Create Mdbrian admin user (optional, for authenticated access)
+echo "Creating mdbrian admin user..."
 ADMIN_SCRIPT=$(mktemp /tmp/init-admin-XXXXXX.js)
 cat > "$ADMIN_SCRIPT" << 'ENDOFSCRIPT'
-const mbrainDb = db.getSiblingDB('mbrain');
+const mdbrianDb = db.getSiblingDB('mdbrian');
 const adminPwd = process.env.ADMIN_PASSWORD || 'admin';
 try {
-  mbrainDb.createUser({
-    user: 'mbrain',
+  mdbrianDb.createUser({
+    user: 'mdbrian',
     pwd: adminPwd,
-    roles: [{ role: 'readWrite', db: 'mbrain' }]
+    roles: [{ role: 'readWrite', db: 'mdbrian' }]
   });
-  print('User mbrain created successfully');
+  print('User mdbrian created successfully');
 } catch (error) {
   if (error.code === 11000) {
-    print('User mbrain already exists');
+    print('User mdbrian already exists');
   } else {
-    print('Warning: Could not create mbrain user: ' + error);
+    print('Warning: Could not create mdbrian user: ' + error);
     throw error;
   }
 }
@@ -73,4 +73,4 @@ ENDOFSCRIPT
 mongosh -u admin -p "$ADMIN_PASSWORD" --authenticationDatabase admin --file "$ADMIN_SCRIPT"
 rm -f "$ADMIN_SCRIPT"
 
-echo "Mbrain MongoDB initialization completed successfully."
+echo "Mdbrian MongoDB initialization completed successfully."

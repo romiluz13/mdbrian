@@ -2,14 +2,14 @@ import type { Metadata } from "next"
 import type { ReactNode } from "react"
 import "./globals.css"
 
-const title = "Mbrain"
+const title = "Mdbrian"
 const description = "MongoDB-native long-term memory for production AI agents"
-const siteUrl = "https://mbrain.rom-88f.workers.dev"
-const socialImage = "/mbrain-social-preview.png"
+const siteUrl = "https://mdbrian.rom-88f.workers.dev"
+const socialImage = "/mdbrian-social-preview.png"
 
 export const metadata: Metadata = {
 	metadataBase: new URL(siteUrl),
-	title: "Mbrain",
+	title: "Mdbrian",
 	description,
 	openGraph: {
 		title,
@@ -21,7 +21,7 @@ export const metadata: Metadata = {
 				url: socialImage,
 				width: 1280,
 				height: 640,
-				alt: "Mbrain - memory for AI agents should be asked, not reloaded.",
+				alt: "Mdbrian - memory for AI agents should be asked, not reloaded.",
 			},
 		],
 		type: "website",

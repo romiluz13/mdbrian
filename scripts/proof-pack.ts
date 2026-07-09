@@ -1,4 +1,4 @@
-import { MbrainClient } from "@mbrain/client"
+import { MdbrianClient } from "@mdbrian/client"
 import proofPackBaseline from "./proof-pack-baseline.js"
 import { writeProofArtifact } from "./proof-artifacts.js"
 
@@ -8,20 +8,19 @@ type CheckResult = {
 	details: string
 }
 
-const baseUrl = (process.env.MBRAIN_API_URL ?? "http://127.0.0.1:3847").replace(
-	/\/$/,
-	"",
-)
-const apiKey = process.env.MBRAIN_API_KEY
+const baseUrl = (
+	process.env.MDBRAIN_API_URL ?? "http://127.0.0.1:3847"
+).replace(/\/$/, "")
+const apiKey = process.env.MDBRAIN_API_KEY
 const agentId =
-	process.env.MBRAIN_AGENT_ID ??
+	process.env.MDBRAIN_AGENT_ID ??
 	`proof-${new Date().toISOString().replace(/[:.]/g, "-")}`
 const sessionScope =
-	process.env.MBRAIN_SESSION_ID ??
-	process.env.MBRAIN_CONTAINER_TAG ??
+	process.env.MDBRAIN_SESSION_ID ??
+	process.env.MDBRAIN_CONTAINER_TAG ??
 	`proof-session-${new Date().toISOString().replace(/[:.]/g, "-")}`
 
-const client = new MbrainClient({
+const client = new MdbrianClient({
 	baseUrl,
 	apiKey,
 })

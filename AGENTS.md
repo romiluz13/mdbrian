@@ -1,14 +1,14 @@
-# Mbrain Repository Guidelines
+# Mdbrian Repository Guidelines
 
-- Repo: https://github.com/romiluz13/mbrain
+- Repo: https://github.com/romiluz13/mdbrian
 - In chat replies, file references must be repo-root relative only (example: `packages/memory-engine/src/mongodb-manager.ts:80`); never absolute paths or `~/...`.
 
 ## Project Structure
 
-Mbrain is a **Turborepo/Bun monorepo** providing MongoDB-native long-term AI memory.
+Mdbrian is a **Turborepo/Bun monorepo** providing MongoDB-native long-term AI memory.
 
 ```
-mbrain/
+mdbrian/
   apps/
     api/          HTTP API server (Hono)
     mcp/          MCP server (stdio, calls HTTP API)
@@ -16,13 +16,13 @@ mbrain/
   packages/
     memory-engine/   Core MongoDB memory: embeddings, graph, episodes, search, KB, analytics
     memory-bridge/   Stable facade for the engine used by apps
-    mbrain-memory/  Published re-export package
+    mdbrian-memory/  Published re-export package
     client/          TypeScript HTTP client SDK
     tools/           AI SDK tool helpers
     lib/             Shared types and utilities
   docker/
     mongodb/         Local MongoDB dev stack (atlas-local + mongot)
-  docs/              Mbrain documentation
+  docs/              Mdbrian documentation
 ```
 
 ## Build, Test, and Development
@@ -46,12 +46,12 @@ mbrain/
 
 ## Package Naming
 
-- `@mbrain/memory-engine` -- core engine
-- `@mbrain/memory-bridge` -- facade
-- `@mbrain/client` -- HTTP client SDK
-- `@mbrain/tools` -- AI SDK tools
-- `@mbrain/lib` -- shared utilities (private)
-- `@mbrain/api`, `@mbrain/mcp`, `@mbrain/web` -- apps (private)
+- `@mdbrian/memory-engine` -- core engine
+- `@mdbrian/memory-bridge` -- facade
+- `@mdbrian/client` -- HTTP client SDK
+- `@mdbrian/tools` -- AI SDK tools
+- `@mdbrian/lib` -- shared utilities (private)
+- `@mdbrian/api`, `@mdbrian/mcp`, `@mdbrian/web` -- apps (private)
 
 ## Commit Guidelines
 
@@ -60,5 +60,5 @@ mbrain/
 
 ## Security
 
-- Never commit secrets. Use environment variables (`MBRAIN_MONGODB_URI`, `MBRAIN_API_KEY`, etc.).
+- Never commit secrets. Use environment variables (`MDBRAIN_MONGODB_URI`, `MDBRAIN_API_KEY`, etc.).
 - Never publish real connection strings, API keys, or personal data in code or docs.

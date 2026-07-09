@@ -1,10 +1,10 @@
 ---
 title: "Memory Framework"
-description: "The Mbrain Company Brain framework contract for AI apps, agents, and teams."
+description: "The Mdbrian Company Brain framework contract for AI apps, agents, and teams."
 icon: "network"
 ---
 
-Mbrain is a MongoDB-native memory framework for building a Company Brain across
+Mdbrian is a MongoDB-native memory framework for building a Company Brain across
 AI apps, agents, and team workflows.
 
 The framework is intentionally small at the public interface and rich at the
@@ -14,7 +14,7 @@ answer-ready context without requiring every client to invent a memory system.
 
 ## Framework contract
 
-| Contract area | What Mbrain provides |
+| Contract area | What Mdbrian provides |
 |---|---|
 | Memory taxonomy | Episodic events, semantic facts, procedures, profile preferences, workspace knowledge, and provenance |
 | Core operations | Recall, context bundles, remember, update, forget, feedback, and trace |
@@ -38,12 +38,12 @@ need long-running context.
 
 | Operation | Existing surface | Use it for |
 |---|---|---|
-| Recall | `/v1/search`, `/v1/search-detailed`, `mbrain_search` | Find relevant memories and evidence |
-| Context bundle | `/v1/context-bundle`, `mbrain_build_context_bundle` | Build prompt-ready context for an app or agent turn |
+| Recall | `/v1/search`, `/v1/search-detailed`, `mdbrian_search` | Find relevant memories and evidence |
+| Context bundle | `/v1/context-bundle`, `mdbrian_build_context_bundle` | Build prompt-ready context for an app or agent turn |
 | Remember | `/v1/add`, `/v1/write-event`, `/v1/write-structured`, `/v1/write-procedure` | Store explicit memory |
 | Update | Lifecycle update endpoints and MCP lifecycle tools | Revise structured or procedural memories |
 | Forget | Lifecycle delete endpoints and MCP lifecycle tools | Invalidate or remove scoped memory |
-| Feedback | `/v1/memory/feedback`, `mbrain_memory_feedback` | Confirm, correct, or mark memory irrelevant |
+| Feedback | `/v1/memory/feedback`, `mdbrian_memory_feedback` | Confirm, correct, or mark memory irrelevant |
 | Trace | `/v1/chain-trace`, admin trace tools | Inspect evidence and provenance |
 
 ## Scope rules
@@ -77,7 +77,7 @@ Writes require explicit intent, such as:
 No background writeback, hooks, auto-consolidation, or silent client-side
 capture is part of the first framework slice.
 
-The existing `@mbrain/tools` middleware helpers are not read-first: they inject
+The existing `@mdbrian/tools` middleware helpers are not read-first: they inject
 context and then write user or assistant events by design. Use them only when
 your app has explicitly chosen conversation persistence. For read-first AI SDK
 apps, use explicit tools or the TypeScript client directly.
@@ -93,6 +93,6 @@ apps, use explicit tools or the TypeScript client directly.
     Wire apps and agents without changing runtime defaults.
   </Card>
   <Card title="Company Brain Guide" icon="building-2" href="/guides/company-brain">
-    Use Mbrain across teams and AI workflows.
+    Use Mdbrian across teams and AI workflows.
   </Card>
 </CardGroup>

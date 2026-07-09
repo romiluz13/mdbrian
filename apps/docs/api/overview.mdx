@@ -1,12 +1,12 @@
 ---
 title: API Overview
-description: Mbrain HTTP API endpoint reference.
+description: Mdbrian HTTP API endpoint reference.
 icon: "unplug"
 ---
 
-The Mbrain API server runs at `http://127.0.0.1:3847` by default (via `apps/api`).
+The Mdbrian API server runs at `http://127.0.0.1:3847` by default (via `apps/api`).
 
-The API is the app-facing surface of the Mbrain Company Brain framework. It can
+The API is the app-facing surface of the Mdbrian Company Brain framework. It can
 be used directly from services or through the TypeScript client, AI SDK tools,
 and MCP server.
 
@@ -58,11 +58,11 @@ and MCP server.
 
 ## Authentication
 
-Set `MBRAIN_API_KEY` for every shared or network-exposed deployment. If no
+Set `MDBRAIN_API_KEY` for every shared or network-exposed deployment. If no
 admin or scoped key is configured, `/v1` routes stay open for trusted local
 development and the API logs a startup warning.
 
-When `MBRAIN_API_KEY` is set, all requests must include a `Bearer` token:
+When `MDBRAIN_API_KEY` is set, all requests must include a `Bearer` token:
 
 ```bash
 http POST http://127.0.0.1:3847/v1/search \

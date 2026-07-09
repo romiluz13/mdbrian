@@ -1,4 +1,4 @@
-import type { SsrFPolicy } from "@mbrain/lib"
+import type { SsrFPolicy } from "@mdbrian/lib"
 import { withRemoteHttpResponse } from "./remote-http.js"
 
 export async function postJson<T>(params: {

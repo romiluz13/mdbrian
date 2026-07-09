@@ -13,7 +13,7 @@
  *   - MongoDB operator inventory (one test per operator)
  *
  * Run:
- *   MONGODB_TEST_URI="mongodb://admin:admin@localhost:27017/mbrain?authSource=admin&replicaSet=rs0&directConnection=true" \
+ *   MONGODB_TEST_URI="mongodb://admin:admin@localhost:27017/mdbrian?authSource=admin&replicaSet=rs0&directConnection=true" \
  *     pnpm vitest run --config vitest.e2e.config.ts src/memory/production-readiness.e2e.test.ts --reporter=verbose
  */
 
@@ -105,7 +105,7 @@ import type {
 // ---------------------------------------------------------------------------
 
 const TEST_URI = resolvePreviewMongoTestUri(
-	"mongodb://admin:admin@localhost:27017/mbrain?authSource=admin&replicaSet=rs0&directConnection=true",
+	"mongodb://admin:admin@localhost:27017/mdbrian?authSource=admin&replicaSet=rs0&directConnection=true",
 )
 const PREFIX = "prodready_"
 const AGENT_ID = `agent-prodready-${randomUUID().slice(0, 8)}`
@@ -453,7 +453,7 @@ describeIfMongo(
 				serverSelectionTimeoutMS: 10_000,
 			})
 			await client.connect()
-			db = client.db("mbrain")
+			db = client.db("mdbrian")
 
 			// Setup fresh collections and indexes
 			await ensureCollections(db, PREFIX)
@@ -2894,7 +2894,7 @@ describeIfMongo(
 
 			it("imports conversation history through canonical events and recalls it through the same surface", async () => {
 				const workspaceDir = await mkdtemp(
-					path.join(os.tmpdir(), "mbrain-import-e2e-"),
+					path.join(os.tmpdir(), "mdbrian-import-e2e-"),
 				)
 				const importDir = path.join(workspaceDir, "imports")
 				const datasetPath = path.join(importDir, "history.json")
@@ -2912,7 +2912,7 @@ describeIfMongo(
 									turns: [
 										{
 											role: "user",
-											body: "We decided Mbrain import must use canonical event writes.",
+											body: "We decided Mdbrian import must use canonical event writes.",
 											timestamp,
 										},
 										{
@@ -2969,7 +2969,7 @@ describeIfMongo(
 						recalled.results.map((result) => result.citation.preview),
 					).toEqual(
 						expect.arrayContaining([
-							expect.stringContaining("Mbrain import must use canonical"),
+							expect.stringContaining("Mdbrian import must use canonical"),
 							expect.stringContaining("imports should be recallable"),
 						]),
 					)

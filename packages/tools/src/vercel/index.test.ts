@@ -1,11 +1,11 @@
 import { describe, expect, it, vi, beforeEach, afterEach } from "vitest"
-import { withMbrain, _clearCache, type MbrainCoreOptions } from "./index.js"
+import { withMdbrian, _clearCache, type MdbrianCoreOptions } from "./index.js"
 import type {
 	LanguageModelV2,
 	LanguageModelV2CallOptions,
 } from "@ai-sdk/provider"
 
-const BASE_OPTIONS: MbrainCoreOptions = {
+const BASE_OPTIONS: MdbrianCoreOptions = {
 	apiUrl: "http://localhost:3847",
 	apiKey: "test-key",
 	userId: "user-1",
@@ -28,7 +28,7 @@ function createMockModel(): LanguageModelV2 {
 	}
 }
 
-describe("withMbrain (Vercel AI SDK middleware)", () => {
+describe("withMdbrian (Vercel AI SDK middleware)", () => {
 	const originalFetch = globalThis.fetch
 
 	beforeEach(() => {
@@ -57,7 +57,7 @@ describe("withMbrain (Vercel AI SDK middleware)", () => {
 		mockFetchForContextBundle()
 
 		const model = createMockModel()
-		const wrapped = withMbrain(model, BASE_OPTIONS)
+		const wrapped = withMdbrian(model, BASE_OPTIONS)
 
 		const params: LanguageModelV2CallOptions = {
 			prompt: [
@@ -93,7 +93,7 @@ describe("withMbrain (Vercel AI SDK middleware)", () => {
 		const mockFetch = mockFetchForContextBundle()
 
 		const model = createMockModel()
-		const wrapped = withMbrain(model, BASE_OPTIONS)
+		const wrapped = withMdbrian(model, BASE_OPTIONS)
 
 		const params: LanguageModelV2CallOptions = {
 			prompt: [
@@ -141,7 +141,7 @@ describe("withMbrain (Vercel AI SDK middleware)", () => {
 		const mockFetch = mockFetchForContextBundle()
 
 		const model = createMockModel()
-		const wrapped = withMbrain(model, BASE_OPTIONS)
+		const wrapped = withMdbrian(model, BASE_OPTIONS)
 
 		const params: LanguageModelV2CallOptions = {
 			prompt: [
@@ -184,7 +184,7 @@ describe("withMbrain (Vercel AI SDK middleware)", () => {
 
 		const model = createMockModel()
 		// No explicit mode in options => should default to "wake-up"
-		const wrapped = withMbrain(model, {
+		const wrapped = withMdbrian(model, {
 			...BASE_OPTIONS,
 			mode: undefined,
 		})
@@ -219,7 +219,7 @@ describe("withMbrain (Vercel AI SDK middleware)", () => {
 		)
 
 		const model = createMockModel()
-		const wrapped = withMbrain(model, BASE_OPTIONS)
+		const wrapped = withMdbrian(model, BASE_OPTIONS)
 
 		const params: LanguageModelV2CallOptions = {
 			prompt: [{ role: "user", content: [{ type: "text", text: "Hello" }] }],
@@ -227,7 +227,7 @@ describe("withMbrain (Vercel AI SDK middleware)", () => {
 			mode: { type: "regular" },
 		}
 
-		// LLM call should succeed even when Mbrain API is down
+		// LLM call should succeed even when Mdbrian API is down
 		const result = await wrapped.doGenerate(params)
 		expect(result.content).toEqual([{ type: "text", text: "Hello from LLM" }])
 
@@ -243,7 +243,7 @@ describe("withMbrain (Vercel AI SDK middleware)", () => {
 		mockFetch.mockRejectedValue(new Error("ECONNREFUSED"))
 
 		const model = createMockModel()
-		const wrapped = withMbrain(model, BASE_OPTIONS)
+		const wrapped = withMdbrian(model, BASE_OPTIONS)
 
 		const params: LanguageModelV2CallOptions = {
 			prompt: [{ role: "user", content: [{ type: "text", text: "Hello" }] }],
@@ -260,7 +260,7 @@ describe("withMbrain (Vercel AI SDK middleware)", () => {
 		const mockFetch = mockFetchForContextBundle()
 
 		const model = createMockModel()
-		const wrapped = withMbrain(model, {
+		const wrapped = withMdbrian(model, {
 			...BASE_OPTIONS,
 			mode: undefined,
 		})

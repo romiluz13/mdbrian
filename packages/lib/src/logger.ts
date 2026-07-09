@@ -31,9 +31,9 @@ export type SubsystemLogger = {
 }
 
 function resolveMinLevel(): LogLevel {
-	const env = process.env.MBRAIN_LOG_LEVEL?.trim().toLowerCase()
+	const env = process.env.MDBRAIN_LOG_LEVEL?.trim().toLowerCase()
 	if (env && env in LEVEL_PRIORITY) return env as LogLevel
-	if (process.env.MBRAIN_DEBUG === "1" || process.env.DEBUG === "1")
+	if (process.env.MDBRAIN_DEBUG === "1" || process.env.DEBUG === "1")
 		return "debug"
 	return "info"
 }

@@ -1,5 +1,5 @@
 import type { Db, Document } from "mongodb"
-import { type MemoryScope, createSubsystemLogger } from "@mbrain/lib"
+import { type MemoryScope, createSubsystemLogger } from "@mdbrian/lib"
 import { recordProjectionRun } from "./mongodb-ops.js"
 import { resolveTimeRangePreset } from "./mongodb-retrieval-planner.js"
 import {

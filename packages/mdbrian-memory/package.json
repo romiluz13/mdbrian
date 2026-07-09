@@ -1,17 +1,17 @@
 {
-	"name": "@mbrain/memory",
+	"name": "@mdbrian/memory",
 	"version": "1.1.0",
-	"description": "Mbrain memory: published re-export surface for the memory engine and bridge",
+	"description": "Mdbrian memory: published re-export surface for the memory engine and bridge",
 	"type": "module",
 	"license": "Apache-2.0",
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/romiluz13/mbrain.git",
-		"directory": "packages/mbrain-memory"
+		"url": "git+https://github.com/romiluz13/mdbrian.git",
+		"directory": "packages/mdbrian-memory"
 	},
 	"author": "Rom Iluz",
 	"keywords": [
-		"mbrain",
+		"mdbrian",
 		"memory",
 		"mongodb",
 		"agent-memory"
@@ -33,14 +33,14 @@
 		"check-types": "node ../../node_modules/typescript/bin/tsc --noEmit -p tsconfig.json"
 	},
 	"dependencies": {
-		"@mbrain/memory-engine": "1.1.0",
-		"@mbrain/memory-bridge": "1.1.0"
+		"@mdbrian/memory-engine": "1.1.0",
+		"@mdbrian/memory-bridge": "1.1.0"
 	},
 	"devDependencies": {
 		"typescript": "^5.8.0"
 	},
-	"homepage": "https://github.com/romiluz13/mbrain#readme",
+	"homepage": "https://github.com/romiluz13/mdbrian#readme",
 	"bugs": {
-		"url": "https://github.com/romiluz13/mbrain/issues"
+		"url": "https://github.com/romiluz13/mdbrian/issues"
 	}
 }

@@ -1,6 +1,6 @@
 # Code of Conduct
 
-Mbrain follows the Contributor Covenant Code of Conduct, version 2.1.
+Mdbrian follows the Contributor Covenant Code of Conduct, version 2.1.
 
 ## Our Pledge
 
@@ -31,7 +31,7 @@ Examples of unacceptable behavior:
 Project maintainers are responsible for clarifying and enforcing standards of
 acceptable behavior.
 
-To report a conduct issue, open a [GitHub private vulnerability report](https://github.com/romiluz13/mbrain/security/advisories/new)
+To report a conduct issue, open a [GitHub private vulnerability report](https://github.com/romiluz13/mdbrian/security/advisories/new)
 and mark the subject "Code of Conduct". If that channel is unavailable, contact
 the maintainer directly via the GitHub profile at
 [github.com/romiluz13](https://github.com/romiluz13). Reports will be

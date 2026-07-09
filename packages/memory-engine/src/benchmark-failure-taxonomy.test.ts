@@ -53,7 +53,7 @@ describe("classifyBenchmarkFailure (Task 1.4, Recommended Default #2)", () => {
 		expect(
 			classifyBenchmarkFailure(
 				new Error(
-					"search indexes not fully queryable after bootstrap wait: mbrain_canary_events pending=[mbrain_canary_events_vector]",
+					"search indexes not fully queryable after bootstrap wait: mdbrian_canary_events pending=[mdbrian_canary_events_vector]",
 				),
 			),
 		).toBe("index-not-ready")
@@ -125,7 +125,7 @@ describe("classifyBenchmarkFailure (Task 1.4, Recommended Default #2)", () => {
 		expect(
 			classifyBenchmarkFailure(
 				new Error(
-					'HTTP 500: {"error":{"code":"RELEVANCE_BENCHMARK_FAILED","message":"MongoDB URI required for Mbrain."}}',
+					'HTTP 500: {"error":{"code":"RELEVANCE_BENCHMARK_FAILED","message":"MongoDB URI required for Mdbrian."}}',
 				),
 			),
 		).toBe("unknown")

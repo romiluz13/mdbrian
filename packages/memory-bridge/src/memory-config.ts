@@ -1,33 +1,33 @@
 import fs from "node:fs"
 import os from "node:os"
 import path from "node:path"
-import type { MemoryConfig, MbrainConfig } from "@mbrain/lib"
+import type { MemoryConfig, MdbrianConfig } from "@mdbrian/lib"
 
-export const MBRAIN_CONFIG_FILENAME = path.join(".mbrain", "mbrain.json")
+export const MDBRAIN_CONFIG_FILENAME = path.join(".mdbrian", "mdbrian.json")
 
-export function resolveMbrainStandaloneWorkspaceDir(
+export function resolveMdbrianStandaloneWorkspaceDir(
 	env: NodeJS.ProcessEnv = process.env,
 ): string {
-	const explicit = env.MBRAIN_WORKSPACE_DIR?.trim()
+	const explicit = env.MDBRAIN_WORKSPACE_DIR?.trim()
 	if (explicit) {
 		return path.resolve(explicit)
 	}
-	return path.join(os.homedir(), ".mbrain", "workspace")
+	return path.join(os.homedir(), ".mdbrian", "workspace")
 }
 
-export function resolveMbrainConfigFilePath(
+export function resolveMdbrianConfigFilePath(
 	env: NodeJS.ProcessEnv = process.env,
 ): string {
-	const fromEnv = env.MBRAIN_CONFIG_PATH?.trim()
+	const fromEnv = env.MDBRAIN_CONFIG_PATH?.trim()
 	if (fromEnv) {
 		return path.resolve(fromEnv)
 	}
-	return path.join(os.homedir(), MBRAIN_CONFIG_FILENAME)
+	return path.join(os.homedir(), MDBRAIN_CONFIG_FILENAME)
 }
 
-function readMbrainJsonFile(
+function readMdbrianJsonFile(
 	filePath: string,
-): { memory?: MemoryConfig; agents?: MbrainConfig["agents"] } | undefined {
+): { memory?: MemoryConfig; agents?: MdbrianConfig["agents"] } | undefined {
 	try {
 		if (!fs.existsSync(filePath)) {
 			return undefined
@@ -37,23 +37,23 @@ function readMbrainJsonFile(
 		if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
 			return undefined
 		}
-		return parsed as { memory?: MemoryConfig; agents?: MbrainConfig["agents"] }
+		return parsed as { memory?: MemoryConfig; agents?: MdbrianConfig["agents"] }
 	} catch {
 		return undefined
 	}
 }
 
-export function buildMbrainConfig(
+export function buildMdbrianConfig(
 	env: NodeJS.ProcessEnv = process.env,
-): MbrainConfig {
-	const filePath = resolveMbrainConfigFilePath(env)
-	const fromFile = readMbrainJsonFile(filePath)
+): MdbrianConfig {
+	const filePath = resolveMdbrianConfigFilePath(env)
+	const fromFile = readMdbrianJsonFile(filePath)
 
 	const uriFromEnv =
-		env.MBRAIN_MONGODB_URI?.trim() || env.MBRAIN_FORCE_MONGODB_URI?.trim()
+		env.MDBRAIN_MONGODB_URI?.trim() || env.MDBRAIN_FORCE_MONGODB_URI?.trim()
 	const uriFromFile = fromFile?.memory?.mongodb?.uri?.trim()
 	const uri = uriFromEnv || uriFromFile
-	const collectionPrefixFromEnv = env.MBRAIN_MONGODB_COLLECTION_PREFIX?.trim()
+	const collectionPrefixFromEnv = env.MDBRAIN_MONGODB_COLLECTION_PREFIX?.trim()
 
 	const mergedMongo: MemoryConfig["mongodb"] = {
 		...fromFile?.memory?.mongodb,
@@ -70,7 +70,7 @@ export function buildMbrainConfig(
 		mongodb: mergedMongo,
 	}
 
-	const workspace = resolveMbrainStandaloneWorkspaceDir(env)
+	const workspace = resolveMdbrianStandaloneWorkspaceDir(env)
 
 	return {
 		memory,
@@ -84,6 +84,6 @@ export function buildMbrainConfig(
 	}
 }
 
-export function resolveBridgeConfig(): MbrainConfig {
-	return buildMbrainConfig()
+export function resolveBridgeConfig(): MdbrianConfig {
+	return buildMdbrianConfig()
 }

@@ -1,4 +1,4 @@
-import { createSubsystemLogger, type MemoryScope } from "@mbrain/lib"
+import { createSubsystemLogger, type MemoryScope } from "@mdbrian/lib"
 import type {
 	MemoryBenchmarkConversation,
 	MemoryBenchmarkDatasetKind,

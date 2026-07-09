@@ -9,7 +9,7 @@ import {
 	type MemoryMongoDBEmbeddingMode,
 	type MemoryScope,
 	createSubsystemLogger,
-} from "@mbrain/lib"
+} from "@mdbrian/lib"
 import type { EmbeddingStatus } from "./mongodb-embedding-retry.js"
 import { recordMutation, type MutationMeta } from "./mongodb-mutations.js"
 import { summarizeExplain } from "./mongodb-relevance.js"
@@ -609,7 +609,7 @@ export async function writeStructuredMemory(params: {
 	const collection = structuredMemCollection(db, prefix)
 	const revisions = structuredMemRevisionsCollection(db, prefix)
 
-	// Mbrain stores structured memory as text and relies on MongoDB automatic
+	// Mdbrian stores structured memory as text and relies on MongoDB automatic
 	// embeddings during vector search instead of precomputing vectors here.
 	const embeddingStatus: EmbeddingStatus = "pending"
 

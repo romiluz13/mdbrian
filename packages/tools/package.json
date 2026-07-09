@@ -1,17 +1,17 @@
 {
-	"name": "@mbrain/tools",
+	"name": "@mdbrian/tools",
 	"version": "1.1.0",
-	"description": "AI SDK tool helpers for Mbrain (function-calling tools for search, add, profile, etc.)",
+	"description": "AI SDK tool helpers for Mdbrian (function-calling tools for search, add, profile, etc.)",
 	"type": "module",
 	"license": "Apache-2.0",
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/romiluz13/mbrain.git",
+		"url": "git+https://github.com/romiluz13/mdbrian.git",
 		"directory": "packages/tools"
 	},
 	"author": "Rom Iluz",
 	"keywords": [
-		"mbrain",
+		"mdbrian",
 		"tools",
 		"ai-sdk",
 		"memory",
@@ -43,7 +43,7 @@
 		"test": "vitest run"
 	},
 	"dependencies": {
-		"@mbrain/client": "1.1.0",
+		"@mdbrian/client": "1.1.0",
 		"zod": "^3.25.0"
 	},
 	"devDependencies": {
@@ -54,8 +54,8 @@
 	"peerDependencies": {
 		"ai": ">=5.0.0"
 	},
-	"homepage": "https://github.com/romiluz13/mbrain#readme",
+	"homepage": "https://github.com/romiluz13/mdbrian#readme",
 	"bugs": {
-		"url": "https://github.com/romiluz13/mbrain/issues"
+		"url": "https://github.com/romiluz13/mdbrian/issues"
 	}
 }

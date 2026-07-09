@@ -1,5 +1,5 @@
 import type { Collection, Db, Document } from "mongodb"
-import { createSubsystemLogger } from "@mbrain/lib"
+import { createSubsystemLogger } from "@mdbrian/lib"
 import { buildBitemporalFilter } from "./mongodb-bitemporal.js"
 import { type CanonicalEvent, renderEventChunkText } from "./mongodb-events.js"
 import {

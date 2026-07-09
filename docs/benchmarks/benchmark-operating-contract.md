@@ -1,6 +1,6 @@
-# Mbrain benchmark operating contract
+# Mdbrian benchmark operating contract
 
-Mbrain benchmark work has one rule: **numbers are product claims only when the
+Mdbrian benchmark work has one rule: **numbers are product claims only when the
 run proves the product path being claimed**. Internal diagnostics are valuable,
 but they must not be presented as official benchmark wins.
 
@@ -55,13 +55,13 @@ Every `POST /v1/admin/relevance/benchmark` response includes a
 Set at least one build identifier before release or public reporting:
 
 ```bash
-export MBRAIN_BUILD_COMMIT="$(git rev-parse HEAD)"
-export MBRAIN_BUILD_ID="local-$(date +%Y%m%d%H%M%S)"
-export MBRAIN_BUILD_LABEL="0.0.0-dev"
+export MDBRAIN_BUILD_COMMIT="$(git rev-parse HEAD)"
+export MDBRAIN_BUILD_ID="local-$(date +%Y%m%d%H%M%S)"
+export MDBRAIN_BUILD_LABEL="0.0.0-dev"
 ```
 
 CI providers may provide `GITHUB_SHA`, `GITHUB_RUN_ID`,
-`VERCEL_GIT_COMMIT_SHA`, or `VERCEL_DEPLOYMENT_ID`; Mbrain reads those as
+`VERCEL_GIT_COMMIT_SHA`, or `VERCEL_DEPLOYMENT_ID`; Mdbrian reads those as
 fallbacks.
 
 ## Publishable benchmark claims

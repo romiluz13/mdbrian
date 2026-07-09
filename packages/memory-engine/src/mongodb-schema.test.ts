@@ -396,8 +396,8 @@ describe("ensureCollections", () => {
 	})
 
 	it("creates memory_evidence only when the evidence mirror is enabled", async () => {
-		const previous = process.env.MBRAIN_EVIDENCE_MIRROR_MODE
-		process.env.MBRAIN_EVIDENCE_MIRROR_MODE = "enabled"
+		const previous = process.env.MDBRAIN_EVIDENCE_MIRROR_MODE
+		process.env.MDBRAIN_EVIDENCE_MIRROR_MODE = "enabled"
 		try {
 			const db = mockDb([])
 			await ensureCollections(db, "test_")
@@ -407,16 +407,16 @@ describe("ensureCollections", () => {
 			)
 		} finally {
 			if (previous === undefined) {
-				delete process.env.MBRAIN_EVIDENCE_MIRROR_MODE
+				delete process.env.MDBRAIN_EVIDENCE_MIRROR_MODE
 			} else {
-				process.env.MBRAIN_EVIDENCE_MIRROR_MODE = previous
+				process.env.MDBRAIN_EVIDENCE_MIRROR_MODE = previous
 			}
 		}
 	})
 
 	it("does not refresh memory_evidence validation when the evidence mirror is disabled", async () => {
-		const previous = process.env.MBRAIN_EVIDENCE_MIRROR_MODE
-		delete process.env.MBRAIN_EVIDENCE_MIRROR_MODE
+		const previous = process.env.MDBRAIN_EVIDENCE_MIRROR_MODE
+		delete process.env.MDBRAIN_EVIDENCE_MIRROR_MODE
 		try {
 			const db = mockDb([])
 			await ensureCollections(db, "test_")
@@ -425,9 +425,9 @@ describe("ensureCollections", () => {
 			)
 		} finally {
 			if (previous === undefined) {
-				delete process.env.MBRAIN_EVIDENCE_MIRROR_MODE
+				delete process.env.MDBRAIN_EVIDENCE_MIRROR_MODE
 			} else {
-				process.env.MBRAIN_EVIDENCE_MIRROR_MODE = previous
+				process.env.MDBRAIN_EVIDENCE_MIRROR_MODE = previous
 			}
 		}
 	})
@@ -629,8 +629,8 @@ describe("ensureStandardIndexes", () => {
 	})
 
 	it("creates memory_evidence indexes only when the evidence mirror is enabled", async () => {
-		const previous = process.env.MBRAIN_EVIDENCE_MIRROR_MODE
-		process.env.MBRAIN_EVIDENCE_MIRROR_MODE = "enabled"
+		const previous = process.env.MDBRAIN_EVIDENCE_MIRROR_MODE
+		process.env.MDBRAIN_EVIDENCE_MIRROR_MODE = "enabled"
 		try {
 			const db = mockDb()
 			const count = await ensureStandardIndexes(db, "test_")
@@ -651,9 +651,9 @@ describe("ensureStandardIndexes", () => {
 			)
 		} finally {
 			if (previous === undefined) {
-				delete process.env.MBRAIN_EVIDENCE_MIRROR_MODE
+				delete process.env.MDBRAIN_EVIDENCE_MIRROR_MODE
 			} else {
-				process.env.MBRAIN_EVIDENCE_MIRROR_MODE = previous
+				process.env.MDBRAIN_EVIDENCE_MIRROR_MODE = previous
 			}
 		}
 	})
@@ -895,7 +895,7 @@ describe("ensureSearchIndexes", () => {
 		expect(isSearchIndexTypeCompatible("vectorSearch", "search")).toBe(false)
 	})
 
-	it("creates text + vector search indexes for the Mbrain community profile", async () => {
+	it("creates text + vector search indexes for the Mdbrian community profile", async () => {
 		const db = mockDb()
 		const result = await ensureSearchIndexes(
 			db,
@@ -973,9 +973,9 @@ describe("ensureSearchIndexes", () => {
 	})
 
 	it("creates only the session_chunks vector index for raw-session benchmark profile", async () => {
-		const previousProfile = process.env.MBRAIN_BENCHMARK_SEARCH_INDEX_PROFILE
-		const previousLane = process.env.MBRAIN_BENCHMARK_RETRIEVAL_LANE
-		process.env.MBRAIN_BENCHMARK_RETRIEVAL_LANE = "raw-session"
+		const previousProfile = process.env.MDBRAIN_BENCHMARK_SEARCH_INDEX_PROFILE
+		const previousLane = process.env.MDBRAIN_BENCHMARK_RETRIEVAL_LANE
+		process.env.MDBRAIN_BENCHMARK_RETRIEVAL_LANE = "raw-session"
 		try {
 			const db = mockDb()
 			const result = await ensureSearchIndexes(
@@ -1005,21 +1005,21 @@ describe("ensureSearchIndexes", () => {
 			expect(chunks.createSearchIndex).not.toHaveBeenCalled()
 		} finally {
 			if (previousProfile === undefined) {
-				delete process.env.MBRAIN_BENCHMARK_SEARCH_INDEX_PROFILE
+				delete process.env.MDBRAIN_BENCHMARK_SEARCH_INDEX_PROFILE
 			} else {
-				process.env.MBRAIN_BENCHMARK_SEARCH_INDEX_PROFILE = previousProfile
+				process.env.MDBRAIN_BENCHMARK_SEARCH_INDEX_PROFILE = previousProfile
 			}
 			if (previousLane === undefined) {
-				delete process.env.MBRAIN_BENCHMARK_RETRIEVAL_LANE
+				delete process.env.MDBRAIN_BENCHMARK_RETRIEVAL_LANE
 			} else {
-				process.env.MBRAIN_BENCHMARK_RETRIEVAL_LANE = previousLane
+				process.env.MDBRAIN_BENCHMARK_RETRIEVAL_LANE = previousLane
 			}
 		}
 	})
 
 	it("does not set unsupported indexingMethod on autoEmbed vector indexes", async () => {
-		const previousProfile = process.env.MBRAIN_BENCHMARK_SEARCH_INDEX_PROFILE
-		process.env.MBRAIN_BENCHMARK_SEARCH_INDEX_PROFILE = "longmemeval"
+		const previousProfile = process.env.MDBRAIN_BENCHMARK_SEARCH_INDEX_PROFILE
+		process.env.MDBRAIN_BENCHMARK_SEARCH_INDEX_PROFILE = "longmemeval"
 		try {
 			const db = mockDb()
 			await ensureSearchIndexes(db, "test_", "atlas-local-preview", "automated")
@@ -1042,9 +1042,9 @@ describe("ensureSearchIndexes", () => {
 			).not.toHaveProperty("indexingMethod")
 		} finally {
 			if (previousProfile === undefined) {
-				delete process.env.MBRAIN_BENCHMARK_SEARCH_INDEX_PROFILE
+				delete process.env.MDBRAIN_BENCHMARK_SEARCH_INDEX_PROFILE
 			} else {
-				process.env.MBRAIN_BENCHMARK_SEARCH_INDEX_PROFILE = previousProfile
+				process.env.MDBRAIN_BENCHMARK_SEARCH_INDEX_PROFILE = previousProfile
 			}
 		}
 	})
@@ -1417,8 +1417,8 @@ describe("search index readiness helpers", () => {
 	})
 
 	it("includes memory_evidence search targets when the evidence mirror is enabled", () => {
-		const previous = process.env.MBRAIN_EVIDENCE_MIRROR_MODE
-		process.env.MBRAIN_EVIDENCE_MIRROR_MODE = "enabled"
+		const previous = process.env.MDBRAIN_EVIDENCE_MIRROR_MODE
+		process.env.MDBRAIN_EVIDENCE_MIRROR_MODE = "enabled"
 		try {
 			expect(
 				getExpectedSearchIndexTargets("test_", "atlas-local-preview"),
@@ -1431,16 +1431,16 @@ describe("search index readiness helpers", () => {
 			})
 		} finally {
 			if (previous === undefined) {
-				delete process.env.MBRAIN_EVIDENCE_MIRROR_MODE
+				delete process.env.MDBRAIN_EVIDENCE_MIRROR_MODE
 			} else {
-				process.env.MBRAIN_EVIDENCE_MIRROR_MODE = previous
+				process.env.MDBRAIN_EVIDENCE_MIRROR_MODE = previous
 			}
 		}
 	})
 
 	it("uses a smaller LongMemEval search-index target list when requested", () => {
-		const previous = process.env.MBRAIN_BENCHMARK_SEARCH_INDEX_PROFILE
-		process.env.MBRAIN_BENCHMARK_SEARCH_INDEX_PROFILE = "longmemeval"
+		const previous = process.env.MDBRAIN_BENCHMARK_SEARCH_INDEX_PROFILE
+		process.env.MDBRAIN_BENCHMARK_SEARCH_INDEX_PROFILE = "longmemeval"
 		try {
 			expect(
 				getExpectedSearchIndexTargets("test_", "atlas-local-preview"),
@@ -1467,17 +1467,17 @@ describe("search index readiness helpers", () => {
 			])
 		} finally {
 			if (previous === undefined) {
-				delete process.env.MBRAIN_BENCHMARK_SEARCH_INDEX_PROFILE
+				delete process.env.MDBRAIN_BENCHMARK_SEARCH_INDEX_PROFILE
 			} else {
-				process.env.MBRAIN_BENCHMARK_SEARCH_INDEX_PROFILE = previous
+				process.env.MDBRAIN_BENCHMARK_SEARCH_INDEX_PROFILE = previous
 			}
 		}
 	})
 
 	it("uses only session_chunks vector readiness for raw-session benchmark profile", () => {
-		const previousProfile = process.env.MBRAIN_BENCHMARK_SEARCH_INDEX_PROFILE
-		const previousLane = process.env.MBRAIN_BENCHMARK_RETRIEVAL_LANE
-		process.env.MBRAIN_BENCHMARK_RETRIEVAL_LANE = "raw-session"
+		const previousProfile = process.env.MDBRAIN_BENCHMARK_SEARCH_INDEX_PROFILE
+		const previousLane = process.env.MDBRAIN_BENCHMARK_RETRIEVAL_LANE
+		process.env.MDBRAIN_BENCHMARK_RETRIEVAL_LANE = "raw-session"
 		try {
 			expect(getExpectedSearchIndexTargets("test_", "atlas-managed")).toEqual([
 				{
@@ -1487,14 +1487,14 @@ describe("search index readiness helpers", () => {
 			])
 		} finally {
 			if (previousProfile === undefined) {
-				delete process.env.MBRAIN_BENCHMARK_SEARCH_INDEX_PROFILE
+				delete process.env.MDBRAIN_BENCHMARK_SEARCH_INDEX_PROFILE
 			} else {
-				process.env.MBRAIN_BENCHMARK_SEARCH_INDEX_PROFILE = previousProfile
+				process.env.MDBRAIN_BENCHMARK_SEARCH_INDEX_PROFILE = previousProfile
 			}
 			if (previousLane === undefined) {
-				delete process.env.MBRAIN_BENCHMARK_RETRIEVAL_LANE
+				delete process.env.MDBRAIN_BENCHMARK_RETRIEVAL_LANE
 			} else {
-				process.env.MBRAIN_BENCHMARK_RETRIEVAL_LANE = previousLane
+				process.env.MDBRAIN_BENCHMARK_RETRIEVAL_LANE = previousLane
 			}
 		}
 	})
@@ -1506,19 +1506,19 @@ describe("search index readiness helpers", () => {
 		})
 		expect(
 			resolveSearchIndexReadinessTiming({
-				MBRAIN_BENCHMARK_STRICT: "1",
+				MDBRAIN_BENCHMARK_STRICT: "1",
 			}),
 		).toEqual({ timeoutMs: 180_000, pollMs: 1_000 })
 		expect(
 			resolveSearchIndexReadinessTiming({
-				MBRAIN_SEARCH_INDEX_READINESS_TIMEOUT_MS: "180000",
-				MBRAIN_SEARCH_INDEX_READINESS_POLL_MS: "250",
+				MDBRAIN_SEARCH_INDEX_READINESS_TIMEOUT_MS: "180000",
+				MDBRAIN_SEARCH_INDEX_READINESS_POLL_MS: "250",
 			}),
 		).toEqual({ timeoutMs: 180_000, pollMs: 250 })
 		expect(
 			resolveSearchIndexReadinessTiming({
-				MBRAIN_SEARCH_INDEX_READINESS_TIMEOUT_MS: "0",
-				MBRAIN_SEARCH_INDEX_READINESS_POLL_MS: "nope",
+				MDBRAIN_SEARCH_INDEX_READINESS_TIMEOUT_MS: "0",
+				MDBRAIN_SEARCH_INDEX_READINESS_POLL_MS: "nope",
 			}),
 		).toEqual({ timeoutMs: 60_000, pollMs: 1_000 })
 	})
@@ -2127,8 +2127,8 @@ describe("query_cache vector search index", () => {
 	})
 
 	it("creates memory_evidence Search and Vector Search indexes when enabled", async () => {
-		const previous = process.env.MBRAIN_EVIDENCE_MIRROR_MODE
-		process.env.MBRAIN_EVIDENCE_MIRROR_MODE = "enabled"
+		const previous = process.env.MDBRAIN_EVIDENCE_MIRROR_MODE
+		process.env.MDBRAIN_EVIDENCE_MIRROR_MODE = "enabled"
 		try {
 			const db = mockDb()
 			await ensureSearchIndexes(db, "test_", "atlas-local-preview", "automated")
@@ -2159,9 +2159,9 @@ describe("query_cache vector search index", () => {
 			)
 		} finally {
 			if (previous === undefined) {
-				delete process.env.MBRAIN_EVIDENCE_MIRROR_MODE
+				delete process.env.MDBRAIN_EVIDENCE_MIRROR_MODE
 			} else {
-				process.env.MBRAIN_EVIDENCE_MIRROR_MODE = previous
+				process.env.MDBRAIN_EVIDENCE_MIRROR_MODE = previous
 			}
 		}
 	})

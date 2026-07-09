@@ -1,5 +1,5 @@
 # MongoDB only — run `apps/api` on the host with e.g.
-# MBRAIN_MONGODB_URI=mongodb://127.0.0.1:27017
+# MDBRAIN_MONGODB_URI=mongodb://127.0.0.1:27017
 # (or `mongodb://mongodb:27017/...` when the API runs in another container on the same network).
 services:
   mongodb:
@@ -7,7 +7,7 @@ services:
     ports:
       - "27017:27017"
     volumes:
-      - mbrain_mongo_data:/data/db
+      - mdbrian_mongo_data:/data/db
 
 volumes:
-  mbrain_mongo_data: {}
+  mdbrian_mongo_data: {}

@@ -1,6 +1,6 @@
 import { randomUUID } from "node:crypto"
 import type { Db, Document } from "mongodb"
-import { createSubsystemLogger } from "@mbrain/lib"
+import { createSubsystemLogger } from "@mdbrian/lib"
 import type { MemoryActorRole } from "./types.js"
 import { mutationsCollection } from "./mongodb-schema.js"
 

@@ -52,16 +52,16 @@ const capabilities = [
 	],
 ]
 
-const codeSample = `const mbrain = new MbrainClient({
+const codeSample = `const mdbrian = new MdbrianClient({
   baseUrl: "http://127.0.0.1:3847"
 })
 
-await mbrain.add({
+await mdbrian.add({
   sessionId: "agent-42",
   content: "Romi prefers concise release notes."
 })
 
-const context = await mbrain.search({
+const context = await mdbrian.search({
   sessionKey: "agent-42",
   query: "How should I write the launch note?",
   limit: 8
@@ -181,15 +181,15 @@ export default function LandingPage() {
 		<main ref={rootRef} className="landing-shell">
 			<section className="landing-hero">
 				<nav className="landing-nav" aria-label="Primary navigation">
-					<a className="brand-mark" href="/" aria-label="Mbrain home">
+					<a className="brand-mark" href="/" aria-label="Mdbrian home">
 						<span className="brand-mark__glyph">M</span>
-						<span>Mbrain</span>
+						<span>Mdbrian</span>
 					</a>
 					<div className="nav-links">
 						<a href="#architecture">Architecture</a>
 						<a href="#memory-model">Memory model</a>
 						<a href="/console">Console</a>
-						<a href="https://github.com/romiluz13/mbrain">GitHub</a>
+						<a href="https://github.com/romiluz13/mdbrian">GitHub</a>
 					</div>
 				</nav>
 
@@ -205,7 +205,7 @@ export default function LandingPage() {
 						</h1>
 						<p className="hero-copy">
 							A <code>.md</code> file is fine for the first run. It fails when
-							every turn makes the agent reread the whole past. Mbrain stores
+							every turn makes the agent reread the whole past. Mdbrian stores
 							memory in MongoDB, then retrieves only the slice that matters:
 							source, search, graph, and proof.
 						</p>
@@ -240,7 +240,7 @@ export default function LandingPage() {
 				</div>
 			</section>
 
-			<section className="signal-strip" aria-label="Mbrain capabilities">
+			<section className="signal-strip" aria-label="Mdbrian capabilities">
 				<div>
 					<span>Stores</span>
 					<strong>events, facts, procedures, docs</strong>
@@ -283,7 +283,7 @@ export default function LandingPage() {
 					<p className="eyebrow">The shape of the system</p>
 					<h2>One memory substrate, many recall modes.</h2>
 					<p>
-						Mbrain is built around a simple belief: agent memory should live
+						Mdbrian is built around a simple belief: agent memory should live
 						where documents, indexes, relationships, operational queries, and
 						provenance can be reasoned about together.
 					</p>
@@ -303,7 +303,7 @@ export default function LandingPage() {
 					<p className="eyebrow">Not benchmark theater</p>
 					<h2>Built for audit before bragging.</h2>
 					<p>
-						Mbrain keeps benchmark claims scoped. Retrieval evidence and judged
+						Mdbrian keeps benchmark claims scoped. Retrieval evidence and judged
 						answer quality are separated. Source IDs, commands, metadata,
 						topology, cleanup proof, and model posture matter more than a
 						headline.
@@ -333,7 +333,7 @@ export default function LandingPage() {
 					<div className="hero-actions">
 						<a
 							className="button button-primary"
-							href="https://github.com/romiluz13/mbrain#quickstart"
+							href="https://github.com/romiluz13/mdbrian#quickstart"
 						>
 							Read the quickstart
 						</a>

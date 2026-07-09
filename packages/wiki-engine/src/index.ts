@@ -1,4 +1,4 @@
-// @mbrain/wiki-engine — MBrain wiki engine entry point.
+// @mdbrian/wiki-engine — MDBrain wiki engine entry point.
 //
 // Wiki pages, OKF interchange, page rendering, self-maintenance
 // (git-diff + Dreamer), cross-page contradiction detection, governance

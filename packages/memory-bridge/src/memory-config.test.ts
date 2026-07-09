@@ -3,9 +3,9 @@ import os from "node:os"
 import path from "node:path"
 import { afterEach, describe, expect, it } from "vitest"
 import {
-	buildMbrainConfig,
-	resolveMbrainConfigFilePath,
-	resolveMbrainStandaloneWorkspaceDir,
+	buildMdbrianConfig,
+	resolveMdbrianConfigFilePath,
+	resolveMdbrianStandaloneWorkspaceDir,
 	resolveBridgeConfig,
 } from "./memory-config.js"
 
@@ -16,37 +16,37 @@ describe("memory-config standalone", () => {
 		process.env = { ...prev }
 	})
 
-	it("uses ~/.mbrain/workspace when MBRAIN_WORKSPACE_DIR is unset", () => {
-		const ws = resolveMbrainStandaloneWorkspaceDir({})
-		expect(ws).toBe(path.join(os.homedir(), ".mbrain", "workspace"))
+	it("uses ~/.mdbrian/workspace when MDBRAIN_WORKSPACE_DIR is unset", () => {
+		const ws = resolveMdbrianStandaloneWorkspaceDir({})
+		expect(ws).toBe(path.join(os.homedir(), ".mdbrian", "workspace"))
 	})
 
-	it("respects MBRAIN_WORKSPACE_DIR", () => {
-		const dir = resolveMbrainStandaloneWorkspaceDir({
-			MBRAIN_WORKSPACE_DIR: "/tmp/mws",
+	it("respects MDBRAIN_WORKSPACE_DIR", () => {
+		const dir = resolveMdbrianStandaloneWorkspaceDir({
+			MDBRAIN_WORKSPACE_DIR: "/tmp/mws",
 		})
 		expect(dir).toBe("/tmp/mws")
 	})
 
-	it("buildMbrainConfig preserves the mongodb backend by default", () => {
-		process.env = { ...prev, MBRAIN_STANDALONE: "1" }
-		const cfg = buildMbrainConfig(process.env)
+	it("buildMdbrianConfig preserves the mongodb backend by default", () => {
+		process.env = { ...prev, MDBRAIN_STANDALONE: "1" }
+		const cfg = buildMdbrianConfig(process.env)
 		expect(cfg.memory?.backend).toBe("mongodb")
 	})
 
-	it("buildMbrainConfig uses MBRAIN_MONGODB_URI when it is set", () => {
+	it("buildMdbrianConfig uses MDBRAIN_MONGODB_URI when it is set", () => {
 		process.env = {
 			...prev,
-			MBRAIN_MONGODB_URI: "mongodb://127.0.0.1:27017/x",
+			MDBRAIN_MONGODB_URI: "mongodb://127.0.0.1:27017/x",
 		}
-		const cfg = buildMbrainConfig(process.env)
+		const cfg = buildMdbrianConfig(process.env)
 		expect(cfg.memory?.mongodb?.uri).toBe("mongodb://127.0.0.1:27017/x")
 	})
 
 	it("resolveBridgeConfig reads from process.env", () => {
 		process.env = {
 			...prev,
-			MBRAIN_MONGODB_URI: "mongodb://127.0.0.1:27017/bridge",
+			MDBRAIN_MONGODB_URI: "mongodb://127.0.0.1:27017/bridge",
 		}
 		const cfg = resolveBridgeConfig()
 		expect(cfg.memory?.mongodb?.uri).toBe("mongodb://127.0.0.1:27017/bridge")
@@ -55,30 +55,30 @@ describe("memory-config standalone", () => {
 	it("reads collection prefix from process.env", () => {
 		process.env = {
 			...prev,
-			MBRAIN_MONGODB_URI: "mongodb://127.0.0.1:27017/bridge",
-			MBRAIN_MONGODB_COLLECTION_PREFIX: "mbrain_bench_",
+			MDBRAIN_MONGODB_URI: "mongodb://127.0.0.1:27017/bridge",
+			MDBRAIN_MONGODB_COLLECTION_PREFIX: "mdbrian_bench_",
 		}
-		const cfg = buildMbrainConfig(process.env)
-		expect(cfg.memory?.mongodb?.collectionPrefix).toBe("mbrain_bench_")
+		const cfg = buildMdbrianConfig(process.env)
+		expect(cfg.memory?.mongodb?.collectionPrefix).toBe("mdbrian_bench_")
 	})
 
-	it("buildMbrainConfig merges URI from env", () => {
+	it("buildMdbrianConfig merges URI from env", () => {
 		process.env = {
 			...prev,
-			MBRAIN_MONGODB_URI:
-				"mongodb://127.0.0.1:27017/mbrain?directConnection=true",
+			MDBRAIN_MONGODB_URI:
+				"mongodb://127.0.0.1:27017/mdbrian?directConnection=true",
 		}
-		const cfg = buildMbrainConfig(process.env)
+		const cfg = buildMdbrianConfig(process.env)
 		expect(cfg.memory?.backend).toBe("mongodb")
 		expect(cfg.memory?.mongodb?.uri).toBe(
-			"mongodb://127.0.0.1:27017/mbrain?directConnection=true",
+			"mongodb://127.0.0.1:27017/mdbrian?directConnection=true",
 		)
 		expect(cfg.agents?.defaults?.workspace).toBeTruthy()
 	})
 
-	it("reads optional mbrain.json when present", () => {
-		const dir = fs.mkdtempSync(path.join(os.tmpdir(), "mbrain-cfg-"))
-		const cfgPath = path.join(dir, "mbrain.json")
+	it("reads optional mdbrian.json when present", () => {
+		const dir = fs.mkdtempSync(path.join(os.tmpdir(), "mdbrian-cfg-"))
+		const cfgPath = path.join(dir, "mdbrian.json")
 		fs.writeFileSync(
 			cfgPath,
 			JSON.stringify({
@@ -90,12 +90,12 @@ describe("memory-config standalone", () => {
 		)
 		process.env = {
 			...prev,
-			MBRAIN_CONFIG_PATH: cfgPath,
-			MBRAIN_MONGODB_URI: "mongodb://h/",
+			MDBRAIN_CONFIG_PATH: cfgPath,
+			MDBRAIN_MONGODB_URI: "mongodb://h/",
 		}
-		const cfg = buildMbrainConfig(process.env)
+		const cfg = buildMdbrianConfig(process.env)
 		expect(cfg.memory?.mongodb?.database).toBe("fromfile")
-		expect(resolveMbrainConfigFilePath(process.env)).toBe(cfgPath)
+		expect(resolveMdbrianConfigFilePath(process.env)).toBe(cfgPath)
 		fs.rmSync(dir, { recursive: true, force: true })
 	})
 })

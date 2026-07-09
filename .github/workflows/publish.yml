@@ -43,7 +43,7 @@ jobs:
             packages/lib \
             packages/memory-engine \
             packages/memory-bridge \
-            packages/mbrain-memory \
+            packages/mdbrian-memory \
             packages/client \
             packages/tools
           do

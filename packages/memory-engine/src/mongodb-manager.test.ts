@@ -459,7 +459,7 @@ describe("benchmarkIngest", () => {
 		})
 
 		const workspaceDir = await mkdtemp(
-			path.join(os.tmpdir(), "mbrain-manager-workspace-"),
+			path.join(os.tmpdir(), "mdbrian-manager-workspace-"),
 		)
 		const datasetDir = path.join(workspaceDir, "benchmarks")
 		const datasetPath = path.join(datasetDir, "dataset.jsonl")
@@ -500,9 +500,9 @@ describe("benchmarkIngest", () => {
 
 	it("rejects benchmark datasets outside allowed roots", async () => {
 		const workspaceDir = await mkdtemp(
-			path.join(os.tmpdir(), "mbrain-manager-workspace-"),
+			path.join(os.tmpdir(), "mdbrian-manager-workspace-"),
 		)
-		const outsideDir = await mkdtemp(path.join(os.tmpdir(), "mbrain-outside-"))
+		const outsideDir = await mkdtemp(path.join(os.tmpdir(), "mdbrian-outside-"))
 		const outsideFile = path.join(outsideDir, "dataset.jsonl")
 		try {
 			await writeFile(outsideFile, "")
@@ -553,14 +553,14 @@ describe("benchmarkIngest", () => {
 		})
 
 		const workspaceDir = await mkdtemp(
-			path.join(os.tmpdir(), "mbrain-manager-workspace-"),
+			path.join(os.tmpdir(), "mdbrian-manager-workspace-"),
 		)
-		const outsideDir = await mkdtemp(path.join(os.tmpdir(), "mbrain-outside-"))
+		const outsideDir = await mkdtemp(path.join(os.tmpdir(), "mdbrian-outside-"))
 		const outsideFile = path.join(outsideDir, "dataset.jsonl")
-		const previous = process.env.MBRAIN_BENCHMARK_ALLOWED_ROOTS
+		const previous = process.env.MDBRAIN_BENCHMARK_ALLOWED_ROOTS
 		try {
 			await writeFile(outsideFile, "")
-			process.env.MBRAIN_BENCHMARK_ALLOWED_ROOTS = outsideDir
+			process.env.MDBRAIN_BENCHMARK_ALLOWED_ROOTS = outsideDir
 			const manager = {
 				workspaceDir,
 				config: {
@@ -593,9 +593,9 @@ describe("benchmarkIngest", () => {
 			)
 		} finally {
 			if (previous === undefined) {
-				delete process.env.MBRAIN_BENCHMARK_ALLOWED_ROOTS
+				delete process.env.MDBRAIN_BENCHMARK_ALLOWED_ROOTS
 			} else {
-				process.env.MBRAIN_BENCHMARK_ALLOWED_ROOTS = previous
+				process.env.MDBRAIN_BENCHMARK_ALLOWED_ROOTS = previous
 			}
 			await rm(workspaceDir, { recursive: true, force: true })
 			await rm(outsideDir, { recursive: true, force: true })
@@ -629,14 +629,14 @@ describe("benchmark event search convergence", () => {
 		})
 
 	it("bounds each MongoDB Search convergence probe with maxTimeMS", async () => {
-		const previousStrict = process.env.MBRAIN_BENCHMARK_STRICT
+		const previousStrict = process.env.MDBRAIN_BENCHMARK_STRICT
 		const previousTimeout =
-			process.env.MBRAIN_BENCHMARK_EVENT_SEARCH_SETTLE_TIMEOUT_MS
+			process.env.MDBRAIN_BENCHMARK_EVENT_SEARCH_SETTLE_TIMEOUT_MS
 		const previousProbeTimeout =
-			process.env.MBRAIN_BENCHMARK_EVENT_SEARCH_PROBE_MAX_TIME_MS
-		process.env.MBRAIN_BENCHMARK_STRICT = "1"
-		process.env.MBRAIN_BENCHMARK_EVENT_SEARCH_SETTLE_TIMEOUT_MS = "60000"
-		process.env.MBRAIN_BENCHMARK_EVENT_SEARCH_PROBE_MAX_TIME_MS = "1234"
+			process.env.MDBRAIN_BENCHMARK_EVENT_SEARCH_PROBE_MAX_TIME_MS
+		process.env.MDBRAIN_BENCHMARK_STRICT = "1"
+		process.env.MDBRAIN_BENCHMARK_EVENT_SEARCH_SETTLE_TIMEOUT_MS = "60000"
+		process.env.MDBRAIN_BENCHMARK_EVENT_SEARCH_PROBE_MAX_TIME_MS = "1234"
 		try {
 			const aggregate = vi.fn().mockReturnValue({
 				toArray: vi.fn().mockResolvedValue([{ count: 2 }]),
@@ -673,34 +673,34 @@ describe("benchmark event search convergence", () => {
 			])
 		} finally {
 			if (previousStrict === undefined) {
-				delete process.env.MBRAIN_BENCHMARK_STRICT
+				delete process.env.MDBRAIN_BENCHMARK_STRICT
 			} else {
-				process.env.MBRAIN_BENCHMARK_STRICT = previousStrict
+				process.env.MDBRAIN_BENCHMARK_STRICT = previousStrict
 			}
 			if (previousTimeout === undefined) {
-				delete process.env.MBRAIN_BENCHMARK_EVENT_SEARCH_SETTLE_TIMEOUT_MS
+				delete process.env.MDBRAIN_BENCHMARK_EVENT_SEARCH_SETTLE_TIMEOUT_MS
 			} else {
-				process.env.MBRAIN_BENCHMARK_EVENT_SEARCH_SETTLE_TIMEOUT_MS =
+				process.env.MDBRAIN_BENCHMARK_EVENT_SEARCH_SETTLE_TIMEOUT_MS =
 					previousTimeout
 			}
 			if (previousProbeTimeout === undefined) {
-				delete process.env.MBRAIN_BENCHMARK_EVENT_SEARCH_PROBE_MAX_TIME_MS
+				delete process.env.MDBRAIN_BENCHMARK_EVENT_SEARCH_PROBE_MAX_TIME_MS
 			} else {
-				process.env.MBRAIN_BENCHMARK_EVENT_SEARCH_PROBE_MAX_TIME_MS =
+				process.env.MDBRAIN_BENCHMARK_EVENT_SEARCH_PROBE_MAX_TIME_MS =
 					previousProbeTimeout
 			}
 		}
 	})
 
 	it("narrows MongoDB Search convergence probes to scope filters", async () => {
-		const previousStrict = process.env.MBRAIN_BENCHMARK_STRICT
+		const previousStrict = process.env.MDBRAIN_BENCHMARK_STRICT
 		const previousTimeout =
-			process.env.MBRAIN_BENCHMARK_EVENT_SEARCH_SETTLE_TIMEOUT_MS
+			process.env.MDBRAIN_BENCHMARK_EVENT_SEARCH_SETTLE_TIMEOUT_MS
 		const previousProbeTimeout =
-			process.env.MBRAIN_BENCHMARK_EVENT_SEARCH_PROBE_MAX_TIME_MS
-		process.env.MBRAIN_BENCHMARK_STRICT = "1"
-		process.env.MBRAIN_BENCHMARK_EVENT_SEARCH_SETTLE_TIMEOUT_MS = "1500"
-		process.env.MBRAIN_BENCHMARK_EVENT_SEARCH_PROBE_MAX_TIME_MS = "1234"
+			process.env.MDBRAIN_BENCHMARK_EVENT_SEARCH_PROBE_MAX_TIME_MS
+		process.env.MDBRAIN_BENCHMARK_STRICT = "1"
+		process.env.MDBRAIN_BENCHMARK_EVENT_SEARCH_SETTLE_TIMEOUT_MS = "1500"
+		process.env.MDBRAIN_BENCHMARK_EVENT_SEARCH_PROBE_MAX_TIME_MS = "1234"
 		try {
 			const { readSearchIndexStatus } = await import(
 				"./mongodb-benchmark-readiness.js"
@@ -771,20 +771,20 @@ describe("benchmark event search convergence", () => {
 			])
 		} finally {
 			if (previousStrict === undefined) {
-				delete process.env.MBRAIN_BENCHMARK_STRICT
+				delete process.env.MDBRAIN_BENCHMARK_STRICT
 			} else {
-				process.env.MBRAIN_BENCHMARK_STRICT = previousStrict
+				process.env.MDBRAIN_BENCHMARK_STRICT = previousStrict
 			}
 			if (previousTimeout === undefined) {
-				delete process.env.MBRAIN_BENCHMARK_EVENT_SEARCH_SETTLE_TIMEOUT_MS
+				delete process.env.MDBRAIN_BENCHMARK_EVENT_SEARCH_SETTLE_TIMEOUT_MS
 			} else {
-				process.env.MBRAIN_BENCHMARK_EVENT_SEARCH_SETTLE_TIMEOUT_MS =
+				process.env.MDBRAIN_BENCHMARK_EVENT_SEARCH_SETTLE_TIMEOUT_MS =
 					previousTimeout
 			}
 			if (previousProbeTimeout === undefined) {
-				delete process.env.MBRAIN_BENCHMARK_EVENT_SEARCH_PROBE_MAX_TIME_MS
+				delete process.env.MDBRAIN_BENCHMARK_EVENT_SEARCH_PROBE_MAX_TIME_MS
 			} else {
-				process.env.MBRAIN_BENCHMARK_EVENT_SEARCH_PROBE_MAX_TIME_MS =
+				process.env.MDBRAIN_BENCHMARK_EVENT_SEARCH_PROBE_MAX_TIME_MS =
 					previousProbeTimeout
 			}
 		}
@@ -794,11 +794,11 @@ describe("benchmark event search convergence", () => {
 	// The readSearchIndexStatus helper is mocked at module scope; each test
 	// overrides the return value for that test.
 	it("still probes document visibility when readiness helper reports queryable=true", async () => {
-		const prevStrict = process.env.MBRAIN_BENCHMARK_STRICT
+		const prevStrict = process.env.MDBRAIN_BENCHMARK_STRICT
 		const prevSettle =
-			process.env.MBRAIN_BENCHMARK_EVENT_SEARCH_SETTLE_TIMEOUT_MS
-		process.env.MBRAIN_BENCHMARK_STRICT = "1"
-		process.env.MBRAIN_BENCHMARK_EVENT_SEARCH_SETTLE_TIMEOUT_MS = "1500"
+			process.env.MDBRAIN_BENCHMARK_EVENT_SEARCH_SETTLE_TIMEOUT_MS
+		process.env.MDBRAIN_BENCHMARK_STRICT = "1"
+		process.env.MDBRAIN_BENCHMARK_EVENT_SEARCH_SETTLE_TIMEOUT_MS = "1500"
 		const { readSearchIndexStatus } = await import(
 			"./mongodb-benchmark-readiness.js"
 		)
@@ -831,24 +831,25 @@ describe("benchmark event search convergence", () => {
 			).resolves.toBeUndefined()
 			expect(aggregate).toHaveBeenCalled()
 		} finally {
-			if (prevStrict === undefined) delete process.env.MBRAIN_BENCHMARK_STRICT
-			else process.env.MBRAIN_BENCHMARK_STRICT = prevStrict
+			if (prevStrict === undefined) delete process.env.MDBRAIN_BENCHMARK_STRICT
+			else process.env.MDBRAIN_BENCHMARK_STRICT = prevStrict
 			if (prevSettle === undefined)
-				delete process.env.MBRAIN_BENCHMARK_EVENT_SEARCH_SETTLE_TIMEOUT_MS
+				delete process.env.MDBRAIN_BENCHMARK_EVENT_SEARCH_SETTLE_TIMEOUT_MS
 			else
-				process.env.MBRAIN_BENCHMARK_EVENT_SEARCH_SETTLE_TIMEOUT_MS = prevSettle
+				process.env.MDBRAIN_BENCHMARK_EVENT_SEARCH_SETTLE_TIMEOUT_MS =
+					prevSettle
 		}
 	})
 
 	it("waits for actual text terms after wildcard document visibility", async () => {
-		const prevStrict = process.env.MBRAIN_BENCHMARK_STRICT
+		const prevStrict = process.env.MDBRAIN_BENCHMARK_STRICT
 		const prevSettle =
-			process.env.MBRAIN_BENCHMARK_EVENT_SEARCH_SETTLE_TIMEOUT_MS
+			process.env.MDBRAIN_BENCHMARK_EVENT_SEARCH_SETTLE_TIMEOUT_MS
 		const prevProbe =
-			process.env.MBRAIN_BENCHMARK_EVENT_SEARCH_PROBE_MAX_TIME_MS
-		process.env.MBRAIN_BENCHMARK_STRICT = "1"
-		process.env.MBRAIN_BENCHMARK_EVENT_SEARCH_SETTLE_TIMEOUT_MS = "3000"
-		process.env.MBRAIN_BENCHMARK_EVENT_SEARCH_PROBE_MAX_TIME_MS = "1000"
+			process.env.MDBRAIN_BENCHMARK_EVENT_SEARCH_PROBE_MAX_TIME_MS
+		process.env.MDBRAIN_BENCHMARK_STRICT = "1"
+		process.env.MDBRAIN_BENCHMARK_EVENT_SEARCH_SETTLE_TIMEOUT_MS = "3000"
+		process.env.MDBRAIN_BENCHMARK_EVENT_SEARCH_PROBE_MAX_TIME_MS = "1000"
 		try {
 			const { readSearchIndexStatus } = await import(
 				"./mongodb-benchmark-readiness.js"
@@ -915,22 +916,23 @@ describe("benchmark event search convergence", () => {
 				expect.any(Object),
 			)
 		} finally {
-			if (prevStrict === undefined) delete process.env.MBRAIN_BENCHMARK_STRICT
-			else process.env.MBRAIN_BENCHMARK_STRICT = prevStrict
+			if (prevStrict === undefined) delete process.env.MDBRAIN_BENCHMARK_STRICT
+			else process.env.MDBRAIN_BENCHMARK_STRICT = prevStrict
 			if (prevSettle === undefined)
-				delete process.env.MBRAIN_BENCHMARK_EVENT_SEARCH_SETTLE_TIMEOUT_MS
+				delete process.env.MDBRAIN_BENCHMARK_EVENT_SEARCH_SETTLE_TIMEOUT_MS
 			else
-				process.env.MBRAIN_BENCHMARK_EVENT_SEARCH_SETTLE_TIMEOUT_MS = prevSettle
+				process.env.MDBRAIN_BENCHMARK_EVENT_SEARCH_SETTLE_TIMEOUT_MS =
+					prevSettle
 			if (prevProbe === undefined)
-				delete process.env.MBRAIN_BENCHMARK_EVENT_SEARCH_PROBE_MAX_TIME_MS
+				delete process.env.MDBRAIN_BENCHMARK_EVENT_SEARCH_PROBE_MAX_TIME_MS
 			else
-				process.env.MBRAIN_BENCHMARK_EVENT_SEARCH_PROBE_MAX_TIME_MS = prevProbe
+				process.env.MDBRAIN_BENCHMARK_EVENT_SEARCH_PROBE_MAX_TIME_MS = prevProbe
 		}
 	})
 
 	it("does not wait for non-searchable control-character text", async () => {
-		const prevStrict = process.env.MBRAIN_BENCHMARK_STRICT
-		process.env.MBRAIN_BENCHMARK_STRICT = "1"
+		const prevStrict = process.env.MDBRAIN_BENCHMARK_STRICT
+		process.env.MDBRAIN_BENCHMARK_STRICT = "1"
 		const aggregate = vi.fn()
 		try {
 			mocked(eventsCollection).mockReturnValue({
@@ -955,14 +957,14 @@ describe("benchmark event search convergence", () => {
 			).resolves.toBeUndefined()
 			expect(aggregate).not.toHaveBeenCalled()
 		} finally {
-			if (prevStrict === undefined) delete process.env.MBRAIN_BENCHMARK_STRICT
-			else process.env.MBRAIN_BENCHMARK_STRICT = prevStrict
+			if (prevStrict === undefined) delete process.env.MDBRAIN_BENCHMARK_STRICT
+			else process.env.MDBRAIN_BENCHMARK_STRICT = prevStrict
 		}
 	})
 
 	it("aborts on STALE in strict mode even when queryable=true (Task 1.5)", async () => {
-		const prevStrict = process.env.MBRAIN_BENCHMARK_STRICT
-		process.env.MBRAIN_BENCHMARK_STRICT = "1"
+		const prevStrict = process.env.MDBRAIN_BENCHMARK_STRICT
+		process.env.MDBRAIN_BENCHMARK_STRICT = "1"
 		try {
 			const { readSearchIndexStatus } = await import(
 				"./mongodb-benchmark-readiness.js"
@@ -990,14 +992,14 @@ describe("benchmark event search convergence", () => {
 				).waitForBenchmarkEventSearchConvergence.call(manager, "agent-stale"),
 			).rejects.toThrow(/index-not-ready|STALE/)
 		} finally {
-			if (prevStrict === undefined) delete process.env.MBRAIN_BENCHMARK_STRICT
-			else process.env.MBRAIN_BENCHMARK_STRICT = prevStrict
+			if (prevStrict === undefined) delete process.env.MDBRAIN_BENCHMARK_STRICT
+			else process.env.MDBRAIN_BENCHMARK_STRICT = prevStrict
 		}
 	})
 
 	it("aborts on queryable=false in strict mode (Task 1.5)", async () => {
-		const prevStrict = process.env.MBRAIN_BENCHMARK_STRICT
-		process.env.MBRAIN_BENCHMARK_STRICT = "1"
+		const prevStrict = process.env.MDBRAIN_BENCHMARK_STRICT
+		process.env.MDBRAIN_BENCHMARK_STRICT = "1"
 		try {
 			const { readSearchIndexStatus } = await import(
 				"./mongodb-benchmark-readiness.js"
@@ -1028,22 +1030,22 @@ describe("benchmark event search convergence", () => {
 				),
 			).rejects.toThrow(/index-not-ready|queryable=false|BUILDING/)
 		} finally {
-			if (prevStrict === undefined) delete process.env.MBRAIN_BENCHMARK_STRICT
-			else process.env.MBRAIN_BENCHMARK_STRICT = prevStrict
+			if (prevStrict === undefined) delete process.env.MDBRAIN_BENCHMARK_STRICT
+			else process.env.MDBRAIN_BENCHMARK_STRICT = prevStrict
 		}
 	})
 
 	it("falls back to aggregate probe when helper signals fallback (Task 1.5)", async () => {
-		const prevStrict = process.env.MBRAIN_BENCHMARK_STRICT
+		const prevStrict = process.env.MDBRAIN_BENCHMARK_STRICT
 		const prevSettle =
-			process.env.MBRAIN_BENCHMARK_EVENT_SEARCH_SETTLE_TIMEOUT_MS
+			process.env.MDBRAIN_BENCHMARK_EVENT_SEARCH_SETTLE_TIMEOUT_MS
 		const prevProbe =
-			process.env.MBRAIN_BENCHMARK_EVENT_SEARCH_PROBE_MAX_TIME_MS
-		process.env.MBRAIN_BENCHMARK_STRICT = "1"
+			process.env.MDBRAIN_BENCHMARK_EVENT_SEARCH_PROBE_MAX_TIME_MS
+		process.env.MDBRAIN_BENCHMARK_STRICT = "1"
 		// Use a short settle window so this test stays fast even under the
 		// aggregate probe loop.
-		process.env.MBRAIN_BENCHMARK_EVENT_SEARCH_SETTLE_TIMEOUT_MS = "1500"
-		process.env.MBRAIN_BENCHMARK_EVENT_SEARCH_PROBE_MAX_TIME_MS = "1000"
+		process.env.MDBRAIN_BENCHMARK_EVENT_SEARCH_SETTLE_TIMEOUT_MS = "1500"
+		process.env.MDBRAIN_BENCHMARK_EVENT_SEARCH_PROBE_MAX_TIME_MS = "1000"
 		try {
 			const { readSearchIndexStatus } = await import(
 				"./mongodb-benchmark-readiness.js"
@@ -1076,28 +1078,29 @@ describe("benchmark event search convergence", () => {
 			expect(Date.now() - start).toBeLessThan(3000)
 			expect(aggregate).toHaveBeenCalled()
 		} finally {
-			if (prevStrict === undefined) delete process.env.MBRAIN_BENCHMARK_STRICT
-			else process.env.MBRAIN_BENCHMARK_STRICT = prevStrict
+			if (prevStrict === undefined) delete process.env.MDBRAIN_BENCHMARK_STRICT
+			else process.env.MDBRAIN_BENCHMARK_STRICT = prevStrict
 			if (prevSettle === undefined)
-				delete process.env.MBRAIN_BENCHMARK_EVENT_SEARCH_SETTLE_TIMEOUT_MS
+				delete process.env.MDBRAIN_BENCHMARK_EVENT_SEARCH_SETTLE_TIMEOUT_MS
 			else
-				process.env.MBRAIN_BENCHMARK_EVENT_SEARCH_SETTLE_TIMEOUT_MS = prevSettle
+				process.env.MDBRAIN_BENCHMARK_EVENT_SEARCH_SETTLE_TIMEOUT_MS =
+					prevSettle
 			if (prevProbe === undefined)
-				delete process.env.MBRAIN_BENCHMARK_EVENT_SEARCH_PROBE_MAX_TIME_MS
+				delete process.env.MDBRAIN_BENCHMARK_EVENT_SEARCH_PROBE_MAX_TIME_MS
 			else
-				process.env.MBRAIN_BENCHMARK_EVENT_SEARCH_PROBE_MAX_TIME_MS = prevProbe
+				process.env.MDBRAIN_BENCHMARK_EVENT_SEARCH_PROBE_MAX_TIME_MS = prevProbe
 		}
 	})
 
 	it("probes raw-session readiness through the session_chunks vector index", async () => {
-		const previousStrict = process.env.MBRAIN_BENCHMARK_STRICT
+		const previousStrict = process.env.MDBRAIN_BENCHMARK_STRICT
 		const previousTimeout =
-			process.env.MBRAIN_BENCHMARK_VECTOR_SEARCH_SETTLE_TIMEOUT_MS
+			process.env.MDBRAIN_BENCHMARK_VECTOR_SEARCH_SETTLE_TIMEOUT_MS
 		const previousProbeTimeout =
-			process.env.MBRAIN_BENCHMARK_VECTOR_SEARCH_PROBE_MAX_TIME_MS
-		process.env.MBRAIN_BENCHMARK_STRICT = "1"
-		process.env.MBRAIN_BENCHMARK_VECTOR_SEARCH_SETTLE_TIMEOUT_MS = "1500"
-		process.env.MBRAIN_BENCHMARK_VECTOR_SEARCH_PROBE_MAX_TIME_MS = "1234"
+			process.env.MDBRAIN_BENCHMARK_VECTOR_SEARCH_PROBE_MAX_TIME_MS
+		process.env.MDBRAIN_BENCHMARK_STRICT = "1"
+		process.env.MDBRAIN_BENCHMARK_VECTOR_SEARCH_SETTLE_TIMEOUT_MS = "1500"
+		process.env.MDBRAIN_BENCHMARK_VECTOR_SEARCH_PROBE_MAX_TIME_MS = "1234"
 		try {
 			const { readSearchIndexStatus } = await import(
 				"./mongodb-benchmark-readiness.js"
@@ -1185,40 +1188,40 @@ describe("benchmark event search convergence", () => {
 			expect(chunksCollection).not.toHaveBeenCalled()
 		} finally {
 			if (previousStrict === undefined) {
-				delete process.env.MBRAIN_BENCHMARK_STRICT
+				delete process.env.MDBRAIN_BENCHMARK_STRICT
 			} else {
-				process.env.MBRAIN_BENCHMARK_STRICT = previousStrict
+				process.env.MDBRAIN_BENCHMARK_STRICT = previousStrict
 			}
 			if (previousTimeout === undefined) {
-				delete process.env.MBRAIN_BENCHMARK_VECTOR_SEARCH_SETTLE_TIMEOUT_MS
+				delete process.env.MDBRAIN_BENCHMARK_VECTOR_SEARCH_SETTLE_TIMEOUT_MS
 			} else {
-				process.env.MBRAIN_BENCHMARK_VECTOR_SEARCH_SETTLE_TIMEOUT_MS =
+				process.env.MDBRAIN_BENCHMARK_VECTOR_SEARCH_SETTLE_TIMEOUT_MS =
 					previousTimeout
 			}
 			if (previousProbeTimeout === undefined) {
-				delete process.env.MBRAIN_BENCHMARK_VECTOR_SEARCH_PROBE_MAX_TIME_MS
+				delete process.env.MDBRAIN_BENCHMARK_VECTOR_SEARCH_PROBE_MAX_TIME_MS
 			} else {
-				process.env.MBRAIN_BENCHMARK_VECTOR_SEARCH_PROBE_MAX_TIME_MS =
+				process.env.MDBRAIN_BENCHMARK_VECTOR_SEARCH_PROBE_MAX_TIME_MS =
 					previousProbeTimeout
 			}
 		}
 	})
 
 	it("uses longer strict defaults for raw-session vector probes", async () => {
-		const previousStrict = process.env.MBRAIN_BENCHMARK_STRICT
+		const previousStrict = process.env.MDBRAIN_BENCHMARK_STRICT
 		const previousTimeout =
-			process.env.MBRAIN_BENCHMARK_VECTOR_SEARCH_SETTLE_TIMEOUT_MS
+			process.env.MDBRAIN_BENCHMARK_VECTOR_SEARCH_SETTLE_TIMEOUT_MS
 		const previousFallbackTimeout =
-			process.env.MBRAIN_BENCHMARK_EVENT_SEARCH_SETTLE_TIMEOUT_MS
+			process.env.MDBRAIN_BENCHMARK_EVENT_SEARCH_SETTLE_TIMEOUT_MS
 		const previousProbeTimeout =
-			process.env.MBRAIN_BENCHMARK_VECTOR_SEARCH_PROBE_MAX_TIME_MS
+			process.env.MDBRAIN_BENCHMARK_VECTOR_SEARCH_PROBE_MAX_TIME_MS
 		const previousFallbackProbeTimeout =
-			process.env.MBRAIN_BENCHMARK_EVENT_SEARCH_PROBE_MAX_TIME_MS
-		process.env.MBRAIN_BENCHMARK_STRICT = "1"
-		delete process.env.MBRAIN_BENCHMARK_VECTOR_SEARCH_SETTLE_TIMEOUT_MS
-		delete process.env.MBRAIN_BENCHMARK_EVENT_SEARCH_SETTLE_TIMEOUT_MS
-		delete process.env.MBRAIN_BENCHMARK_VECTOR_SEARCH_PROBE_MAX_TIME_MS
-		delete process.env.MBRAIN_BENCHMARK_EVENT_SEARCH_PROBE_MAX_TIME_MS
+			process.env.MDBRAIN_BENCHMARK_EVENT_SEARCH_PROBE_MAX_TIME_MS
+		process.env.MDBRAIN_BENCHMARK_STRICT = "1"
+		delete process.env.MDBRAIN_BENCHMARK_VECTOR_SEARCH_SETTLE_TIMEOUT_MS
+		delete process.env.MDBRAIN_BENCHMARK_EVENT_SEARCH_SETTLE_TIMEOUT_MS
+		delete process.env.MDBRAIN_BENCHMARK_VECTOR_SEARCH_PROBE_MAX_TIME_MS
+		delete process.env.MDBRAIN_BENCHMARK_EVENT_SEARCH_PROBE_MAX_TIME_MS
 		try {
 			const { readSearchIndexStatus } = await import(
 				"./mongodb-benchmark-readiness.js"
@@ -1259,43 +1262,43 @@ describe("benchmark event search convergence", () => {
 			})
 		} finally {
 			if (previousStrict === undefined) {
-				delete process.env.MBRAIN_BENCHMARK_STRICT
+				delete process.env.MDBRAIN_BENCHMARK_STRICT
 			} else {
-				process.env.MBRAIN_BENCHMARK_STRICT = previousStrict
+				process.env.MDBRAIN_BENCHMARK_STRICT = previousStrict
 			}
 			if (previousTimeout === undefined) {
-				delete process.env.MBRAIN_BENCHMARK_VECTOR_SEARCH_SETTLE_TIMEOUT_MS
+				delete process.env.MDBRAIN_BENCHMARK_VECTOR_SEARCH_SETTLE_TIMEOUT_MS
 			} else {
-				process.env.MBRAIN_BENCHMARK_VECTOR_SEARCH_SETTLE_TIMEOUT_MS =
+				process.env.MDBRAIN_BENCHMARK_VECTOR_SEARCH_SETTLE_TIMEOUT_MS =
 					previousTimeout
 			}
 			if (previousFallbackTimeout === undefined) {
-				delete process.env.MBRAIN_BENCHMARK_EVENT_SEARCH_SETTLE_TIMEOUT_MS
+				delete process.env.MDBRAIN_BENCHMARK_EVENT_SEARCH_SETTLE_TIMEOUT_MS
 			} else {
-				process.env.MBRAIN_BENCHMARK_EVENT_SEARCH_SETTLE_TIMEOUT_MS =
+				process.env.MDBRAIN_BENCHMARK_EVENT_SEARCH_SETTLE_TIMEOUT_MS =
 					previousFallbackTimeout
 			}
 			if (previousProbeTimeout === undefined) {
-				delete process.env.MBRAIN_BENCHMARK_VECTOR_SEARCH_PROBE_MAX_TIME_MS
+				delete process.env.MDBRAIN_BENCHMARK_VECTOR_SEARCH_PROBE_MAX_TIME_MS
 			} else {
-				process.env.MBRAIN_BENCHMARK_VECTOR_SEARCH_PROBE_MAX_TIME_MS =
+				process.env.MDBRAIN_BENCHMARK_VECTOR_SEARCH_PROBE_MAX_TIME_MS =
 					previousProbeTimeout
 			}
 			if (previousFallbackProbeTimeout === undefined) {
-				delete process.env.MBRAIN_BENCHMARK_EVENT_SEARCH_PROBE_MAX_TIME_MS
+				delete process.env.MDBRAIN_BENCHMARK_EVENT_SEARCH_PROBE_MAX_TIME_MS
 			} else {
-				process.env.MBRAIN_BENCHMARK_EVENT_SEARCH_PROBE_MAX_TIME_MS =
+				process.env.MDBRAIN_BENCHMARK_EVENT_SEARCH_PROBE_MAX_TIME_MS =
 					previousFallbackProbeTimeout
 			}
 		}
 	})
 
 	it("waits through pending raw-session vector readiness when aggregate results are visible", async () => {
-		const previousStrict = process.env.MBRAIN_BENCHMARK_STRICT
+		const previousStrict = process.env.MDBRAIN_BENCHMARK_STRICT
 		const previousTimeout =
-			process.env.MBRAIN_BENCHMARK_VECTOR_SEARCH_SETTLE_TIMEOUT_MS
-		process.env.MBRAIN_BENCHMARK_STRICT = "1"
-		process.env.MBRAIN_BENCHMARK_VECTOR_SEARCH_SETTLE_TIMEOUT_MS = "1500"
+			process.env.MDBRAIN_BENCHMARK_VECTOR_SEARCH_SETTLE_TIMEOUT_MS
+		process.env.MDBRAIN_BENCHMARK_STRICT = "1"
+		process.env.MDBRAIN_BENCHMARK_VECTOR_SEARCH_SETTLE_TIMEOUT_MS = "1500"
 		try {
 			const { readSearchIndexStatus } = await import(
 				"./mongodb-benchmark-readiness.js"
@@ -1334,22 +1337,22 @@ describe("benchmark event search convergence", () => {
 			expect(aggregate).toHaveBeenCalled()
 		} finally {
 			if (previousStrict === undefined) {
-				delete process.env.MBRAIN_BENCHMARK_STRICT
+				delete process.env.MDBRAIN_BENCHMARK_STRICT
 			} else {
-				process.env.MBRAIN_BENCHMARK_STRICT = previousStrict
+				process.env.MDBRAIN_BENCHMARK_STRICT = previousStrict
 			}
 			if (previousTimeout === undefined) {
-				delete process.env.MBRAIN_BENCHMARK_VECTOR_SEARCH_SETTLE_TIMEOUT_MS
+				delete process.env.MDBRAIN_BENCHMARK_VECTOR_SEARCH_SETTLE_TIMEOUT_MS
 			} else {
-				process.env.MBRAIN_BENCHMARK_VECTOR_SEARCH_SETTLE_TIMEOUT_MS =
+				process.env.MDBRAIN_BENCHMARK_VECTOR_SEARCH_SETTLE_TIMEOUT_MS =
 					previousTimeout
 			}
 		}
 	})
 
 	it("fails strict raw-session convergence when no session evidence documents exist", async () => {
-		const previousStrict = process.env.MBRAIN_BENCHMARK_STRICT
-		process.env.MBRAIN_BENCHMARK_STRICT = "1"
+		const previousStrict = process.env.MDBRAIN_BENCHMARK_STRICT
+		process.env.MDBRAIN_BENCHMARK_STRICT = "1"
 		try {
 			const { readSearchIndexStatus } = await import(
 				"./mongodb-benchmark-readiness.js"
@@ -1388,9 +1391,9 @@ describe("benchmark event search convergence", () => {
 			expect(aggregate).not.toHaveBeenCalled()
 		} finally {
 			if (previousStrict === undefined) {
-				delete process.env.MBRAIN_BENCHMARK_STRICT
+				delete process.env.MDBRAIN_BENCHMARK_STRICT
 			} else {
-				process.env.MBRAIN_BENCHMARK_STRICT = previousStrict
+				process.env.MDBRAIN_BENCHMARK_STRICT = previousStrict
 			}
 		}
 	})
@@ -1402,8 +1405,9 @@ describe("benchmark scenario queue settling", () => {
 	})
 
 	it("fails fast when a benchmark scenario queue does not settle", async () => {
-		const previousTimeout = process.env.MBRAIN_BENCHMARK_QUEUE_SETTLE_TIMEOUT_MS
-		process.env.MBRAIN_BENCHMARK_QUEUE_SETTLE_TIMEOUT_MS = "1"
+		const previousTimeout =
+			process.env.MDBRAIN_BENCHMARK_QUEUE_SETTLE_TIMEOUT_MS
+		process.env.MDBRAIN_BENCHMARK_QUEUE_SETTLE_TIMEOUT_MS = "1"
 		try {
 			const manager = {
 				agentId: "benchmark-agent-1",
@@ -1425,9 +1429,9 @@ describe("benchmark scenario queue settling", () => {
 			)
 		} finally {
 			if (previousTimeout === undefined) {
-				delete process.env.MBRAIN_BENCHMARK_QUEUE_SETTLE_TIMEOUT_MS
+				delete process.env.MDBRAIN_BENCHMARK_QUEUE_SETTLE_TIMEOUT_MS
 			} else {
-				process.env.MBRAIN_BENCHMARK_QUEUE_SETTLE_TIMEOUT_MS = previousTimeout
+				process.env.MDBRAIN_BENCHMARK_QUEUE_SETTLE_TIMEOUT_MS = previousTimeout
 			}
 		}
 	})
@@ -1444,10 +1448,10 @@ describe("benchmark scenario queue settling", () => {
 		).settleBenchmarkScenarioManager.call(manager, manager)
 
 	it("names writeQueue when writeQueue hangs (Task 1.3)", async () => {
-		const prev = process.env.MBRAIN_BENCHMARK_QUEUE_SETTLE_TIMEOUT_MS
-		const prevStrict = process.env.MBRAIN_BENCHMARK_STRICT
-		process.env.MBRAIN_BENCHMARK_QUEUE_SETTLE_TIMEOUT_MS = "200"
-		process.env.MBRAIN_BENCHMARK_STRICT = "1"
+		const prev = process.env.MDBRAIN_BENCHMARK_QUEUE_SETTLE_TIMEOUT_MS
+		const prevStrict = process.env.MDBRAIN_BENCHMARK_STRICT
+		process.env.MDBRAIN_BENCHMARK_QUEUE_SETTLE_TIMEOUT_MS = "200"
+		process.env.MDBRAIN_BENCHMARK_STRICT = "1"
 		try {
 			const manager = {
 				agentId: "benchmark-agent-write",
@@ -1459,18 +1463,18 @@ describe("benchmark scenario queue settling", () => {
 			)
 		} finally {
 			if (prev === undefined)
-				delete process.env.MBRAIN_BENCHMARK_QUEUE_SETTLE_TIMEOUT_MS
-			else process.env.MBRAIN_BENCHMARK_QUEUE_SETTLE_TIMEOUT_MS = prev
-			if (prevStrict === undefined) delete process.env.MBRAIN_BENCHMARK_STRICT
-			else process.env.MBRAIN_BENCHMARK_STRICT = prevStrict
+				delete process.env.MDBRAIN_BENCHMARK_QUEUE_SETTLE_TIMEOUT_MS
+			else process.env.MDBRAIN_BENCHMARK_QUEUE_SETTLE_TIMEOUT_MS = prev
+			if (prevStrict === undefined) delete process.env.MDBRAIN_BENCHMARK_STRICT
+			else process.env.MDBRAIN_BENCHMARK_STRICT = prevStrict
 		}
 	})
 
 	it("names derivationQueue when derivationQueue hangs (Task 1.3)", async () => {
-		const prev = process.env.MBRAIN_BENCHMARK_QUEUE_SETTLE_TIMEOUT_MS
-		const prevStrict = process.env.MBRAIN_BENCHMARK_STRICT
-		process.env.MBRAIN_BENCHMARK_QUEUE_SETTLE_TIMEOUT_MS = "200"
-		process.env.MBRAIN_BENCHMARK_STRICT = "1"
+		const prev = process.env.MDBRAIN_BENCHMARK_QUEUE_SETTLE_TIMEOUT_MS
+		const prevStrict = process.env.MDBRAIN_BENCHMARK_STRICT
+		process.env.MDBRAIN_BENCHMARK_QUEUE_SETTLE_TIMEOUT_MS = "200"
+		process.env.MDBRAIN_BENCHMARK_STRICT = "1"
 		try {
 			const manager = {
 				agentId: "benchmark-agent-derivation",
@@ -1482,18 +1486,18 @@ describe("benchmark scenario queue settling", () => {
 			)
 		} finally {
 			if (prev === undefined)
-				delete process.env.MBRAIN_BENCHMARK_QUEUE_SETTLE_TIMEOUT_MS
-			else process.env.MBRAIN_BENCHMARK_QUEUE_SETTLE_TIMEOUT_MS = prev
-			if (prevStrict === undefined) delete process.env.MBRAIN_BENCHMARK_STRICT
-			else process.env.MBRAIN_BENCHMARK_STRICT = prevStrict
+				delete process.env.MDBRAIN_BENCHMARK_QUEUE_SETTLE_TIMEOUT_MS
+			else process.env.MDBRAIN_BENCHMARK_QUEUE_SETTLE_TIMEOUT_MS = prev
+			if (prevStrict === undefined) delete process.env.MDBRAIN_BENCHMARK_STRICT
+			else process.env.MDBRAIN_BENCHMARK_STRICT = prevStrict
 		}
 	})
 
 	it("names derivationSchedulingQueue when post-write scheduling hangs", async () => {
-		const prev = process.env.MBRAIN_BENCHMARK_QUEUE_SETTLE_TIMEOUT_MS
-		const prevStrict = process.env.MBRAIN_BENCHMARK_STRICT
-		process.env.MBRAIN_BENCHMARK_QUEUE_SETTLE_TIMEOUT_MS = "200"
-		process.env.MBRAIN_BENCHMARK_STRICT = "1"
+		const prev = process.env.MDBRAIN_BENCHMARK_QUEUE_SETTLE_TIMEOUT_MS
+		const prevStrict = process.env.MDBRAIN_BENCHMARK_STRICT
+		process.env.MDBRAIN_BENCHMARK_QUEUE_SETTLE_TIMEOUT_MS = "200"
+		process.env.MDBRAIN_BENCHMARK_STRICT = "1"
 		try {
 			const manager = {
 				agentId: "benchmark-agent-scheduling",
@@ -1506,18 +1510,18 @@ describe("benchmark scenario queue settling", () => {
 			)
 		} finally {
 			if (prev === undefined)
-				delete process.env.MBRAIN_BENCHMARK_QUEUE_SETTLE_TIMEOUT_MS
-			else process.env.MBRAIN_BENCHMARK_QUEUE_SETTLE_TIMEOUT_MS = prev
-			if (prevStrict === undefined) delete process.env.MBRAIN_BENCHMARK_STRICT
-			else process.env.MBRAIN_BENCHMARK_STRICT = prevStrict
+				delete process.env.MDBRAIN_BENCHMARK_QUEUE_SETTLE_TIMEOUT_MS
+			else process.env.MDBRAIN_BENCHMARK_QUEUE_SETTLE_TIMEOUT_MS = prev
+			if (prevStrict === undefined) delete process.env.MDBRAIN_BENCHMARK_STRICT
+			else process.env.MDBRAIN_BENCHMARK_STRICT = prevStrict
 		}
 	})
 
 	it("waits for post-write scheduling that enqueues derived work", async () => {
-		const prev = process.env.MBRAIN_BENCHMARK_QUEUE_SETTLE_TIMEOUT_MS
-		const prevStrict = process.env.MBRAIN_BENCHMARK_STRICT
-		process.env.MBRAIN_BENCHMARK_QUEUE_SETTLE_TIMEOUT_MS = "500"
-		process.env.MBRAIN_BENCHMARK_STRICT = "1"
+		const prev = process.env.MDBRAIN_BENCHMARK_QUEUE_SETTLE_TIMEOUT_MS
+		const prevStrict = process.env.MDBRAIN_BENCHMARK_STRICT
+		process.env.MDBRAIN_BENCHMARK_QUEUE_SETTLE_TIMEOUT_MS = "500"
+		process.env.MDBRAIN_BENCHMARK_STRICT = "1"
 		try {
 			const manager = {
 				agentId: "benchmark-agent-scheduling-flush",
@@ -1539,18 +1543,18 @@ describe("benchmark scenario queue settling", () => {
 			await expect(callSettle(manager)).resolves.toBeUndefined()
 		} finally {
 			if (prev === undefined)
-				delete process.env.MBRAIN_BENCHMARK_QUEUE_SETTLE_TIMEOUT_MS
-			else process.env.MBRAIN_BENCHMARK_QUEUE_SETTLE_TIMEOUT_MS = prev
-			if (prevStrict === undefined) delete process.env.MBRAIN_BENCHMARK_STRICT
-			else process.env.MBRAIN_BENCHMARK_STRICT = prevStrict
+				delete process.env.MDBRAIN_BENCHMARK_QUEUE_SETTLE_TIMEOUT_MS
+			else process.env.MDBRAIN_BENCHMARK_QUEUE_SETTLE_TIMEOUT_MS = prev
+			if (prevStrict === undefined) delete process.env.MDBRAIN_BENCHMARK_STRICT
+			else process.env.MDBRAIN_BENCHMARK_STRICT = prevStrict
 		}
 	})
 
 	it("succeeds on slow-but-bounded queue under timeout (Task 1.3)", async () => {
-		const prev = process.env.MBRAIN_BENCHMARK_QUEUE_SETTLE_TIMEOUT_MS
-		const prevStrict = process.env.MBRAIN_BENCHMARK_STRICT
-		process.env.MBRAIN_BENCHMARK_QUEUE_SETTLE_TIMEOUT_MS = "500"
-		process.env.MBRAIN_BENCHMARK_STRICT = "1"
+		const prev = process.env.MDBRAIN_BENCHMARK_QUEUE_SETTLE_TIMEOUT_MS
+		const prevStrict = process.env.MDBRAIN_BENCHMARK_STRICT
+		process.env.MDBRAIN_BENCHMARK_QUEUE_SETTLE_TIMEOUT_MS = "500"
+		process.env.MDBRAIN_BENCHMARK_STRICT = "1"
 		try {
 			const manager = {
 				agentId: "benchmark-agent-slow",
@@ -1560,10 +1564,10 @@ describe("benchmark scenario queue settling", () => {
 			await expect(callSettle(manager)).resolves.toBeUndefined()
 		} finally {
 			if (prev === undefined)
-				delete process.env.MBRAIN_BENCHMARK_QUEUE_SETTLE_TIMEOUT_MS
-			else process.env.MBRAIN_BENCHMARK_QUEUE_SETTLE_TIMEOUT_MS = prev
-			if (prevStrict === undefined) delete process.env.MBRAIN_BENCHMARK_STRICT
-			else process.env.MBRAIN_BENCHMARK_STRICT = prevStrict
+				delete process.env.MDBRAIN_BENCHMARK_QUEUE_SETTLE_TIMEOUT_MS
+			else process.env.MDBRAIN_BENCHMARK_QUEUE_SETTLE_TIMEOUT_MS = prev
+			if (prevStrict === undefined) delete process.env.MDBRAIN_BENCHMARK_STRICT
+			else process.env.MDBRAIN_BENCHMARK_STRICT = prevStrict
 		}
 	})
 })
@@ -1588,7 +1592,7 @@ describe("importConversations", () => {
 		})
 
 		const workspaceDir = await mkdtemp(
-			path.join(os.tmpdir(), "mbrain-manager-import-workspace-"),
+			path.join(os.tmpdir(), "mdbrian-manager-import-workspace-"),
 		)
 		const importDir = path.join(workspaceDir, "imports")
 		const datasetPath = path.join(importDir, "history.json")
@@ -1629,9 +1633,9 @@ describe("importConversations", () => {
 
 	it("rejects conversation imports outside allowed roots", async () => {
 		const workspaceDir = await mkdtemp(
-			path.join(os.tmpdir(), "mbrain-manager-import-workspace-"),
+			path.join(os.tmpdir(), "mdbrian-manager-import-workspace-"),
 		)
-		const outsideDir = await mkdtemp(path.join(os.tmpdir(), "mbrain-outside-"))
+		const outsideDir = await mkdtemp(path.join(os.tmpdir(), "mdbrian-outside-"))
 		const outsideFile = path.join(outsideDir, "history.json")
 		try {
 			await writeFile(outsideFile, JSON.stringify({ conversations: [] }))
@@ -1672,7 +1676,7 @@ describe("relevanceBenchmark", () => {
 
 	it("routes scenario datasets through the new scenario benchmark runner", async () => {
 		const workspaceDir = await mkdtemp(
-			path.join(os.tmpdir(), "mbrain-relevance-bench-"),
+			path.join(os.tmpdir(), "mdbrian-relevance-bench-"),
 		)
 		const datasetDir = path.join(workspaceDir, "benchmarks")
 		const datasetPath = path.join(datasetDir, "dataset.json")
@@ -1727,7 +1731,7 @@ describe("relevanceBenchmark", () => {
 				db: {
 					command: vi.fn().mockResolvedValue({ size: 0, totalIndexSize: 0 }),
 				},
-				prefix: "mbrain_bench_",
+				prefix: "mdbrian_bench_",
 				config: {
 					mongodb: {
 						relevance: {
@@ -1810,7 +1814,7 @@ describe("relevanceBenchmark", () => {
 
 	it("falls back to the legacy benchmark path for query-only datasets", async () => {
 		const workspaceDir = await mkdtemp(
-			path.join(os.tmpdir(), "mbrain-relevance-bench-"),
+			path.join(os.tmpdir(), "mdbrian-relevance-bench-"),
 		)
 		const datasetDir = path.join(workspaceDir, "benchmarks")
 		const datasetPath = path.join(datasetDir, "dataset.jsonl")
@@ -1842,7 +1846,7 @@ describe("relevanceBenchmark", () => {
 				db: {
 					command: vi.fn().mockResolvedValue({ size: 0, totalIndexSize: 0 }),
 				},
-				prefix: "mbrain_bench_",
+				prefix: "mdbrian_bench_",
 				config: {
 					mongodb: {
 						relevance: {
@@ -1898,7 +1902,7 @@ describe("relevanceBenchmark", () => {
 
 	it("does not silently fall back to legacy when scenario execution fails", async () => {
 		const workspaceDir = await mkdtemp(
-			path.join(os.tmpdir(), "mbrain-relevance-bench-"),
+			path.join(os.tmpdir(), "mdbrian-relevance-bench-"),
 		)
 		const datasetDir = path.join(workspaceDir, "benchmarks")
 		const datasetPath = path.join(datasetDir, "dataset.json")
@@ -2052,7 +2056,7 @@ describe("runScenarioBenchmarkDataset", () => {
 
 	it("hashes the raw dataset file to build scenario datasetVersion", async () => {
 		const workspaceDir = await mkdtemp(
-			path.join(os.tmpdir(), "mbrain-benchmark-version-"),
+			path.join(os.tmpdir(), "mdbrian-benchmark-version-"),
 		)
 		const datasetPath = path.join(workspaceDir, "dataset.json")
 		const datasetText =
@@ -2793,8 +2797,8 @@ describe("searchV2", () => {
 	})
 
 	it("uses MongoDB Search temporal coverage lane for temporal questions", async () => {
-		const previousMode = process.env.MBRAIN_BENCHMARK_TEMPORAL_COVERAGE_MODE
-		process.env.MBRAIN_BENCHMARK_TEMPORAL_COVERAGE_MODE = "enabled"
+		const previousMode = process.env.MDBRAIN_BENCHMARK_TEMPORAL_COVERAGE_MODE
+		process.env.MDBRAIN_BENCHMARK_TEMPORAL_COVERAGE_MODE = "enabled"
 		try {
 			mocked(planRetrieval).mockReturnValue({
 				paths: ["raw-window"],
@@ -2942,16 +2946,16 @@ describe("searchV2", () => {
 			)
 		} finally {
 			if (previousMode === undefined) {
-				delete process.env.MBRAIN_BENCHMARK_TEMPORAL_COVERAGE_MODE
+				delete process.env.MDBRAIN_BENCHMARK_TEMPORAL_COVERAGE_MODE
 			} else {
-				process.env.MBRAIN_BENCHMARK_TEMPORAL_COVERAGE_MODE = previousMode
+				process.env.MDBRAIN_BENCHMARK_TEMPORAL_COVERAGE_MODE = previousMode
 			}
 		}
 	})
 
 	it("boosts user-authored compatibility evidence for recommendation memory queries", async () => {
-		const previousMode = process.env.MBRAIN_BENCHMARK_TURN_PRECISION_MODE
-		process.env.MBRAIN_BENCHMARK_TURN_PRECISION_MODE = "enabled"
+		const previousMode = process.env.MDBRAIN_BENCHMARK_TURN_PRECISION_MODE
+		process.env.MDBRAIN_BENCHMARK_TURN_PRECISION_MODE = "enabled"
 		try {
 			mocked(planRetrieval).mockReturnValue({
 				paths: ["raw-window"],
@@ -3056,9 +3060,9 @@ describe("searchV2", () => {
 			expect(result.results[0]?.provenance?.eventRole).toBe("user")
 		} finally {
 			if (previousMode === undefined) {
-				delete process.env.MBRAIN_BENCHMARK_TURN_PRECISION_MODE
+				delete process.env.MDBRAIN_BENCHMARK_TURN_PRECISION_MODE
 			} else {
-				process.env.MBRAIN_BENCHMARK_TURN_PRECISION_MODE = previousMode
+				process.env.MDBRAIN_BENCHMARK_TURN_PRECISION_MODE = previousMode
 			}
 		}
 	})
@@ -3475,7 +3479,7 @@ describe("MongoDBMemoryManager background extraction", () => {
 				agentId: "agent-1",
 				client: undefined,
 				config: { mongodb: { embeddingMode: "automated" } },
-				workspaceDir: "/tmp/mbrain",
+				workspaceDir: "/tmp/mdbrian",
 				derivationQueue: Promise.resolve(),
 			},
 		) as MongoDBMemoryManager & { derivationQueue: Promise<void> }
@@ -3505,7 +3509,7 @@ describe("MongoDBMemoryManager background extraction", () => {
 					agentId: "agent-1",
 					scope: "agent",
 					scopeRef: "agent:agent-1",
-					workspaceDir: "/tmp/mbrain",
+					workspaceDir: "/tmp/mdbrian",
 				}),
 			}),
 		)
@@ -3632,7 +3636,7 @@ describe("MongoDBMemoryManager background extraction", () => {
 						episodes: { enabled: false, minEventsForEpisode: 6 },
 					},
 				},
-				workspaceDir: "/tmp/mbrain",
+				workspaceDir: "/tmp/mdbrian",
 				writeQueue: Promise.resolve(),
 				derivationQueue: Promise.resolve(),
 				chunkCount: 0,
@@ -3666,8 +3670,8 @@ describe("MongoDBMemoryManager background extraction", () => {
 	})
 
 	it("skips benchmark-only derived work when benchmark mode disables it", async () => {
-		const prev = process.env.MBRAIN_BENCHMARK_DERIVED_WORK_MODE
-		process.env.MBRAIN_BENCHMARK_DERIVED_WORK_MODE = "disabled"
+		const prev = process.env.MDBRAIN_BENCHMARK_DERIVED_WORK_MODE
+		process.env.MDBRAIN_BENCHMARK_DERIVED_WORK_MODE = "disabled"
 		try {
 			const { writeEvent, projectEventChunk } = await import(
 				"./mongodb-events.js"
@@ -3700,7 +3704,7 @@ describe("MongoDBMemoryManager background extraction", () => {
 							episodes: { enabled: true, minEventsForEpisode: 6 },
 						},
 					},
-					workspaceDir: "/tmp/mbrain",
+					workspaceDir: "/tmp/mdbrian",
 					writeQueue: Promise.resolve(),
 					derivationQueue: Promise.resolve(),
 					derivationSchedulingQueue: Promise.resolve(),
@@ -3730,14 +3734,14 @@ describe("MongoDBMemoryManager background extraction", () => {
 			)
 		} finally {
 			if (prev === undefined)
-				delete process.env.MBRAIN_BENCHMARK_DERIVED_WORK_MODE
-			else process.env.MBRAIN_BENCHMARK_DERIVED_WORK_MODE = prev
+				delete process.env.MDBRAIN_BENCHMARK_DERIVED_WORK_MODE
+			else process.env.MDBRAIN_BENCHMARK_DERIVED_WORK_MODE = prev
 		}
 	})
 
 	it("defaults benchmark agents to skip post-write derived work", async () => {
-		const prev = process.env.MBRAIN_BENCHMARK_DERIVED_WORK_MODE
-		delete process.env.MBRAIN_BENCHMARK_DERIVED_WORK_MODE
+		const prev = process.env.MDBRAIN_BENCHMARK_DERIVED_WORK_MODE
+		delete process.env.MDBRAIN_BENCHMARK_DERIVED_WORK_MODE
 		try {
 			const { writeEvent, projectEventChunk } = await import(
 				"./mongodb-events.js"
@@ -3770,7 +3774,7 @@ describe("MongoDBMemoryManager background extraction", () => {
 							episodes: { enabled: true, minEventsForEpisode: 6 },
 						},
 					},
-					workspaceDir: "/tmp/mbrain",
+					workspaceDir: "/tmp/mdbrian",
 					writeQueue: Promise.resolve(),
 					derivationQueue: Promise.resolve(),
 					derivationSchedulingQueue: Promise.resolve(),
@@ -3800,14 +3804,14 @@ describe("MongoDBMemoryManager background extraction", () => {
 			)
 		} finally {
 			if (prev === undefined)
-				delete process.env.MBRAIN_BENCHMARK_DERIVED_WORK_MODE
-			else process.env.MBRAIN_BENCHMARK_DERIVED_WORK_MODE = prev
+				delete process.env.MDBRAIN_BENCHMARK_DERIVED_WORK_MODE
+			else process.env.MDBRAIN_BENCHMARK_DERIVED_WORK_MODE = prev
 		}
 	})
 
 	it("allows diagnostic benchmarks to opt into post-write derived work", async () => {
-		const prev = process.env.MBRAIN_BENCHMARK_DERIVED_WORK_MODE
-		process.env.MBRAIN_BENCHMARK_DERIVED_WORK_MODE = "enabled"
+		const prev = process.env.MDBRAIN_BENCHMARK_DERIVED_WORK_MODE
+		process.env.MDBRAIN_BENCHMARK_DERIVED_WORK_MODE = "enabled"
 		try {
 			const { writeEvent, projectEventChunk } = await import(
 				"./mongodb-events.js"
@@ -3863,7 +3867,7 @@ describe("MongoDBMemoryManager background extraction", () => {
 							episodes: { enabled: false, minEventsForEpisode: 6 },
 						},
 					},
-					workspaceDir: "/tmp/mbrain",
+					workspaceDir: "/tmp/mdbrian",
 					writeQueue: Promise.resolve(),
 					derivationQueue: Promise.resolve(),
 					derivationSchedulingQueue: Promise.resolve(),
@@ -3895,14 +3899,14 @@ describe("MongoDBMemoryManager background extraction", () => {
 			expect(promoteDerivedMemoryFromEvent).toHaveBeenCalled()
 		} finally {
 			if (prev === undefined)
-				delete process.env.MBRAIN_BENCHMARK_DERIVED_WORK_MODE
-			else process.env.MBRAIN_BENCHMARK_DERIVED_WORK_MODE = prev
+				delete process.env.MDBRAIN_BENCHMARK_DERIVED_WORK_MODE
+			else process.env.MDBRAIN_BENCHMARK_DERIVED_WORK_MODE = prev
 		}
 	})
 
 	it("lets explicit benchmark mode disable derived work for non-standard benchmark agent ids", async () => {
-		const prev = process.env.MBRAIN_BENCHMARK_DERIVED_WORK_MODE
-		process.env.MBRAIN_BENCHMARK_DERIVED_WORK_MODE = "disabled"
+		const prev = process.env.MDBRAIN_BENCHMARK_DERIVED_WORK_MODE
+		process.env.MDBRAIN_BENCHMARK_DERIVED_WORK_MODE = "disabled"
 		try {
 			const { writeEvent, projectEventChunk } = await import(
 				"./mongodb-events.js"
@@ -3935,7 +3939,7 @@ describe("MongoDBMemoryManager background extraction", () => {
 							episodes: { enabled: false, minEventsForEpisode: 6 },
 						},
 					},
-					workspaceDir: "/tmp/mbrain",
+					workspaceDir: "/tmp/mdbrian",
 					writeQueue: Promise.resolve(),
 					derivationQueue: Promise.resolve(),
 					derivationSchedulingQueue: Promise.resolve(),
@@ -3970,8 +3974,8 @@ describe("MongoDBMemoryManager background extraction", () => {
 			)
 		} finally {
 			if (prev === undefined)
-				delete process.env.MBRAIN_BENCHMARK_DERIVED_WORK_MODE
-			else process.env.MBRAIN_BENCHMARK_DERIVED_WORK_MODE = prev
+				delete process.env.MDBRAIN_BENCHMARK_DERIVED_WORK_MODE
+			else process.env.MDBRAIN_BENCHMARK_DERIVED_WORK_MODE = prev
 		}
 	})
 })
@@ -4285,8 +4289,8 @@ describe("scope-safe cache writes", () => {
 	})
 
 	it("filters session_chunks by scope and scopeRef even for agent scope", async () => {
-		const previousMode = process.env.MBRAIN_SESSION_EVIDENCE_MODE
-		process.env.MBRAIN_SESSION_EVIDENCE_MODE = "B"
+		const previousMode = process.env.MDBRAIN_SESSION_EVIDENCE_MODE
+		process.env.MDBRAIN_SESSION_EVIDENCE_MODE = "B"
 		try {
 			mocked(planRetrieval).mockReturnValue({
 				paths: ["hybrid"],
@@ -4336,9 +4340,9 @@ describe("scope-safe cache writes", () => {
 			)
 		} finally {
 			if (previousMode === undefined) {
-				delete process.env.MBRAIN_SESSION_EVIDENCE_MODE
+				delete process.env.MDBRAIN_SESSION_EVIDENCE_MODE
 			} else {
-				process.env.MBRAIN_SESSION_EVIDENCE_MODE = previousMode
+				process.env.MDBRAIN_SESSION_EVIDENCE_MODE = previousMode
 			}
 		}
 	})

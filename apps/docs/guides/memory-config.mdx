@@ -1,30 +1,30 @@
 ---
 title: Configuration
-description: Configure Mbrain via environment variables or config file.
+description: Configure Mdbrian via environment variables or config file.
 icon: "settings"
 ---
 
-Mbrain reads configuration from environment variables and an optional JSON config file at `~/.mbrain/mbrain.json`.
+Mdbrian reads configuration from environment variables and an optional JSON config file at `~/.mdbrian/mdbrian.json`.
 
 ## Environment variables
 
 | Variable | Description | Default |
 |----------|-------------|---------|
-| `MBRAIN_MONGODB_URI` | MongoDB connection string for managed Atlas cloud or Atlas Local Preview | `mongodb://localhost:27017` |
-| `MBRAIN_AGENT_ID` | Agent identifier for memory isolation | `default` |
-| `MBRAIN_API_KEY` | Bearer token for the HTTP server; recommended outside trusted local dev | (none) |
-| `MBRAIN_API_PORT` | API listen port | `3847` |
-| `MBRAIN_API_HOST` | API bind address | `127.0.0.1` |
-| `MBRAIN_CONFIG_PATH` | Alternate JSON config file path | `~/.mbrain/mbrain.json` |
-| `MBRAIN_WORKSPACE_DIR` | Workspace directory used by the bridge | `~/.mbrain/workspace` |
+| `MDBRAIN_MONGODB_URI` | MongoDB connection string for managed Atlas cloud or Atlas Local Preview | `mongodb://localhost:27017` |
+| `MDBRAIN_AGENT_ID` | Agent identifier for memory isolation | `default` |
+| `MDBRAIN_API_KEY` | Bearer token for the HTTP server; recommended outside trusted local dev | (none) |
+| `MDBRAIN_API_PORT` | API listen port | `3847` |
+| `MDBRAIN_API_HOST` | API bind address | `127.0.0.1` |
+| `MDBRAIN_CONFIG_PATH` | Alternate JSON config file path | `~/.mdbrian/mdbrian.json` |
+| `MDBRAIN_WORKSPACE_DIR` | Workspace directory used by the bridge | `~/.mdbrian/workspace` |
 | `VOYAGE_API_KEY` | Atlas Model API key for MongoDB auto-embed lanes | (none) |
-| `MBRAIN_ENRICHMENT_BASE_URL` | Optional OpenAI-compatible or Anthropic endpoint for LLM enrichment | (none) |
-| `MBRAIN_ENRICHMENT_API_KEY` | API key for LLM enrichment | (none) |
-| `MBRAIN_ENRICHMENT_MODEL` | Model used by LLM enrichment when enabled | (none) |
+| `MDBRAIN_ENRICHMENT_BASE_URL` | Optional OpenAI-compatible or Anthropic endpoint for LLM enrichment | (none) |
+| `MDBRAIN_ENRICHMENT_API_KEY` | API key for LLM enrichment | (none) |
+| `MDBRAIN_ENRICHMENT_MODEL` | Model used by LLM enrichment when enabled | (none) |
 
 ## Config file
 
-Create `~/.mbrain/mbrain.json`:
+Create `~/.mdbrian/mdbrian.json`:
 
 ```json
 {
@@ -32,7 +32,7 @@ Create `~/.mbrain/mbrain.json`:
     "backend": "mongodb",
     "mongodb": {
       "uri": "mongodb://localhost:27017",
-      "database": "mbrain"
+      "database": "mdbrian"
     }
   }
 }
@@ -40,8 +40,8 @@ Create `~/.mbrain/mbrain.json`:
 
 ## Notes
 
-- `MBRAIN_MONGODB_URI` is the quickest way to point the API at MongoDB during development.
-- When `MBRAIN_API_KEY` and scoped keys are unset, `/v1` routes are unauthenticated and the API logs a startup warning.
+- `MDBRAIN_MONGODB_URI` is the quickest way to point the API at MongoDB during development.
+- When `MDBRAIN_API_KEY` and scoped keys are unset, `/v1` routes are unauthenticated and the API logs a startup warning.
 - Managed Atlas cloud and Atlas Local Preview both use `embeddingMode: "automated"` with MongoDB auto-embed.
 - The engine infers `deploymentProfile: "atlas-managed"` for `mongodb+srv://...mongodb.net` URIs and `deploymentProfile: "atlas-local-preview"` for local preview URIs unless you set it explicitly.
 - The supported runtime backend is MongoDB.

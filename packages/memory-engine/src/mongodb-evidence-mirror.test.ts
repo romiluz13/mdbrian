@@ -33,7 +33,7 @@ describe("evidence mirror mode", () => {
 		expect(resolveEvidenceMirrorMode("enabled")).toBe("enabled")
 		expect(resolveEvidenceMirrorMode("1")).toBe("enabled")
 		expect(
-			isEvidenceMirrorEnabled({ MBRAIN_EVIDENCE_MIRROR_MODE: "true" }),
+			isEvidenceMirrorEnabled({ MDBRAIN_EVIDENCE_MIRROR_MODE: "true" }),
 		).toBe(true)
 	})
 })

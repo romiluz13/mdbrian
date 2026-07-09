@@ -1,6 +1,6 @@
-# Publishing `@mbrain/*` packages
+# Publishing `@mdbrian/*` packages
 
-This monorepo uses the `@mbrain` npm scope. Publishing is maintainer-operated; the repo root is `private: true` and does not publish itself.
+This monorepo uses the `@mdbrian` npm scope. Publishing is maintainer-operated; the repo root is `private: true` and does not publish itself.
 
 ## Before you publish anything
 
@@ -8,19 +8,19 @@ This monorepo uses the `@mbrain` npm scope. Publishing is maintainer-operated; t
 2. Confirm no secrets in the working tree.
 3. Bump semver in the package(s) you ship; tag releases in git to match.
 4. Configure `NPM_TOKEN` as a GitHub Actions secret with publish access to the
-   `@mbrain` npm scope.
+   `@mdbrian` npm scope.
 
 ## Which packages are intended for npm
 
 | Package | Name | Typical consumers |
 |---------|------|-------------------|
-| Engine | `@mbrain/memory-engine` | Advanced integrations |
-| Bridge | `@mbrain/memory-bridge` | API and custom servers |
-| Barrel | `@mbrain/memory` (`packages/mbrain-memory`) | Single import for engine + bridge |
-| Client | `@mbrain/client` | Apps using the HTTP API |
-| Tools | `@mbrain/tools` | Vercel AI SDK tool helpers |
+| Engine | `@mdbrian/memory-engine` | Advanced integrations |
+| Bridge | `@mdbrian/memory-bridge` | API and custom servers |
+| Barrel | `@mdbrian/memory` (`packages/mdbrian-memory`) | Single import for engine + bridge |
+| Client | `@mdbrian/client` | Apps using the HTTP API |
+| Tools | `@mdbrian/tools` | Vercel AI SDK tool helpers |
 
-`@mbrain/lib` is also published as a runtime support package because the engine and bridge depend on it, but it is not a primary integration surface.
+`@mdbrian/lib` is also published as a runtime support package because the engine and bridge depend on it, but it is not a primary integration surface.
 
 ## Publish mechanics
 
@@ -48,19 +48,19 @@ policy.
 
 ## Recommended publish order
 
-When shipping the coordinated `@mbrain/*` package set, publish in dependency
+When shipping the coordinated `@mdbrian/*` package set, publish in dependency
 order so install smoke and downstream resolution stay clean:
 
-1. `@mbrain/lib`
-2. `@mbrain/memory-engine`
-3. `@mbrain/memory-bridge`
-4. `@mbrain/memory`
-5. `@mbrain/client`
-6. `@mbrain/tools`
+1. `@mdbrian/lib`
+2. `@mdbrian/memory-engine`
+3. `@mdbrian/memory-bridge`
+4. `@mdbrian/memory`
+5. `@mdbrian/client`
+6. `@mdbrian/tools`
 
 ## Docker
 
-There is no single Mbrain all-in-one image in-tree as of this writing. Production deployments typically:
+There is no single Mdbrian all-in-one image in-tree as of this writing. Production deployments typically:
 
 - Run MongoDB.
 - Run `apps/api` as a container or process behind a reverse proxy.
@@ -70,7 +70,7 @@ See [self-host.md](self-host.md).
 
 ## Scope and naming
 
-- Do not publish under legacy `@romiluz/*` names for new releases; this repo standardizes on `@mbrain/*`.
+- Do not publish under legacy `@romiluz/*` names for new releases; this repo standardizes on `@mdbrian/*`.
 - Historical material is kept outside the public launch tree.
 
 ## Related docs

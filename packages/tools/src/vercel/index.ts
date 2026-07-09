@@ -4,7 +4,7 @@ import type {
 } from "@ai-sdk/provider"
 import { wrapLanguageModel, type LanguageModelMiddleware } from "ai"
 
-export interface MbrainCoreOptions {
+export interface MdbrianCoreOptions {
 	apiUrl: string
 	apiKey: string
 	userId: string
@@ -85,11 +85,11 @@ function extractResponseText(
 }
 
 /* ------------------------------------------------------------------ */
-/*  Core: fetch context bundle from Mbrain API                       */
+/*  Core: fetch context bundle from Mdbrian API                       */
 /* ------------------------------------------------------------------ */
 
 async function fetchContextBundle(
-	options: MbrainCoreOptions,
+	options: MdbrianCoreOptions,
 	userQuery?: string,
 ): Promise<string> {
 	const mode =
@@ -134,7 +134,7 @@ async function fetchContextBundle(
 /* ------------------------------------------------------------------ */
 
 function fireWriteEvent(
-	options: MbrainCoreOptions,
+	options: MdbrianCoreOptions,
 	role: "user" | "assistant",
 	body: string,
 ): void {
@@ -150,7 +150,7 @@ function fireWriteEvent(
 			agentId: options.agentId ?? options.userId,
 		}),
 	}).catch((err) => {
-		console.warn("[mbrain] write-event failed:", role, err)
+		console.warn("[mdbrian] write-event failed:", role, err)
 	})
 }
 
@@ -158,9 +158,9 @@ function fireWriteEvent(
 /*  Public API                                                        */
 /* ------------------------------------------------------------------ */
 
-export function withMbrain(
+export function withMdbrian(
 	model: LanguageModelV2,
-	options: MbrainCoreOptions,
+	options: MdbrianCoreOptions,
 ): LanguageModelV2 {
 	const middleware: LanguageModelMiddleware = {
 		transformParams: async ({ params }) => {

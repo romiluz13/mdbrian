@@ -6,7 +6,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest"
 // `vi.mock` is hoisted above `const` declarations at module scope, so we
 // use `vi.hoisted` to declare the spy in the same phase.
 const { warnSpy } = vi.hoisted(() => ({ warnSpy: vi.fn() }))
-vi.mock("@mbrain/lib", () => ({
+vi.mock("@mdbrian/lib", () => ({
 	createSubsystemLogger: () => ({
 		info: vi.fn(),
 		warn: warnSpy,

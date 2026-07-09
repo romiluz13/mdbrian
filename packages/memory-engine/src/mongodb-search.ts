@@ -4,7 +4,7 @@ import {
 	type MemoryMongoDBFusionMethod,
 	type MemoryScope,
 	createSubsystemLogger,
-} from "@mbrain/lib"
+} from "@mdbrian/lib"
 import { mergeHybridResultsMongoDB } from "./mongodb-hybrid.js"
 import { summarizeExplain } from "./mongodb-relevance.js"
 import type { DetectedCapabilities } from "./mongodb-schema.js"
@@ -57,7 +57,7 @@ class SearchFallbackDisabledError extends Error {
 function isStrictSearchFallbackDisabled(opts: {
 	strictNoFallback?: boolean
 }): boolean {
-	const strictEnv = process.env.MBRAIN_BENCHMARK_STRICT
+	const strictEnv = process.env.MDBRAIN_BENCHMARK_STRICT
 	return (
 		opts.strictNoFallback === true ||
 		strictEnv === "1" ||
@@ -430,7 +430,7 @@ function buildTextSearchCompound(
 // ---------------------------------------------------------------------------
 // $vectorSearch stage builder
 // ---------------------------------------------------------------------------
-// Mbrain uses MongoDB Community automatic embeddings. Query text is sent to
+// Mdbrian uses MongoDB Community automatic embeddings. Query text is sent to
 // MongoDB and the server handles query-time embedding generation via autoEmbed.
 // ---------------------------------------------------------------------------
 

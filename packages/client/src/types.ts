@@ -1,14 +1,14 @@
 /**
- * Request shapes for the Mbrain HTTP API.
- * Runtime implementation lives in @mbrain/memory-bridge.
+ * Request shapes for the Mdbrian HTTP API.
+ * Runtime implementation lives in @mdbrian/memory-bridge.
  */
 
-export type MbrainContainerTag = string
+export type MdbrianContainerTag = string
 
-export type MbrainAddInput = {
+export type MdbrianAddInput = {
 	content: string
 	/** @deprecated Prefer `sessionId`. */
-	containerTag?: MbrainContainerTag
+	containerTag?: MdbrianContainerTag
 	entityContext?: string
 	customId?: string
 	metadata?: Record<string, string | number | boolean | null>
@@ -16,10 +16,10 @@ export type MbrainAddInput = {
 	sessionId?: string
 }
 
-export type MbrainSearchInput = {
+export type MdbrianSearchInput = {
 	query: string
 	/** @deprecated Prefer `sessionKey`. */
-	containerTag?: MbrainContainerTag
+	containerTag?: MdbrianContainerTag
 	limit?: number
 	agentId?: string
 	minScore?: number
@@ -49,7 +49,7 @@ export type SearchConfig = {
 	lexicalPrefilter?: "disabled" | "experimental"
 }
 
-export type MbrainConversationRecallInput = {
+export type MdbrianConversationRecallInput = {
 	query?: string
 	sessionId?: string
 	roles?: Array<"user" | "assistant" | "system" | "tool">
@@ -61,7 +61,7 @@ export type MbrainConversationRecallInput = {
 	agentId?: string
 }
 
-export type MbrainConversationImportInput = {
+export type MdbrianConversationImportInput = {
 	datasetPath: string
 	scope?: "session" | "user" | "agent" | "workspace" | "tenant" | "global"
 	limitConversations?: number
@@ -69,33 +69,33 @@ export type MbrainConversationImportInput = {
 	agentId?: string
 }
 
-export type MbrainSourceAgent = {
+export type MdbrianSourceAgent = {
 	id: string
 	name: string
 	runId?: string
 }
 
-export type MbrainActorRole = "user" | "assistant" | "system"
-export type MbrainMemoryFeedbackSignal = "confirm" | "correct" | "irrelevant"
+export type MdbrianActorRole = "user" | "assistant" | "system"
+export type MdbrianMemoryFeedbackSignal = "confirm" | "correct" | "irrelevant"
 
-export type MbrainLifecycleFamily = "structured" | "procedure"
-export type MbrainLifecycleState = "active" | "invalidated" | "conflicted"
-export type MbrainLifecycleHistoryKind = "revision" | "current"
+export type MdbrianLifecycleFamily = "structured" | "procedure"
+export type MdbrianLifecycleState = "active" | "invalidated" | "conflicted"
+export type MdbrianLifecycleHistoryKind = "revision" | "current"
 
-type MbrainStableHandleBase = {
-	family: MbrainLifecycleFamily
+type MdbrianStableHandleBase = {
+	family: MdbrianLifecycleFamily
 	id: string
 	agentId: string
 	scope: "session" | "user" | "agent" | "workspace" | "tenant" | "global"
 	scopeRef: string
 	revision: number
-	state: MbrainLifecycleState
+	state: MdbrianLifecycleState
 	validFrom?: string
 	validTo?: string
 	updatedAt?: string
 }
 
-export type MbrainStructuredStableHandle = MbrainStableHandleBase & {
+export type MdbrianStructuredStableHandle = MdbrianStableHandleBase & {
 	family: "structured"
 	structured: {
 		type: string
@@ -103,18 +103,18 @@ export type MbrainStructuredStableHandle = MbrainStableHandleBase & {
 	}
 }
 
-export type MbrainProcedureStableHandle = MbrainStableHandleBase & {
+export type MdbrianProcedureStableHandle = MdbrianStableHandleBase & {
 	family: "procedure"
 	procedure: {
 		procedureId: string
 	}
 }
 
-export type MbrainStableHandle =
-	| MbrainStructuredStableHandle
-	| MbrainProcedureStableHandle
+export type MdbrianStableHandle =
+	| MdbrianStructuredStableHandle
+	| MdbrianProcedureStableHandle
 
-export type MbrainLifecycleStructuredData = {
+export type MdbrianLifecycleStructuredData = {
 	type: string
 	key: string
 	value: string
@@ -131,11 +131,11 @@ export type MbrainLifecycleStructuredData = {
 	reinforcementCount?: number
 	reviewAt?: string
 	lastConfirmedAt?: string
-	sourceAgent?: MbrainSourceAgent
+	sourceAgent?: MdbrianSourceAgent
 	artifact?: Record<string, unknown>
 }
 
-export type MbrainLifecycleProcedureData = {
+export type MdbrianLifecycleProcedureData = {
 	procedureId: string
 	name: string
 	intentTags?: string[]
@@ -149,33 +149,33 @@ export type MbrainLifecycleProcedureData = {
 	failCount?: number
 	lastSuccessAt?: string
 	lastFailureAt?: string
-	sourceAgent?: MbrainSourceAgent
+	sourceAgent?: MdbrianSourceAgent
 }
 
-export type MbrainLifecycleItem =
+export type MdbrianLifecycleItem =
 	| {
 			family: "structured"
-			handle: MbrainStructuredStableHandle
-			data: MbrainLifecycleStructuredData
+			handle: MdbrianStructuredStableHandle
+			data: MdbrianLifecycleStructuredData
 			createdAt?: string
 			updatedAt?: string
 	  }
 	| {
 			family: "procedure"
-			handle: MbrainProcedureStableHandle
-			data: MbrainLifecycleProcedureData
+			handle: MdbrianProcedureStableHandle
+			data: MdbrianLifecycleProcedureData
 			createdAt?: string
 			updatedAt?: string
 	  }
 
-export type MbrainLifecycleHistoryEntry = MbrainLifecycleItem & {
-	historyKind: MbrainLifecycleHistoryKind
+export type MdbrianLifecycleHistoryEntry = MdbrianLifecycleItem & {
+	historyKind: MdbrianLifecycleHistoryKind
 	supersededAt?: string
 }
 
-export type MbrainStructuredLifecyclePatch = Partial<
+export type MdbrianStructuredLifecyclePatch = Partial<
 	Pick<
-		MbrainLifecycleStructuredData,
+		MdbrianLifecycleStructuredData,
 		| "value"
 		| "context"
 		| "confidence"
@@ -194,9 +194,9 @@ export type MbrainStructuredLifecyclePatch = Partial<
 	> & { validTo: string }
 >
 
-export type MbrainProcedureLifecyclePatch = Partial<
+export type MdbrianProcedureLifecyclePatch = Partial<
 	Pick<
-		MbrainLifecycleProcedureData,
+		MdbrianLifecycleProcedureData,
 		| "name"
 		| "intentTags"
 		| "triggerQueries"
@@ -209,62 +209,62 @@ export type MbrainProcedureLifecyclePatch = Partial<
 	>
 >
 
-export type MbrainLifecycleGetInput = {
-	handle: MbrainStableHandle
+export type MdbrianLifecycleGetInput = {
+	handle: MdbrianStableHandle
 }
 
-export type MbrainLifecycleUpdateInput =
+export type MdbrianLifecycleUpdateInput =
 	| {
-			handle: MbrainStructuredStableHandle
-			patch: MbrainStructuredLifecyclePatch
+			handle: MdbrianStructuredStableHandle
+			patch: MdbrianStructuredLifecyclePatch
 	  }
 	| {
-			handle: MbrainProcedureStableHandle
-			patch: MbrainProcedureLifecyclePatch
+			handle: MdbrianProcedureStableHandle
+			patch: MdbrianProcedureLifecyclePatch
 	  }
 
-export type MbrainLifecycleDeleteInput = {
-	handle: MbrainStableHandle
+export type MdbrianLifecycleDeleteInput = {
+	handle: MdbrianStableHandle
 	invalidatedBy?: Record<string, unknown>
 }
 
-export type MbrainLifecycleHistoryInput = {
-	handle: MbrainStableHandle
+export type MdbrianLifecycleHistoryInput = {
+	handle: MdbrianStableHandle
 	limit?: number
 }
 
-export type MbrainProcedureOutcomeInput = {
-	handle: MbrainProcedureStableHandle
+export type MdbrianProcedureOutcomeInput = {
+	handle: MdbrianProcedureStableHandle
 	success: boolean
 	note?: string
-	actorRole?: MbrainActorRole
+	actorRole?: MdbrianActorRole
 }
 
-export type MbrainMemoryFeedbackInput =
+export type MdbrianMemoryFeedbackInput =
 	| {
-			handle: MbrainStructuredStableHandle
+			handle: MdbrianStructuredStableHandle
 			signal: "confirm"
 			note?: string
-			actorRole?: MbrainActorRole
+			actorRole?: MdbrianActorRole
 	  }
 	| {
-			handle: MbrainStructuredStableHandle
+			handle: MdbrianStructuredStableHandle
 			signal: "correct"
-			patch: MbrainStructuredLifecyclePatch
+			patch: MdbrianStructuredLifecyclePatch
 			note?: string
-			actorRole?: MbrainActorRole
+			actorRole?: MdbrianActorRole
 	  }
 	| {
-			handle: MbrainStructuredStableHandle
+			handle: MdbrianStructuredStableHandle
 			signal: "irrelevant"
 			note?: string
-			actorRole?: MbrainActorRole
+			actorRole?: MdbrianActorRole
 			invalidatedBy?: Record<string, unknown>
 	  }
 
-export type MbrainProfileInput = {
+export type MdbrianProfileInput = {
 	/** @deprecated Prefer `scopeRef`. */
-	containerTag?: MbrainContainerTag
+	containerTag?: MdbrianContainerTag
 	agentId?: string
 	scope?: "session" | "user" | "agent" | "workspace" | "tenant" | "global"
 	scopeRef?: string
@@ -272,14 +272,14 @@ export type MbrainProfileInput = {
 	maxEpisodes?: number
 }
 
-export type MbrainActiveSlateInput = {
+export type MdbrianActiveSlateInput = {
 	agentId?: string
 	scope?: "session" | "user" | "agent" | "workspace" | "tenant" | "global"
 	scopeRef?: string
 	maxItems?: number
 }
 
-export type MbrainDiscoveryProjectionInput = {
+export type MdbrianDiscoveryProjectionInput = {
 	agentId?: string
 	kind: "entity-brief" | "topic-brief" | "what-changed" | "contradiction-report"
 	query?: string
@@ -289,44 +289,44 @@ export type MbrainDiscoveryProjectionInput = {
 	timeRange?: { preset?: string; start?: string; end?: string }
 }
 
-export type MbrainTraceChainInput = {
+export type MdbrianTraceChainInput = {
 	factId: string
 	collection: string
 	agentId?: string
 	maxDepth?: number
 }
 
-export type MbrainScanNoveltyInput = {
+export type MdbrianScanNoveltyInput = {
 	agentId?: string
 	limit?: number
 	scope?: string
 }
 
-export type MbrainConsolidateInput = {
+export type MdbrianConsolidateInput = {
 	agentId?: string
 	maxEvents?: number
 	minCombinedScore?: number
 	scope?: string
 }
 
-export type MbrainSelfEditInput = {
+export type MdbrianSelfEditInput = {
 	block: "user" | "persona" | "instructions"
 	action: "append" | "replace" | "prepend"
 	content: string
 	agentId?: string
 }
 
-export type MbrainSelfEditResponse = {
+export type MdbrianSelfEditResponse = {
 	upserted: boolean
 	id: string
 }
 
-export type MbrainExtractInput = {
+export type MdbrianExtractInput = {
 	eventId: string
 	agentId?: string
 }
 
-export type MbrainExtractResponse = {
+export type MdbrianExtractResponse = {
 	ok: true
 	jobId: string
 	scheduled: boolean
@@ -336,7 +336,7 @@ export type MbrainExtractResponse = {
 // Response types for typed client methods (JSON wire format — dates as strings)
 // ---------------------------------------------------------------------------
 
-export type MbrainReadFileResponse = {
+export type MdbrianReadFileResponse = {
 	text: string
 	path: string
 	locator?: string
@@ -349,7 +349,7 @@ export type MbrainReadFileResponse = {
 	disabled?: boolean
 }
 
-export type MbrainStatusResponse = {
+export type MdbrianStatusResponse = {
 	backend: "mongodb"
 	provider: string
 	model?: string
@@ -382,7 +382,7 @@ export type MbrainStatusResponse = {
 	custom?: Record<string, unknown>
 }
 
-export type MbrainConversationRecallCitation = {
+export type MdbrianConversationRecallCitation = {
 	eventId: string
 	sessionId?: string
 	role: "user" | "assistant" | "system" | "tool"
@@ -391,14 +391,14 @@ export type MbrainConversationRecallCitation = {
 	preview: string
 }
 
-export type MbrainConversationRecallResult = {
-	citation: MbrainConversationRecallCitation
+export type MdbrianConversationRecallResult = {
+	citation: MdbrianConversationRecallCitation
 	score?: number
 	matchType: "filter" | "semantic" | "hybrid"
 }
 
-export type MbrainConversationRecallResponse = {
-	results: MbrainConversationRecallResult[]
+export type MdbrianConversationRecallResponse = {
+	results: MdbrianConversationRecallResult[]
 	metadata: {
 		totalMatched: number
 		queryUsed?: string
@@ -408,7 +408,7 @@ export type MbrainConversationRecallResponse = {
 	}
 }
 
-export type MbrainDetailedStatusResponse = {
+export type MdbrianDetailedStatusResponse = {
 	events: { count: number; latestTimestamp?: string }
 	entities: { count: number }
 	relations: { count: number }
@@ -442,7 +442,7 @@ export type MbrainDetailedStatusResponse = {
 	}
 }
 
-export type MbrainStatsResponse = {
+export type MdbrianStatsResponse = {
 	sources: Array<{ source: string; files: number; chunks: number }>
 	totalFiles: number
 	totalChunks: number
@@ -459,12 +459,12 @@ export type MbrainStatsResponse = {
 	}>
 }
 
-export type MbrainProbeEmbeddingResponse = {
+export type MdbrianProbeEmbeddingResponse = {
 	ok: boolean
 	error?: string
 }
 
-export type MbrainProfileResponse = {
+export type MdbrianProfileResponse = {
 	agentId: string
 	scope: string
 	scopeRef: string
@@ -507,7 +507,7 @@ export type MbrainProfileResponse = {
 	synthesizedAt: string
 }
 
-export type MbrainRelevanceExplainResponse = {
+export type MdbrianRelevanceExplainResponse = {
 	runId?: string
 	latencyMs: number
 	sourceScope: string
@@ -523,14 +523,14 @@ export type MbrainRelevanceExplainResponse = {
 	results: Array<Record<string, unknown>>
 }
 
-export type MbrainBenchmarkBuildIdentity = {
+export type MdbrianBenchmarkBuildIdentity = {
 	source: "env" | "unknown"
 	commitSha?: string
 	buildId?: string
 	buildLabel?: string
 }
 
-export type MbrainBenchmarkReleaseGate = {
+export type MdbrianBenchmarkReleaseGate = {
 	gate:
 		| "official-retrieval"
 		| "internal-retrieval"
@@ -540,9 +540,9 @@ export type MbrainBenchmarkReleaseGate = {
 	evidence: string
 }
 
-export type MbrainBenchmarkRunReport = {
+export type MdbrianBenchmarkRunReport = {
 	generatedAt: string
-	build: MbrainBenchmarkBuildIdentity
+	build: MdbrianBenchmarkBuildIdentity
 	corpus: {
 		datasetVersion: string
 		datasetName?: string
@@ -566,8 +566,8 @@ export type MbrainBenchmarkRunReport = {
 			longMemEval?: {
 				retrievalCases: number
 				abstentionCases: number
-				session: MbrainBenchmarkOfficialRetrievalMetrics
-				turn?: MbrainBenchmarkOfficialRetrievalMetrics
+				session: MdbrianBenchmarkOfficialRetrievalMetrics
+				turn?: MdbrianBenchmarkOfficialRetrievalMetrics
 			}
 			loCoMo?: {
 				qaCases: number
@@ -579,12 +579,12 @@ export type MbrainBenchmarkRunReport = {
 			}
 		}
 	}
-	releaseGates: MbrainBenchmarkReleaseGate[]
+	releaseGates: MdbrianBenchmarkReleaseGate[]
 	warnings: string[]
 	degradations: string[]
 }
 
-export type MbrainRelevanceBenchmarkResponse = {
+export type MdbrianRelevanceBenchmarkResponse = {
 	datasetVersion: string
 	datasetName?: string
 	datasetKind?: "generic" | "longmemeval" | "locomo" | "legacy-query"
@@ -612,8 +612,8 @@ export type MbrainRelevanceBenchmarkResponse = {
 		longMemEval?: {
 			retrievalCases: number
 			abstentionCases: number
-			session: MbrainBenchmarkOfficialRetrievalMetrics
-			turn?: MbrainBenchmarkOfficialRetrievalMetrics
+			session: MdbrianBenchmarkOfficialRetrievalMetrics
+			turn?: MdbrianBenchmarkOfficialRetrievalMetrics
 		}
 		loCoMo?: {
 			qaCases: number
@@ -662,10 +662,10 @@ export type MbrainRelevanceBenchmarkResponse = {
 		}>
 		notes: string[]
 	}
-	benchmarkReport?: MbrainBenchmarkRunReport
+	benchmarkReport?: MdbrianBenchmarkRunReport
 }
 
-export type MbrainBenchmarkOfficialRetrievalMetrics = {
+export type MdbrianBenchmarkOfficialRetrievalMetrics = {
 	recallAnyAt1: number
 	recallAllAt1: number
 	ndcgAnyAt1: number
@@ -686,7 +686,7 @@ export type MbrainBenchmarkOfficialRetrievalMetrics = {
 	ndcgAnyAt50: number
 }
 
-export type MbrainRelevanceReportResponse = {
+export type MdbrianRelevanceReportResponse = {
 	health: "ok" | "degraded" | "insufficient-data"
 	runs: number
 	sampledRuns: number
@@ -701,7 +701,7 @@ export type MbrainRelevanceReportResponse = {
 	}
 }
 
-export type MbrainRelevanceSampleRateResponse = {
+export type MdbrianRelevanceSampleRateResponse = {
 	enabled: boolean
 	current: number
 	base: number
@@ -710,7 +710,7 @@ export type MbrainRelevanceSampleRateResponse = {
 	degradedSignals: number
 }
 
-export type MbrainBenchmarkIngestResponse = {
+export type MdbrianBenchmarkIngestResponse = {
 	datasetPath: string
 	datasetName?: string
 	conversationsIngested: number
@@ -722,7 +722,7 @@ export type MbrainBenchmarkIngestResponse = {
 	completedAt: string
 }
 
-export type MbrainConversationImportResponse = {
+export type MdbrianConversationImportResponse = {
 	datasetPath: string
 	datasetName?: string
 	datasetKind?: "generic" | "longmemeval" | "locomo"
@@ -735,7 +735,7 @@ export type MbrainConversationImportResponse = {
 	completedAt: string
 }
 
-export type MbrainAccessTrendResponse = Array<{
+export type MdbrianAccessTrendResponse = Array<{
 	collection: string
 	memoryId: string
 	day: string
@@ -744,14 +744,14 @@ export type MbrainAccessTrendResponse = Array<{
 	lastAccessedAt?: string
 }>
 
-export type MbrainAccessSummaryResponse = Array<{
+export type MdbrianAccessSummaryResponse = Array<{
 	collection: string
 	memoryId: string
 	accessCount: number
 	lastAccessedAt?: string
 }>
 
-export type MbrainTraceChainResponse = {
+export type MdbrianTraceChainResponse = {
 	factId: string
 	collection: string
 	nodes: Array<{
@@ -769,7 +769,7 @@ export type MbrainTraceChainResponse = {
 	agentId: string
 }
 
-export type MbrainNoveltyResponse = {
+export type MdbrianNoveltyResponse = {
 	events: Array<{
 		eventId: string
 		body: string
@@ -783,7 +783,7 @@ export type MbrainNoveltyResponse = {
 	agentId: string
 }
 
-export type MbrainConsolidateResponse = {
+export type MdbrianConsolidateResponse = {
 	runId: string
 	agentId: string
 	eventsProcessed: number
@@ -808,7 +808,7 @@ export type MbrainConsolidateResponse = {
 	prunedCount?: number
 }
 
-export type MbrainRecallTrace = {
+export type MdbrianRecallTrace = {
 	traceId: string
 	agentId: string
 	query: string
@@ -823,25 +823,25 @@ export type MbrainRecallTrace = {
 	bundleMode?: "full" | "wake-up"
 }
 
-export type MbrainMemoryJobStatus =
+export type MdbrianMemoryJobStatus =
 	| "pending"
 	| "running"
 	| "completed"
 	| "failed"
 	| "cancelled"
 
-export type MbrainMemoryJobType =
+export type MdbrianMemoryJobType =
 	| "consolidation"
 	| "extraction"
 	| "import"
 	| "materialization"
 	| "enrichment"
 
-export type MbrainMemoryJob = {
+export type MdbrianMemoryJob = {
 	jobId: string
-	jobType: MbrainMemoryJobType
+	jobType: MdbrianMemoryJobType
 	agentId: string
-	status: MbrainMemoryJobStatus
+	status: MdbrianMemoryJobStatus
 	createdAt: string
 	startedAt?: string
 	completedAt?: string
@@ -852,7 +852,7 @@ export type MbrainMemoryJob = {
 	metadata?: Record<string, unknown>
 }
 
-export type MbrainSearchKBResponse = {
+export type MdbrianSearchKBResponse = {
 	results: Array<{
 		path: string
 		startLine: number
@@ -867,7 +867,7 @@ export type MbrainSearchKBResponse = {
 	}>
 }
 
-export type MbrainSearchResponse = {
+export type MdbrianSearchResponse = {
 	results: Array<{
 		path: string
 		startLine: number
@@ -883,7 +883,7 @@ export type MbrainSearchResponse = {
 	}>
 }
 
-export type MbrainContextBundleInput = {
+export type MdbrianContextBundleInput = {
 	agentId?: string
 	query?: string
 	scope?: "session" | "user" | "agent" | "workspace" | "tenant" | "global"

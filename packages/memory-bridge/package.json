@@ -1,31 +1,31 @@
 {
-	"name": "@mbrain/memory-bridge",
+	"name": "@mdbrian/memory-bridge",
 	"version": "1.1.0",
-	"description": "Mbrain bridge: stable facade for the memory engine used by HTTP API and MCP",
+	"description": "Mdbrian bridge: stable facade for the memory engine used by HTTP API and MCP",
 	"type": "module",
 	"license": "Apache-2.0",
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/romiluz13/mbrain.git",
+		"url": "git+https://github.com/romiluz13/mdbrian.git",
 		"directory": "packages/memory-bridge"
 	},
 	"author": "Rom Iluz",
 	"keywords": [
-		"mbrain",
+		"mdbrian",
 		"mongodb",
 		"memory",
 		"bridge"
 	],
-	"main": "./dist/mbrain-bridge.js",
-	"types": "./dist/mbrain-bridge.d.ts",
+	"main": "./dist/mdbrian-bridge.js",
+	"types": "./dist/mdbrian-bridge.d.ts",
 	"files": [
 		"dist",
 		"README.md"
 	],
 	"exports": {
 		".": {
-			"types": "./dist/mbrain-bridge.d.ts",
-			"default": "./dist/mbrain-bridge.js"
+			"types": "./dist/mdbrian-bridge.d.ts",
+			"default": "./dist/mdbrian-bridge.js"
 		}
 	},
 	"scripts": {
@@ -34,16 +34,16 @@
 		"test": "vitest run"
 	},
 	"dependencies": {
-		"@mbrain/lib": "1.1.0",
-		"@mbrain/memory-engine": "1.1.0"
+		"@mdbrian/lib": "1.1.0",
+		"@mdbrian/memory-engine": "1.1.0"
 	},
 	"devDependencies": {
-		"@mbrain/tools": "workspace:*",
+		"@mdbrian/tools": "workspace:*",
 		"typescript": "^5.8.0",
 		"vitest": "^4.1.0"
 	},
-	"homepage": "https://github.com/romiluz13/mbrain#readme",
+	"homepage": "https://github.com/romiluz13/mdbrian#readme",
 	"bugs": {
-		"url": "https://github.com/romiluz13/mbrain/issues"
+		"url": "https://github.com/romiluz13/mdbrian/issues"
 	}
 }

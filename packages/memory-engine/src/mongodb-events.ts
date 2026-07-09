@@ -4,7 +4,7 @@ import {
 	type MemoryScope,
 	createSubsystemLogger,
 	retryAsync,
-} from "@mbrain/lib"
+} from "@mdbrian/lib"
 import { recordProjectionRun } from "./mongodb-ops.js"
 import { eventsCollection, chunksCollection } from "./mongodb-schema.js"
 import { resolveScopeRef } from "./mongodb-scope.js"
@@ -53,11 +53,11 @@ async function retryTransientMongoWrite<T>(
 		label,
 		attempts,
 		minDelayMs: resolveTransientWriteRetryDelayMs(
-			"MBRAIN_MONGODB_TRANSIENT_WRITE_RETRY_MIN_DELAY_MS",
+			"MDBRAIN_MONGODB_TRANSIENT_WRITE_RETRY_MIN_DELAY_MS",
 			500,
 		),
 		maxDelayMs: resolveTransientWriteRetryDelayMs(
-			"MBRAIN_MONGODB_TRANSIENT_WRITE_RETRY_MAX_DELAY_MS",
+			"MDBRAIN_MONGODB_TRANSIENT_WRITE_RETRY_MAX_DELAY_MS",
 			3_000,
 		),
 		jitter: 0.2,
@@ -72,7 +72,7 @@ async function retryTransientMongoWrite<T>(
 }
 
 function resolveTransientWriteRetryAttempts(): number {
-	const raw = process.env.MBRAIN_MONGODB_TRANSIENT_WRITE_RETRY_ATTEMPTS
+	const raw = process.env.MDBRAIN_MONGODB_TRANSIENT_WRITE_RETRY_ATTEMPTS
 	const parsed = raw ? Number.parseInt(raw, 10) : 3
 	return Number.isFinite(parsed) && parsed >= 1 ? Math.floor(parsed) : 3
 }

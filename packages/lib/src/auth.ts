@@ -27,7 +27,7 @@ export function resolveApiKeyForProvider(
 		}
 	}
 	const upper = provider.toUpperCase().replace(/-/g, "_")
-	const genericKeys = [`${upper}_API_KEY`, `MBRAIN_${upper}_API_KEY`]
+	const genericKeys = [`${upper}_API_KEY`, `MDBRAIN_${upper}_API_KEY`]
 	for (const key of genericKeys) {
 		const val = env[key]?.trim()
 		if (val) return val
@@ -44,7 +44,7 @@ export function requireApiKey(
 		const upper = provider.toUpperCase().replace(/-/g, "_")
 		throw new Error(
 			`Missing API key for provider "${provider}". ` +
-				`Set ${upper}_API_KEY or MBRAIN_${upper}_API_KEY in environment.`,
+				`Set ${upper}_API_KEY or MDBRAIN_${upper}_API_KEY in environment.`,
 		)
 	}
 	return key

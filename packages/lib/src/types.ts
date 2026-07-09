@@ -1,7 +1,7 @@
 import type { MemoryConfig } from "./types.memory.js"
 
-/** Minimal Mbrain config -- standalone version of the config surface used by the memory engine. */
-export type MbrainConfig = {
+/** Minimal Mdbrian config -- standalone version of the config surface used by the memory engine. */
+export type MdbrianConfig = {
 	memory?: MemoryConfig
 	models?: {
 		providers?: Record<

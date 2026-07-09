@@ -1,11 +1,11 @@
-# @mbrain/client
+# @mdbrian/client
 
-TypeScript HTTP client for the Mbrain API. Use this package when you want to call the supported public API from an app, job, or integration.
+TypeScript HTTP client for the Mdbrian API. Use this package when you want to call the supported public API from an app, job, or integration.
 
 ## Install
 
 ```bash
-npm install @mbrain/client
+npm install @mdbrian/client
 ```
 
 ## When to use this package
@@ -17,9 +17,9 @@ npm install @mbrain/client
 ## Example
 
 ```ts
-import { MbrainClient } from "@mbrain/client"
+import { MdbrianClient } from "@mdbrian/client"
 
-const client = new MbrainClient({
+const client = new MdbrianClient({
 	baseUrl: "http://127.0.0.1:3847",
 })
 
@@ -40,4 +40,4 @@ const results = await client.search({
 - `client.scanNovelty()` -- surprisal novelty detection (`POST /v1/novelty-scan`)
 - `client.consolidate()` -- trigger consolidation agent (`POST /v1/consolidate`)
 
-If you need server-side helpers or direct engine access, use [`@mbrain/memory-bridge`](../memory-bridge/README.md) or [`@mbrain/memory-engine`](../memory-engine/README.md).
+If you need server-side helpers or direct engine access, use [`@mdbrian/memory-bridge`](../memory-bridge/README.md) or [`@mdbrian/memory-engine`](../memory-engine/README.md).

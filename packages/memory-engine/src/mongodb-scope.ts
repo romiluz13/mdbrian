@@ -1,7 +1,7 @@
 import { createHash } from "node:crypto"
 import fs from "node:fs"
 import path from "node:path"
-import type { MemoryScope } from "@mbrain/lib"
+import type { MemoryScope } from "@mdbrian/lib"
 
 type ScopeRefParams = {
 	scope?: MemoryScope

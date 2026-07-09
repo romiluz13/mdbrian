@@ -1,5 +1,5 @@
-const BASE = process.env.MBRAIN_API_URL ?? "http://127.0.0.1:3847"
-const API_KEY = process.env.MBRAIN_API_KEY ?? ""
+const BASE = process.env.MDBRAIN_API_URL ?? "http://127.0.0.1:3847"
+const API_KEY = process.env.MDBRAIN_API_KEY ?? ""
 
 type PhaseResult = {
 	name: string

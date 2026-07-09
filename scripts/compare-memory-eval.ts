@@ -1,5 +1,5 @@
 import { randomUUID } from "node:crypto"
-import { MbrainClient } from "@mbrain/client"
+import { MdbrianClient } from "@mdbrian/client"
 
 import { compareEvalRuns, runMemoryEvalSuite } from "./memory-eval-core.js"
 import { writeProofArtifact } from "./proof-artifacts.js"
@@ -14,21 +14,24 @@ function readBaseUrl(name: string, fallback?: string): string {
 
 async function main() {
 	const seed =
-		process.env.MBRAIN_EVAL_SEED?.trim() ??
+		process.env.MDBRAIN_EVAL_SEED?.trim() ??
 		`compare-${randomUUID().slice(0, 8)}`
-	const baselineClient = new MbrainClient({
-		baseUrl: readBaseUrl("MBRAIN_BASELINE_API_URL", process.env.MBRAIN_API_URL),
-		apiKey: process.env.MBRAIN_BASELINE_API_KEY?.trim() || undefined,
+	const baselineClient = new MdbrianClient({
+		baseUrl: readBaseUrl(
+			"MDBRAIN_BASELINE_API_URL",
+			process.env.MDBRAIN_API_URL,
+		),
+		apiKey: process.env.MDBRAIN_BASELINE_API_KEY?.trim() || undefined,
 		maxRetries: 2,
 	})
-	const candidateClient = new MbrainClient({
+	const candidateClient = new MdbrianClient({
 		baseUrl: readBaseUrl(
-			"MBRAIN_CANDIDATE_API_URL",
-			process.env.MBRAIN_API_URL,
+			"MDBRAIN_CANDIDATE_API_URL",
+			process.env.MDBRAIN_API_URL,
 		),
 		apiKey:
-			process.env.MBRAIN_CANDIDATE_API_KEY?.trim() ||
-			process.env.MBRAIN_API_KEY?.trim() ||
+			process.env.MDBRAIN_CANDIDATE_API_KEY?.trim() ||
+			process.env.MDBRAIN_API_KEY?.trim() ||
 			undefined,
 		maxRetries: 2,
 	})

@@ -1,4 +1,4 @@
-import { type SsrFPolicy, defaultSsrfPolicy } from "@mbrain/lib"
+import { type SsrFPolicy, defaultSsrfPolicy } from "@mdbrian/lib"
 
 export function buildRemoteBaseUrlPolicy(
 	baseUrl: string,

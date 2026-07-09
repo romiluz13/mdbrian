@@ -1,4 +1,4 @@
-import { createSubsystemLogger } from "@mbrain/lib"
+import { createSubsystemLogger } from "@mdbrian/lib"
 import type {
 	MemoryConversationScope,
 	MemoryProceduralScope,

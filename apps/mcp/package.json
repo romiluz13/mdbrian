@@ -1,9 +1,9 @@
 {
-	"name": "@mbrain/mcp",
+	"name": "@mdbrian/mcp",
 	"version": "0.1.0",
 	"private": true,
 	"type": "module",
-	"description": "MCP server for Mbrain (stdio; calls Mbrain HTTP API)",
+	"description": "MCP server for Mdbrian (stdio; calls Mdbrian HTTP API)",
 	"scripts": {
 		"start": "node --import tsx src/server.ts",
 		"build": "node ../../node_modules/typescript/bin/tsc -p tsconfig.json --noEmit false --rootDir src --outDir dist",
@@ -12,7 +12,7 @@
 	},
 	"dependencies": {
 		"@modelcontextprotocol/sdk": "^1.25.0",
-		"@mbrain/client": "workspace:*",
+		"@mdbrian/client": "workspace:*",
 		"tsx": "^4.19.0"
 	},
 	"devDependencies": {

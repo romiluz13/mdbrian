@@ -6,12 +6,12 @@ import { resolveAgentWorkspaceDir } from "./agent-config.js"
 describe("resolveAgentWorkspaceDir", () => {
 	it("keeps simple agent ids on the historical default path", () => {
 		expect(resolveAgentWorkspaceDir({}, "main")).toBe(
-			path.join(os.homedir(), ".mbrain", "agents", "main"),
+			path.join(os.homedir(), ".mdbrian", "agents", "main"),
 		)
 	})
 
 	it("keeps traversal-shaped agent ids inside the agents directory", () => {
-		const root = path.join(os.homedir(), ".mbrain", "agents")
+		const root = path.join(os.homedir(), ".mdbrian", "agents")
 		const resolved = resolveAgentWorkspaceDir({}, "../../../..")
 		const relative = path.relative(root, resolved)
 
@@ -23,9 +23,9 @@ describe("resolveAgentWorkspaceDir", () => {
 	it("honors an explicitly configured workspace", () => {
 		expect(
 			resolveAgentWorkspaceDir(
-				{ agents: { defaults: { workspace: "/tmp/mbrain-workspace" } } },
+				{ agents: { defaults: { workspace: "/tmp/mdbrian-workspace" } } },
 				"../../../..",
 			),
-		).toBe("/tmp/mbrain-workspace")
+		).toBe("/tmp/mdbrian-workspace")
 	})
 })

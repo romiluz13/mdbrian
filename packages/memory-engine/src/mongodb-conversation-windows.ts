@@ -1,7 +1,7 @@
 import { createHash } from "node:crypto"
 import type { Db } from "mongodb"
-import type { MemoryScope } from "@mbrain/lib/types/memory"
-import { createSubsystemLogger } from "@mbrain/lib"
+import type { MemoryScope } from "@mdbrian/lib/types/memory"
+import { createSubsystemLogger } from "@mdbrian/lib"
 import { renderEventChunkText } from "./mongodb-events.js"
 import { chunksCollection, eventsCollection } from "./mongodb-schema.js"
 

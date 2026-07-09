@@ -2,7 +2,7 @@ import type { Collection, Document } from "mongodb"
 import {
 	type MemoryMongoDBEmbeddingMode,
 	createSubsystemLogger,
-} from "@mbrain/lib"
+} from "@mdbrian/lib"
 import { summarizeExplain } from "./mongodb-relevance.js"
 import type { DetectedCapabilities } from "./mongodb-schema.js"
 import {

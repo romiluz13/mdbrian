@@ -9,14 +9,14 @@
  * -16.7 pp (100% → 83.3%) due to embedding dilution from verbose AI responses.
  * User-only concatenation produces tighter, more focused embeddings.
  *
- * Two architecture options are supported behind `MBRAIN_SESSION_EVIDENCE_MODE`:
+ * Two architecture options are supported behind `MDBRAIN_SESSION_EVIDENCE_MODE`:
  *   - "A": session docs go into the canonical `chunks` collection
  *   - "B": session docs go into a dedicated `session_chunks` collection
  *   - "none" (default): no session-level evidence is created
  */
 
 import type { Collection } from "mongodb"
-import type { MemoryScope } from "@mbrain/lib"
+import type { MemoryScope } from "@mdbrian/lib"
 import type { MemoryBenchmarkConversation } from "./types.js"
 
 // ---------------------------------------------------------------------------

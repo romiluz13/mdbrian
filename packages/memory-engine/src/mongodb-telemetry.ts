@@ -1,5 +1,5 @@
 import type { Db } from "mongodb"
-import { createSubsystemLogger } from "@mbrain/lib"
+import { createSubsystemLogger } from "@mdbrian/lib"
 import { telemetryCollection } from "./mongodb-schema.js"
 
 const log = createSubsystemLogger("memory:mongodb:telemetry")

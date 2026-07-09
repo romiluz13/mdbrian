@@ -1,4 +1,4 @@
-import { normalizeOptionalSecretInput, type SecretInput } from "@mbrain/lib"
+import { normalizeOptionalSecretInput, type SecretInput } from "@mdbrian/lib"
 
 export function hasConfiguredMemorySecretInput(value: unknown): boolean {
 	if (!value) return false

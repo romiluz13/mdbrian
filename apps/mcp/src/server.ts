@@ -4,39 +4,39 @@ import {
 	CallToolRequestSchema,
 	ListToolsRequestSchema,
 } from "@modelcontextprotocol/sdk/types.js"
-import { MbrainClient } from "@mbrain/client"
+import { MdbrianClient } from "@mdbrian/client"
 import { pathToFileURL } from "node:url"
 
-const mbrain = new MbrainClient({
-	baseUrl: process.env.MBRAIN_API_URL,
-	apiKey: process.env.MBRAIN_API_KEY,
+const mdbrian = new MdbrianClient({
+	baseUrl: process.env.MDBRAIN_API_URL,
+	apiKey: process.env.MDBRAIN_API_KEY,
 })
 
-type MbrainMcpClient = typeof mbrain
+type MdbrianMcpClient = typeof mdbrian
 
 const RECALL_TOOL_NAMES = new Set([
-	"mbrain_recall_conversation",
-	"mbrain_recall_messages",
+	"mdbrian_recall_conversation",
+	"mdbrian_recall_messages",
 ])
 const LIFECYCLE_GET_TOOL_NAMES = new Set([
-	"mbrain_lifecycle_get",
-	"mbrain_memory_get",
+	"mdbrian_lifecycle_get",
+	"mdbrian_memory_get",
 ])
 const LIFECYCLE_UPDATE_TOOL_NAMES = new Set([
-	"mbrain_lifecycle_update",
-	"mbrain_memory_update",
+	"mdbrian_lifecycle_update",
+	"mdbrian_memory_update",
 ])
 const LIFECYCLE_DELETE_TOOL_NAMES = new Set([
-	"mbrain_lifecycle_delete",
-	"mbrain_memory_delete",
+	"mdbrian_lifecycle_delete",
+	"mdbrian_memory_delete",
 ])
 const LIFECYCLE_HISTORY_TOOL_NAMES = new Set([
-	"mbrain_lifecycle_history",
-	"mbrain_memory_history",
+	"mdbrian_lifecycle_history",
+	"mdbrian_memory_history",
 ])
 const IMPORT_TOOL_NAMES = new Set([
-	"mbrain_import_conversations",
-	"mbrain_import_conversation_history",
+	"mdbrian_import_conversations",
+	"mdbrian_import_conversation_history",
 ])
 
 function jsonResult(payload: unknown, isError = false) {
@@ -55,8 +55,8 @@ function jsonResult(payload: unknown, isError = false) {
 
 export const toolList = [
 	{
-		name: "mbrain_search",
-		description: "Search Mbrain memory",
+		name: "mdbrian_search",
+		description: "Search Mdbrian memory",
 		inputSchema: {
 			type: "object",
 			properties: {
@@ -69,8 +69,8 @@ export const toolList = [
 		},
 	},
 	{
-		name: "mbrain_search_kb",
-		description: "Search Mbrain knowledge base",
+		name: "mdbrian_search_kb",
+		description: "Search Mdbrian knowledge base",
 		inputSchema: {
 			type: "object",
 			properties: {
@@ -82,7 +82,7 @@ export const toolList = [
 		},
 	},
 	{
-		name: "mbrain_read_file",
+		name: "mdbrian_read_file",
 		description: "Read memory file by path (memory_get parity)",
 		inputSchema: {
 			type: "object",
@@ -96,7 +96,7 @@ export const toolList = [
 		},
 	},
 	{
-		name: "mbrain_add",
+		name: "mdbrian_add",
 		description: "Add user message to memory",
 		inputSchema: {
 			type: "object",
@@ -109,7 +109,7 @@ export const toolList = [
 		},
 	},
 	{
-		name: "mbrain_write_event",
+		name: "mdbrian_write_event",
 		description: "Write conversation event (any role)",
 		inputSchema: {
 			type: "object",
@@ -123,8 +123,8 @@ export const toolList = [
 		},
 	},
 	{
-		name: "mbrain_profile",
-		description: "Synthesize profile from Mbrain memory",
+		name: "mdbrian_profile",
+		description: "Synthesize profile from Mdbrian memory",
 		inputSchema: {
 			type: "object",
 			properties: {
@@ -134,8 +134,8 @@ export const toolList = [
 		},
 	},
 	{
-		name: "mbrain_build_context_bundle",
-		description: "Build a prompt-ready context bundle from Mbrain memory",
+		name: "mdbrian_build_context_bundle",
+		description: "Build a prompt-ready context bundle from Mdbrian memory",
 		inputSchema: {
 			type: "object",
 			properties: {
@@ -180,7 +180,7 @@ export const toolList = [
 		},
 	},
 	{
-		name: "mbrain_recall_conversation",
+		name: "mdbrian_recall_conversation",
 		description:
 			"Search and retrieve past conversation messages with canonical citations. Use exact ISO 8601 timestamps (for example `2026-04-08T14:30:00Z`); for date-only input (`2026-04-08`), include timezone to resolve local day boundaries correctly. Tool messages are excluded by default unless includeToolMessages is true.",
 		inputSchema: {
@@ -231,9 +231,9 @@ export const toolList = [
 		},
 	},
 	{
-		name: "mbrain_recall_messages",
+		name: "mdbrian_recall_messages",
 		description:
-			"Semantic alias for mbrain_recall_conversation. Recall past messages with exact time/session/role filters and canonical citations from the same runtime truth.",
+			"Semantic alias for mdbrian_recall_conversation. Recall past messages with exact time/session/role filters and canonical citations from the same runtime truth.",
 		inputSchema: {
 			type: "object",
 			properties: {
@@ -282,7 +282,7 @@ export const toolList = [
 		},
 	},
 	{
-		name: "mbrain_lifecycle_get",
+		name: "mdbrian_lifecycle_get",
 		description:
 			"Get the current structured memory or procedure referenced by a stable lifecycle handle.",
 		inputSchema: {
@@ -298,9 +298,9 @@ export const toolList = [
 		},
 	},
 	{
-		name: "mbrain_memory_get",
+		name: "mdbrian_memory_get",
 		description:
-			"Semantic alias for mbrain_lifecycle_get. Fetch the current structured memory or procedure for a stable memory handle.",
+			"Semantic alias for mdbrian_lifecycle_get. Fetch the current structured memory or procedure for a stable memory handle.",
 		inputSchema: {
 			type: "object",
 			properties: {
@@ -314,7 +314,7 @@ export const toolList = [
 		},
 	},
 	{
-		name: "mbrain_lifecycle_update",
+		name: "mdbrian_lifecycle_update",
 		description:
 			"Update a structured memory or procedure via its stable lifecycle handle. Creates a new current revision and preserves history.",
 		inputSchema: {
@@ -335,9 +335,9 @@ export const toolList = [
 		},
 	},
 	{
-		name: "mbrain_memory_update",
+		name: "mdbrian_memory_update",
 		description:
-			"Semantic alias for mbrain_lifecycle_update. Update a memory item by stable handle while preserving revision history.",
+			"Semantic alias for mdbrian_lifecycle_update. Update a memory item by stable handle while preserving revision history.",
 		inputSchema: {
 			type: "object",
 			properties: {
@@ -356,9 +356,9 @@ export const toolList = [
 		},
 	},
 	{
-		name: "mbrain_lifecycle_delete",
+		name: "mdbrian_lifecycle_delete",
 		description:
-			"Delete a memory item using Mbrain lifecycle semantics. This invalidates the current version and preserves history instead of hard-deleting it.",
+			"Delete a memory item using Mdbrian lifecycle semantics. This invalidates the current version and preserves history instead of hard-deleting it.",
 		inputSchema: {
 			type: "object",
 			properties: {
@@ -377,9 +377,9 @@ export const toolList = [
 		},
 	},
 	{
-		name: "mbrain_memory_delete",
+		name: "mdbrian_memory_delete",
 		description:
-			"Semantic alias for mbrain_lifecycle_delete. Delete a memory item using invalidate-with-history semantics rather than hard delete.",
+			"Semantic alias for mdbrian_lifecycle_delete. Delete a memory item using invalidate-with-history semantics rather than hard delete.",
 		inputSchema: {
 			type: "object",
 			properties: {
@@ -398,7 +398,7 @@ export const toolList = [
 		},
 	},
 	{
-		name: "mbrain_lifecycle_history",
+		name: "mdbrian_lifecycle_history",
 		description:
 			"Fetch ordered revision history for a structured memory or procedure from its stable lifecycle handle.",
 		inputSchema: {
@@ -419,9 +419,9 @@ export const toolList = [
 		},
 	},
 	{
-		name: "mbrain_memory_history",
+		name: "mdbrian_memory_history",
 		description:
-			"Semantic alias for mbrain_lifecycle_history. Fetch ordered memory revision history from a stable handle.",
+			"Semantic alias for mdbrian_lifecycle_history. Fetch ordered memory revision history from a stable handle.",
 		inputSchema: {
 			type: "object",
 			properties: {
@@ -440,7 +440,7 @@ export const toolList = [
 		},
 	},
 	{
-		name: "mbrain_procedure_outcome",
+		name: "mdbrian_procedure_outcome",
 		description:
 			"Record whether a procedure succeeded or failed using its stable handle. Updates outcome counters without bypassing the canonical procedure record.",
 		inputSchema: {
@@ -470,7 +470,7 @@ export const toolList = [
 		},
 	},
 	{
-		name: "mbrain_memory_feedback",
+		name: "mdbrian_memory_feedback",
 		description:
 			"Apply confirm/correct/irrelevant feedback to a structured memory using its stable handle. Confirm reinforces, correct routes through revision-aware updates, and irrelevant invalidates with history.",
 		inputSchema: {
@@ -511,7 +511,7 @@ export const toolList = [
 		},
 	},
 	{
-		name: "mbrain_status",
+		name: "mdbrian_status",
 		description: "Memory provider status",
 		inputSchema: {
 			type: "object",
@@ -521,7 +521,7 @@ export const toolList = [
 		},
 	},
 	{
-		name: "mbrain_chain_trace",
+		name: "mdbrian_chain_trace",
 		description:
 			"Trace the provenance chain of a derived fact back to its source events",
 		inputSchema: {
@@ -545,7 +545,7 @@ export const toolList = [
 		},
 	},
 	{
-		name: "mbrain_novelty_scan",
+		name: "mdbrian_novelty_scan",
 		description:
 			"Scan for the most novel/surprising events using vector distance scoring",
 		inputSchema: {
@@ -558,7 +558,7 @@ export const toolList = [
 		},
 	},
 	{
-		name: "mbrain_consolidate",
+		name: "mdbrian_consolidate",
 		description:
 			"Run the consolidation pipeline to promote high-value events to structured facts",
 		inputSchema: {
@@ -572,7 +572,7 @@ export const toolList = [
 		},
 	},
 	{
-		name: "mbrain_self_edit",
+		name: "mdbrian_self_edit",
 		description:
 			"Edit your own core memory blocks directly. Use 'user' for user preferences/profile, 'persona' for your identity/behavior, 'instructions' for task instructions. Changes persist across sessions.",
 		inputSchema: {
@@ -598,7 +598,7 @@ export const toolList = [
 		},
 	},
 	{
-		name: "mbrain_state_unified",
+		name: "mdbrian_state_unified",
 		description:
 			"Get all three state surfaces (profile, blocks, bundle) in one call",
 		inputSchema: {
@@ -611,7 +611,7 @@ export const toolList = [
 		},
 	},
 	{
-		name: "mbrain_benchmark_ingest",
+		name: "mdbrian_benchmark_ingest",
 		description:
 			"Replay a benchmark conversation dataset through the canonical writeConversationEvent() pipeline",
 		inputSchema: {
@@ -630,7 +630,7 @@ export const toolList = [
 		},
 	},
 	{
-		name: "mbrain_import_conversations",
+		name: "mdbrian_import_conversations",
 		description:
 			"Import conversation history through the canonical writeConversationEvent() pipeline",
 		inputSchema: {
@@ -649,9 +649,9 @@ export const toolList = [
 		},
 	},
 	{
-		name: "mbrain_import_conversation_history",
+		name: "mdbrian_import_conversation_history",
 		description:
-			"Semantic alias for mbrain_import_conversations. Import conversation history through the same canonical writeConversationEvent() runtime path.",
+			"Semantic alias for mdbrian_import_conversations. Import conversation history through the same canonical writeConversationEvent() runtime path.",
 		inputSchema: {
 			type: "object",
 			properties: {
@@ -668,7 +668,7 @@ export const toolList = [
 		},
 	},
 	{
-		name: "mbrain_admin_access_trends",
+		name: "mdbrian_admin_access_trends",
 		description:
 			"Inspect rolling 7-day access trends from the access_events time series collection",
 		inputSchema: {
@@ -696,7 +696,7 @@ export const toolList = [
 		},
 	},
 	{
-		name: "mbrain_admin_access_summaries",
+		name: "mdbrian_admin_access_summaries",
 		description:
 			"Inspect aggregate access counts and last-access timestamps from the access_events time series collection",
 		inputSchema: {
@@ -724,7 +724,7 @@ export const toolList = [
 		},
 	},
 	{
-		name: "mbrain_admin_list_traces",
+		name: "mdbrian_admin_list_traces",
 		description: "List recent recall traces for operator debugging",
 		inputSchema: {
 			type: "object",
@@ -735,7 +735,7 @@ export const toolList = [
 		},
 	},
 	{
-		name: "mbrain_admin_get_trace",
+		name: "mdbrian_admin_get_trace",
 		description: "Fetch one recall trace by traceId",
 		inputSchema: {
 			type: "object",
@@ -747,7 +747,7 @@ export const toolList = [
 		},
 	},
 	{
-		name: "mbrain_list_jobs",
+		name: "mdbrian_list_jobs",
 		description: "List memory jobs for an agent",
 		inputSchema: {
 			type: "object",
@@ -772,7 +772,7 @@ export const toolList = [
 		},
 	},
 	{
-		name: "mbrain_get_job",
+		name: "mdbrian_get_job",
 		description: "Fetch one memory job by jobId",
 		inputSchema: {
 			type: "object",
@@ -784,7 +784,7 @@ export const toolList = [
 		},
 	},
 	{
-		name: "mbrain_search_detailed",
+		name: "mdbrian_search_detailed",
 		description:
 			"Full CRAG search pipeline with scored results, trust annotations, and source provenance",
 		inputSchema: {
@@ -849,7 +849,7 @@ export const toolList = [
 		},
 	},
 	{
-		name: "mbrain_hydrate_active_slate",
+		name: "mdbrian_hydrate_active_slate",
 		description:
 			"Load the highest-salience active memories (hot context for current session)",
 		inputSchema: {
@@ -863,7 +863,7 @@ export const toolList = [
 		},
 	},
 	{
-		name: "mbrain_discovery_projection",
+		name: "mdbrian_discovery_projection",
 		description:
 			"Build a discovery projection (entity-brief, topic-brief, what-changed, contradiction-report)",
 		inputSchema: {
@@ -888,7 +888,7 @@ export const toolList = [
 		},
 	},
 	{
-		name: "mbrain_write_structured",
+		name: "mdbrian_write_structured",
 		description: "Write a structured memory entry directly",
 		inputSchema: {
 			type: "object",
@@ -900,7 +900,7 @@ export const toolList = [
 		},
 	},
 	{
-		name: "mbrain_write_procedure",
+		name: "mdbrian_write_procedure",
 		description: "Write a step-by-step procedure",
 		inputSchema: {
 			type: "object",
@@ -912,7 +912,7 @@ export const toolList = [
 		},
 	},
 	{
-		name: "mbrain_status_detailed",
+		name: "mdbrian_status_detailed",
 		description:
 			"Detailed health status: events, entities, projection lag, lane coverage, diagnostics",
 		inputSchema: {
@@ -921,7 +921,7 @@ export const toolList = [
 		},
 	},
 	{
-		name: "mbrain_stats",
+		name: "mdbrian_stats",
 		description:
 			"Memory statistics: source counts, embedding coverage, index stats",
 		inputSchema: {
@@ -930,7 +930,7 @@ export const toolList = [
 		},
 	},
 	{
-		name: "mbrain_sync",
+		name: "mdbrian_sync",
 		description: "Trigger a memory sync operation",
 		inputSchema: {
 			type: "object",
@@ -942,7 +942,7 @@ export const toolList = [
 		},
 	},
 	{
-		name: "mbrain_probe_embedding",
+		name: "mdbrian_probe_embedding",
 		description: "Probe embedding model availability",
 		inputSchema: {
 			type: "object",
@@ -950,7 +950,7 @@ export const toolList = [
 		},
 	},
 	{
-		name: "mbrain_probe_vector",
+		name: "mdbrian_probe_vector",
 		description: "Probe vector search availability",
 		inputSchema: {
 			type: "object",
@@ -958,7 +958,7 @@ export const toolList = [
 		},
 	},
 	{
-		name: "mbrain_relevance_explain",
+		name: "mdbrian_relevance_explain",
 		description:
 			"Detailed relevance diagnostics for a query: artifacts, health, scores",
 		inputSchema: {
@@ -978,7 +978,7 @@ export const toolList = [
 		},
 	},
 	{
-		name: "mbrain_relevance_benchmark",
+		name: "mdbrian_relevance_benchmark",
 		description: "Run relevance benchmark suite",
 		inputSchema: {
 			type: "object",
@@ -991,7 +991,7 @@ export const toolList = [
 		},
 	},
 	{
-		name: "mbrain_relevance_report",
+		name: "mdbrian_relevance_report",
 		description: "Relevance health report: hit rate, empty rate, fallback rate",
 		inputSchema: {
 			type: "object",
@@ -1002,7 +1002,7 @@ export const toolList = [
 		},
 	},
 	{
-		name: "mbrain_relevance_sample_rate",
+		name: "mdbrian_relevance_sample_rate",
 		description: "Current relevance sampling rate and degraded signal count",
 		inputSchema: {
 			type: "object",
@@ -1013,7 +1013,7 @@ export const toolList = [
 
 const server = new Server(
 	{
-		name: "mbrain",
+		name: "mdbrian",
 		version: "0.1.0",
 	},
 	{
@@ -1028,12 +1028,12 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
 export async function handleToolCall(
 	name: string,
 	args: Record<string, unknown>,
-	client: MbrainMcpClient = mbrain,
+	client: MdbrianMcpClient = mdbrian,
 ) {
 	try {
-		const mbrain = client
-		if (name === "mbrain_search") {
-			const out = await mbrain.search({
+		const mdbrian = client
+		if (name === "mdbrian_search") {
+			const out = await mdbrian.search({
 				query: typeof args.query === "string" ? args.query : "",
 				agentId: typeof args.agentId === "string" ? args.agentId : undefined,
 				limit: typeof args.limit === "number" ? args.limit : undefined,
@@ -1041,16 +1041,16 @@ export async function handleToolCall(
 			})
 			return { content: [{ type: "text", text: JSON.stringify(out) }] }
 		}
-		if (name === "mbrain_search_kb") {
-			const out = await mbrain.searchKB({
+		if (name === "mdbrian_search_kb") {
+			const out = await mdbrian.searchKB({
 				query: typeof args.query === "string" ? args.query : "",
 				agentId: typeof args.agentId === "string" ? args.agentId : undefined,
 				limit: typeof args.limit === "number" ? args.limit : undefined,
 			})
 			return { content: [{ type: "text", text: JSON.stringify(out) }] }
 		}
-		if (name === "mbrain_read_file") {
-			const out = await mbrain.readFile({
+		if (name === "mdbrian_read_file") {
+			const out = await mdbrian.readFile({
 				relPath: typeof args.relPath === "string" ? args.relPath : "",
 				agentId: typeof args.agentId === "string" ? args.agentId : undefined,
 				from: typeof args.from === "number" ? args.from : undefined,
@@ -1058,8 +1058,8 @@ export async function handleToolCall(
 			})
 			return { content: [{ type: "text", text: JSON.stringify(out) }] }
 		}
-		if (name === "mbrain_add") {
-			const out = await mbrain.add({
+		if (name === "mdbrian_add") {
+			const out = await mdbrian.add({
 				content: typeof args.content === "string" ? args.content : "",
 				agentId: typeof args.agentId === "string" ? args.agentId : undefined,
 				sessionId:
@@ -1067,7 +1067,7 @@ export async function handleToolCall(
 			})
 			return { content: [{ type: "text", text: JSON.stringify(out) }] }
 		}
-		if (name === "mbrain_write_event") {
+		if (name === "mdbrian_write_event") {
 			const role = args.role
 			if (
 				role !== "user" &&
@@ -1077,7 +1077,7 @@ export async function handleToolCall(
 			) {
 				throw new Error("invalid role")
 			}
-			const out = await mbrain.writeEvent({
+			const out = await mdbrian.writeEvent({
 				role,
 				body: typeof args.body === "string" ? args.body : "",
 				agentId: typeof args.agentId === "string" ? args.agentId : undefined,
@@ -1086,14 +1086,14 @@ export async function handleToolCall(
 			})
 			return { content: [{ type: "text", text: JSON.stringify(out) }] }
 		}
-		if (name === "mbrain_profile") {
-			const out = await mbrain.profile({
+		if (name === "mdbrian_profile") {
+			const out = await mdbrian.profile({
 				agentId: typeof args.agentId === "string" ? args.agentId : undefined,
 				scopeRef: typeof args.scopeRef === "string" ? args.scopeRef : undefined,
 			})
 			return { content: [{ type: "text", text: JSON.stringify(out) }] }
 		}
-		if (name === "mbrain_build_context_bundle") {
+		if (name === "mdbrian_build_context_bundle") {
 			const scope = args.scope
 			if (
 				scope !== undefined &&
@@ -1138,7 +1138,7 @@ export async function handleToolCall(
 				!Array.isArray(args.timeRange)
 					? (args.timeRange as Record<string, unknown>)
 					: undefined
-			const out = await mbrain.buildContextBundle({
+			const out = await mdbrian.buildContextBundle({
 				query: typeof args.query === "string" ? args.query : undefined,
 				agentId: typeof args.agentId === "string" ? args.agentId : undefined,
 				scope: validatedScope,
@@ -1189,18 +1189,18 @@ export async function handleToolCall(
 			})
 			return { content: [{ type: "text", text: JSON.stringify(out) }] }
 		}
-		if (name === "mbrain_status") {
-			const out = await mbrain.status(
+		if (name === "mdbrian_status") {
+			const out = await mdbrian.status(
 				typeof args.agentId === "string" ? args.agentId : undefined,
 			)
 			const guidance = {
 				quickStart:
-					"Call mbrain_profile first. Then mbrain_search_detailed for queries. Use mbrain_write_event to save insights.",
+					"Call mdbrian_profile first. Then mdbrian_search_detailed for queries. Use mdbrian_write_event to save insights.",
 				bestPractices: [
-					"Call mbrain_profile or mbrain_state_unified at session start",
-					"Save decisions with mbrain_write_structured",
-					"Use mbrain_search_detailed before answering knowledge questions",
-					"Use mbrain_build_context_bundle with mode: wake-up for fast session start",
+					"Call mdbrian_profile or mdbrian_state_unified at session start",
+					"Save decisions with mdbrian_write_structured",
+					"Use mdbrian_search_detailed before answering knowledge questions",
+					"Use mdbrian_build_context_bundle with mode: wake-up for fast session start",
 				],
 				capabilities: [
 					"semantic search",
@@ -1232,7 +1232,7 @@ export async function handleToolCall(
 			if (Array.isArray(args.roles) && roles?.length !== args.roles.length) {
 				throw new Error("roles must contain only user|assistant|system|tool")
 			}
-			const out = await mbrain.recallConversation({
+			const out = await mdbrian.recallConversation({
 				query: typeof args.query === "string" ? args.query : undefined,
 				agentId: typeof args.agentId === "string" ? args.agentId : undefined,
 				sessionId:
@@ -1254,7 +1254,7 @@ export async function handleToolCall(
 			return jsonResult(out)
 		}
 		if (LIFECYCLE_GET_TOOL_NAMES.has(name)) {
-			const out = await mbrain.getLifecycleItem({
+			const out = await mdbrian.getLifecycleItem({
 				handle:
 					typeof args.handle === "object" && args.handle !== null
 						? (args.handle as any)
@@ -1263,7 +1263,7 @@ export async function handleToolCall(
 			return jsonResult(out)
 		}
 		if (LIFECYCLE_UPDATE_TOOL_NAMES.has(name)) {
-			const out = await mbrain.updateLifecycleItem({
+			const out = await mdbrian.updateLifecycleItem({
 				handle:
 					typeof args.handle === "object" && args.handle !== null
 						? (args.handle as any)
@@ -1276,7 +1276,7 @@ export async function handleToolCall(
 			return jsonResult(out)
 		}
 		if (LIFECYCLE_DELETE_TOOL_NAMES.has(name)) {
-			const out = await mbrain.deleteLifecycleItem({
+			const out = await mdbrian.deleteLifecycleItem({
 				handle:
 					typeof args.handle === "object" && args.handle !== null
 						? (args.handle as any)
@@ -1289,7 +1289,7 @@ export async function handleToolCall(
 			return jsonResult(out)
 		}
 		if (LIFECYCLE_HISTORY_TOOL_NAMES.has(name)) {
-			const out = await mbrain.getLifecycleHistory({
+			const out = await mdbrian.getLifecycleHistory({
 				handle:
 					typeof args.handle === "object" && args.handle !== null
 						? (args.handle as any)
@@ -1301,7 +1301,7 @@ export async function handleToolCall(
 			})
 			return jsonResult(out)
 		}
-		if (name === "mbrain_procedure_outcome") {
+		if (name === "mdbrian_procedure_outcome") {
 			if (typeof args.success !== "boolean") {
 				throw new Error("success must be a boolean")
 			}
@@ -1319,7 +1319,7 @@ export async function handleToolCall(
 				args.actorRole === "system"
 					? args.actorRole
 					: undefined
-			const out = await mbrain.reportProcedureOutcome({
+			const out = await mdbrian.reportProcedureOutcome({
 				handle:
 					typeof args.handle === "object" && args.handle !== null
 						? (args.handle as any)
@@ -1330,7 +1330,7 @@ export async function handleToolCall(
 			})
 			return jsonResult(out)
 		}
-		if (name === "mbrain_memory_feedback") {
+		if (name === "mdbrian_memory_feedback") {
 			const signal =
 				args.signal === "confirm" ||
 				args.signal === "correct" ||
@@ -1365,7 +1365,7 @@ export async function handleToolCall(
 			}
 			const out =
 				signal === "correct"
-					? await mbrain.applyMemoryFeedback({
+					? await mdbrian.applyMemoryFeedback({
 							...common,
 							signal,
 							patch:
@@ -1374,7 +1374,7 @@ export async function handleToolCall(
 									: ({} as any),
 						})
 					: signal === "irrelevant"
-						? await mbrain.applyMemoryFeedback({
+						? await mdbrian.applyMemoryFeedback({
 								...common,
 								signal,
 								...(typeof args.invalidatedBy === "object" &&
@@ -1387,14 +1387,14 @@ export async function handleToolCall(
 										}
 									: {}),
 							})
-						: await mbrain.applyMemoryFeedback({
+						: await mdbrian.applyMemoryFeedback({
 								...common,
 								signal,
 							})
 			return jsonResult(out)
 		}
-		if (name === "mbrain_chain_trace") {
-			const out = await mbrain.traceChain({
+		if (name === "mdbrian_chain_trace") {
+			const out = await mdbrian.traceChain({
 				factId: typeof args.factId === "string" ? args.factId : "",
 				collection: typeof args.collection === "string" ? args.collection : "",
 				agentId: typeof args.agentId === "string" ? args.agentId : undefined,
@@ -1402,16 +1402,16 @@ export async function handleToolCall(
 			})
 			return { content: [{ type: "text", text: JSON.stringify(out) }] }
 		}
-		if (name === "mbrain_novelty_scan") {
-			const out = await mbrain.scanNovelty({
+		if (name === "mdbrian_novelty_scan") {
+			const out = await mdbrian.scanNovelty({
 				agentId: typeof args.agentId === "string" ? args.agentId : undefined,
 				limit: typeof args.limit === "number" ? args.limit : undefined,
 				scope: typeof args.scope === "string" ? args.scope : undefined,
 			})
 			return { content: [{ type: "text", text: JSON.stringify(out) }] }
 		}
-		if (name === "mbrain_consolidate") {
-			const out = await mbrain.consolidate({
+		if (name === "mdbrian_consolidate") {
+			const out = await mdbrian.consolidate({
 				agentId: typeof args.agentId === "string" ? args.agentId : undefined,
 				maxEvents:
 					typeof args.maxEvents === "number" ? args.maxEvents : undefined,
@@ -1423,7 +1423,7 @@ export async function handleToolCall(
 			})
 			return { content: [{ type: "text", text: JSON.stringify(out) }] }
 		}
-		if (name === "mbrain_self_edit") {
+		if (name === "mdbrian_self_edit") {
 			const block = typeof args.block === "string" ? args.block : ""
 			const action = typeof args.action === "string" ? args.action : "replace"
 			const validBlocks = ["user", "persona", "instructions"]
@@ -1454,7 +1454,7 @@ export async function handleToolCall(
 					isError: true,
 				}
 			}
-			const out = await mbrain.selfEdit({
+			const out = await mdbrian.selfEdit({
 				block: block as "user" | "persona" | "instructions",
 				action: action as "append" | "replace" | "prepend",
 				content: typeof args.content === "string" ? args.content : "",
@@ -1462,7 +1462,7 @@ export async function handleToolCall(
 			})
 			return { content: [{ type: "text", text: JSON.stringify(out) }] }
 		}
-		if (name === "mbrain_search_detailed") {
+		if (name === "mdbrian_search_detailed") {
 			const searchConfig =
 				typeof args.searchConfig === "object" &&
 				args.searchConfig !== null &&
@@ -1496,7 +1496,7 @@ export async function handleToolCall(
 							value === "graph",
 					)
 				: undefined
-			const out = await mbrain.searchDetailed({
+			const out = await mdbrian.searchDetailed({
 				query: typeof args.query === "string" ? args.query : "",
 				agentId: typeof args.agentId === "string" ? args.agentId : undefined,
 				limit: typeof args.limit === "number" ? args.limit : undefined,
@@ -1593,8 +1593,8 @@ export async function handleToolCall(
 			})
 			return { content: [{ type: "text", text: JSON.stringify(out) }] }
 		}
-		if (name === "mbrain_hydrate_active_slate") {
-			const out = await mbrain.hydrateActiveSlate({
+		if (name === "mdbrian_hydrate_active_slate") {
+			const out = await mdbrian.hydrateActiveSlate({
 				agentId: typeof args.agentId === "string" ? args.agentId : undefined,
 				scope:
 					typeof args.scope === "string" ? (args.scope as "user") : undefined,
@@ -1603,7 +1603,7 @@ export async function handleToolCall(
 			})
 			return { content: [{ type: "text", text: JSON.stringify(out) }] }
 		}
-		if (name === "mbrain_discovery_projection") {
+		if (name === "mdbrian_discovery_projection") {
 			const kind = args.kind
 			if (
 				kind !== "entity-brief" &&
@@ -1615,7 +1615,7 @@ export async function handleToolCall(
 					"kind is required and must be entity-brief|topic-brief|what-changed|contradiction-report",
 				)
 			}
-			const out = await mbrain.buildDiscoveryProjection({
+			const out = await mdbrian.buildDiscoveryProjection({
 				kind,
 				query: typeof args.query === "string" ? args.query : undefined,
 				agentId: typeof args.agentId === "string" ? args.agentId : undefined,
@@ -1626,62 +1626,62 @@ export async function handleToolCall(
 			})
 			return { content: [{ type: "text", text: JSON.stringify(out) }] }
 		}
-		if (name === "mbrain_write_structured") {
+		if (name === "mdbrian_write_structured") {
 			const entry =
 				typeof args.entry === "object" && args.entry !== null
 					? (args.entry as Record<string, unknown>)
 					: {}
-			const out = await mbrain.writeStructured({
+			const out = await mdbrian.writeStructured({
 				entry,
 				agentId: typeof args.agentId === "string" ? args.agentId : undefined,
 			})
 			return { content: [{ type: "text", text: JSON.stringify(out) }] }
 		}
-		if (name === "mbrain_write_procedure") {
+		if (name === "mdbrian_write_procedure") {
 			const entry =
 				typeof args.entry === "object" && args.entry !== null
 					? (args.entry as Record<string, unknown>)
 					: {}
-			const out = await mbrain.writeProcedure({
+			const out = await mdbrian.writeProcedure({
 				entry,
 				agentId: typeof args.agentId === "string" ? args.agentId : undefined,
 			})
 			return { content: [{ type: "text", text: JSON.stringify(out) }] }
 		}
-		if (name === "mbrain_status_detailed") {
-			const out = await mbrain.getDetailedStatus(
+		if (name === "mdbrian_status_detailed") {
+			const out = await mdbrian.getDetailedStatus(
 				typeof args.agentId === "string" ? args.agentId : undefined,
 			)
 			return { content: [{ type: "text", text: JSON.stringify(out) }] }
 		}
-		if (name === "mbrain_stats") {
-			const out = await mbrain.stats(
+		if (name === "mdbrian_stats") {
+			const out = await mdbrian.stats(
 				typeof args.agentId === "string" ? args.agentId : undefined,
 			)
 			return { content: [{ type: "text", text: JSON.stringify(out) }] }
 		}
-		if (name === "mbrain_sync") {
-			const out = await mbrain.sync({
+		if (name === "mdbrian_sync") {
+			const out = await mdbrian.sync({
 				agentId: typeof args.agentId === "string" ? args.agentId : undefined,
 				reason: typeof args.reason === "string" ? args.reason : undefined,
 				force: typeof args.force === "boolean" ? args.force : undefined,
 			})
 			return { content: [{ type: "text", text: JSON.stringify(out) }] }
 		}
-		if (name === "mbrain_probe_embedding") {
-			const out = await mbrain.probeEmbedding(
+		if (name === "mdbrian_probe_embedding") {
+			const out = await mdbrian.probeEmbedding(
 				typeof args.agentId === "string" ? args.agentId : undefined,
 			)
 			return { content: [{ type: "text", text: JSON.stringify(out) }] }
 		}
-		if (name === "mbrain_probe_vector") {
-			const out = await mbrain.probeVector(
+		if (name === "mdbrian_probe_vector") {
+			const out = await mdbrian.probeVector(
 				typeof args.agentId === "string" ? args.agentId : undefined,
 			)
 			return { content: [{ type: "text", text: JSON.stringify(out) }] }
 		}
-		if (name === "mbrain_relevance_explain") {
-			const out = await mbrain.relevanceExplain({
+		if (name === "mdbrian_relevance_explain") {
+			const out = await mdbrian.relevanceExplain({
 				query: typeof args.query === "string" ? args.query : "",
 				agentId: typeof args.agentId === "string" ? args.agentId : undefined,
 				sourceScope:
@@ -1698,8 +1698,8 @@ export async function handleToolCall(
 			})
 			return { content: [{ type: "text", text: JSON.stringify(out) }] }
 		}
-		if (name === "mbrain_relevance_benchmark") {
-			const out = await mbrain.relevanceBenchmark({
+		if (name === "mdbrian_relevance_benchmark") {
+			const out = await mdbrian.relevanceBenchmark({
 				agentId: typeof args.agentId === "string" ? args.agentId : undefined,
 				datasetPath:
 					typeof args.datasetPath === "string" ? args.datasetPath : undefined,
@@ -1709,21 +1709,21 @@ export async function handleToolCall(
 			})
 			return { content: [{ type: "text", text: JSON.stringify(out) }] }
 		}
-		if (name === "mbrain_relevance_report") {
-			const out = await mbrain.relevanceReport(
+		if (name === "mdbrian_relevance_report") {
+			const out = await mdbrian.relevanceReport(
 				typeof args.agentId === "string" ? args.agentId : undefined,
 				typeof args.windowMs === "number" ? args.windowMs : undefined,
 			)
 			return { content: [{ type: "text", text: JSON.stringify(out) }] }
 		}
-		if (name === "mbrain_relevance_sample_rate") {
-			const out = await mbrain.relevanceSampleRate(
+		if (name === "mdbrian_relevance_sample_rate") {
+			const out = await mdbrian.relevanceSampleRate(
 				typeof args.agentId === "string" ? args.agentId : undefined,
 			)
 			return { content: [{ type: "text", text: JSON.stringify(out) }] }
 		}
-		if (name === "mbrain_state_unified") {
-			const out = await mbrain.state({
+		if (name === "mdbrian_state_unified") {
+			const out = await mdbrian.state({
 				agentId: typeof args.agentId === "string" ? args.agentId : undefined,
 				scope:
 					typeof args.scope === "string"
@@ -1746,14 +1746,14 @@ export async function handleToolCall(
 				],
 			}
 		}
-		if (name === "mbrain_benchmark_ingest") {
+		if (name === "mdbrian_benchmark_ingest") {
 			if (
 				typeof args.datasetPath !== "string" ||
 				args.datasetPath.length === 0
 			) {
 				throw new Error("datasetPath is required")
 			}
-			const out = await mbrain.benchmarkIngest({
+			const out = await mdbrian.benchmarkIngest({
 				datasetPath: args.datasetPath,
 				agentId: typeof args.agentId === "string" ? args.agentId : undefined,
 				scope:
@@ -1783,7 +1783,7 @@ export async function handleToolCall(
 			) {
 				throw new Error("datasetPath is required")
 			}
-			const out = await mbrain.importConversations({
+			const out = await mdbrian.importConversations({
 				datasetPath: args.datasetPath,
 				agentId: typeof args.agentId === "string" ? args.agentId : undefined,
 				scope:
@@ -1806,8 +1806,8 @@ export async function handleToolCall(
 			})
 			return jsonResult(out)
 		}
-		if (name === "mbrain_admin_access_trends") {
-			const out = await mbrain.accessTrends({
+		if (name === "mdbrian_admin_access_trends") {
+			const out = await mdbrian.accessTrends({
 				agentId: typeof args.agentId === "string" ? args.agentId : undefined,
 				collection:
 					args.collection === "events" ||
@@ -1833,7 +1833,7 @@ export async function handleToolCall(
 			})
 			return { content: [{ type: "text", text: JSON.stringify(out) }] }
 		}
-		if (name === "mbrain_admin_access_summaries") {
+		if (name === "mdbrian_admin_access_summaries") {
 			const memoryIds = Array.isArray(args.memoryIds)
 				? args.memoryIds.filter(
 						(memoryId): memoryId is string =>
@@ -1853,7 +1853,7 @@ export async function handleToolCall(
 			) {
 				throw new Error("collection is required")
 			}
-			const out = await mbrain.accessSummaries({
+			const out = await mdbrian.accessSummaries({
 				agentId: typeof args.agentId === "string" ? args.agentId : undefined,
 				collection: args.collection,
 				memoryIds,
@@ -1862,8 +1862,8 @@ export async function handleToolCall(
 			})
 			return { content: [{ type: "text", text: JSON.stringify(out) }] }
 		}
-		if (name === "mbrain_admin_list_traces") {
-			const out = await mbrain.listRecallTraces({
+		if (name === "mdbrian_admin_list_traces") {
+			const out = await mdbrian.listRecallTraces({
 				agentId: typeof args.agentId === "string" ? args.agentId : undefined,
 				limit:
 					typeof args.limit === "number"
@@ -1872,18 +1872,18 @@ export async function handleToolCall(
 			})
 			return { content: [{ type: "text", text: JSON.stringify(out) }] }
 		}
-		if (name === "mbrain_admin_get_trace") {
+		if (name === "mdbrian_admin_get_trace") {
 			if (typeof args.traceId !== "string" || !args.traceId.trim()) {
 				throw new Error("traceId is required")
 			}
-			const out = await mbrain.getRecallTrace({
+			const out = await mdbrian.getRecallTrace({
 				traceId: args.traceId,
 				agentId: typeof args.agentId === "string" ? args.agentId : undefined,
 			})
 			return { content: [{ type: "text", text: JSON.stringify(out) }] }
 		}
-		if (name === "mbrain_list_jobs") {
-			const out = await mbrain.listJobs({
+		if (name === "mdbrian_list_jobs") {
+			const out = await mdbrian.listJobs({
 				agentId: typeof args.agentId === "string" ? args.agentId : undefined,
 				status:
 					args.status === "pending" ||
@@ -1908,11 +1908,11 @@ export async function handleToolCall(
 			})
 			return { content: [{ type: "text", text: JSON.stringify(out) }] }
 		}
-		if (name === "mbrain_get_job") {
+		if (name === "mdbrian_get_job") {
 			if (typeof args.jobId !== "string" || !args.jobId.trim()) {
 				throw new Error("jobId is required")
 			}
-			const out = await mbrain.getJob({
+			const out = await mdbrian.getJob({
 				jobId: args.jobId,
 				agentId: typeof args.agentId === "string" ? args.agentId : undefined,
 			})

@@ -3,7 +3,7 @@ import {
 	type MemoryMongoDBDeploymentProfile,
 	type MemoryMongoDBEmbeddingMode,
 	createSubsystemLogger,
-} from "@mbrain/lib"
+} from "@mdbrian/lib"
 import { isEvidenceMirrorEnabled } from "./mongodb-evidence-mirror.js"
 import { sortObject } from "./search-utils.js"
 
@@ -2836,16 +2836,16 @@ function isLongMemEvalSearchIndexProfile(
 	env: NodeJS.ProcessEnv = process.env,
 ): boolean {
 	return (
-		env.MBRAIN_BENCHMARK_SEARCH_INDEX_PROFILE === "longmemeval" ||
-		env.MBRAIN_SKIP_OPTIONAL_SEARCH_INDEXES === "1"
+		env.MDBRAIN_BENCHMARK_SEARCH_INDEX_PROFILE === "longmemeval" ||
+		env.MDBRAIN_SKIP_OPTIONAL_SEARCH_INDEXES === "1"
 	)
 }
 
 function isRawSessionSearchIndexProfile(
 	env: NodeJS.ProcessEnv = process.env,
 ): boolean {
-	const profile = env.MBRAIN_BENCHMARK_SEARCH_INDEX_PROFILE?.trim()
-	const lane = env.MBRAIN_BENCHMARK_RETRIEVAL_LANE?.trim()
+	const profile = env.MDBRAIN_BENCHMARK_SEARCH_INDEX_PROFILE?.trim()
+	const lane = env.MDBRAIN_BENCHMARK_RETRIEVAL_LANE?.trim()
 	return [profile, lane].some((value) =>
 		["raw-session", "raw_session", "session"].includes(
 			value?.toLowerCase() ?? "",
@@ -2948,8 +2948,8 @@ export function resolveSearchIndexReadinessTiming(
 	timeoutMs: number
 	pollMs: number
 } {
-	const benchmarkStrict = env.MBRAIN_BENCHMARK_STRICT
-	const searchReadyStrict = env.MBRAIN_STRICT_SEARCH_INDEX_READY
+	const benchmarkStrict = env.MDBRAIN_BENCHMARK_STRICT
+	const searchReadyStrict = env.MDBRAIN_STRICT_SEARCH_INDEX_READY
 	const strictDefaultTimeoutMs =
 		benchmarkStrict === "1" ||
 		benchmarkStrict?.toLowerCase() === "true" ||
@@ -2958,11 +2958,11 @@ export function resolveSearchIndexReadinessTiming(
 			? 180_000
 			: 60_000
 	const timeoutMs = parsePositiveIntegerEnv(
-		env.MBRAIN_SEARCH_INDEX_READINESS_TIMEOUT_MS,
+		env.MDBRAIN_SEARCH_INDEX_READINESS_TIMEOUT_MS,
 		strictDefaultTimeoutMs,
 	)
 	const pollMs = parsePositiveIntegerEnv(
-		env.MBRAIN_SEARCH_INDEX_READINESS_POLL_MS,
+		env.MDBRAIN_SEARCH_INDEX_READINESS_POLL_MS,
 		1_000,
 	)
 	return { timeoutMs, pollMs }

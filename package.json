@@ -1,7 +1,7 @@
 {
-	"name": "mbrain",
+	"name": "mdbrian",
 	"private": true,
-	"description": "MongoDB-native long-term AI memory with reasoning chains, novelty detection, and consolidation: engine, SDK, HTTP API, MCP server, and web console",
+	"description": "MongoDB-native LLM wiki / company brain with reasoning chains, novelty detection, and consolidation: engine, SDK, HTTP API, MCP server, and web console",
 	"license": "Apache-2.0",
 	"packageManager": "bun@1.2.5",
 	"engines": {

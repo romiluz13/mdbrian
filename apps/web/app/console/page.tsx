@@ -1,11 +1,11 @@
 "use client"
 
-import { MbrainClient } from "@mbrain/client"
+import { MdbrianClient } from "@mdbrian/client"
 import type { ReactNode } from "react"
 import { useMemo, useState } from "react"
 
 const defaultApi =
-	process.env.NEXT_PUBLIC_MBRAIN_API_URL ?? "http://127.0.0.1:3847"
+	process.env.NEXT_PUBLIC_MDBRAIN_API_URL ?? "http://127.0.0.1:3847"
 
 type Tab = "overview" | "search" | "kb" | "profile" | "write"
 
@@ -172,7 +172,7 @@ export default function Home() {
 	const [loading, setLoading] = useState(false)
 	const [output, setOutput] = useState<OutputState>({
 		title: "Console output",
-		body: "Run an action to inspect live Mbrain responses.",
+		body: "Run an action to inspect live Mdbrian responses.",
 		state: "idle",
 	})
 	const [overview, setOverview] = useState<OverviewState>({})
@@ -180,7 +180,7 @@ export default function Home() {
 	const root = useMemo(() => baseUrl.replace(/\/$/, ""), [baseUrl])
 	const client = useMemo(
 		() =>
-			new MbrainClient({
+			new MdbrianClient({
 				baseUrl: root,
 				apiKey: apiKey.trim() || undefined,
 			}),
@@ -334,7 +334,7 @@ export default function Home() {
 							MongoDB-native memory
 						</div>
 						<h1 style={{ margin: 0, fontSize: 34, letterSpacing: 0 }}>
-							Mbrain Console
+							Mdbrian Console
 						</h1>
 						<p
 							style={{
@@ -345,7 +345,7 @@ export default function Home() {
 								lineHeight: 1.5,
 							}}
 						>
-							Operate the supported Mbrain API surface: inspect health, search
+							Operate the supported Mdbrian API surface: inspect health, search
 							memory, query the knowledge base, synthesize profiles, and write a
 							test event.
 						</p>

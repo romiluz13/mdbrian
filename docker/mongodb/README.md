@@ -1,10 +1,10 @@
-# Mbrain MongoDB Setup
+# Mdbrian MongoDB Setup
 
-Atlas Local preview is the canonical Mbrain MongoDB stack.
+Atlas Local preview is the canonical Mdbrian MongoDB stack.
 
 ## Recommended: Preview (Single Container)
 
-The fastest way to run Mbrain's full MongoDB stack:
+The fastest way to run Mdbrian's full MongoDB stack:
 
 ```bash
 # Start (bundles mongod + mongot + Atlas Search + Vector Search)
@@ -17,7 +17,7 @@ VOYAGE_API_KEY=al-your-atlas-model-api-key ./docker/mongodb/start-preview.sh
 ./docker/mongodb/start-preview.sh stop
 ```
 
-This uses `mongodb/mongodb-atlas-local:preview` (~584 MB) -- a single container with everything Mbrain needs:
+This uses `mongodb/mongodb-atlas-local:preview` (~584 MB) -- a single container with everything Mdbrian needs:
 
 - mongod (MongoDB 8.x, single-node replica set)
 - mongot (community search engine)
@@ -93,9 +93,9 @@ docker compose -f docker/mongodb/docker-compose.mongodb.yml --profile standalone
 
 | Tier       | Connection String                                                                                      |
 | ---------- | ------------------------------------------------------------------------------------------------------ |
-| standalone | `mongodb://localhost:27017/mbrain`                                                                   |
-| replicaset | `mongodb://admin:admin@localhost:27017/mbrain?authSource=admin&replicaSet=rs0&directConnection=true` |
-| fullstack  | `mongodb://admin:admin@localhost:27017/mbrain?authSource=admin&replicaSet=rs0&directConnection=true` |
+| standalone | `mongodb://localhost:27017/mdbrian`                                                                   |
+| replicaset | `mongodb://admin:admin@localhost:27017/mdbrian?authSource=admin&replicaSet=rs0&directConnection=true` |
+| fullstack  | `mongodb://admin:admin@localhost:27017/mdbrian?authSource=admin&replicaSet=rs0&directConnection=true` |
 
 ## Environment Variables
 
@@ -139,20 +139,20 @@ Use the multi-container stack below only if you specifically need separate mongo
 ### Standalone
 
 ```
-[Mbrain] --> [mongod-standalone:27017]
+[Mdbrian] --> [mongod-standalone:27017]
 ```
 
 ### Replica Set
 
 ```
-[Mbrain] --> [mongod:27017 (rs0)]
+[Mdbrian] --> [mongod:27017 (rs0)]
                  |-- auth via keyfile
 ```
 
 ### Full Stack
 
 ```
-[Mbrain] --> [mongod:27017 (rs0)]
+[Mdbrian] --> [mongod:27017 (rs0)]
                  |-- auth via keyfile
                  |-- gRPC --> [mongot:27028]
                                |-- sync from mongod
@@ -170,7 +170,7 @@ Use the multi-container stack below only if you specifically need separate mongo
 
 ```bash
 # Check logs
-docker logs mbrain-mongod
+docker logs mdbrian-mongod
 
 # Common issue: keyfile permissions
 docker compose -f docker/mongodb/docker-compose.mongodb.yml --profile setup run --rm setup-generator
@@ -184,7 +184,7 @@ docker compose -f docker/mongodb/docker-compose.mongodb.yml --profile setup run 
 
 ```bash
 # Check logs
-docker logs mbrain-mongot
+docker logs mdbrian-mongot
 
 # mongot depends on mongod being healthy first
 # Wait for mongod health check to pass, then mongot starts automatically
@@ -193,7 +193,7 @@ docker compose -f docker/mongodb/docker-compose.mongodb.yml --profile fullstack 
 
 ### Connection refused
 
-**Symptom:** Mbrain cannot connect to MongoDB.
+**Symptom:** Mdbrian cannot connect to MongoDB.
 
 **Fix:**
 
@@ -202,10 +202,10 @@ docker compose -f docker/mongodb/docker-compose.mongodb.yml --profile fullstack 
 docker compose -f docker/mongodb/docker-compose.mongodb.yml --profile fullstack ps
 
 # Test connection manually
-docker exec mbrain-mongod mongosh --eval "db.adminCommand('ping')"
+docker exec mdbrian-mongod mongosh --eval "db.adminCommand('ping')"
 
 # Check port mapping
-docker port mbrain-mongod
+docker port mdbrian-mongod
 ```
 
 ### Auth errors
@@ -226,10 +226,10 @@ docker port mbrain-mongod
 
 ```bash
 # Verify mongot is healthy
-docker exec mbrain-mongot wget -qO- http://localhost:9946/metrics | head -5
+docker exec mdbrian-mongot wget -qO- http://localhost:9946/metrics | head -5
 
 # Check mongot sync status
-docker logs mbrain-mongot | tail -20
+docker logs mdbrian-mongot | tail -20
 ```
 
 ## Upgrading Between Tiers

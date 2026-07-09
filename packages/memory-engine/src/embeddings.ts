@@ -1,11 +1,11 @@
 import fsSync from "node:fs"
 import type { Llama, LlamaEmbeddingContext, LlamaModel } from "node-llama-cpp"
 import {
-	type MbrainConfig,
+	type MdbrianConfig,
 	type SecretInput,
 	formatErrorMessage,
 	resolveUserPath,
-} from "@mbrain/lib"
+} from "@mdbrian/lib"
 import type { EmbeddingInput } from "./embedding-inputs.js"
 import { sanitizeAndNormalizeEmbedding } from "./embedding-vectors.js"
 import {
@@ -80,7 +80,7 @@ export type EmbeddingProviderResult = {
 }
 
 export type EmbeddingProviderOptions = {
-	config: MbrainConfig
+	config: MdbrianConfig
 	agentDir?: string
 	provider: EmbeddingProviderRequest
 	remote?: {
@@ -346,7 +346,7 @@ function formatLocalSetupError(err: unknown): string {
 		"To enable local embeddings:",
 		"1) Use Node 24 (recommended for installs/updates; Node 22 LTS, currently 22.16+, remains supported)",
 		missing
-			? "2) Reinstall Mbrain (this should install node-llama-cpp): npm i -g mbrain@latest"
+			? "2) Reinstall Mdbrian (this should install node-llama-cpp): npm i -g mdbrian@latest"
 			: null,
 		"3) If you use pnpm: pnpm approve-builds (select node-llama-cpp), then pnpm rebuild node-llama-cpp",
 		...REMOTE_EMBEDDING_PROVIDER_IDS.map(

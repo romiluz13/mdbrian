@@ -1,6 +1,6 @@
-import { isTruthyEnvValue, createSubsystemLogger } from "@mbrain/lib"
+import { isTruthyEnvValue, createSubsystemLogger } from "@mdbrian/lib"
 
-const debugEmbeddings = isTruthyEnvValue(process.env.MBRAIN_DEBUG_EMBEDDINGS)
+const debugEmbeddings = isTruthyEnvValue(process.env.MDBRAIN_DEBUG_EMBEDDINGS)
 const log = createSubsystemLogger("memory/embeddings")
 
 export function debugEmbeddingsLog(

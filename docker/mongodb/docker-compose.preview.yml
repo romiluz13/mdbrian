@@ -1,4 +1,4 @@
-# docker-compose.preview.yml - Mbrain one-command setup
+# docker-compose.preview.yml - Mdbrian one-command setup
 # Uses mongodb/mongodb-atlas-local:preview (the ONLY tag with auto-embeddings)
 #
 # Usage:
@@ -19,15 +19,15 @@
 services:
   mongodb:
     image: mongodb/mongodb-atlas-local:preview
-    container_name: mbrain-preview
+    container_name: mdbrian-preview
     ports:
       - "${MONGODB_PORT:-27017}:27017"
     environment:
       - VOYAGE_API_KEY=${VOYAGE_API_KEY:-}
       - MONGODB_ATLAS_TELEMETRY_ENABLE=false
     volumes:
-      - mbrain_preview_data:/data/db
-      - mbrain_preview_config:/data/configdb
+      - mdbrian_preview_data:/data/db
+      - mdbrian_preview_config:/data/configdb
     # Built-in healthcheck verifies both mongod and mongot are operational
     healthcheck:
       test: ["CMD", "/usr/local/bin/runner", "healthcheck"]
@@ -37,5 +37,5 @@ services:
       start_period: 30s
 
 volumes:
-  mbrain_preview_data:
-  mbrain_preview_config:
+  mdbrian_preview_data:
+  mdbrian_preview_config:

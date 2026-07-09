@@ -8,14 +8,14 @@ function parseTextPayload(result: { content: Array<{ text: string }> }) {
 describe("toolList", () => {
 	it("includes Wave 5 semantic aliases for stable recall and memory flows", () => {
 		const names = new Set(toolList.map((tool) => tool.name))
-		expect(names.has("mbrain_recall_messages")).toBe(true)
-		expect(names.has("mbrain_memory_get")).toBe(true)
-		expect(names.has("mbrain_memory_update")).toBe(true)
-		expect(names.has("mbrain_memory_delete")).toBe(true)
-		expect(names.has("mbrain_memory_history")).toBe(true)
-		expect(names.has("mbrain_import_conversation_history")).toBe(true)
-		expect(names.has("mbrain_procedure_outcome")).toBe(true)
-		expect(names.has("mbrain_memory_feedback")).toBe(true)
+		expect(names.has("mdbrian_recall_messages")).toBe(true)
+		expect(names.has("mdbrian_memory_get")).toBe(true)
+		expect(names.has("mdbrian_memory_update")).toBe(true)
+		expect(names.has("mdbrian_memory_delete")).toBe(true)
+		expect(names.has("mdbrian_memory_history")).toBe(true)
+		expect(names.has("mdbrian_import_conversation_history")).toBe(true)
+		expect(names.has("mdbrian_procedure_outcome")).toBe(true)
+		expect(names.has("mdbrian_memory_feedback")).toBe(true)
 	})
 })
 
@@ -26,7 +26,7 @@ describe("handleToolCall", () => {
 		})
 
 		const out = await handleToolCall(
-			"mbrain_recall_messages",
+			"mdbrian_recall_messages",
 			{
 				query: "rollback plan",
 				roles: ["assistant", "tool"],
@@ -59,7 +59,7 @@ describe("handleToolCall", () => {
 		const recallConversation = vi.fn()
 
 		const out = await handleToolCall(
-			"mbrain_recall_messages",
+			"mdbrian_recall_messages",
 			{
 				roles: ["assistant", "bad-role"],
 			},
@@ -95,24 +95,24 @@ describe("handleToolCall", () => {
 			structured: { type: "fact", key: "deployment" },
 		}
 
-		await handleToolCall("mbrain_memory_get", { handle }, {
+		await handleToolCall("mdbrian_memory_get", { handle }, {
 			getLifecycleItem,
 		} as any)
 		await handleToolCall(
-			"mbrain_memory_update",
+			"mdbrian_memory_update",
 			{ handle, patch: { value: "new value" } },
 			{
 				updateLifecycleItem,
 			} as any,
 		)
 		await handleToolCall(
-			"mbrain_memory_delete",
+			"mdbrian_memory_delete",
 			{ handle, invalidatedBy: { reason: "cleanup" } },
 			{
 				deleteLifecycleItem,
 			} as any,
 		)
-		await handleToolCall("mbrain_memory_history", { handle, limit: 999 }, {
+		await handleToolCall("mdbrian_memory_history", { handle, limit: 999 }, {
 			getLifecycleHistory,
 		} as any)
 
@@ -142,7 +142,7 @@ describe("handleToolCall", () => {
 		}
 
 		const out = await handleToolCall(
-			"mbrain_memory_history",
+			"mdbrian_memory_history",
 			{ handle, limit: 10 },
 			{
 				getLifecycleHistory,
@@ -159,7 +159,7 @@ describe("handleToolCall", () => {
 		const importConversations = vi.fn().mockResolvedValue({ importedTurns: 12 })
 
 		const out = await handleToolCall(
-			"mbrain_import_conversation_history",
+			"mdbrian_import_conversation_history",
 			{
 				datasetPath: "imports/history.json",
 				scope: "workspace",
@@ -198,7 +198,7 @@ describe("handleToolCall", () => {
 		}
 
 		const out = await handleToolCall(
-			"mbrain_procedure_outcome",
+			"mdbrian_procedure_outcome",
 			{
 				handle,
 				success: true,
@@ -239,7 +239,7 @@ describe("handleToolCall", () => {
 		}
 
 		const out = await handleToolCall(
-			"mbrain_memory_feedback",
+			"mdbrian_memory_feedback",
 			{
 				handle,
 				signal: "correct",

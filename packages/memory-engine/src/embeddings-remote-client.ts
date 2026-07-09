@@ -1,4 +1,4 @@
-import { requireApiKey, type SsrFPolicy } from "@mbrain/lib"
+import { requireApiKey, type SsrFPolicy } from "@mdbrian/lib"
 import type { EmbeddingProviderOptions } from "./embeddings.js"
 import { buildRemoteBaseUrlPolicy } from "./remote-http.js"
 import { resolveMemorySecretInputString } from "./secret-input.js"

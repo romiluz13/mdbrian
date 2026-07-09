@@ -1,8 +1,8 @@
 import { describe, expect, it, vi, beforeEach, afterEach } from "vitest"
 import { createOpenAIMiddleware } from "./index.js"
-import type { MbrainCoreOptions } from "../vercel/index.js"
+import type { MdbrianCoreOptions } from "../vercel/index.js"
 
-const BASE_OPTIONS: MbrainCoreOptions = {
+const BASE_OPTIONS: MdbrianCoreOptions = {
 	apiUrl: "http://localhost:3847",
 	apiKey: "test-key",
 	userId: "user-1",

@@ -1,6 +1,6 @@
-# Mbrain Validation Pack
+# Mdbrian Validation Pack
 
-Use this pack to prove that the supported Mbrain core is healthy on managed MongoDB Atlas cloud, Atlas Local Preview, and the repo's official gates.
+Use this pack to prove that the supported Mdbrian core is healthy on managed MongoDB Atlas cloud, Atlas Local Preview, and the repo's official gates.
 
 ## Release-blocking lanes
 
@@ -20,9 +20,9 @@ bun run test
 Start the API against a real MongoDB stack, then run:
 
 ```bash
-MBRAIN_API_URL=http://127.0.0.1:3847 \
-MBRAIN_AGENT_ID=proof-main \
-MBRAIN_SESSION_ID=proof-session \
+MDBRAIN_API_URL=http://127.0.0.1:3847 \
+MDBRAIN_AGENT_ID=proof-main \
+MDBRAIN_SESSION_ID=proof-session \
 bun run proof-pack
 ```
 
@@ -62,7 +62,7 @@ This validates:
 Use managed Atlas cloud for the control lane:
 
 ```bash
-export MBRAIN_MONGODB_URI="mongodb+srv://<user>:<password>@<cluster>.mongodb.net/?appName=mbrain"
+export MDBRAIN_MONGODB_URI="mongodb+srv://<user>:<password>@<cluster>.mongodb.net/?appName=mdbrian"
 export VOYAGE_API_KEY="al-your-atlas-model-api-key"
 bun run mongodb:parity
 ```
@@ -72,7 +72,7 @@ Use Atlas Local Preview for the local parity lane:
 ```bash
 export VOYAGE_API_KEY="al-your-atlas-model-api-key"
 docker compose -f docker/mongodb/docker-compose.preview.yml up -d
-export MBRAIN_MONGODB_URI="mongodb://127.0.0.1:27017/?directConnection=true"
+export MDBRAIN_MONGODB_URI="mongodb://127.0.0.1:27017/?directConnection=true"
 ```
 
 Then run:
@@ -96,7 +96,7 @@ These lanes are real but environment-specific:
   `packages/memory-engine/src/mongodb-e2e.e2e.test.ts` against `docker/mongodb/docker-compose.mongodb.yml` `replicaset` or `fullstack` using:
 
 ```bash
-MONGODB_TEST_URI="mongodb://admin:admin@localhost:27017/mbrain?authSource=admin&replicaSet=rs0&directConnection=true"
+MONGODB_TEST_URI="mongodb://admin:admin@localhost:27017/mdbrian?authSource=admin&replicaSet=rs0&directConnection=true"
 ```
 
 ### 6. `real-agent`
@@ -104,16 +104,16 @@ MONGODB_TEST_URI="mongodb://admin:admin@localhost:27017/mbrain?authSource=admin&
 Start `apps/api` against the preview stack, then run:
 
 ```bash
-export MBRAIN_LLM_BASE_URL="https://api.openai.com/v1"
-export MBRAIN_LLM_API_KEY="your-llm-api-key"
-export MBRAIN_LLM_MODEL="gpt-4o-mini"
-export MBRAIN_API_URL="http://127.0.0.1:3847"
+export MDBRAIN_LLM_BASE_URL="https://api.openai.com/v1"
+export MDBRAIN_LLM_API_KEY="your-llm-api-key"
+export MDBRAIN_LLM_MODEL="gpt-4o-mini"
+export MDBRAIN_API_URL="http://127.0.0.1:3847"
 bun run agent-smoke
 ```
 
 This lane proves a real tool-calling agent can:
 - call an OpenAI-compatible chat-completions endpoint
-- persist events into Mbrain through the supported HTTP API
+- persist events into Mdbrian through the supported HTTP API
 - search memory through live retrieval paths
 - hydrate active memory for current-state questions
 - build discovery projections for changes and contradictions
@@ -127,7 +127,7 @@ The harness lives in `scripts/real-agent-smoke.ts`.
 Run the deterministic seeded eval pack against a live API:
 
 ```bash
-MBRAIN_API_URL=http://127.0.0.1:3847 \
+MDBRAIN_API_URL=http://127.0.0.1:3847 \
 bun run memory-eval
 ```
 
@@ -147,8 +147,8 @@ The harness lives in `scripts/real-memory-eval.ts`.
 Compare a baseline and candidate API directly:
 
 ```bash
-MBRAIN_BASELINE_API_URL=http://127.0.0.1:3847 \
-MBRAIN_CANDIDATE_API_URL=http://127.0.0.1:3850 \
+MDBRAIN_BASELINE_API_URL=http://127.0.0.1:3847 \
+MDBRAIN_CANDIDATE_API_URL=http://127.0.0.1:3850 \
 bun run compare-memory-eval
 ```
 
@@ -164,13 +164,13 @@ This emits a release-gate summary with:
 ## Proof artifacts
 
 `bun run proof-pack`, `bun run memory-eval`, `bun run compare-memory-eval`, `bun run agent-smoke`, and `bun run capability-stress` can persist comparable JSON run artifacts when one of these is true:
-- `MBRAIN_PROOF_ARTIFACT_DIR` is set
+- `MDBRAIN_PROOF_ARTIFACT_DIR` is set
 
 This keeps baseline and candidate evidence local-only by default while still making the proof lanes reproducible.
 
 ## What this proves
 
-Mbrain is ready for release only when every release-blocking lane is green and every claimed capability was validated in its correct environment.
+Mdbrian is ready for release only when every release-blocking lane is green and every claimed capability was validated in its correct environment.
 
 ## Related
 - [Benchmark pack](benchmark-pack.md)

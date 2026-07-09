@@ -11,12 +11,12 @@ export function resolveUserPath(p: string): string {
 	return path.resolve(p)
 }
 
-export function mbrainDataDir(): string {
-	return resolveUserPath("~/.mbrain")
+export function mdbrianDataDir(): string {
+	return resolveUserPath("~/.mdbrian")
 }
 
-export function mbrainAgentDir(agentId: string): string {
-	return path.join(mbrainDataDir(), "agents", agentId)
+export function mdbrianAgentDir(agentId: string): string {
+	return path.join(mdbrianDataDir(), "agents", agentId)
 }
 
 export function ensureTrailingSlash(dir: string): string {

@@ -1,17 +1,17 @@
 {
-	"name": "@mbrain/client",
+	"name": "@mdbrian/client",
 	"version": "1.1.0",
-	"description": "TypeScript client SDK for the Mbrain HTTP API",
+	"description": "TypeScript client SDK for the Mdbrian HTTP API",
 	"type": "module",
 	"license": "Apache-2.0",
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/romiluz13/mbrain.git",
+		"url": "git+https://github.com/romiluz13/mdbrian.git",
 		"directory": "packages/client"
 	},
 	"author": "Rom Iluz",
 	"keywords": [
-		"mbrain",
+		"mdbrian",
 		"client",
 		"sdk",
 		"mongodb",
@@ -36,8 +36,8 @@
 	"devDependencies": {
 		"typescript": "^5.8.0"
 	},
-	"homepage": "https://github.com/romiluz13/mbrain#readme",
+	"homepage": "https://github.com/romiluz13/mdbrian#readme",
 	"bugs": {
-		"url": "https://github.com/romiluz13/mbrain/issues"
+		"url": "https://github.com/romiluz13/mdbrian/issues"
 	}
 }

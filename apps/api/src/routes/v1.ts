@@ -1,52 +1,52 @@
 import { Hono } from "hono"
 import {
-	mbrainBridgeAdd,
-	mbrainBridgeAccessSummaries,
-	mbrainBridgeBuildContextBundle,
-	mbrainBridgeBuildDiscoveryProjection,
-	mbrainBridgeBenchmarkIngest,
-	mbrainBridgeImportConversations,
-	mbrainBridgeAccessTrends,
-	mbrainBridgeGetDetailedStatus,
-	mbrainBridgeGetMemoryJob,
-	mbrainBridgeGetRecallTrace,
-	mbrainBridgeHydrateActiveSlate,
-	mbrainBridgeListMemoryJobs,
-	mbrainBridgeListRecallTraces,
-	mbrainBridgeProbeEmbedding,
-	mbrainBridgeProbeVector,
-	mbrainBridgeProfile,
-	mbrainBridgeRecallConversation,
-	mbrainBridgeReadFile,
-	mbrainBridgeRelevanceBenchmark,
-	mbrainBridgeRelevanceExplain,
-	mbrainBridgeRelevanceReport,
-	mbrainBridgeRelevanceSampleRate,
-	mbrainBridgeTraceChain,
-	mbrainBridgeScanNovelty,
-	mbrainBridgeConsolidate,
-	mbrainBridgeApplyMemoryFeedback,
-	mbrainBridgeDeleteLifecycleItem,
-	mbrainBridgeExtractEvent,
-	mbrainBridgeGetLifecycleHistory,
-	mbrainBridgeGetLifecycleItem,
-	mbrainBridgeSelfEdit,
-	mbrainBridgeGetState,
-	mbrainBridgeSearch,
-	mbrainBridgeSearchDetailed,
-	mbrainBridgeSearchKB,
-	mbrainBridgeStats,
-	mbrainBridgeStatus,
-	mbrainBridgeSync,
-	mbrainBridgeUpdateLifecycleItem,
-	mbrainBridgeReportProcedureOutcome,
-	mbrainBridgeWriteConversationEvent,
-	mbrainBridgeWriteProcedure,
-	mbrainBridgeWriteStructuredMemory,
+	mdbrianBridgeAdd,
+	mdbrianBridgeAccessSummaries,
+	mdbrianBridgeBuildContextBundle,
+	mdbrianBridgeBuildDiscoveryProjection,
+	mdbrianBridgeBenchmarkIngest,
+	mdbrianBridgeImportConversations,
+	mdbrianBridgeAccessTrends,
+	mdbrianBridgeGetDetailedStatus,
+	mdbrianBridgeGetMemoryJob,
+	mdbrianBridgeGetRecallTrace,
+	mdbrianBridgeHydrateActiveSlate,
+	mdbrianBridgeListMemoryJobs,
+	mdbrianBridgeListRecallTraces,
+	mdbrianBridgeProbeEmbedding,
+	mdbrianBridgeProbeVector,
+	mdbrianBridgeProfile,
+	mdbrianBridgeRecallConversation,
+	mdbrianBridgeReadFile,
+	mdbrianBridgeRelevanceBenchmark,
+	mdbrianBridgeRelevanceExplain,
+	mdbrianBridgeRelevanceReport,
+	mdbrianBridgeRelevanceSampleRate,
+	mdbrianBridgeTraceChain,
+	mdbrianBridgeScanNovelty,
+	mdbrianBridgeConsolidate,
+	mdbrianBridgeApplyMemoryFeedback,
+	mdbrianBridgeDeleteLifecycleItem,
+	mdbrianBridgeExtractEvent,
+	mdbrianBridgeGetLifecycleHistory,
+	mdbrianBridgeGetLifecycleItem,
+	mdbrianBridgeSelfEdit,
+	mdbrianBridgeGetState,
+	mdbrianBridgeSearch,
+	mdbrianBridgeSearchDetailed,
+	mdbrianBridgeSearchKB,
+	mdbrianBridgeStats,
+	mdbrianBridgeStatus,
+	mdbrianBridgeSync,
+	mdbrianBridgeUpdateLifecycleItem,
+	mdbrianBridgeReportProcedureOutcome,
+	mdbrianBridgeWriteConversationEvent,
+	mdbrianBridgeWriteProcedure,
+	mdbrianBridgeWriteStructuredMemory,
 	type MemoryStableHandle,
 	type ProcedureEntry,
 	type StructuredMemoryEntry,
-} from "@mbrain/memory-bridge"
+} from "@mdbrian/memory-bridge"
 import { jsonError } from "../lib/errors.js"
 
 const MAX_LIST_LIMIT = 100
@@ -671,7 +671,7 @@ export function createV1Router(): Hono {
 			return jsonError(c, 400, "VALIDATION_ERROR", scopeError)
 		}
 		try {
-			const results = await mbrainBridgeSearch({
+			const results = await mdbrianBridgeSearch({
 				query,
 				agentId: readAgentId(body),
 				maxResults: readLimit(body),
@@ -707,7 +707,7 @@ export function createV1Router(): Hono {
 							source?: string
 						})
 					: undefined
-			const results = await mbrainBridgeSearchKB({
+			const results = await mdbrianBridgeSearchKB({
 				query,
 				agentId: readAgentId(body),
 				maxResults: readLimit(body),
@@ -736,7 +736,7 @@ export function createV1Router(): Hono {
 			)
 		}
 		try {
-			const result = await mbrainBridgeRecallConversation({
+			const result = await mdbrianBridgeRecallConversation({
 				agentId: readAgentId(body),
 				query: typeof body.query === "string" ? body.query : undefined,
 				sessionId:
@@ -774,7 +774,7 @@ export function createV1Router(): Hono {
 			return jsonError(c, 400, "VALIDATION_ERROR", "datasetPath is required")
 		}
 		try {
-			const result = await mbrainBridgeImportConversations({
+			const result = await mdbrianBridgeImportConversations({
 				agentId: readAgentId(body),
 				datasetPath: body.datasetPath,
 				scope: readScope(body),
@@ -809,7 +809,7 @@ export function createV1Router(): Hono {
 			)
 		}
 		try {
-			const item = await mbrainBridgeGetLifecycleItem({ handle })
+			const item = await mdbrianBridgeGetLifecycleItem({ handle })
 			if (!item) {
 				return jsonError(c, 404, "NOT_FOUND", "memory not found")
 			}
@@ -847,7 +847,7 @@ export function createV1Router(): Hono {
 			)
 		}
 		try {
-			const item = await mbrainBridgeUpdateLifecycleItem({ handle, patch })
+			const item = await mdbrianBridgeUpdateLifecycleItem({ handle, patch })
 			if (!item) {
 				return jsonError(c, 404, "NOT_FOUND", "memory not found")
 			}
@@ -881,7 +881,7 @@ export function createV1Router(): Hono {
 			)
 		}
 		try {
-			const item = await mbrainBridgeDeleteLifecycleItem({
+			const item = await mdbrianBridgeDeleteLifecycleItem({
 				handle,
 				...(isRecord(body.invalidatedBy)
 					? { invalidatedBy: body.invalidatedBy }
@@ -922,7 +922,7 @@ export function createV1Router(): Hono {
 				? Math.max(1, Math.min(MAX_HISTORY_LIMIT, Math.floor(body.limit)))
 				: undefined
 		try {
-			const history = await mbrainBridgeGetLifecycleHistory({
+			const history = await mdbrianBridgeGetLifecycleHistory({
 				handle,
 				limit,
 			})
@@ -966,7 +966,7 @@ export function createV1Router(): Hono {
 			)
 		}
 		try {
-			const item = await mbrainBridgeReportProcedureOutcome({
+			const item = await mdbrianBridgeReportProcedureOutcome({
 				handle,
 				success: body.success,
 				...(typeof body.note === "string" ? { note: body.note } : {}),
@@ -1043,7 +1043,7 @@ export function createV1Router(): Hono {
 			)
 		}
 		try {
-			const item = await mbrainBridgeApplyMemoryFeedback({
+			const item = await mdbrianBridgeApplyMemoryFeedback({
 				handle,
 				signal,
 				...(patch ? { patch } : {}),
@@ -1117,7 +1117,7 @@ export function createV1Router(): Hono {
 				!Array.isArray(body.searchConfig)
 					? (body.searchConfig as Record<string, unknown>)
 					: undefined
-			const result = await mbrainBridgeSearchDetailed({
+			const result = await mdbrianBridgeSearchDetailed({
 				query,
 				agentId: readAgentId(body),
 				scope: readScope(body),
@@ -1195,7 +1195,7 @@ export function createV1Router(): Hono {
 			return jsonError(c, 400, "VALIDATION_ERROR", scopeError)
 		}
 		try {
-			const slate = await mbrainBridgeHydrateActiveSlate({
+			const slate = await mdbrianBridgeHydrateActiveSlate({
 				agentId: readAgentId(body),
 				scope: readScope(body),
 				scopeRef: readScopeRef(body),
@@ -1234,7 +1234,7 @@ export function createV1Router(): Hono {
 				!Array.isArray(body.timeRange)
 					? (body.timeRange as Record<string, unknown>)
 					: undefined
-			const projection = await mbrainBridgeBuildDiscoveryProjection({
+			const projection = await mdbrianBridgeBuildDiscoveryProjection({
 				agentId: readAgentId(body),
 				kind,
 				query: readQuery(body) || undefined,
@@ -1280,7 +1280,7 @@ export function createV1Router(): Hono {
 				!Array.isArray(body.timeRange)
 					? (body.timeRange as Record<string, unknown>)
 					: undefined
-			const bundle = await mbrainBridgeBuildContextBundle({
+			const bundle = await mdbrianBridgeBuildContextBundle({
 				agentId: readAgentId(body),
 				query: readQuery(body) || undefined,
 				scope: readScope(body),
@@ -1331,7 +1331,7 @@ export function createV1Router(): Hono {
 			return jsonError(c, 400, "VALIDATION_ERROR", "relPath is required")
 		}
 		try {
-			const out = await mbrainBridgeReadFile({
+			const out = await mdbrianBridgeReadFile({
 				relPath,
 				from: typeof body.from === "number" ? body.from : undefined,
 				lines: typeof body.lines === "number" ? body.lines : undefined,
@@ -1364,7 +1364,7 @@ export function createV1Router(): Hono {
 				? (body.metadata as Record<string, unknown>)
 				: undefined
 		try {
-			const out = await mbrainBridgeAdd({
+			const out = await mdbrianBridgeAdd({
 				content,
 				agentId: readAgentId(body),
 				sessionId: readSessionId(body),
@@ -1418,7 +1418,7 @@ export function createV1Router(): Hono {
 				: undefined
 		const scope = readScope(body)
 		try {
-			const out = await mbrainBridgeWriteConversationEvent({
+			const out = await mdbrianBridgeWriteConversationEvent({
 				agentId: readAgentId(body),
 				role,
 				body: bodyText,
@@ -1450,7 +1450,7 @@ export function createV1Router(): Hono {
 			return jsonError(c, 400, "VALIDATION_ERROR", "eventId is required")
 		}
 		try {
-			const out = await mbrainBridgeExtractEvent({
+			const out = await mdbrianBridgeExtractEvent({
 				agentId: readAgentId(body),
 				eventId,
 			})
@@ -1471,7 +1471,7 @@ export function createV1Router(): Hono {
 			return jsonError(c, 400, "VALIDATION_ERROR", "entry object is required")
 		}
 		try {
-			const out = await mbrainBridgeWriteStructuredMemory({
+			const out = await mdbrianBridgeWriteStructuredMemory({
 				agentId: readAgentId(body),
 				entry: entry as StructuredMemoryEntry,
 			})
@@ -1492,7 +1492,7 @@ export function createV1Router(): Hono {
 			return jsonError(c, 400, "VALIDATION_ERROR", "entry object is required")
 		}
 		try {
-			const out = await mbrainBridgeWriteProcedure({
+			const out = await mdbrianBridgeWriteProcedure({
 				agentId: readAgentId(body),
 				entry: entry as ProcedureEntry,
 			})
@@ -1513,7 +1513,7 @@ export function createV1Router(): Hono {
 			return jsonError(c, 400, "VALIDATION_ERROR", scopeError)
 		}
 		try {
-			const profile = await mbrainBridgeProfile({
+			const profile = await mdbrianBridgeProfile({
 				agentId: readAgentId(body),
 				scope: readScope(body),
 				scopeRef: readScopeRef(body),
@@ -1545,7 +1545,7 @@ export function createV1Router(): Hono {
 		const scope = readScope(query)
 		const scopeRef = readScopeRef(query)
 		try {
-			const state = await mbrainBridgeGetState({ agentId, scope, scopeRef })
+			const state = await mdbrianBridgeGetState({ agentId, scope, scopeRef })
 			return c.json(state)
 		} catch (err) {
 			const message = err instanceof Error ? err.message : String(err)
@@ -1556,7 +1556,7 @@ export function createV1Router(): Hono {
 	v1.get("/status", async (c) => {
 		const agentId = c.req.query("agentId") ?? undefined
 		try {
-			const status = await mbrainBridgeStatus({ agentId })
+			const status = await mdbrianBridgeStatus({ agentId })
 			return c.json(status)
 		} catch (err) {
 			const message = err instanceof Error ? err.message : String(err)
@@ -1567,7 +1567,7 @@ export function createV1Router(): Hono {
 	v1.get("/status/detailed", async (c) => {
 		const agentId = c.req.query("agentId") ?? undefined
 		try {
-			const status = await mbrainBridgeGetDetailedStatus({ agentId })
+			const status = await mdbrianBridgeGetDetailedStatus({ agentId })
 			return c.json(status)
 		} catch (err) {
 			const message = err instanceof Error ? err.message : String(err)
@@ -1578,7 +1578,7 @@ export function createV1Router(): Hono {
 	v1.get("/stats", async (c) => {
 		const agentId = c.req.query("agentId") ?? undefined
 		try {
-			const stats = await mbrainBridgeStats({ agentId })
+			const stats = await mdbrianBridgeStats({ agentId })
 			return c.json(stats)
 		} catch (err) {
 			const message = err instanceof Error ? err.message : String(err)
@@ -1592,7 +1592,7 @@ export function createV1Router(): Hono {
 			unknown
 		>
 		try {
-			await mbrainBridgeSync({
+			await mdbrianBridgeSync({
 				agentId: readAgentId(body),
 				reason: typeof body.reason === "string" ? body.reason : undefined,
 				force: typeof body.force === "boolean" ? body.force : undefined,
@@ -1607,7 +1607,7 @@ export function createV1Router(): Hono {
 	v1.get("/probes/embedding", async (c) => {
 		const agentId = c.req.query("agentId") ?? undefined
 		try {
-			const result = await mbrainBridgeProbeEmbedding({ agentId })
+			const result = await mdbrianBridgeProbeEmbedding({ agentId })
 			return c.json(result)
 		} catch (err) {
 			const message = err instanceof Error ? err.message : String(err)
@@ -1618,7 +1618,7 @@ export function createV1Router(): Hono {
 	v1.get("/probes/vector", async (c) => {
 		const agentId = c.req.query("agentId") ?? undefined
 		try {
-			const ok = await mbrainBridgeProbeVector({ agentId })
+			const ok = await mdbrianBridgeProbeVector({ agentId })
 			return c.json({ ok })
 		} catch (err) {
 			const message = err instanceof Error ? err.message : String(err)
@@ -1643,7 +1643,7 @@ export function createV1Router(): Hono {
 				? body.sourceScope
 				: undefined
 		try {
-			const out = await mbrainBridgeRelevanceExplain({
+			const out = await mdbrianBridgeRelevanceExplain({
 				agentId: readAgentId(body),
 				query,
 				sourceScope,
@@ -1677,7 +1677,7 @@ export function createV1Router(): Hono {
 			const rerankerConfig = parseRerankerConfig(body.rerankerConfig)
 			const retrievalLane = parseBenchmarkRetrievalLane(body.retrievalLane)
 
-			const out = await mbrainBridgeRelevanceBenchmark({
+			const out = await mdbrianBridgeRelevanceBenchmark({
 				agentId: readAgentId(body),
 				datasetPath:
 					typeof body.datasetPath === "string" ? body.datasetPath : undefined,
@@ -1750,7 +1750,7 @@ export function createV1Router(): Hono {
 			return jsonError(c, 400, "VALIDATION_ERROR", "datasetPath is required")
 		}
 		try {
-			const out = await mbrainBridgeBenchmarkIngest({
+			const out = await mdbrianBridgeBenchmarkIngest({
 				agentId: readAgentId(body),
 				datasetPath,
 				scope: readScope(body),
@@ -1775,7 +1775,7 @@ export function createV1Router(): Hono {
 		const windowMsRaw = c.req.query("windowMs")
 		const windowMs = windowMsRaw ? Number(windowMsRaw) : undefined
 		try {
-			const out = await mbrainBridgeRelevanceReport({
+			const out = await mdbrianBridgeRelevanceReport({
 				agentId,
 				windowMs: Number.isFinite(windowMs) ? windowMs : undefined,
 			})
@@ -1789,7 +1789,7 @@ export function createV1Router(): Hono {
 	v1.get("/admin/relevance/sample-rate", async (c) => {
 		const agentId = c.req.query("agentId") ?? undefined
 		try {
-			const out = await mbrainBridgeRelevanceSampleRate({ agentId })
+			const out = await mdbrianBridgeRelevanceSampleRate({ agentId })
 			return c.json(out)
 		} catch (err) {
 			const message = err instanceof Error ? err.message : String(err)
@@ -1813,7 +1813,7 @@ export function createV1Router(): Hono {
 		const windowDays = windowDaysRaw ? Number(windowDaysRaw) : undefined
 		const limit = parseListLimit(c.req.query("limit"))
 		try {
-			const out = await mbrainBridgeAccessTrends({
+			const out = await mdbrianBridgeAccessTrends({
 				agentId,
 				collection,
 				memoryIds,
@@ -1848,7 +1848,7 @@ export function createV1Router(): Hono {
 		const windowDaysRaw = c.req.query("windowDays")
 		const windowDays = windowDaysRaw ? Number(windowDaysRaw) : undefined
 		try {
-			const out = await mbrainBridgeAccessSummaries({
+			const out = await mdbrianBridgeAccessSummaries({
 				agentId,
 				collection,
 				memoryIds,
@@ -1865,7 +1865,7 @@ export function createV1Router(): Hono {
 		const agentId = c.req.query("agentId")
 		const limit = parseListLimit(c.req.query("limit"))
 		try {
-			const traces = await mbrainBridgeListRecallTraces({
+			const traces = await mdbrianBridgeListRecallTraces({
 				agentId: agentId || undefined,
 				limit,
 			})
@@ -1882,7 +1882,7 @@ export function createV1Router(): Hono {
 			return jsonError(c, 400, "VALIDATION_ERROR", "traceId is required")
 		}
 		try {
-			const trace = await mbrainBridgeGetRecallTrace({
+			const trace = await mdbrianBridgeGetRecallTrace({
 				agentId: c.req.query("agentId") || undefined,
 				traceId,
 			})
@@ -1902,7 +1902,7 @@ export function createV1Router(): Hono {
 		const jobType = c.req.query("jobType")
 		const limit = parseListLimit(c.req.query("limit"))
 		try {
-			const jobs = await mbrainBridgeListMemoryJobs({
+			const jobs = await mdbrianBridgeListMemoryJobs({
 				agentId: agentId || undefined,
 				status:
 					status === "pending" ||
@@ -1935,7 +1935,7 @@ export function createV1Router(): Hono {
 			return jsonError(c, 400, "VALIDATION_ERROR", "jobId is required")
 		}
 		try {
-			const job = await mbrainBridgeGetMemoryJob({
+			const job = await mdbrianBridgeGetMemoryJob({
 				agentId: c.req.query("agentId") || undefined,
 				jobId,
 			})
@@ -1964,7 +1964,7 @@ export function createV1Router(): Hono {
 			return jsonError(c, 400, "VALIDATION_ERROR", "collection is required")
 		}
 		try {
-			const chain = await mbrainBridgeTraceChain({
+			const chain = await mdbrianBridgeTraceChain({
 				agentId: readAgentId(body),
 				factId,
 				collection,
@@ -1983,7 +1983,7 @@ export function createV1Router(): Hono {
 			unknown
 		>
 		try {
-			const report = await mbrainBridgeScanNovelty({
+			const report = await mdbrianBridgeScanNovelty({
 				agentId: readAgentId(body),
 				limit: typeof body.limit === "number" ? body.limit : undefined,
 				scope: typeof body.scope === "string" ? body.scope : undefined,
@@ -2001,7 +2001,7 @@ export function createV1Router(): Hono {
 			unknown
 		>
 		try {
-			const result = await mbrainBridgeConsolidate({
+			const result = await mdbrianBridgeConsolidate({
 				agentId: readAgentId(body),
 				maxEvents:
 					typeof body.maxEvents === "number" ? body.maxEvents : undefined,
@@ -2048,7 +2048,7 @@ export function createV1Router(): Hono {
 			return jsonError(c, 400, "VALIDATION_ERROR", "content is required")
 		}
 		try {
-			const result = await mbrainBridgeSelfEdit({
+			const result = await mdbrianBridgeSelfEdit({
 				agentId: readAgentId(body),
 				block: block as "user" | "persona" | "instructions",
 				action: action as "append" | "replace" | "prepend",

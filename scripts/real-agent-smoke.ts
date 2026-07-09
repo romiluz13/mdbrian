@@ -1,5 +1,5 @@
 import { randomUUID } from "node:crypto"
-import { MbrainClient } from "@mbrain/client"
+import { MdbrianClient } from "@mdbrian/client"
 import { writeProofArtifact } from "./proof-artifacts.js"
 
 type ChatMessage =
@@ -36,39 +36,39 @@ type ChatCompletionResponse = {
 type LlmAuthStyle = "authorization-bearer" | "api-key" | "x-api-key"
 type LlmTokenParam = "max_tokens" | "max_completion_tokens"
 
-const llmBaseUrl = process.env.MBRAIN_LLM_BASE_URL?.trim()
-const llmApiKey = process.env.MBRAIN_LLM_API_KEY?.trim()
-const llmModel = process.env.MBRAIN_LLM_MODEL?.trim()
+const llmBaseUrl = process.env.MDBRAIN_LLM_BASE_URL?.trim()
+const llmApiKey = process.env.MDBRAIN_LLM_API_KEY?.trim()
+const llmModel = process.env.MDBRAIN_LLM_MODEL?.trim()
 const llmAuthStyle =
-	(process.env.MBRAIN_LLM_AUTH_STYLE?.trim() as LlmAuthStyle | undefined) ??
+	(process.env.MDBRAIN_LLM_AUTH_STYLE?.trim() as LlmAuthStyle | undefined) ??
 	"authorization-bearer"
 const llmTokenParam =
-	(process.env.MBRAIN_LLM_TOKEN_PARAM?.trim() as LlmTokenParam | undefined) ??
+	(process.env.MDBRAIN_LLM_TOKEN_PARAM?.trim() as LlmTokenParam | undefined) ??
 	"max_tokens"
-const mbrainApiUrl =
-	process.env.MBRAIN_API_URL?.trim() ?? "http://127.0.0.1:3847"
-const mbrainApiKey = process.env.MBRAIN_API_KEY?.trim() || undefined
+const mdbrianApiUrl =
+	process.env.MDBRAIN_API_URL?.trim() ?? "http://127.0.0.1:3847"
+const mdbrianApiKey = process.env.MDBRAIN_API_KEY?.trim() || undefined
 const agentId =
-	process.env.MBRAIN_AGENT_ID?.trim() ??
+	process.env.MDBRAIN_AGENT_ID?.trim() ??
 	`real-agent-smoke-${randomUUID().slice(0, 8)}`
 const sessionId =
-	process.env.MBRAIN_SESSION_ID?.trim() ??
+	process.env.MDBRAIN_SESSION_ID?.trim() ??
 	`real-agent-session-${randomUUID().slice(0, 8)}`
 const agentScopeRef = `agent:${agentId}`
 const marker = `Blue Finch ${randomUUID().slice(0, 8)}`
 
 if (!llmBaseUrl || !llmApiKey || !llmModel) {
 	throw new Error(
-		"MBRAIN_LLM_BASE_URL, MBRAIN_LLM_API_KEY, and MBRAIN_LLM_MODEL are required.",
+		"MDBRAIN_LLM_BASE_URL, MDBRAIN_LLM_API_KEY, and MDBRAIN_LLM_MODEL are required.",
 	)
 }
 const configuredLlmBaseUrl = llmBaseUrl
 const configuredLlmApiKey = llmApiKey
 const configuredLlmModel = llmModel
 
-const mbrain = new MbrainClient({
-	baseUrl: mbrainApiUrl,
-	apiKey: mbrainApiKey,
+const mdbrian = new MdbrianClient({
+	baseUrl: mdbrianApiUrl,
+	apiKey: mdbrianApiKey,
 	maxRetries: 2,
 })
 const runLog: unknown[] = []
@@ -82,9 +82,9 @@ const tools = [
 	{
 		type: "function",
 		function: {
-			name: "mbrain_write_event",
+			name: "mdbrian_write_event",
 			description:
-				"Persist a conversational event into Mbrain canonical memory.",
+				"Persist a conversational event into Mdbrian canonical memory.",
 			parameters: {
 				type: "object",
 				properties: {
@@ -102,8 +102,9 @@ const tools = [
 	{
 		type: "function",
 		function: {
-			name: "mbrain_search_detailed",
-			description: "Search Mbrain memory and return the top evidence snippets.",
+			name: "mdbrian_search_detailed",
+			description:
+				"Search Mdbrian memory and return the top evidence snippets.",
 			parameters: {
 				type: "object",
 				properties: {
@@ -118,8 +119,8 @@ const tools = [
 	{
 		type: "function",
 		function: {
-			name: "mbrain_status",
-			description: "Read Mbrain backend status for the current agent.",
+			name: "mdbrian_status",
+			description: "Read Mdbrian backend status for the current agent.",
 			parameters: {
 				type: "object",
 				properties: {},
@@ -130,7 +131,7 @@ const tools = [
 	{
 		type: "function",
 		function: {
-			name: "mbrain_hydrate_active_slate",
+			name: "mdbrian_hydrate_active_slate",
 			description:
 				"Read a tiny active-state slate for current blockers, decisions, and live procedures.",
 			parameters: {
@@ -145,7 +146,7 @@ const tools = [
 	{
 		type: "function",
 		function: {
-			name: "mbrain_build_discovery_projection",
+			name: "mdbrian_build_discovery_projection",
 			description:
 				"Build a rebuildable synthesis view for changes, contradictions, entities, or topics.",
 			parameters: {
@@ -171,7 +172,7 @@ const tools = [
 	{
 		type: "function",
 		function: {
-			name: "mbrain_build_context_bundle",
+			name: "mdbrian_build_context_bundle",
 			description:
 				"Build a prompt-ready context bundle that combines active state, durable evidence, summaries, and recent events.",
 			parameters: {
@@ -211,7 +212,7 @@ async function callModel(messages: ChatMessage[]): Promise<{
 		headers["api-key"] = configuredLlmApiKey
 	} else {
 		throw new Error(
-			"MBRAIN_LLM_AUTH_STYLE must be authorization-bearer, api-key, or x-api-key.",
+			"MDBRAIN_LLM_AUTH_STYLE must be authorization-bearer, api-key, or x-api-key.",
 		)
 	}
 	if (
@@ -219,7 +220,7 @@ async function callModel(messages: ChatMessage[]): Promise<{
 		llmTokenParam !== "max_completion_tokens"
 	) {
 		throw new Error(
-			"MBRAIN_LLM_TOKEN_PARAM must be max_tokens or max_completion_tokens.",
+			"MDBRAIN_LLM_TOKEN_PARAM must be max_tokens or max_completion_tokens.",
 		)
 	}
 	const body: Record<string, unknown> = {
@@ -265,8 +266,8 @@ async function executeToolCall(toolCall: ToolCall): Promise<unknown> {
 	const args = JSON.parse(rawArgs) as Record<string, unknown>
 
 	switch (toolCall.function.name) {
-		case "mbrain_write_event":
-			return mbrain.writeEvent({
+		case "mdbrian_write_event":
+			return mdbrian.writeEvent({
 				role: String(args.role ?? "user") as
 					| "user"
 					| "assistant"
@@ -276,8 +277,8 @@ async function executeToolCall(toolCall: ToolCall): Promise<unknown> {
 				agentId,
 				sessionId,
 			})
-		case "mbrain_search_detailed": {
-			const response = await mbrain.searchDetailed({
+		case "mdbrian_search_detailed": {
+			const response = await mdbrian.searchDetailed({
 				query: String(args.query ?? ""),
 				agentId,
 				limit:
@@ -301,10 +302,10 @@ async function executeToolCall(toolCall: ToolCall): Promise<unknown> {
 				})),
 			}
 		}
-		case "mbrain_status":
-			return mbrain.status(agentId)
-		case "mbrain_hydrate_active_slate":
-			return mbrain.hydrateActiveSlate({
+		case "mdbrian_status":
+			return mdbrian.status(agentId)
+		case "mdbrian_hydrate_active_slate":
+			return mdbrian.hydrateActiveSlate({
 				agentId,
 				scope: "agent",
 				scopeRef: agentScopeRef,
@@ -313,8 +314,8 @@ async function executeToolCall(toolCall: ToolCall): Promise<unknown> {
 						? args.maxItems
 						: 4,
 			})
-		case "mbrain_build_discovery_projection":
-			return mbrain.buildDiscoveryProjection({
+		case "mdbrian_build_discovery_projection":
+			return mdbrian.buildDiscoveryProjection({
 				agentId,
 				kind: String(args.kind ?? "topic-brief") as
 					| "entity-brief"
@@ -332,14 +333,14 @@ async function executeToolCall(toolCall: ToolCall): Promise<unknown> {
 						? args.maxItems
 						: 4,
 			})
-		case "mbrain_build_context_bundle": {
+		case "mdbrian_build_context_bundle": {
 			const requestedTokenBudget =
 				typeof args.tokenBudget === "number" &&
 				Number.isFinite(args.tokenBudget)
 					? args.tokenBudget
 					: 520
 
-			return mbrain.buildContextBundle({
+			return mdbrian.buildContextBundle({
 				agentId,
 				query:
 					typeof args.query === "string" && args.query.trim().length > 0
@@ -377,13 +378,13 @@ async function runAgentTurn(userPrompt: string): Promise<{
 		{
 			role: "system",
 			content: [
-				"You are a real Mbrain smoke-test agent.",
-				"Always persist the user's message with mbrain_write_event before answering.",
-				"When asked to recall prior facts, call mbrain_search_detailed before answering.",
-				"When asked about current state, blockers, or active work, call mbrain_hydrate_active_slate before answering.",
-				"When asked about changes or contradictions, call mbrain_build_discovery_projection before answering.",
-				"When asked for a handoff brief or prompt-ready context, call mbrain_build_context_bundle before answering.",
-				"Persist your final answer with mbrain_write_event before you return it.",
+				"You are a real Mdbrian smoke-test agent.",
+				"Always persist the user's message with mdbrian_write_event before answering.",
+				"When asked to recall prior facts, call mdbrian_search_detailed before answering.",
+				"When asked about current state, blockers, or active work, call mdbrian_hydrate_active_slate before answering.",
+				"When asked about changes or contradictions, call mdbrian_build_discovery_projection before answering.",
+				"When asked for a handoff brief or prompt-ready context, call mdbrian_build_context_bundle before answering.",
+				"Persist your final answer with mdbrian_write_event before you return it.",
 				"Do not guess if memory evidence is missing.",
 			].join(" "),
 		},
@@ -429,17 +430,17 @@ async function runAgentTurn(userPrompt: string): Promise<{
 async function main() {
 	emitRunStep({
 		step: "start",
-		mbrainApiUrl,
+		mdbrianApiUrl,
 		llmBaseUrl: configuredLlmBaseUrl,
 		model: configuredLlmModel,
 		agentId,
 		sessionId,
 	})
 
-	const status = await mbrain.status(agentId)
-	emitRunStep({ step: "mbrain-status", status })
+	const status = await mdbrian.status(agentId)
+	emitRunStep({ step: "mdbrian-status", status })
 
-	await mbrain.writeStructured({
+	await mdbrian.writeStructured({
 		agentId,
 		entry: {
 			type: "decision",
@@ -454,7 +455,7 @@ async function main() {
 			tags: ["phoenix", "release"],
 		},
 	})
-	await mbrain.writeStructured({
+	await mdbrian.writeStructured({
 		agentId,
 		entry: {
 			type: "decision",
@@ -469,7 +470,7 @@ async function main() {
 			tags: ["phoenix", "release"],
 		},
 	})
-	await mbrain.writeStructured({
+	await mdbrian.writeStructured({
 		agentId,
 		entry: {
 			type: "project",
@@ -484,7 +485,7 @@ async function main() {
 			tags: ["phoenix", "blocker"],
 		},
 	})
-	await mbrain.writeStructured({
+	await mdbrian.writeStructured({
 		agentId,
 		entry: {
 			type: "fact",
@@ -499,7 +500,7 @@ async function main() {
 			tags: ["phoenix", "approval"],
 		},
 	})
-	await mbrain.writeProcedure({
+	await mdbrian.writeProcedure({
 		agentId,
 		entry: {
 			procedureId: "phoenix-rollback",
@@ -515,7 +516,7 @@ async function main() {
 			agentId,
 		},
 	})
-	await mbrain.writeProcedure({
+	await mdbrian.writeProcedure({
 		agentId,
 		entry: {
 			procedureId: "phoenix-rollback",
@@ -532,7 +533,7 @@ async function main() {
 			agentId,
 		},
 	})
-	await mbrain.writeProcedure({
+	await mdbrian.writeProcedure({
 		agentId,
 		entry: {
 			procedureId: "phoenix-contingency",
@@ -562,8 +563,8 @@ async function main() {
 			`Recall failed. Expected final answer to include marker "${marker}", got: ${turn2.answer}`,
 		)
 	}
-	if (!turn2.toolsUsed.includes("mbrain_search_detailed")) {
-		throw new Error("Recall turn did not use mbrain_search_detailed.")
+	if (!turn2.toolsUsed.includes("mdbrian_search_detailed")) {
+		throw new Error("Recall turn did not use mdbrian_search_detailed.")
 	}
 
 	const turn3 = await runAgentTurn(
@@ -576,9 +577,9 @@ async function main() {
 	) {
 		throw new Error(`Active-state recall failed. Got: ${turn3.answer}`)
 	}
-	if (!turn3.toolsUsed.includes("mbrain_hydrate_active_slate")) {
+	if (!turn3.toolsUsed.includes("mdbrian_hydrate_active_slate")) {
 		throw new Error(
-			"Current-state turn did not use mbrain_hydrate_active_slate.",
+			"Current-state turn did not use mdbrian_hydrate_active_slate.",
 		)
 	}
 
@@ -592,9 +593,9 @@ async function main() {
 	) {
 		throw new Error(`What-changed summary failed. Got: ${turn4.answer}`)
 	}
-	if (!turn4.toolsUsed.includes("mbrain_build_discovery_projection")) {
+	if (!turn4.toolsUsed.includes("mdbrian_build_discovery_projection")) {
 		throw new Error(
-			"What-changed turn did not use mbrain_build_discovery_projection.",
+			"What-changed turn did not use mdbrian_build_discovery_projection.",
 		)
 	}
 
@@ -609,9 +610,9 @@ async function main() {
 	) {
 		throw new Error(`Contradiction summary failed. Got: ${turn5.answer}`)
 	}
-	if (!turn5.toolsUsed.includes("mbrain_build_discovery_projection")) {
+	if (!turn5.toolsUsed.includes("mdbrian_build_discovery_projection")) {
 		throw new Error(
-			"Contradiction turn did not use mbrain_build_discovery_projection.",
+			"Contradiction turn did not use mdbrian_build_discovery_projection.",
 		)
 	}
 
@@ -628,11 +629,11 @@ async function main() {
 	) {
 		throw new Error(`Context-bundle handoff failed. Got: ${turn6.answer}`)
 	}
-	if (!turn6.toolsUsed.includes("mbrain_build_context_bundle")) {
-		throw new Error("Handoff turn did not use mbrain_build_context_bundle.")
+	if (!turn6.toolsUsed.includes("mdbrian_build_context_bundle")) {
+		throw new Error("Handoff turn did not use mdbrian_build_context_bundle.")
 	}
 
-	const directSearch = await mbrain.searchDetailed({
+	const directSearch = await mdbrian.searchDetailed({
 		query: marker,
 		agentId,
 		limit: 4,

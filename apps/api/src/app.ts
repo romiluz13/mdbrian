@@ -70,7 +70,7 @@ function requireValidScopedPolicies(
 ): ScopedApiKeyPolicy[] {
 	if (policies.length === 0) {
 		throw new Error(
-			"MBRAIN_API_SCOPED_KEYS must define at least one scoped API key policy",
+			"MDBRAIN_API_SCOPED_KEYS must define at least one scoped API key policy",
 		)
 	}
 	const unconstrained = policies.find(
@@ -78,14 +78,14 @@ function requireValidScopedPolicies(
 	)
 	if (unconstrained) {
 		throw new Error(
-			`MBRAIN_API_SCOPED_KEYS policy for token ${unconstrained.token} must constrain agentIds, scopes, or scopeRefs`,
+			`MDBRAIN_API_SCOPED_KEYS policy for token ${unconstrained.token} must constrain agentIds, scopes, or scopeRefs`,
 		)
 	}
 	return policies
 }
 
 export function parseScopedApiKeyPolicies(
-	raw = process.env.MBRAIN_API_SCOPED_KEYS,
+	raw = process.env.MDBRAIN_API_SCOPED_KEYS,
 ): ScopedApiKeyPolicy[] {
 	const trimmed = raw?.trim()
 	if (!trimmed) {
@@ -95,7 +95,7 @@ export function parseScopedApiKeyPolicies(
 	try {
 		parsed = JSON.parse(trimmed) as unknown
 	} catch {
-		throw new Error("MBRAIN_API_SCOPED_KEYS must be valid JSON")
+		throw new Error("MDBRAIN_API_SCOPED_KEYS must be valid JSON")
 	}
 	if (Array.isArray(parsed)) {
 		const policies = parsed
@@ -115,7 +115,7 @@ export function parseScopedApiKeyPolicies(
 			.filter((item): item is ScopedApiKeyPolicy => item !== null)
 		return requireValidScopedPolicies(policies)
 	}
-	throw new Error("MBRAIN_API_SCOPED_KEYS must be a JSON array or object")
+	throw new Error("MDBRAIN_API_SCOPED_KEYS must be a JSON array or object")
 }
 
 async function readRequestScopeInput(
@@ -291,7 +291,7 @@ export function createApp(): Hono {
 
 	app.use("/*", cors())
 
-	const token = process.env.MBRAIN_API_KEY?.trim()
+	const token = process.env.MDBRAIN_API_KEY?.trim()
 	const scopedPolicies = parseScopedApiKeyPolicies()
 	if (token || scopedPolicies.length > 0) {
 		app.use("/v1/*", async (c, next) => {
@@ -319,11 +319,11 @@ export function createApp(): Hono {
 	} else if (!unauthenticatedApiWarningEmitted) {
 		unauthenticatedApiWarningEmitted = true
 		console.warn(
-			"WARNING: MBRAIN_API_KEY is not set and MBRAIN_API_SCOPED_KEYS is empty; /v1 routes are unauthenticated. Use only for trusted local development.",
+			"WARNING: MDBRAIN_API_KEY is not set and MDBRAIN_API_SCOPED_KEYS is empty; /v1 routes are unauthenticated. Use only for trusted local development.",
 		)
 	}
 
-	app.get("/health", (c) => c.json({ ok: true, service: "mbrain-api" }))
+	app.get("/health", (c) => c.json({ ok: true, service: "mdbrian-api" }))
 	app.get("/openapi.json", (c) => c.json(openApiSpec))
 	app.route("/v1", createV1Router())
 

@@ -1,7 +1,7 @@
 {
 	"$schema": "../../node_modules/wrangler/config-schema.json",
 	"main": ".open-next/worker.js",
-	"name": "mbrain",
+	"name": "mdbrian",
 	"compatibility_date": "2026-06-24",
 	"compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
 	"workers_dev": true,
@@ -12,7 +12,7 @@
 	"services": [
 		{
 			"binding": "WORKER_SELF_REFERENCE",
-			"service": "mbrain"
+			"service": "mdbrian"
 		}
 	],
 	"observability": {

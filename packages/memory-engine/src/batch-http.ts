@@ -1,4 +1,4 @@
-import { type SsrFPolicy, retryAsync } from "@mbrain/lib"
+import { type SsrFPolicy, retryAsync } from "@mdbrian/lib"
 import { postJson } from "./post-json.js"
 
 export async function postJsonWithRetry<T>(params: {

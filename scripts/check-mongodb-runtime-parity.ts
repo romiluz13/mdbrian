@@ -5,7 +5,7 @@ import {
 	isSearchIndexQueryable,
 	type SearchIndexDescription,
 } from "../packages/memory-engine/src/mongodb-schema.ts"
-import type { MemoryMongoDBDeploymentProfile } from "@mbrain/lib"
+import type { MemoryMongoDBDeploymentProfile } from "@mdbrian/lib"
 
 type RuntimeInput = {
 	name: string
@@ -54,9 +54,9 @@ function runtimeKind(
 
 function readRuntimeInputs(): RuntimeInput[] {
 	const inputs: RuntimeInput[] = []
-	const cloudUri = process.env.MBRAIN_CLOUD_MONGODB_URI?.trim()
-	const localUri = process.env.MBRAIN_LOCAL_MONGODB_URI?.trim()
-	const activeUri = process.env.MBRAIN_MONGODB_URI?.trim()
+	const cloudUri = process.env.MDBRAIN_CLOUD_MONGODB_URI?.trim()
+	const localUri = process.env.MDBRAIN_LOCAL_MONGODB_URI?.trim()
+	const activeUri = process.env.MDBRAIN_MONGODB_URI?.trim()
 
 	if (cloudUri) {
 		inputs.push({
@@ -107,14 +107,14 @@ function parseNonNegativeInteger(
 function readWaitOptions(): RuntimeParityWaitOptions {
 	return {
 		waitMs: parseNonNegativeInteger(
-			readArgValue("--wait-ms") ?? process.env.MBRAIN_PARITY_WAIT_MS,
+			readArgValue("--wait-ms") ?? process.env.MDBRAIN_PARITY_WAIT_MS,
 			0,
-			"--wait-ms/MBRAIN_PARITY_WAIT_MS",
+			"--wait-ms/MDBRAIN_PARITY_WAIT_MS",
 		),
 		pollMs: parseNonNegativeInteger(
-			readArgValue("--poll-ms") ?? process.env.MBRAIN_PARITY_POLL_MS,
+			readArgValue("--poll-ms") ?? process.env.MDBRAIN_PARITY_POLL_MS,
 			5000,
-			"--poll-ms/MBRAIN_PARITY_POLL_MS",
+			"--poll-ms/MDBRAIN_PARITY_POLL_MS",
 		),
 	}
 }
@@ -147,11 +147,11 @@ async function listSearchIndexes(
 }
 
 async function inspectRuntime(input: RuntimeInput): Promise<RuntimeReport> {
-	const database = process.env.MBRAIN_PARITY_DATABASE?.trim() || "mbrain"
+	const database = process.env.MDBRAIN_PARITY_DATABASE?.trim() || "mdbrian"
 	const prefix =
-		process.env.MBRAIN_PARITY_COLLECTION_PREFIX?.trim() || "mbrain_default_"
+		process.env.MDBRAIN_PARITY_COLLECTION_PREFIX?.trim() || "mdbrian_default_"
 	const client = new MongoClient(input.uri, {
-		appName: "mbrain-runtime-parity-check",
+		appName: "mdbrian-runtime-parity-check",
 		serverSelectionTimeoutMS: 10_000,
 	})
 	try {
@@ -262,7 +262,7 @@ function renderText(reports: RuntimeReport[]): string {
 		return [
 			"mongodb:parity FAIL",
 			"no runtimes configured",
-			"set MBRAIN_CLOUD_MONGODB_URI, MBRAIN_LOCAL_MONGODB_URI, or MBRAIN_MONGODB_URI",
+			"set MDBRAIN_CLOUD_MONGODB_URI, MDBRAIN_LOCAL_MONGODB_URI, or MDBRAIN_MONGODB_URI",
 		].join("\n")
 	}
 

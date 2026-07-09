@@ -1,6 +1,6 @@
 ---
 title: Quickstart
-description: Start Mbrain, add one memory, and search it.
+description: Start Mdbrian, add one memory, and search it.
 icon: "play"
 ---
 
@@ -13,8 +13,8 @@ icon: "play"
 ## 1. Clone and install
 
 ```bash
-git clone https://github.com/romiluz13/mbrain.git
-cd mbrain
+git clone https://github.com/romiluz13/mdbrian.git
+cd mdbrian
 bun install
 ```
 
@@ -24,8 +24,8 @@ For the default local path:
 
 ```bash
 docker compose -f docker/docker-compose.yml up -d
-export MBRAIN_MONGODB_URI="mongodb://127.0.0.1:27017/?directConnection=true"
-export MBRAIN_API_KEY="local-dev-secret"
+export MDBRAIN_MONGODB_URI="mongodb://127.0.0.1:27017/?directConnection=true"
+export MDBRAIN_API_KEY="local-dev-secret"
 ```
 
 For Atlas Local Preview with MongoDB automated embeddings:
@@ -33,7 +33,7 @@ For Atlas Local Preview with MongoDB automated embeddings:
 ```bash
 export VOYAGE_API_KEY="al-your-atlas-model-api-key"
 ./docker/mongodb/start-preview.sh
-export MBRAIN_MONGODB_URI="mongodb://127.0.0.1:27017/?directConnection=true"
+export MDBRAIN_MONGODB_URI="mongodb://127.0.0.1:27017/?directConnection=true"
 ```
 
 `VOYAGE_API_KEY` must be a MongoDB Atlas Model API key with the `al-...` prefix
@@ -64,9 +64,9 @@ Look for a healthy API response and a memory status payload.
 <Tabs>
 <Tab title="TypeScript">
 ```typescript
-import { MbrainClient } from "@mbrain/client";
+import { MdbrianClient } from "@mdbrian/client";
 
-const client = new MbrainClient({
+const client = new MdbrianClient({
   baseUrl: "http://127.0.0.1:3847",
   apiKey: "local-dev-secret",
 });
@@ -102,7 +102,7 @@ curl -s http://127.0.0.1:3847/v1/search \
 
 ## Optional surfaces
 
-Mbrain can be used directly by apps or exposed to agents as a Company Brain.
+Mdbrian can be used directly by apps or exposed to agents as a Company Brain.
 Start read-first, then add explicit write workflows once scopes and safety are
 clear.
 
@@ -110,15 +110,15 @@ Operator console:
 
 ```bash
 cd apps/web
-MBRAIN_API_URL=http://127.0.0.1:3847 bun run dev
+MDBRAIN_API_URL=http://127.0.0.1:3847 bun run dev
 ```
 
 MCP server:
 
 ```bash
 cd apps/mcp
-MBRAIN_API_URL=http://127.0.0.1:3847 \
-MBRAIN_API_KEY=local-dev-secret \
+MDBRAIN_API_URL=http://127.0.0.1:3847 \
+MDBRAIN_API_KEY=local-dev-secret \
 bun run start
 ```
 
@@ -141,7 +141,7 @@ bun run start
 
 <CardGroup cols={2}>
   <Card title="Memory Concepts" icon="brain" href="/concepts/memory">
-    Learn how Mbrain stores and retrieves memory.
+    Learn how Mdbrian stores and retrieves memory.
   </Card>
   <Card title="Memory Framework" icon="network" href="/concepts/framework">
     Understand the Company Brain contract.

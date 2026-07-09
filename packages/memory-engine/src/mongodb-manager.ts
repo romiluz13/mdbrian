@@ -10,11 +10,11 @@ import {
 	type MongoClientOptions,
 } from "mongodb"
 import {
-	type MbrainConfig,
+	type MdbrianConfig,
 	type MemoryScope,
 	createSubsystemLogger,
 	resolveUserPath,
-} from "@mbrain/lib"
+} from "@mdbrian/lib"
 import {
 	AccessTracker,
 	getAccessSummaries as listAccessSummaries,
@@ -305,7 +305,7 @@ function isLegacyBenchmarkFallbackCandidate(err: unknown): boolean {
 }
 
 /**
- * Benchmark strict mode toggle. Reads MBRAIN_BENCHMARK_STRICT at call time
+ * Benchmark strict mode toggle. Reads MDBRAIN_BENCHMARK_STRICT at call time
  * (not at module load) so tests that mutate the env mid-run see the update.
  * Truthy values: "1", "true" (case-insensitive). Everything else is false.
  *
@@ -315,7 +315,7 @@ function isLegacyBenchmarkFallbackCandidate(err: unknown): boolean {
  * readiness-probe delegate, so we define it here.
  */
 function isBenchmarkStrictMode(): boolean {
-	const v = process.env.MBRAIN_BENCHMARK_STRICT
+	const v = process.env.MDBRAIN_BENCHMARK_STRICT
 	return v === "1" || v?.toLowerCase() === "true"
 }
 
@@ -431,19 +431,19 @@ const CHANGE_STREAM_RESUME_TOKEN_META_KEY = "change_stream_resume_token"
 
 function isStrictSearchReadinessMode(): boolean {
 	return (
-		process.env.MBRAIN_BENCHMARK_STRICT === "1" ||
-		process.env.MBRAIN_STRICT_SEARCH_INDEX_READY === "1"
+		process.env.MDBRAIN_BENCHMARK_STRICT === "1" ||
+		process.env.MDBRAIN_STRICT_SEARCH_INDEX_READY === "1"
 	)
 }
 
 function isBenchmarkTurnPrecisionMode(): boolean {
-	return process.env.MBRAIN_BENCHMARK_TURN_PRECISION_MODE === "enabled"
+	return process.env.MDBRAIN_BENCHMARK_TURN_PRECISION_MODE === "enabled"
 }
 
 function isTemporalCoverageMode(): boolean {
 	return (
-		process.env.MBRAIN_TEMPORAL_COVERAGE_MODE === "enabled" ||
-		process.env.MBRAIN_BENCHMARK_TEMPORAL_COVERAGE_MODE === "enabled"
+		process.env.MDBRAIN_TEMPORAL_COVERAGE_MODE === "enabled" ||
+		process.env.MDBRAIN_BENCHMARK_TEMPORAL_COVERAGE_MODE === "enabled"
 	)
 }
 
@@ -1969,7 +1969,7 @@ function redactMongoURI(uri: string): string {
 // ---------------------------------------------------------------------------
 
 /**
- * Core runtime coordinator for the Mbrain engine.
+ * Core runtime coordinator for the Mdbrian engine.
  *
  * The file is intentionally large today because it still hosts several stable
  * subsystems in one place:
@@ -2050,7 +2050,7 @@ export class MongoDBMemoryManager implements MemorySearchManager {
 	// ---------------------------------------------------------------------------
 
 	static async create(params: {
-		cfg: MbrainConfig
+		cfg: MdbrianConfig
 		agentId: string
 		resolved: ResolvedMemoryBackendConfig
 		extraPaths?: string[]
@@ -2168,7 +2168,7 @@ export class MongoDBMemoryManager implements MemorySearchManager {
 			if (ensuredSearchIndexes.text || ensuredSearchIndexes.vector) {
 				const rawSessionBootstrapProfile =
 					resolveBenchmarkRetrievalLane(
-						process.env.MBRAIN_BENCHMARK_RETRIEVAL_LANE,
+						process.env.MDBRAIN_BENCHMARK_RETRIEVAL_LANE,
 					) === "raw-session"
 				if (rawSessionBootstrapProfile) {
 					log.info(
@@ -2333,20 +2333,20 @@ export class MongoDBMemoryManager implements MemorySearchManager {
 	}): Document {
 		const sources = ["conversation", "sessions"]
 		const sessionMode = resolveSessionEvidenceMode(
-			process.env.MBRAIN_SESSION_EVIDENCE_MODE,
+			process.env.MDBRAIN_SESSION_EVIDENCE_MODE,
 		)
 		if (sessionMode === "A") {
 			sources.push("session-evidence")
 		}
 		const userfactMode = resolveUserfactEvidenceMode(
-			process.env.MBRAIN_USERFACT_EVIDENCE_MODE,
-			process.env.MBRAIN_PREFERENCE_EVIDENCE_MODE,
+			process.env.MDBRAIN_USERFACT_EVIDENCE_MODE,
+			process.env.MDBRAIN_PREFERENCE_EVIDENCE_MODE,
 		)
 		if (userfactMode === "enabled") {
 			sources.push("userfact-evidence", "preference-evidence")
 		}
 		const enrichmentMode = resolveEnrichmentMode(
-			process.env.MBRAIN_LLM_ENRICHMENT_MODE,
+			process.env.MDBRAIN_LLM_ENRICHMENT_MODE,
 		)
 		if (enrichmentMode === "enabled") {
 			if (!sources.includes("userfact-evidence")) {
@@ -3597,7 +3597,7 @@ export class MongoDBMemoryManager implements MemorySearchManager {
 			allowedRoots: this.getBenchmarkAllowedRoots(),
 		})
 		const retrievalLane = resolveBenchmarkRetrievalLane(
-			params?.retrievalLane ?? process.env.MBRAIN_BENCHMARK_RETRIEVAL_LANE,
+			params?.retrievalLane ?? process.env.MDBRAIN_BENCHMARK_RETRIEVAL_LANE,
 		)
 
 		// Task 1.A projection: register run-scoped counters so rerank + LLM
@@ -3768,7 +3768,7 @@ export class MongoDBMemoryManager implements MemorySearchManager {
 	}
 
 	private getBenchmarkAllowedRoots(): string[] {
-		const envRoots = (process.env.MBRAIN_BENCHMARK_ALLOWED_ROOTS ?? "")
+		const envRoots = (process.env.MDBRAIN_BENCHMARK_ALLOWED_ROOTS ?? "")
 			.split(path.delimiter)
 			.map((entry) => entry.trim())
 			.filter(Boolean)
@@ -3819,7 +3819,7 @@ export class MongoDBMemoryManager implements MemorySearchManager {
 		manager: MongoDBMemoryManager,
 	): Promise<void> {
 		const configuredTimeout = Number(
-			process.env.MBRAIN_BENCHMARK_QUEUE_SETTLE_TIMEOUT_MS,
+			process.env.MDBRAIN_BENCHMARK_QUEUE_SETTLE_TIMEOUT_MS,
 		)
 		const timeoutMs =
 			Number.isFinite(configuredTimeout) && configuredTimeout >= 0
@@ -3872,7 +3872,7 @@ export class MongoDBMemoryManager implements MemorySearchManager {
 	}
 
 	private shouldUseBenchmarkFastIngest(): boolean {
-		const mode = process.env.MBRAIN_BENCHMARK_FAST_INGEST?.trim().toLowerCase()
+		const mode = process.env.MDBRAIN_BENCHMARK_FAST_INGEST?.trim().toLowerCase()
 		if (mode === "0" || mode === "false" || mode === "off" || mode === "none") {
 			return false
 		}
@@ -3893,7 +3893,7 @@ export class MongoDBMemoryManager implements MemorySearchManager {
 	): Promise<void> {
 		if (docs.length === 0) return
 		const configuredBatchSize = Number(
-			process.env.MBRAIN_BENCHMARK_FAST_INGEST_BATCH_SIZE,
+			process.env.MDBRAIN_BENCHMARK_FAST_INGEST_BATCH_SIZE,
 		)
 		const batchSize =
 			Number.isFinite(configuredBatchSize) && configuredBatchSize > 0
@@ -4250,8 +4250,8 @@ export class MongoDBMemoryManager implements MemorySearchManager {
 		}
 
 		const configuredTimeout = Number(
-			process.env.MBRAIN_BENCHMARK_VECTOR_SEARCH_SETTLE_TIMEOUT_MS ??
-				process.env.MBRAIN_BENCHMARK_EVENT_SEARCH_SETTLE_TIMEOUT_MS,
+			process.env.MDBRAIN_BENCHMARK_VECTOR_SEARCH_SETTLE_TIMEOUT_MS ??
+				process.env.MDBRAIN_BENCHMARK_EVENT_SEARCH_SETTLE_TIMEOUT_MS,
 		)
 		const timeoutMs =
 			Number.isFinite(configuredTimeout) && configuredTimeout >= 0
@@ -4302,8 +4302,8 @@ export class MongoDBMemoryManager implements MemorySearchManager {
 
 		const intervalMs = 2_000
 		const configuredProbeMaxTime = Number(
-			process.env.MBRAIN_BENCHMARK_VECTOR_SEARCH_PROBE_MAX_TIME_MS ??
-				process.env.MBRAIN_BENCHMARK_EVENT_SEARCH_PROBE_MAX_TIME_MS,
+			process.env.MDBRAIN_BENCHMARK_VECTOR_SEARCH_PROBE_MAX_TIME_MS ??
+				process.env.MDBRAIN_BENCHMARK_EVENT_SEARCH_PROBE_MAX_TIME_MS,
 		)
 		const probeMaxTimeMs =
 			Number.isFinite(configuredProbeMaxTime) && configuredProbeMaxTime > 0
@@ -4441,7 +4441,7 @@ export class MongoDBMemoryManager implements MemorySearchManager {
 		if (expectedCount === 0) return
 
 		const configuredTimeout = Number(
-			process.env.MBRAIN_BENCHMARK_EVENT_SEARCH_SETTLE_TIMEOUT_MS,
+			process.env.MDBRAIN_BENCHMARK_EVENT_SEARCH_SETTLE_TIMEOUT_MS,
 		)
 		const timeoutMs =
 			Number.isFinite(configuredTimeout) && configuredTimeout >= 0
@@ -4477,7 +4477,7 @@ export class MongoDBMemoryManager implements MemorySearchManager {
 
 		const intervalMs = 2_000
 		const configuredProbeMaxTime = Number(
-			process.env.MBRAIN_BENCHMARK_EVENT_SEARCH_PROBE_MAX_TIME_MS,
+			process.env.MDBRAIN_BENCHMARK_EVENT_SEARCH_PROBE_MAX_TIME_MS,
 		)
 		const probeMaxTimeMs =
 			Number.isFinite(configuredProbeMaxTime) && configuredProbeMaxTime > 0
@@ -4834,13 +4834,13 @@ export class MongoDBMemoryManager implements MemorySearchManager {
 			agentId: this.agentId,
 		})
 		const attemptsValue = Number(
-			process.env.MBRAIN_RAW_SESSION_VECTOR_RETRY_ATTEMPTS,
+			process.env.MDBRAIN_RAW_SESSION_VECTOR_RETRY_ATTEMPTS,
 		)
 		const attempts =
 			Number.isFinite(attemptsValue) && attemptsValue > 0
 				? Math.min(10, Math.floor(attemptsValue))
 				: 6
-		const delayValue = Number(process.env.MBRAIN_RAW_SESSION_VECTOR_RETRY_MS)
+		const delayValue = Number(process.env.MDBRAIN_RAW_SESSION_VECTOR_RETRY_MS)
 		const delayMs =
 			Number.isFinite(delayValue) && delayValue >= 0
 				? Math.min(30_000, Math.floor(delayValue))
@@ -5033,17 +5033,17 @@ export class MongoDBMemoryManager implements MemorySearchManager {
 
 					// Session evidence: create session-level documents for retrieval
 					const sessionEvidenceMode = resolveSessionEvidenceMode(
-						process.env.MBRAIN_SESSION_EVIDENCE_MODE,
+						process.env.MDBRAIN_SESSION_EVIDENCE_MODE,
 					)
 					const effectiveSessionEvidenceMode = rawSessionLane
 						? "B"
 						: sessionEvidenceMode
 					const userfactEvidenceMode = resolveUserfactEvidenceMode(
-						process.env.MBRAIN_USERFACT_EVIDENCE_MODE,
-						process.env.MBRAIN_PREFERENCE_EVIDENCE_MODE,
+						process.env.MDBRAIN_USERFACT_EVIDENCE_MODE,
+						process.env.MDBRAIN_PREFERENCE_EVIDENCE_MODE,
 					)
 					const enrichmentMode = resolveEnrichmentMode(
-						process.env.MBRAIN_LLM_ENRICHMENT_MODE,
+						process.env.MDBRAIN_LLM_ENRICHMENT_MODE,
 					)
 					let sessionEvidenceDocsWritten = 0
 					let sessionEventCount = 0
@@ -5100,7 +5100,7 @@ export class MongoDBMemoryManager implements MemorySearchManager {
 							const enrichmentStrict =
 								!rawSessionLane &&
 								resolveEnrichmentStrictMode(
-									process.env.MBRAIN_LLM_ENRICHMENT_STRICT,
+									process.env.MDBRAIN_LLM_ENRICHMENT_STRICT,
 								)
 
 							if (
@@ -5110,16 +5110,16 @@ export class MongoDBMemoryManager implements MemorySearchManager {
 								!enrichmentProvider
 							) {
 								throw new Error(
-									"MBRAIN_LLM_ENRICHMENT_STRICT requires a configured LLM enrichment provider",
+									"MDBRAIN_LLM_ENRICHMENT_STRICT requires a configured LLM enrichment provider",
 								)
 							}
 
 							if (enrichmentProvider && enrichmentMode !== "none") {
 								try {
 									const enrichmentModel =
-										process.env.MBRAIN_ENRICHMENT_MODEL?.trim() ?? ""
+										process.env.MDBRAIN_ENRICHMENT_MODEL?.trim() ?? ""
 									const enrichmentConcurrencyValue = Number(
-										process.env.MBRAIN_ENRICHMENT_CONCURRENCY,
+										process.env.MDBRAIN_ENRICHMENT_CONCURRENCY,
 									)
 									const enrichmentConcurrency =
 										Number.isFinite(enrichmentConcurrencyValue) &&
@@ -5303,7 +5303,7 @@ export class MongoDBMemoryManager implements MemorySearchManager {
 						}
 						if (chunkEvidenceCount > 0 && !rawSessionLane) {
 							const settleMs =
-								Number(process.env.MBRAIN_EVIDENCE_SETTLE_MS) || 15_000
+								Number(process.env.MDBRAIN_EVIDENCE_SETTLE_MS) || 15_000
 							log.info(
 								`waiting ${settleMs}ms for auto-embed convergence (${chunkEvidenceCount} chunk evidence docs)`,
 								{
@@ -5336,7 +5336,7 @@ export class MongoDBMemoryManager implements MemorySearchManager {
 					try {
 						// Query decomposition: break preference-style queries into sub-queries
 						const decompositionMode = resolveDecompositionMode(
-							process.env.MBRAIN_QUERY_DECOMPOSITION_MODE,
+							process.env.MDBRAIN_QUERY_DECOMPOSITION_MODE,
 						)
 						const decompositionProvider =
 							decompositionMode === "enabled"
@@ -5359,7 +5359,7 @@ export class MongoDBMemoryManager implements MemorySearchManager {
 						) {
 							const decomposed = await decomposeQuery({
 								provider: decompositionProvider,
-								model: process.env.MBRAIN_ENRICHMENT_MODEL?.trim() ?? "",
+								model: process.env.MDBRAIN_ENRICHMENT_MODEL?.trim() ?? "",
 								query: evaluation.query,
 								questionType: evaluation.questionType,
 							})
@@ -5490,7 +5490,7 @@ export class MongoDBMemoryManager implements MemorySearchManager {
 			} finally {
 				if (
 					scenarioManager !== this &&
-					process.env.MBRAIN_BENCHMARK_KEEP_SCENARIO_DATA !== "1"
+					process.env.MDBRAIN_BENCHMARK_KEEP_SCENARIO_DATA !== "1"
 				) {
 					await this.cleanupBenchmarkScenarioData(scenarioManager.agentId)
 				}
@@ -6663,7 +6663,7 @@ export class MongoDBMemoryManager implements MemorySearchManager {
 			) {
 				return {
 					ok: false,
-					error: `embeddingMode "automated" is only supported on atlas-local-preview or atlas-managed in Mbrain`,
+					error: `embeddingMode "automated" is only supported on atlas-local-preview or atlas-managed in Mdbrian`,
 				}
 			}
 			return this.capabilities.vectorSearch
@@ -7307,7 +7307,7 @@ export class MongoDBMemoryManager implements MemorySearchManager {
 
 	private shouldRunPostWriteDerivedWork(): boolean {
 		const mode =
-			process.env.MBRAIN_BENCHMARK_DERIVED_WORK_MODE?.trim().toLowerCase()
+			process.env.MDBRAIN_BENCHMARK_DERIVED_WORK_MODE?.trim().toLowerCase()
 		if (
 			mode === "enabled" ||
 			mode === "on" ||
@@ -8346,21 +8346,21 @@ export async function searchV2(
 		const agentScopeRef =
 			context.searchOptions?.scopeRef ?? resolveScopeRef({ scope, agentId })
 		const sessionMode = resolveSessionEvidenceMode(
-			process.env.MBRAIN_SESSION_EVIDENCE_MODE,
+			process.env.MDBRAIN_SESSION_EVIDENCE_MODE,
 		)
 		const chunkSources = ["conversation", "sessions"]
 		if (sessionMode === "A") {
 			chunkSources.push("session-evidence")
 		}
 		const userfactMode = resolveUserfactEvidenceMode(
-			process.env.MBRAIN_USERFACT_EVIDENCE_MODE,
-			process.env.MBRAIN_PREFERENCE_EVIDENCE_MODE,
+			process.env.MDBRAIN_USERFACT_EVIDENCE_MODE,
+			process.env.MDBRAIN_PREFERENCE_EVIDENCE_MODE,
 		)
 		if (userfactMode === "enabled") {
 			chunkSources.push("userfact-evidence", "preference-evidence")
 		}
 		const enrichmentMode = resolveEnrichmentMode(
-			process.env.MBRAIN_LLM_ENRICHMENT_MODE,
+			process.env.MDBRAIN_LLM_ENRICHMENT_MODE,
 		)
 		if (enrichmentMode === "enabled") {
 			if (!chunkSources.includes("userfact-evidence")) {
@@ -8887,7 +8887,7 @@ export async function searchV2(
 						}
 						// Option B: parallel search on session_chunks collection (vector + text hybrid)
 						const sessionMode = resolveSessionEvidenceMode(
-							process.env.MBRAIN_SESSION_EVIDENCE_MODE,
+							process.env.MDBRAIN_SESSION_EVIDENCE_MODE,
 						)
 						if (
 							sessionMode === "B" ||

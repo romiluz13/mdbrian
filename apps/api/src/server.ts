@@ -1,14 +1,14 @@
 import { serve } from "@hono/node-server"
-import { mbrainBridgeShutdown } from "@mbrain/memory-bridge"
+import { mdbrianBridgeShutdown } from "@mdbrian/memory-bridge"
 import { createApp, registerGracefulShutdown } from "./app.js"
 
 const app = createApp()
 
-const port = Number(process.env.MBRAIN_API_PORT ?? "3847")
-const host = process.env.MBRAIN_API_HOST ?? "127.0.0.1"
+const port = Number(process.env.MDBRAIN_API_PORT ?? "3847")
+const host = process.env.MDBRAIN_API_HOST ?? "127.0.0.1"
 
 const server = serve({ fetch: app.fetch, port, hostname: host }, (info) => {
-	console.error(`mbrain-api listening on http://${info.address}:${info.port}`)
+	console.error(`mdbrian-api listening on http://${info.address}:${info.port}`)
 })
 
 // Graceful shutdown: SIGTERM / SIGINT drain the server, flush the bridge, then
@@ -25,7 +25,7 @@ registerGracefulShutdown({
 				resolve()
 			}
 		}),
-	closeBridge: () => mbrainBridgeShutdown(),
+	closeBridge: () => mdbrianBridgeShutdown(),
 	exit: (code) => process.exit(code),
 	timeoutMs: 15_000,
 })

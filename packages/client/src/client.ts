@@ -1,84 +1,84 @@
 import type {
-	MbrainAddInput,
-	MbrainAccessSummaryResponse,
-	MbrainAccessTrendResponse,
-	MbrainActiveSlateInput,
-	MbrainBenchmarkIngestResponse,
-	MbrainConsolidateInput,
-	MbrainConsolidateResponse,
-	MbrainConversationImportInput,
-	MbrainConversationImportResponse,
-	MbrainConversationRecallInput,
-	MbrainConversationRecallResponse,
-	MbrainMemoryJob,
-	MbrainMemoryJobStatus,
-	MbrainMemoryJobType,
-	MbrainContextBundleInput,
-	MbrainDetailedStatusResponse,
-	MbrainDiscoveryProjectionInput,
-	MbrainExtractInput,
-	MbrainExtractResponse,
-	MbrainLifecycleDeleteInput,
-	MbrainMemoryFeedbackInput,
-	MbrainLifecycleGetInput,
-	MbrainLifecycleHistoryEntry,
-	MbrainLifecycleHistoryInput,
-	MbrainLifecycleItem,
-	MbrainLifecycleUpdateInput,
-	MbrainNoveltyResponse,
-	MbrainProbeEmbeddingResponse,
-	MbrainProfileInput,
-	MbrainProfileResponse,
-	MbrainReadFileResponse,
-	MbrainRelevanceBenchmarkResponse,
-	MbrainRelevanceExplainResponse,
-	MbrainRelevanceReportResponse,
-	MbrainRelevanceSampleRateResponse,
-	MbrainProcedureOutcomeInput,
-	MbrainRecallTrace,
-	MbrainScanNoveltyInput,
-	MbrainSearchInput,
-	MbrainSearchKBResponse,
-	MbrainSearchResponse,
+	MdbrianAddInput,
+	MdbrianAccessSummaryResponse,
+	MdbrianAccessTrendResponse,
+	MdbrianActiveSlateInput,
+	MdbrianBenchmarkIngestResponse,
+	MdbrianConsolidateInput,
+	MdbrianConsolidateResponse,
+	MdbrianConversationImportInput,
+	MdbrianConversationImportResponse,
+	MdbrianConversationRecallInput,
+	MdbrianConversationRecallResponse,
+	MdbrianMemoryJob,
+	MdbrianMemoryJobStatus,
+	MdbrianMemoryJobType,
+	MdbrianContextBundleInput,
+	MdbrianDetailedStatusResponse,
+	MdbrianDiscoveryProjectionInput,
+	MdbrianExtractInput,
+	MdbrianExtractResponse,
+	MdbrianLifecycleDeleteInput,
+	MdbrianMemoryFeedbackInput,
+	MdbrianLifecycleGetInput,
+	MdbrianLifecycleHistoryEntry,
+	MdbrianLifecycleHistoryInput,
+	MdbrianLifecycleItem,
+	MdbrianLifecycleUpdateInput,
+	MdbrianNoveltyResponse,
+	MdbrianProbeEmbeddingResponse,
+	MdbrianProfileInput,
+	MdbrianProfileResponse,
+	MdbrianReadFileResponse,
+	MdbrianRelevanceBenchmarkResponse,
+	MdbrianRelevanceExplainResponse,
+	MdbrianRelevanceReportResponse,
+	MdbrianRelevanceSampleRateResponse,
+	MdbrianProcedureOutcomeInput,
+	MdbrianRecallTrace,
+	MdbrianScanNoveltyInput,
+	MdbrianSearchInput,
+	MdbrianSearchKBResponse,
+	MdbrianSearchResponse,
 	SearchConfig,
-	MbrainStatsResponse,
-	MbrainStatusResponse,
-	MbrainTraceChainInput,
-	MbrainTraceChainResponse,
-	MbrainSelfEditInput,
-	MbrainSelfEditResponse,
+	MdbrianStatsResponse,
+	MdbrianStatusResponse,
+	MdbrianTraceChainInput,
+	MdbrianTraceChainResponse,
+	MdbrianSelfEditInput,
+	MdbrianSelfEditResponse,
 } from "./types.js"
 
-export type MbrainClientOptions = {
-	/** Mbrain API base URL (e.g. http://127.0.0.1:3847). */
+export type MdbrianClientOptions = {
+	/** Mdbrian API base URL (e.g. http://127.0.0.1:3847). */
 	baseUrl?: string
-	/** Optional Bearer token; also reads `MBRAIN_API_KEY` when unset. */
+	/** Optional Bearer token; also reads `MDBRAIN_API_KEY` when unset. */
 	apiKey?: string
 	/** Max retries for 429/503 (default 2). */
 	maxRetries?: number
 }
 
-/** Thrown when the Mbrain HTTP API returns a non-OK status. */
-export class MbrainClientError extends Error {
+/** Thrown when the Mdbrian HTTP API returns a non-OK status. */
+export class MdbrianClientError extends Error {
 	readonly status: number
 	readonly body: string
 
 	constructor(status: number, body: string, message?: string) {
-		super(message ?? `Mbrain API ${status}: ${body || "(empty)"}`)
-		this.name = "MbrainClientError"
+		super(message ?? `Mdbrian API ${status}: ${body || "(empty)"}`)
+		this.name = "MdbrianClientError"
 		this.status = status
 		this.body = body
 	}
 }
 
-function resolveBaseUrl(opts: MbrainClientOptions): string {
+function resolveBaseUrl(opts: MdbrianClientOptions): string {
 	const raw =
-		opts.baseUrl ?? process.env.MBRAIN_API_URL ?? "http://127.0.0.1:3847"
+		opts.baseUrl ?? process.env.MDBRAIN_API_URL ?? "http://127.0.0.1:3847"
 	return raw.replace(/\/$/, "")
 }
 
-function resolveApiKey(opts: MbrainClientOptions): string | undefined {
-	return opts.apiKey ?? process.env.MBRAIN_API_KEY ?? undefined
+function resolveApiKey(opts: MdbrianClientOptions): string | undefined {
+	return opts.apiKey ?? process.env.MDBRAIN_API_KEY ?? undefined
 }
 
 function shouldRetryStatus(status: number): boolean {
@@ -90,7 +90,7 @@ function sleep(ms: number): Promise<void> {
 }
 
 function buildHeaders(
-	opts: MbrainClientOptions,
+	opts: MdbrianClientOptions,
 	method: string,
 ): Record<string, string> {
 	const key = resolveApiKey(opts)
@@ -105,7 +105,7 @@ function buildHeaders(
 }
 
 async function apiFetch<T>(
-	opts: MbrainClientOptions,
+	opts: MdbrianClientOptions,
 	path: string,
 	init: RequestInit,
 ): Promise<T> {
@@ -127,12 +127,12 @@ async function apiFetch<T>(
 			await sleep(200 * attempt)
 			continue
 		}
-		throw new MbrainClientError(res.status, text)
+		throw new MdbrianClientError(res.status, text)
 	}
 }
 
 async function apiPost<T>(
-	opts: MbrainClientOptions,
+	opts: MdbrianClientOptions,
 	path: string,
 	body: Record<string, unknown>,
 ): Promise<T> {
@@ -142,7 +142,7 @@ async function apiPost<T>(
 	})
 }
 
-async function apiGet<T>(opts: MbrainClientOptions, path: string): Promise<T> {
+async function apiGet<T>(opts: MdbrianClientOptions, path: string): Promise<T> {
 	return apiFetch<T>(opts, path, { method: "GET" })
 }
 
@@ -166,7 +166,7 @@ function q(
 }
 
 /** A single result from `searchDetailed`. */
-export type MbrainSearchDetailedResult = {
+export type MdbrianSearchDetailedResult = {
 	path: string
 	startLine: number
 	endLine: number
@@ -201,7 +201,7 @@ export type MbrainSearchDetailedResult = {
 }
 
 /** A single retrieval pass executed during search. */
-export type MbrainSearchPass = {
+export type MdbrianSearchPass = {
 	pass: number
 	query: string
 	reason: string
@@ -213,7 +213,7 @@ export type MbrainSearchPass = {
 }
 
 /** Metadata returned by `searchDetailed`. */
-export type MbrainSearchDetailedMetadata = {
+export type MdbrianSearchDetailedMetadata = {
 	mode: string
 	classification: string
 	sourceOrder: string[]
@@ -237,7 +237,7 @@ export type MbrainSearchDetailedMetadata = {
 		allowHybridBackstop: boolean
 		lexicalPrefilter: "disabled" | "experimental"
 	}
-	passes: MbrainSearchPass[]
+	passes: MdbrianSearchPass[]
 	queriesTried: string[]
 	constraintsApplied: string[]
 	resultsRejected: Array<{
@@ -269,12 +269,12 @@ export type MbrainSearchDetailedMetadata = {
 }
 
 /** Full response from `searchDetailed`. */
-export type MbrainSearchDetailedResponse = {
-	results: MbrainSearchDetailedResult[]
-	metadata: MbrainSearchDetailedMetadata
+export type MdbrianSearchDetailedResponse = {
+	results: MdbrianSearchDetailedResult[]
+	metadata: MdbrianSearchDetailedMetadata
 }
 
-export type MbrainActiveSlateItem = {
+export type MdbrianActiveSlateItem = {
 	kind: string
 	source: string
 	title: string
@@ -290,11 +290,11 @@ export type MbrainActiveSlateItem = {
 	sourceEventIds?: string[]
 }
 
-export type MbrainActiveSlateResponse = {
+export type MdbrianActiveSlateResponse = {
 	agentId: string
 	scope: string
 	scopeRef: string
-	items: MbrainActiveSlateItem[]
+	items: MdbrianActiveSlateItem[]
 	metadata: {
 		maxItems: number
 		truncated: boolean
@@ -305,15 +305,15 @@ export type MbrainActiveSlateResponse = {
 	hydratedAt: string
 }
 
-export type MbrainMemoryBlockLabel =
+export type MdbrianMemoryBlockLabel =
 	| "working-memory"
 	| "decisions"
 	| "preferences"
 	| "todos"
 	| "procedures"
 
-export type MbrainMemoryBlock = {
-	label: MbrainMemoryBlockLabel
+export type MdbrianMemoryBlock = {
+	label: MdbrianMemoryBlockLabel
 	title: string
 	content: string
 	tokenBudget: number
@@ -321,13 +321,13 @@ export type MbrainMemoryBlock = {
 	sourcePaths: string[]
 }
 
-export type MbrainMemoryBlocksResponse = {
-	blocks: MbrainMemoryBlock[]
+export type MdbrianMemoryBlocksResponse = {
+	blocks: MdbrianMemoryBlock[]
 	totalTokenBudget: number
 	totalActualTokens: number
 }
 
-export type MbrainDiscoveryProjectionResponse = {
+export type MdbrianDiscoveryProjectionResponse = {
 	kind: string
 	query?: string
 	title: string
@@ -362,7 +362,7 @@ export type MbrainDiscoveryProjectionResponse = {
 	builtAt: string
 }
 
-export type MbrainContextBundleSectionItem = {
+export type MdbrianContextBundleSectionItem = {
 	title: string
 	summary: string
 	path?: string
@@ -386,7 +386,7 @@ export type MbrainContextBundleSectionItem = {
 	metadata?: Record<string, unknown>
 }
 
-export type MbrainContextBundleResponse = {
+export type MdbrianContextBundleResponse = {
 	agentId: string
 	query?: string
 	scope: string
@@ -403,7 +403,7 @@ export type MbrainContextBundleResponse = {
 			| "profile"
 		title: string
 		summary?: string
-		items: MbrainContextBundleSectionItem[]
+		items: MdbrianContextBundleSectionItem[]
 		estimatedTokens: number
 		truncated: boolean
 		partial: boolean
@@ -436,19 +436,19 @@ export type MbrainContextBundleResponse = {
 	builtAt: string
 }
 
-export type MbrainStateResponse = {
-	profile: MbrainProfileResponse
-	blocks: MbrainMemoryBlocksResponse
-	bundle: MbrainContextBundleResponse
+export type MdbrianStateResponse = {
+	profile: MdbrianProfileResponse
+	blocks: MdbrianMemoryBlocksResponse
+	bundle: MdbrianContextBundleResponse
 	partial?: boolean
 }
 
-/** HTTP client for the supported Mbrain API surface. */
-export class MbrainClient {
-	constructor(private readonly _opts: MbrainClientOptions = {}) {}
+/** HTTP client for the supported Mdbrian API surface. */
+export class MdbrianClient {
+	constructor(private readonly _opts: MdbrianClientOptions = {}) {}
 
 	async add(
-		input: MbrainAddInput,
+		input: MdbrianAddInput,
 	): Promise<{ ok: true; eventId: string; chunkCreated: boolean }> {
 		return apiPost(this._opts, "/v1/add", {
 			content: input.content,
@@ -460,12 +460,12 @@ export class MbrainClient {
 	}
 
 	async search(
-		input: MbrainSearchInput & {
+		input: MdbrianSearchInput & {
 			agentId?: string
 			minScore?: number
 			sessionKey?: string
 		},
-	): Promise<MbrainSearchResponse> {
+	): Promise<MdbrianSearchResponse> {
 		return apiPost(this._opts, "/v1/search", {
 			query: input.query,
 			agentId: input.agentId,
@@ -503,7 +503,7 @@ export class MbrainClient {
 		searchConfig?: SearchConfig
 		/** @deprecated This legacy alias is ignored by the canonical detailed search path. */
 		containerTag?: string
-	}): Promise<MbrainSearchDetailedResponse> {
+	}): Promise<MdbrianSearchDetailedResponse> {
 		return apiPost(this._opts, "/v1/search-detailed", {
 			query: input.query,
 			agentId: input.agentId,
@@ -530,7 +530,7 @@ export class MbrainClient {
 		limit?: number
 		minScore?: number
 		filter?: { tags?: string[]; category?: string; source?: string }
-	}): Promise<MbrainSearchKBResponse> {
+	}): Promise<MdbrianSearchKBResponse> {
 		return apiPost(this._opts, "/v1/search-kb", {
 			query: input.query,
 			agentId: input.agentId,
@@ -541,8 +541,8 @@ export class MbrainClient {
 	}
 
 	async recallConversation(
-		input: MbrainConversationRecallInput = {},
-	): Promise<MbrainConversationRecallResponse> {
+		input: MdbrianConversationRecallInput = {},
+	): Promise<MdbrianConversationRecallResponse> {
 		return apiPost(this._opts, "/v1/recall-conversation", {
 			query: input.query,
 			sessionId: input.sessionId,
@@ -557,16 +557,16 @@ export class MbrainClient {
 	}
 
 	async getLifecycleItem(
-		input: MbrainLifecycleGetInput,
-	): Promise<MbrainLifecycleItem> {
+		input: MdbrianLifecycleGetInput,
+	): Promise<MdbrianLifecycleItem> {
 		return apiPost(this._opts, "/v1/lifecycle/get", {
 			handle: input.handle,
 		})
 	}
 
 	async updateLifecycleItem(
-		input: MbrainLifecycleUpdateInput,
-	): Promise<MbrainLifecycleItem> {
+		input: MdbrianLifecycleUpdateInput,
+	): Promise<MdbrianLifecycleItem> {
 		return apiPost(this._opts, "/v1/lifecycle/update", {
 			handle: input.handle,
 			patch: input.patch,
@@ -574,8 +574,8 @@ export class MbrainClient {
 	}
 
 	async deleteLifecycleItem(
-		input: MbrainLifecycleDeleteInput,
-	): Promise<MbrainLifecycleItem> {
+		input: MdbrianLifecycleDeleteInput,
+	): Promise<MdbrianLifecycleItem> {
 		return apiPost(this._opts, "/v1/lifecycle/delete", {
 			handle: input.handle,
 			invalidatedBy: input.invalidatedBy,
@@ -583,8 +583,8 @@ export class MbrainClient {
 	}
 
 	async getLifecycleHistory(
-		input: MbrainLifecycleHistoryInput,
-	): Promise<MbrainLifecycleHistoryEntry[]> {
+		input: MdbrianLifecycleHistoryInput,
+	): Promise<MdbrianLifecycleHistoryEntry[]> {
 		return apiPost(this._opts, "/v1/lifecycle/history", {
 			handle: input.handle,
 			limit: input.limit,
@@ -592,8 +592,8 @@ export class MbrainClient {
 	}
 
 	async reportProcedureOutcome(
-		input: MbrainProcedureOutcomeInput,
-	): Promise<MbrainLifecycleItem> {
+		input: MdbrianProcedureOutcomeInput,
+	): Promise<MdbrianLifecycleItem> {
 		return apiPost(this._opts, "/v1/procedures/outcome", {
 			handle: input.handle,
 			success: input.success,
@@ -603,8 +603,8 @@ export class MbrainClient {
 	}
 
 	async applyMemoryFeedback(
-		input: MbrainMemoryFeedbackInput,
-	): Promise<MbrainLifecycleItem> {
+		input: MdbrianMemoryFeedbackInput,
+	): Promise<MdbrianLifecycleItem> {
 		return apiPost(this._opts, "/v1/memory/feedback", {
 			handle: input.handle,
 			signal: input.signal,
@@ -622,7 +622,7 @@ export class MbrainClient {
 		from?: number
 		lines?: number
 		agentId?: string
-	}): Promise<MbrainReadFileResponse> {
+	}): Promise<MdbrianReadFileResponse> {
 		return apiPost(this._opts, "/v1/read-file", {
 			relPath: input.relPath,
 			from: input.from,
@@ -671,7 +671,7 @@ export class MbrainClient {
 		})
 	}
 
-	async extract(input: MbrainExtractInput): Promise<MbrainExtractResponse> {
+	async extract(input: MdbrianExtractInput): Promise<MdbrianExtractResponse> {
 		return apiPost(this._opts, "/v1/extract", {
 			eventId: input.eventId,
 			agentId: input.agentId,
@@ -679,7 +679,7 @@ export class MbrainClient {
 	}
 
 	async profile(
-		input: MbrainProfileInput & {
+		input: MdbrianProfileInput & {
 			agentId?: string
 			scopeRef?: string
 			maxEntities?: number
@@ -687,7 +687,7 @@ export class MbrainClient {
 			maxPerType?: number
 			activityWindowMs?: number
 		} = {},
-	): Promise<MbrainProfileResponse> {
+	): Promise<MdbrianProfileResponse> {
 		return apiPost(this._opts, "/v1/profile", {
 			agentId: input.agentId,
 			containerTag: input.containerTag,
@@ -701,8 +701,8 @@ export class MbrainClient {
 	}
 
 	async hydrateActiveSlate(
-		input: MbrainActiveSlateInput = {},
-	): Promise<MbrainActiveSlateResponse> {
+		input: MdbrianActiveSlateInput = {},
+	): Promise<MdbrianActiveSlateResponse> {
 		return apiPost(this._opts, "/v1/hydrate-active-slate", {
 			agentId: input.agentId,
 			scope: input.scope,
@@ -712,8 +712,8 @@ export class MbrainClient {
 	}
 
 	async state(
-		input: MbrainActiveSlateInput = {},
-	): Promise<MbrainStateResponse> {
+		input: MdbrianActiveSlateInput = {},
+	): Promise<MdbrianStateResponse> {
 		return apiGet(
 			this._opts,
 			`/v1/state${q(input.agentId, {
@@ -724,8 +724,8 @@ export class MbrainClient {
 	}
 
 	async buildDiscoveryProjection(
-		input: MbrainDiscoveryProjectionInput,
-	): Promise<MbrainDiscoveryProjectionResponse> {
+		input: MdbrianDiscoveryProjectionInput,
+	): Promise<MdbrianDiscoveryProjectionResponse> {
 		return apiPost(this._opts, "/v1/discovery-projection", {
 			agentId: input.agentId,
 			kind: input.kind,
@@ -738,8 +738,8 @@ export class MbrainClient {
 	}
 
 	async buildContextBundle(
-		input: MbrainContextBundleInput = {},
-	): Promise<MbrainContextBundleResponse> {
+		input: MdbrianContextBundleInput = {},
+	): Promise<MdbrianContextBundleResponse> {
 		return apiPost(this._opts, "/v1/context-bundle", {
 			agentId: input.agentId,
 			query: input.query,
@@ -758,17 +758,17 @@ export class MbrainClient {
 		})
 	}
 
-	async status(agentId?: string): Promise<MbrainStatusResponse> {
+	async status(agentId?: string): Promise<MdbrianStatusResponse> {
 		return apiGet(this._opts, `/v1/status${q(agentId)}`)
 	}
 
 	async getDetailedStatus(
 		agentId?: string,
-	): Promise<MbrainDetailedStatusResponse> {
+	): Promise<MdbrianDetailedStatusResponse> {
 		return apiGet(this._opts, `/v1/status/detailed${q(agentId)}`)
 	}
 
-	async stats(agentId?: string): Promise<MbrainStatsResponse> {
+	async stats(agentId?: string): Promise<MdbrianStatsResponse> {
 		return apiGet(this._opts, `/v1/stats${q(agentId)}`)
 	}
 
@@ -786,7 +786,7 @@ export class MbrainClient {
 
 	async probeEmbedding(
 		agentId?: string,
-	): Promise<MbrainProbeEmbeddingResponse> {
+	): Promise<MdbrianProbeEmbeddingResponse> {
 		return apiGet(this._opts, `/v1/probes/embedding${q(agentId)}`)
 	}
 
@@ -802,7 +802,7 @@ export class MbrainClient {
 		maxResults?: number
 		minScore?: number
 		deep?: boolean
-	}): Promise<MbrainRelevanceExplainResponse> {
+	}): Promise<MdbrianRelevanceExplainResponse> {
 		return apiPost(this._opts, "/v1/admin/relevance/explain", {
 			query: input.query,
 			agentId: input.agentId,
@@ -820,7 +820,7 @@ export class MbrainClient {
 		maxResults?: number
 		minScore?: number
 		retrievalLane?: "native" | "raw-session"
-	}): Promise<MbrainRelevanceBenchmarkResponse> {
+	}): Promise<MdbrianRelevanceBenchmarkResponse> {
 		return apiPost(this._opts, "/v1/admin/relevance/benchmark", {
 			agentId: input?.agentId,
 			datasetPath: input?.datasetPath,
@@ -836,7 +836,7 @@ export class MbrainClient {
 		scope?: "session" | "user" | "agent" | "workspace" | "tenant" | "global"
 		limitConversations?: number
 		limitTurnsPerConversation?: number
-	}): Promise<MbrainBenchmarkIngestResponse> {
+	}): Promise<MdbrianBenchmarkIngestResponse> {
 		return apiPost(this._opts, "/v1/admin/benchmarks/ingest", {
 			datasetPath: input.datasetPath,
 			agentId: input.agentId,
@@ -847,8 +847,8 @@ export class MbrainClient {
 	}
 
 	async importConversations(
-		input: MbrainConversationImportInput,
-	): Promise<MbrainConversationImportResponse> {
+		input: MdbrianConversationImportInput,
+	): Promise<MdbrianConversationImportResponse> {
 		return apiPost(this._opts, "/v1/import/conversations", {
 			datasetPath: input.datasetPath,
 			agentId: input.agentId,
@@ -861,7 +861,7 @@ export class MbrainClient {
 	async relevanceReport(
 		agentId?: string,
 		windowMs?: number,
-	): Promise<MbrainRelevanceReportResponse> {
+	): Promise<MdbrianRelevanceReportResponse> {
 		return apiGet(
 			this._opts,
 			`/v1/admin/relevance/report${q(agentId, { windowMs })}`,
@@ -870,7 +870,7 @@ export class MbrainClient {
 
 	async relevanceSampleRate(
 		agentId?: string,
-	): Promise<MbrainRelevanceSampleRateResponse> {
+	): Promise<MdbrianRelevanceSampleRateResponse> {
 		return apiGet(this._opts, `/v1/admin/relevance/sample-rate${q(agentId)}`)
 	}
 
@@ -886,7 +886,7 @@ export class MbrainClient {
 		memoryIds?: string[]
 		windowDays?: number
 		limit?: number
-	}): Promise<MbrainAccessTrendResponse> {
+	}): Promise<MdbrianAccessTrendResponse> {
 		return apiGet(
 			this._opts,
 			`/v1/admin/access-trends${q(input?.agentId, {
@@ -909,7 +909,7 @@ export class MbrainClient {
 			| "relations"
 		memoryIds: string[]
 		windowDays?: number
-	}): Promise<MbrainAccessSummaryResponse> {
+	}): Promise<MdbrianAccessSummaryResponse> {
 		return apiGet(
 			this._opts,
 			`/v1/admin/access-summaries${q(input.agentId, {
@@ -923,7 +923,7 @@ export class MbrainClient {
 	async listRecallTraces(input?: {
 		agentId?: string
 		limit?: number
-	}): Promise<MbrainRecallTrace[]> {
+	}): Promise<MdbrianRecallTrace[]> {
 		return apiGet(
 			this._opts,
 			`/v1/admin/traces${q(input?.agentId, { limit: input?.limit })}`,
@@ -933,7 +933,7 @@ export class MbrainClient {
 	async getRecallTrace(input: {
 		traceId: string
 		agentId?: string
-	}): Promise<MbrainRecallTrace | null> {
+	}): Promise<MdbrianRecallTrace | null> {
 		return apiGet(
 			this._opts,
 			`/v1/admin/traces/${encodeURIComponent(input.traceId)}${q(input.agentId)}`,
@@ -942,10 +942,10 @@ export class MbrainClient {
 
 	async listJobs(input?: {
 		agentId?: string
-		status?: MbrainMemoryJobStatus
+		status?: MdbrianMemoryJobStatus
 		limit?: number
-		jobType?: MbrainMemoryJobType
-	}): Promise<MbrainMemoryJob[]> {
+		jobType?: MdbrianMemoryJobType
+	}): Promise<MdbrianMemoryJob[]> {
 		return apiGet(
 			this._opts,
 			`/v1/jobs${q(input?.agentId, {
@@ -959,7 +959,7 @@ export class MbrainClient {
 	async getJob(input: {
 		jobId: string
 		agentId?: string
-	}): Promise<MbrainMemoryJob | null> {
+	}): Promise<MdbrianMemoryJob | null> {
 		return apiGet(
 			this._opts,
 			`/v1/jobs/${encodeURIComponent(input.jobId)}${q(input.agentId)}`,
@@ -967,8 +967,8 @@ export class MbrainClient {
 	}
 
 	async traceChain(
-		input: MbrainTraceChainInput,
-	): Promise<MbrainTraceChainResponse> {
+		input: MdbrianTraceChainInput,
+	): Promise<MdbrianTraceChainResponse> {
 		return apiPost(this._opts, "/v1/chain-trace", {
 			factId: input.factId,
 			collection: input.collection,
@@ -978,8 +978,8 @@ export class MbrainClient {
 	}
 
 	async scanNovelty(
-		input?: MbrainScanNoveltyInput,
-	): Promise<MbrainNoveltyResponse> {
+		input?: MdbrianScanNoveltyInput,
+	): Promise<MdbrianNoveltyResponse> {
 		return apiPost(this._opts, "/v1/novelty-scan", {
 			agentId: input?.agentId,
 			limit: input?.limit,
@@ -988,8 +988,8 @@ export class MbrainClient {
 	}
 
 	async consolidate(
-		input?: MbrainConsolidateInput,
-	): Promise<MbrainConsolidateResponse> {
+		input?: MdbrianConsolidateInput,
+	): Promise<MdbrianConsolidateResponse> {
 		return apiPost(this._opts, "/v1/consolidate", {
 			agentId: input?.agentId,
 			maxEvents: input?.maxEvents,
@@ -998,7 +998,9 @@ export class MbrainClient {
 		})
 	}
 
-	async selfEdit(input: MbrainSelfEditInput): Promise<MbrainSelfEditResponse> {
+	async selfEdit(
+		input: MdbrianSelfEditInput,
+	): Promise<MdbrianSelfEditResponse> {
 		return apiPost(this._opts, "/v1/self-edit", {
 			block: input.block,
 			action: input.action,
@@ -1009,7 +1011,7 @@ export class MbrainClient {
 }
 
 function normalizeMetadata(
-	meta: MbrainAddInput["metadata"],
+	meta: MdbrianAddInput["metadata"],
 ): Record<string, unknown> | undefined {
 	if (!meta) {
 		return undefined

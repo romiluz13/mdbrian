@@ -1,5 +1,5 @@
 import type { Db, Document } from "mongodb"
-import { type MemoryScope, createSubsystemLogger } from "@mbrain/lib"
+import { type MemoryScope, createSubsystemLogger } from "@mdbrian/lib"
 import {
 	structuredMemCollection,
 	entitiesCollection,

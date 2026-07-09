@@ -1,4 +1,4 @@
-import { createSubsystemLogger } from "@mbrain/lib"
+import { createSubsystemLogger } from "@mdbrian/lib"
 
 const log = createSubsystemLogger("memory:mongodb:entity-extractor")
 

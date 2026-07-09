@@ -22,7 +22,7 @@
 
 import { randomUUID } from "node:crypto"
 import type { Db, Document } from "mongodb"
-import { createSubsystemLogger, type MemoryScope } from "@mbrain/lib"
+import { createSubsystemLogger, type MemoryScope } from "@mdbrian/lib"
 import { scanNovelty } from "./mongodb-novelty.js"
 import { traceReasoningChain } from "./mongodb-reasoning-chain.js"
 import { computeImportanceDecay } from "./mongodb-trust.js"
@@ -517,7 +517,7 @@ export async function consolidateMemory(params: {
 		// a cross-scope consolidation or aborting the whole run.
 		const candidateScope = candidate.scope ?? options?.scope
 		const candidateScopeRef = candidate.scopeRef ?? options?.scopeRef
-		const benchmarkStrict = process.env.MBRAIN_BENCHMARK_STRICT
+		const benchmarkStrict = process.env.MDBRAIN_BENCHMARK_STRICT
 		const strictScopeMismatch =
 			benchmarkStrict === "1" || benchmarkStrict?.toLowerCase() === "true"
 

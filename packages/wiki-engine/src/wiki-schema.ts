@@ -1,6 +1,6 @@
-// @mbrain/wiki-engine — wiki_pages collection schema, validators, indexes.
+// @mdbrian/wiki-engine — wiki_pages collection schema, validators, indexes.
 //
-// Mirrors the @mbrain/memory-engine schema pattern (mongodb-schema.ts):
+// Mirrors the @mdbrian/memory-engine schema pattern (mongodb-schema.ts):
 //   - WIKI_PAGES_SCHEMA: $jsonSchema validator (validationAction: "error")
 //   - wikiPagesCollection(db, prefix): collection helper
 //   - VALIDATED_WIKI_COLLECTIONS: map consumed by ensureWikiCollections + ensureWikiSchemaValidation
@@ -11,7 +11,7 @@
 //   Layer 2 = wiki_pages (this module) — LLM-synthesized, browsable by humans + agents
 //   Layer 3 = page-kind schemas + maintenance rules + governance policies
 //
-// Design spec: docs/specs/2026-07-08-mbrain-llm-wiki-design.md §4
+// Design spec: docs/specs/2026-07-08-mdbrian-llm-wiki-design.md §4
 
 import type {
 	Collection,
@@ -20,7 +20,7 @@ import type {
 	IndexDescription,
 	SearchIndexDescription,
 } from "mongodb"
-import { createSubsystemLogger } from "@mbrain/lib"
+import { createSubsystemLogger } from "@mdbrian/lib"
 
 const log = createSubsystemLogger("wiki:schema")
 

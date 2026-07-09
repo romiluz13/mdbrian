@@ -1,4 +1,4 @@
-import type { SsrFPolicy } from "@mbrain/lib"
+import type { SsrFPolicy } from "@mdbrian/lib"
 
 const OPENAI_DEFAULT_EMBEDDING_MODEL = "text-embedding-3-small"
 import { normalizeEmbeddingModelWithPrefixes } from "./embeddings-model-normalize.js"

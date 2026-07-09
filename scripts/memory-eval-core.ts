@@ -1,4 +1,7 @@
-import type { MbrainClient, MbrainSearchDetailedResponse } from "@mbrain/client"
+import type {
+	MdbrianClient,
+	MdbrianSearchDetailedResponse,
+} from "@mdbrian/client"
 import {
 	buildPhase6MemoryEvalFixture,
 	type ContextBundleEvalCase,
@@ -100,7 +103,7 @@ function scoreFromChecks(checks: boolean[]): number {
 }
 
 function inferTopConfidence(
-	response: Pick<MbrainSearchDetailedResponse, "metadata">,
+	response: Pick<MdbrianSearchDetailedResponse, "metadata">,
 ): TrustConfidence {
 	return response.metadata.trustSummary?.topConfidence ?? null
 }
@@ -177,7 +180,7 @@ function collectContextBundleText(response: {
 
 export function evaluateSearchDetailedCase(
 	testCase: SearchDetailedEvalCase,
-	response: Pick<MbrainSearchDetailedResponse, "results" | "metadata">,
+	response: Pick<MdbrianSearchDetailedResponse, "results" | "metadata">,
 	latencyMs: number,
 ): MemoryEvalCaseResult {
 	const failures: string[] = []
@@ -507,7 +510,7 @@ function evaluateContextBundleCase(
 }
 
 async function executeSeedStep(
-	client: MbrainClient,
+	client: MdbrianClient,
 	step: MemoryEvalSeedStep,
 ): Promise<void> {
 	switch (step.kind) {
@@ -537,7 +540,7 @@ async function executeSeedStep(
 }
 
 async function runCase(
-	client: MbrainClient,
+	client: MdbrianClient,
 	testCase: MemoryEvalCase,
 ): Promise<MemoryEvalCaseResult> {
 	const startedAt = Date.now()
@@ -686,7 +689,7 @@ export function compareEvalRuns(params: {
 }
 
 export async function runMemoryEvalSuite(params: {
-	client: MbrainClient
+	client: MdbrianClient
 	label: string
 	seed?: string
 	fixture?: MemoryEvalFixture

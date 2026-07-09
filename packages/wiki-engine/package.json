@@ -1,8 +1,8 @@
 {
-	"name": "@mbrain/wiki-engine",
+	"name": "@mdbrian/wiki-engine",
 	"version": "0.1.0",
 	"private": true,
-	"description": "MBrain wiki engine \u2014 wiki_pages, OKF interchange, page rendering, maintenance, contradictions, governance, connectors",
+	"description": "MDBrain wiki engine \u2014 wiki_pages, OKF interchange, page rendering, maintenance, contradictions, governance, connectors",
 	"license": "Apache-2.0",
 	"type": "module",
 	"main": "./dist/index.js",
@@ -19,7 +19,7 @@
 		"test": "vitest run"
 	},
 	"dependencies": {
-		"@mbrain/memory-engine": "workspace:*",
-		"@mbrain/lib": "workspace:*"
+		"@mdbrian/memory-engine": "workspace:*",
+		"@mdbrian/lib": "workspace:*"
 	}
 }
