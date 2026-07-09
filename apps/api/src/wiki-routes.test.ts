@@ -20,6 +20,8 @@ const wikiMocks = vi.hoisted(() => ({
 	renderMarkdown: vi.fn(),
 	renderHtml: vi.fn(),
 	getWikiDbHandle: vi.fn(),
+	importOkfBundle: vi.fn(),
+	exportOkfBundle: vi.fn(),
 }))
 
 const bridgeMocks = vi.hoisted(() => ({
@@ -58,6 +60,8 @@ type WikiJson = {
 	ok?: boolean
 	hard?: boolean
 	revision?: number
+	imported?: number
+	exported?: number
 }
 const asJson = (res: Response): Promise<WikiJson> =>
 	res.json() as Promise<WikiJson>
@@ -349,6 +353,80 @@ describe("wiki routes", () => {
 				{ method: "DELETE" },
 			)
 			expect(res.status).toBe(404)
+		})
+	})
+
+	describe("POST /v1/wiki/okf-import", () => {
+		it("imports a bundle and returns the result", async () => {
+			wikiMocks.importOkfBundle.mockResolvedValue({
+				imported: 2,
+				skipped: 0,
+				conceptIds: ["tables/accounts", "tables/users"],
+				errors: [],
+			})
+			const res = await createApp().request("/v1/wiki/okf-import", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({
+					bundleDir: "/tmp/bundle",
+					scope: "workspace",
+					scopeRef: "ws-1",
+					trustTier: "standard",
+					okfBundleId: "b1",
+				}),
+			})
+			expect(res.status).toBe(200)
+			const json = await asJson(res)
+			expect(json.imported).toBe(2)
+			expect(wikiMocks.importOkfBundle).toHaveBeenCalledTimes(1)
+		})
+
+		it("rejects missing bundleDir", async () => {
+			const res = await createApp().request("/v1/wiki/okf-import", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({
+					scope: "workspace",
+					scopeRef: "ws-1",
+					trustTier: "standard",
+					okfBundleId: "b1",
+				}),
+			})
+			expect(res.status).toBe(400)
+			expect((await asJson(res)).error?.message).toMatch(/bundleDir/)
+		})
+	})
+
+	describe("POST /v1/wiki/okf-export", () => {
+		it("exports a bundle and returns the result", async () => {
+			wikiMocks.exportOkfBundle.mockResolvedValue({
+				dir: "/tmp/out",
+				exported: 3,
+				files: ["tables/accounts.md", "index.md"],
+			})
+			const res = await createApp().request("/v1/wiki/okf-export", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({
+					scope: "workspace",
+					scopeRef: "ws-1",
+					outDir: "/tmp/out",
+				}),
+			})
+			expect(res.status).toBe(200)
+			const json = await asJson(res)
+			expect(json.exported).toBe(3)
+			expect(wikiMocks.exportOkfBundle).toHaveBeenCalledTimes(1)
+		})
+
+		it("rejects missing outDir", async () => {
+			const res = await createApp().request("/v1/wiki/okf-export", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({ scope: "workspace", scopeRef: "ws-1" }),
+			})
+			expect(res.status).toBe(400)
+			expect((await asJson(res)).error?.message).toMatch(/outDir/)
 		})
 	})
 })

@@ -20,6 +20,10 @@
 	},
 	"dependencies": {
 		"@mdbrian/memory-engine": "workspace:*",
-		"@mdbrian/lib": "workspace:*"
+		"@mdbrian/lib": "workspace:*",
+		"js-yaml": "^4.1.0"
+	},
+	"devDependencies": {
+		"@types/js-yaml": "^4.0.9"
 	}
 }

@@ -57,6 +57,8 @@ import {
 	renderMarkdown,
 	renderHtml,
 	getWikiDbHandle,
+	importOkfBundle,
+	exportOkfBundle,
 	WikiDuplicateSlugError,
 	type WikiPageInput,
 } from "@mdbrian/wiki-engine"
@@ -2326,6 +2328,89 @@ export function createV1Router(): Hono {
 		} catch (err) {
 			const message = err instanceof Error ? err.message : String(err)
 			return jsonError(c, 500, "WIKI_DELETE_FAILED", message)
+		}
+	})
+
+	// OKF interchange routes (/v1/wiki/okf-import, /v1/wiki/okf-export)
+	v1.post("/wiki/okf-import", async (c) => {
+		const body = (await c.req.json().catch(() => ({}))) as Record<
+			string,
+			unknown
+		>
+		const bundleDir = String(body.bundleDir ?? "")
+		const scope = String(body.scope ?? "")
+		const scopeRef = String(body.scopeRef ?? "")
+		const trustTier = String(body.trustTier ?? "")
+		const okfBundleId = String(body.okfBundleId ?? "")
+		if (!bundleDir.trim())
+			return jsonError(c, 400, "VALIDATION_ERROR", "bundleDir is required")
+		if (!scope || !scopeRef)
+			return jsonError(
+				c,
+				400,
+				"VALIDATION_ERROR",
+				"scope and scopeRef are required",
+			)
+		if (!okfBundleId.trim())
+			return jsonError(c, 400, "VALIDATION_ERROR", "okfBundleId is required")
+		if (!["restricted", "standard", "admin"].includes(trustTier))
+			return jsonError(
+				c,
+				400,
+				"VALIDATION_ERROR",
+				"trustTier must be restricted|standard|admin",
+			)
+		try {
+			const handle = await readWikiDbHandle(String(body.agentId ?? ""))
+			const result = await importOkfBundle(handle, bundleDir, {
+				scope: scope as
+					| "session"
+					| "user"
+					| "agent"
+					| "workspace"
+					| "tenant"
+					| "global",
+				scopeRef,
+				trustTier: trustTier as "restricted" | "standard" | "admin",
+				okfBundleId,
+			})
+			return c.json(result)
+		} catch (err) {
+			const message = err instanceof Error ? err.message : String(err)
+			return jsonError(c, 500, "OKF_IMPORT_FAILED", message)
+		}
+	})
+
+	v1.post("/wiki/okf-export", async (c) => {
+		const body = (await c.req.json().catch(() => ({}))) as Record<
+			string,
+			unknown
+		>
+		const scope = String(body.scope ?? "")
+		const scopeRef = String(body.scopeRef ?? "")
+		const outDir = String(body.outDir ?? "")
+		const okfBundleId = body.okfBundleId ? String(body.okfBundleId) : undefined
+		if (!scope || !scopeRef)
+			return jsonError(
+				c,
+				400,
+				"VALIDATION_ERROR",
+				"scope and scopeRef are required",
+			)
+		if (!outDir.trim())
+			return jsonError(c, 400, "VALIDATION_ERROR", "outDir is required")
+		try {
+			const handle = await readWikiDbHandle(String(body.agentId ?? ""))
+			const result = await exportOkfBundle(handle, {
+				scope,
+				scopeRef,
+				okfBundleId,
+				outDir,
+			})
+			return c.json(result)
+		} catch (err) {
+			const message = err instanceof Error ? err.message : String(err)
+			return jsonError(c, 500, "OKF_EXPORT_FAILED", message)
 		}
 	})
 
