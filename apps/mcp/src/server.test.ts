@@ -359,7 +359,9 @@ describe("wiki MCP tools", () => {
 	it("wiki_apply upsert: 409 on POST falls back to PATCH (update existing)", async () => {
 		// Regression guard for H1: wikiApply advertises create-or-update.
 		// The client method tries POST; on 409 DUPLICATE_SLUG it PATCHes.
-		const wikiApply = vi.fn().mockResolvedValue({ _id: "id1", slug: "test", revision: 2 })
+		const wikiApply = vi
+			.fn()
+			.mockResolvedValue({ _id: "id1", slug: "test", revision: 2 })
 		await handleToolCall(
 			"mdbrian_wiki_apply",
 			{

@@ -3,6 +3,6 @@
 	"compilerOptions": {
 		"noEmit": true
 	},
-	"include": ["packages/*/src/**/*", "apps/*/src/**/*"],
+	"include": ["packages/*/src/**/*", "apps/*/src/**/*", "scripts/**/*"],
 	"exclude": ["node_modules", "dist", "archive"]
 }

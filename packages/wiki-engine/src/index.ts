@@ -69,3 +69,12 @@ export {
 	type WikiSearchResult,
 	type WikiSearchResponse,
 } from "./wiki-search.js"
+
+export {
+	buildWikiMapBlock,
+	generateWikiMapBlock,
+	injectWikiMapBlock,
+	writeWikiMapToFile,
+	generateAndWriteWikiMap,
+	type MapPointerOptions,
+} from "./wiki-map-pointer.js"
