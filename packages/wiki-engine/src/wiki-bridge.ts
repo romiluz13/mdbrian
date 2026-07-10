@@ -47,6 +47,8 @@ export interface WikiPageInput {
 		privacyTier?: "public" | "internal" | "confidential" | "restricted"
 		// Migration provenance: "structured_mem:<id>" or "procedures:<id>".
 		migratedFrom?: string
+		// Maintenance provenance: content hash for git-diff change detection.
+		maintenanceHash?: string
 	}
 	claims?: WikiClaimInput[]
 	questions?: WikiQuestionInput[]

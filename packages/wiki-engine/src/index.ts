@@ -125,3 +125,15 @@ export {
 	type PipelineGateResult,
 	type ClaimRecord,
 } from "./wiki-contradictions.js"
+
+export {
+	computeMaintenanceHash,
+	detectChangedSources,
+	runGitDiffMaintenance,
+	runDreamerPromotion,
+	type MaintenanceSource,
+	type MaintenanceResult,
+	type ChangedSource,
+	type EventInput,
+	type LlmGenerateFn,
+} from "./wiki-maintenance.js"

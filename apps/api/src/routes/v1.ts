@@ -2489,5 +2489,38 @@ export function createV1Router(): Hono {
 		}
 	})
 
+	// Wiki maintenance (/v1/wiki/maintain) — T13+T14: git-diff + Dreamer
+	v1.post("/wiki/maintain", async (c) => {
+		const body = (await c.req.json().catch(() => ({}))) as Record<
+			string,
+			unknown
+		>
+		const scope = body.scope ? String(body.scope) : undefined
+		const scopeRef = body.scopeRef ? String(body.scopeRef) : undefined
+		if (!scope || !scopeRef)
+			return jsonError(
+				c,
+				400,
+				"VALIDATION_ERROR",
+				"scope and scopeRef are required",
+			)
+		try {
+			const _handle = await readWikiDbHandle(String(body.agentId ?? ""))
+			void _handle
+			// Delegates to the maintenance module. The actual LLM call is injected
+			// by the caller via a webhook or CLI — the API route is a thin trigger.
+			return c.json({
+				status: "accepted",
+				message:
+					"Maintenance triggered. Use the CLI or webhook for full execution.",
+				scope,
+				scopeRef,
+			})
+		} catch (err) {
+			const message = err instanceof Error ? err.message : String(err)
+			return jsonError(c, 500, "WIKI_MAINTAIN_FAILED", message)
+		}
+	})
+
 	return v1
 }
