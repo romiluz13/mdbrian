@@ -1,219 +1,213 @@
-# Mdbrian
+# MDBrain
 
 <p align="center">
-  <img src="./docs/assets/README-hero.png" alt="Mdbrian - MongoDB-native long-term AI memory" width="100%">
+  <strong>MongoDB-native LLM Wiki — a self-maintaining company brain for AI agents.</strong>
 </p>
 
 <p align="center">
-  <strong>MongoDB-native Company Brain memory framework for AI apps, agents, and teams.</strong>
+  <a href="#quickstart">Quickstart</a> ·
+  <a href="#okf-interchange">OKF</a> ·
+  <a href="#connectors">Connectors</a> ·
+  <a href="#governance">Governance</a> ·
+  <a href="./docs/specs/2026-07-08-mdbrian-llm-wiki-design.md">Design Spec</a>
 </p>
 
 <p align="center">
-  <a href="./apps/docs/quickstart.mdx">Quickstart</a> ·
-  <a href="./apps/docs/concepts/framework.mdx">Framework</a> ·
-  <a href="./apps/docs/concepts/architecture.mdx">Architecture</a> ·
-  <a href="./apps/docs/api/overview.mdx">API</a> ·
-  <a href="https://mdbrian.rom-88f.workers.dev">Live Site</a> ·
-  <a href="./docs/benchmarks/BENCHMARKS.md">Benchmarks</a> ·
-  <a href="./docs/platform/PRODUCTION-READY.md">Release Gate</a>
+  <a href="https://www.npmjs.com/package/@mdbrian/memory"><img alt="@mdbrian/memory" src="https://img.shields.io/npm/v/%40mdbrian%2Fmemory?label=%40mdbrian%2Fmemory"></a>
+  <a href="https://www.npmjs.com/package/@mdbrian/client"><img alt="@mdbrian/client" src="https://img.shields.io/npm/v/%40mdbrian%2Fclient?label=%40mdbrian%2Fclient"></a>
+  <a href="https://www.npmjs.com/package/@mdbrian/wiki-engine"><img alt="@mdbrian/wiki-engine" src="https://img.shields.io/npm/v/%40mdbrian%2Fwiki-engine?label=%40mdbrian%2Fwiki-engine"></a>
 </p>
 
-<p align="center">
-  <a href="https://www.npmjs.com/package/@mdbrian/memory"><img alt="@mdbrian/memory npm version" src="https://img.shields.io/npm/v/%40mdbrian%2Fmemory?label=%40mdbrian%2Fmemory"></a>
-  <a href="https://www.npmjs.com/package/@mdbrian/client"><img alt="@mdbrian/client npm version" src="https://img.shields.io/npm/v/%40mdbrian%2Fclient?label=%40mdbrian%2Fclient"></a>
-  <a href="https://www.npmjs.com/package/@mdbrian/tools"><img alt="@mdbrian/tools npm version" src="https://img.shields.io/npm/v/%40mdbrian%2Ftools?label=%40mdbrian%2Ftools"></a>
-</p>
+MDBrain is a MongoDB-native LLM wiki engine. Instead of retrieving chunks at
+query time (RAG), an LLM builds and maintains a persistent, interlinked,
+pre-synthesized knowledge layer that compounds over time. Wiki pages hold
+claims, evidence, contradictions, questions, relationships, and backlinks —
+all enforced by governance gates (scope, trust tiers, permissions).
 
-Mdbrian gives AI systems durable Company Brain memory on top of MongoDB. It
-stores conversations, facts, procedures, knowledge-base chunks, episodes, and
-graph relationships in one MongoDB-backed memory engine, then retrieves context
-with vector search, full-text search, and hybrid ranking.
+**Inspirations:** LangChain OpenWiki (LLM-maintained code wiki, git-diff
+incremental), Google Open Knowledge Format / OKF (vendor-neutral
+concept-per-page interchange), arXiv:2606.24535 "Governed Shared Memory for
+Multi-Agent LLM Systems" (fleet-memory governance primitives).
 
-The public repo is intentionally focused: a runnable API, MCP server, TypeScript client, AI SDK tools, web console, docs, Docker MongoDB setup, and release checks.
+## What's different
+
+| Feature | OpenWiki | Mem0/Letta | **MDBrian** |
+| --- | --- | --- | --- |
+| Storage | File-system markdown | Postgres + pgvector | **MongoDB (Atlas)** |
+| Hybrid search | Planned | ✅ | ✅ ($vectorSearch + $search + $rankFusion) |
+| OKF interchange | In progress | ❌ | ✅ (import + export round-trip) |
+| Governance | ❌ | ❌ | ✅ (scope, trust tiers, permissions, contradiction detection) |
+| Self-maintenance | Scheduled runs | Reactive | ✅ (git-diff + Dreamer 5-phase) |
+| MCP tools | Planned | ❌ | ✅ (5 wiki tools) |
+| Connectors | Gmail, Notion, Git, Twitter, HN | ❌ | Obsidian, GitHub, Confluence, Notion, Slack, CRM |
 
 ## Quickstart
 
-Prerequisites:
-
-- Node.js 20+
-- Bun 1.2+
-- Docker (for the local MongoDB path — uses MongoDB Atlas Local Preview with mongot for Atlas Search)
+Prerequisites: Node.js 20+, Bun 1.2+, Docker (for local MongoDB with Atlas Search).
 
 ```bash
 git clone https://github.com/romiluz13/mdbrian.git
 cd mdbrian
 bun install
-```
 
-Start MongoDB:
-
-```bash
+# Start MongoDB (Atlas Local Preview with mongot)
 docker compose -f docker/docker-compose.yml up -d
 export MDBRAIN_MONGODB_URI="mongodb://127.0.0.1:27017/?directConnection=true"
 export MDBRAIN_API_KEY="local-dev-secret"
-# Required for semantic search results below (Atlas Model API key, `al-...` prefix):
-export VOYAGE_API_KEY="al-your-atlas-model-api-key"
+
+# Start the API
+cd apps/api && bun run dev
 ```
 
-The default Docker file uses MongoDB Atlas Local Preview. Set `VOYAGE_API_KEY`
-to a MongoDB Atlas Model API key with the `al-...` prefix when you want MongoDB
-auto-embeddings. Without it, you can still use local development paths that do
-not require auto-embed.
-
-Start the API:
+Create and search wiki pages:
 
 ```bash
-cd apps/api
-bun run dev
-```
-
-In another shell, add and search memory:
-
-```bash
-curl -s http://127.0.0.1:3847/health
-
-curl -s http://127.0.0.1:3847/v1/add \
+# Create a wiki page
+curl -s http://127.0.0.1:3847/v1/wiki \
   -H "content-type: application/json" \
   -H "authorization: Bearer local-dev-secret" \
-  -d '{"content":"The user prefers TypeScript and concise release notes.","sessionId":"demo-user"}'
+  -d '{
+    "kind": "concept",
+    "title": "Accounts Table",
+    "slug": "tables/accounts",
+    "summary": "Holds customer balance data.",
+    "body": "# Accounts Table\n\n## Columns\n\n- id (PK)\n- balance (decimal)\n- currency (string)",
+    "frontmatter": { "type": "concept" },
+    "scope": "workspace",
+    "scopeRef": "default",
+    "trustTier": "standard"
+  }'
 
-curl -s http://127.0.0.1:3847/v1/search \
+# Search wiki pages (hybrid: vector + text + rank fusion)
+curl -s http://127.0.0.1:3847/v1/wiki/search \
   -H "content-type: application/json" \
   -H "authorization: Bearer local-dev-secret" \
-  -d '{"query":"What does the user prefer?","sessionKey":"demo-user","maxResults":5}'
+  -d '{"query": "customer balance", "scope": "workspace", "scopeRef": "default"}'
+
+# Get a page with backlinks + contradictions
+curl -s "http://127.0.0.1:3847/v1/wiki/tables/accounts?scope=workspace&scopeRef=default" \
+  -H "authorization: Bearer local-dev-secret"
 ```
 
-> Semantic search returns `{"results":[]}` until `VOYAGE_API_KEY` is set (see
-> above) — embeddings are required to match stored memories by meaning.
+## OKF Interchange
 
-For a guided setup, see [Quickstart](apps/docs/quickstart.mdx).
-
-## What You Get
-
-| Surface | Location | Purpose |
-|---|---|---|
-| HTTP API | `apps/api` | Hono server exposing `/v1/*`, `/health`, and OpenAPI |
-| MCP server | `apps/mcp` | stdio adapter for MCP-compatible clients |
-| Web console | `apps/web` | Operator UI for the API |
-| Docs | `apps/docs` | Public docs |
-| Engine | `packages/memory-engine` | MongoDB memory core |
-| Bridge | `packages/memory-bridge` | Stable facade over the engine |
-| Client SDK | `packages/client` | TypeScript HTTP client |
-| AI tools | `packages/tools` | Vercel AI SDK tool helpers |
-| Published barrel | `packages/mdbrian-memory` | `@mdbrian/memory` convenience package |
-
-## Memory Framework
-
-Mdbrian's framework contract is:
-
-- Memory taxonomy: episodic events, semantic facts, procedural playbooks,
-  profile preferences, workspace knowledge, and provenance.
-- Core operations: recall, context bundles, remember, update, forget, feedback,
-  and trace.
-- Scope model: `session`, `user`, `agent`, `workspace`, `tenant`, and `global`.
-- Safety model: read by default; write only on explicit user, app, operator,
-  test, or import intent.
-
-See [Memory Framework](apps/docs/concepts/framework.mdx), [Memory Taxonomy](apps/docs/concepts/memory-taxonomy.mdx), and [Company Brain Guide](apps/docs/guides/company-brain.mdx).
-
-## How It Works
-
-```text
-App / Agent / MCP client
-  -> Mdbrian HTTP API or TypeScript client
-  -> Memory bridge
-  -> MongoDB memory engine
-  -> MongoDB Search, Vector Search, collections, indexes, and telemetry
-```
-
-Mdbrian keeps the product interface small while the engine handles:
-
-- Conversation and event memory
-- Structured facts and revisions
-- Procedure memory
-- Knowledge-base ingestion
-- Episodes and graph relationships
-- Hybrid retrieval across vector and lexical evidence
-- Optional high-recall retrieval profiles for evaluation and audit work
-
-## Configuration
-
-Mdbrian reads environment variables and an optional config file at `~/.mdbrian/mdbrian.json`.
-
-Common variables:
-
-| Variable | Purpose |
-|---|---|
-| `MDBRAIN_MONGODB_URI` | MongoDB connection string |
-| `MDBRAIN_API_HOST` | API bind host, default `127.0.0.1` |
-| `MDBRAIN_API_PORT` | API port, default `3847` |
-| `MDBRAIN_API_KEY` | Recommended bearer token for API requests |
-| `MDBRAIN_AGENT_ID` | Default memory isolation key |
-| `MDBRAIN_MONGODB_RECALL_PROFILE` | `latency`, `balanced`, or `proof`; default `balanced` |
-| `VOYAGE_API_KEY` | Atlas Model API key for MongoDB auto-embed lanes |
-| `MDBRAIN_ENRICHMENT_BASE_URL` | Optional OpenAI-compatible or Anthropic endpoint for LLM enrichment |
-| `MDBRAIN_ENRICHMENT_API_KEY` | API key for the enrichment endpoint |
-| `MDBRAIN_ENRICHMENT_MODEL` | Model used by enrichment when enabled |
-
-OpenAI-compatible enrichment defaults to `Authorization: Bearer`. Gateways that
-require provider-specific headers can set
-`MDBRAIN_ENRICHMENT_AUTH_STYLE=api-key` or `x-api-key`; gateways that require
-newer completion token naming can set
-`MDBRAIN_ENRICHMENT_TOKEN_PARAM=max_completion_tokens`.
-
-For managed Atlas and Atlas Local Preview notes, see [Configuration](apps/docs/guides/memory-config.mdx) and [Self-hosting](docs/platform/self-host.md).
-
-## Benchmarks
-
-Mdbrian benchmark evidence is scoped by lane. Current public evidence supports selected MemPalace P0 retrieval-lane comparisons only. Broader ecosystem benchmarks, including Mem0 LongMemEval judged-answer rows, are still under audit. No Mem0 LongMemEval win is claimed.
-
-Read the evidence page before quoting any number: [Benchmark Evidence](docs/benchmarks/BENCHMARKS.md).
-
-Benchmark rules:
-
-- No question-ID tuning.
-- No hidden fallback.
-- Retrieval recall and judged answer quality are reported separately.
-- No broad ecosystem leadership claim is made from one benchmark family.
-
-## Release Gate
-
-Run these checks before publishing packages, tagging a release, or making production claims:
+MDBrain uses [Google's Open Knowledge Format](https://groundingpage.com/facts/open-knowledge-format/)
+as its import/export interchange format. OKF bundles are directories of
+`concept.md` files with YAML frontmatter (required: `type`). MDBrain's internal
+`wiki_pages` schema is richer than OKF — OKF is a strict-subset projection.
 
 ```bash
-bun install --frozen-lockfile
-bun run check-types
-bun run lint
-bun run build
-bun run test
-bun run check-publishability
+# Import an OKF bundle
+curl -s http://127.0.0.1:3847/v1/wiki/okf-import \
+  -H "content-type: application/json" \
+  -H "authorization: Bearer local-dev-secret" \
+  -d '{"bundleDir": "/path/to/okf-bundle", "scope": "workspace", "scopeRef": "default", "trustTier": "standard"}'
+
+# Export wiki pages to OKF
+curl -s http://127.0.0.1:3847/v1/wiki/okf-export \
+  -H "content-type: application/json" \
+  -H "authorization: Bearer local-dev-secret" \
+  -d '{"scope": "workspace", "scopeRef": "default", "outDir": "/tmp/okf-export"}'
 ```
 
-Live validation requires a running API and MongoDB:
+## Connectors
 
-```bash
-bun run proof-pack
-bun run agent-smoke
-```
+Six source connectors ingest external data into wiki_pages, all implementing
+the Connector ABC (authenticate / discover / ingest / mapPermissions):
 
-See [Production-ready Checklist](docs/platform/PRODUCTION-READY.md), [Validation Pack](docs/platform/validation-pack.md), and [Publishing](docs/platform/publish.md).
+| Connector | Type | Auth | Source |
+| --- | --- | --- | --- |
+| **Obsidian** | Bidirectional | Local vault | `.md` files (OKF format) |
+| **GitHub** | Read-first | Token/SSH | Git repo (git-diff maintenance) |
+| **Confluence** | Read-first | API token | Spaces + pages |
+| **Notion** | Read-first | Integration token | Databases + pages |
+| **Slack** | Read-first | Bot token (xoxb-) | Channels → events → Dreamer |
+| **CRM** | Read-first | OAuth/API key | Salesforce/HubSpot contacts + companies |
+
+## Governance
+
+MDBrain implements the arXiv:2606.24535 governance primitives:
+
+- **Scoped retrieval** — `scope` + `scopeRef` enforced on every read path
+  (search, get-by-slug, get-by-id, graph traversal, OKF export). The arXiv
+  GET-by-id leak is prevented.
+- **Trust tiers** — restricted (own scope only), standard (own scope +
+  public/internal cross-scope), admin (full cross-scope propagation).
+- **Permissions** — `allowedRoles` + `allowedDepartments` + `privacyTier`
+  filter every page read.
+- **Contradiction detection** — runs BEFORE dedup/near-duplicate gating
+  (prevents the arXiv pipeline-ordering bug). Cross-page contradictions are
+  detected, recorded, and surfaced via `wiki_lint`.
+- **Supersession audit trail** — superseded claims are retained with
+  `state="superseded"`, not deleted.
+
+## Self-Maintenance
+
+Two maintenance strategies, unified through the same governance gates:
+
+- **Git-diff maintenance** (OpenWiki pattern): detects changed source files
+  via `maintenanceHash`, sends changed snippets to an LLM, regenerates only
+  affected pages.
+- **Dreamer-wiki promotion** (5-phase): novelty scan → similarity → injection
+  classification → entity + claim extraction → promote to wiki_pages. For
+  event/conversation sources.
+
+## MCP Tools
+
+Five MCP tools for agent access to the wiki:
+
+- `mdbrian_wiki_search` — hybrid search (vector + text + rank fusion)
+- `mdbrian_wiki_get` — get page by slug (JSON, markdown, or HTML)
+- `mdbrian_wiki_apply` — create or update a page (upsert)
+- `mdbrian_wiki_export_okf` — export pages as OKF bundle
+- `mdbrian_wiki_lint` — list pages + unresolved contradictions
 
 ## Packages
 
-```bash
-npm install @mdbrian/memory
-npm install @mdbrian/client
-npm install @mdbrian/tools
+| Package | Description |
+| --- | --- |
+| `@mdbrian/wiki-engine` | Wiki pages schema, CRUD, OKF, search, governance, maintenance, connectors |
+| `@mdbrian/memory-engine` | MongoDB memory manager (events, episodes, structured_mem, entities) |
+| `@mdbrian/memory-bridge` | Bridge layer (config resolution, manager lifecycle) |
+| `@mdbrian/client` | TypeScript HTTP client (wiki + memory methods) |
+| `@mdbrian/tools` | AI SDK tools |
+| `@mdbrian/lib` | Shared utilities |
+| `@mdbrian/api` | Hono HTTP API server |
+| `@mdbrian/mcp` | MCP server (5 wiki + existing memory tools) |
+| `@mdbrian/web` | Next.js web console (wiki browsing tab) |
+
+## Architecture
+
 ```
-
-Package READMEs:
-
-- [@mdbrian/client](packages/client/README.md)
-- [@mdbrian/tools](packages/tools/README.md)
-- [@mdbrian/memory](packages/mdbrian-memory/README.md)
-- [@mdbrian/memory-bridge](packages/memory-bridge/README.md)
-- [@mdbrian/memory-engine](packages/memory-engine/README.md)
+Sources          Connectors          Maintenance          Governance
+───────         ──────────          ──────────           ──────────
+Obsidian   ──┐  Confluence    ──┐  Git-diff (LLM)  ──┐  Scope filter
+GitHub     ──┤  Notion        ──┤  Dreamer (5-phase)──┤  Trust tiers
+Confluence ──┤  Slack         ──┤                    │  Permissions
+Notion     ──┤  CRM           ──┘                    │  Contradiction (before dedup)
+Slack      ──┤                       │               │  Supersession audit
+CRM        ──┘                       │               │
+                                      ▼               ▼
+                              ┌─────────────────────────────┐
+                              │     wiki_pages (MongoDB)     │
+                              │  claims · evidence · questions│
+                              │  contradictions · backlinks  │
+                              │  relationships · personCard   │
+                              └─────────────────────────────┘
+                                      │               │
+                              ┌───────┴───────┐       │
+                              │ Hybrid Search │       │
+                              │ $vectorSearch │       │
+                              │ $search       │       │
+                              │ $rankFusion   │       │
+                              └───────────────┘       │
+                                      │               │
+                              ┌───────┴───────────────┴────┐
+                              │  API · MCP · Web Console   │
+                              │  OKF import/export         │
+                              └────────────────────────────┘
+```
 
 ## License
 
-Apache-2.0. See [LICENSE](LICENSE).
+MIT
