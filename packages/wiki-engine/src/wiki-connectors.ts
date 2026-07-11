@@ -17,11 +17,13 @@ import {
 } from "node:fs"
 import { join, dirname, basename, extname, relative } from "node:path"
 import { importOkfBundle } from "./okf.js"
-import type { WikiDbHandle } from "./wiki-bridge.js"
+import type { WikiDbHandle, WikiPersonCard } from "./wiki-bridge.js"
 import {
 	runGitDiffMaintenance,
+	runDreamerPromotion,
 	type LlmGenerateFn,
 	type ChangedSource,
+	type EventInput,
 } from "./wiki-maintenance.js"
 
 // ---------------------------------------------------------------------------
@@ -366,6 +368,390 @@ export class GitHubConnector implements SourceConnector {
 		if (visibility === "public") return { privacyTier: "public" }
 		if (visibility === "private") return { privacyTier: "internal" }
 		return { privacyTier: "restricted" }
+	}
+}
+
+// ---------------------------------------------------------------------------
+// Enterprise connectors (T17-T20, read-first, v1)
+// ---------------------------------------------------------------------------
+
+// Confluence connector (T17)
+export interface ConfluenceConnectorConfig {
+	host: string // e.g. "https://yourorg.atlassian.net"
+	apiToken: string
+	email: string // Confluence API token is scoped to a user email
+	spaceKey?: string // limit to a single space
+}
+
+export class ConfluenceConnector implements SourceConnector {
+	name = "confluence"
+	private config: ConfluenceConnectorConfig
+	private handle: WikiDbHandle
+
+	constructor(handle: WikiDbHandle, config: ConfluenceConnectorConfig) {
+		this.handle = handle
+		this.config = config
+	}
+
+	async authenticate(): Promise<ConnectorAuthenticateResult> {
+		if (!this.config.apiToken || !this.config.email) {
+			return {
+				authenticated: false,
+				error: "Confluence API token and email are required",
+			}
+		}
+		return {
+			authenticated: true,
+			context: { host: this.config.host, email: this.config.email },
+		}
+	}
+
+	async discover(_cursor?: string): Promise<ConnectorDiscoverResult> {
+		// In production, this calls the Confluence REST API:
+		// GET /wiki/api/v2/spaces → GET /wiki/api/v2/spaces/{spaceId}/pages
+		// Here we return an empty list — the caller provides pre-fetched pages.
+		return { sources: [], cursor: _cursor }
+	}
+
+	async ingest(
+		sources: DiscoveredSource[],
+		opts: IngestOpts,
+	): Promise<ConnectorIngestResult> {
+		const { createWikiPage } = await import("./wiki-bridge.js")
+		const result: ConnectorIngestResult = {
+			pagesProcessed: 0,
+			pagesCreated: 0,
+			pagesUpdated: 0,
+			errors: [],
+		}
+		for (const source of sources) {
+			try {
+				result.pagesProcessed++
+				const meta = source.metadata ?? {}
+				const slug = `confluence/${source.id}`
+				const perms = this.mapPermissions(source)
+				await createWikiPage(this.handle, {
+					kind: "source",
+					title: String(meta.title ?? source.id),
+					slug,
+					summary: String(meta.summary ?? source.content.slice(0, 100)),
+					body: source.content,
+					frontmatter: {
+						type: "source",
+						resource: String(meta.url ?? source.path),
+					},
+					scope: opts.scope as
+						| "workspace"
+						| "session"
+						| "user"
+						| "agent"
+						| "tenant"
+						| "global",
+					scopeRef: opts.scopeRef,
+					trustTier: (opts.trustTier ?? "standard") as
+						| "restricted"
+						| "standard"
+						| "admin",
+					permissions: {
+						privacyTier: perms.privacyTier,
+						allowedRoles: meta.spaceAdmins as string[] | undefined,
+						allowedDepartments: meta.spaceTeams as string[] | undefined,
+					},
+				})
+				result.pagesCreated++
+			} catch (err) {
+				result.errors.push(
+					`${source.id}: ${err instanceof Error ? err.message : String(err)}`,
+				)
+			}
+		}
+		return result
+	}
+
+	mapPermissions(source: DiscoveredSource): ConnectorMapPermissionsResult {
+		const restrictions = source.metadata?.spaceRestrictions as
+			| string[]
+			| undefined
+		if (restrictions && restrictions.length > 0) {
+			return { privacyTier: "restricted" }
+		}
+		return { privacyTier: "internal" }
+	}
+}
+
+// Notion connector (T18)
+export interface NotionConnectorConfig {
+	integrationToken: string
+	databaseId?: string // limit to a single database
+}
+
+export class NotionConnector implements SourceConnector {
+	name = "notion"
+	private config: NotionConnectorConfig
+	private handle: WikiDbHandle
+
+	constructor(handle: WikiDbHandle, config: NotionConnectorConfig) {
+		this.handle = handle
+		this.config = config
+	}
+
+	async authenticate(): Promise<ConnectorAuthenticateResult> {
+		if (!this.config.integrationToken) {
+			return {
+				authenticated: false,
+				error: "Notion integration token is required",
+			}
+		}
+		return {
+			authenticated: true,
+			context: { token: this.config.integrationToken },
+		}
+	}
+
+	async discover(_cursor?: string): Promise<ConnectorDiscoverResult> {
+		// In production, this calls the Notion API:
+		// POST /v1/databases/{id}/query → iterate pages → GET /v1/blocks/{id}/children
+		return { sources: [], cursor: _cursor }
+	}
+
+	async ingest(
+		sources: DiscoveredSource[],
+		opts: IngestOpts,
+	): Promise<ConnectorIngestResult> {
+		const { createWikiPage } = await import("./wiki-bridge.js")
+		const result: ConnectorIngestResult = {
+			pagesProcessed: 0,
+			pagesCreated: 0,
+			pagesUpdated: 0,
+			errors: [],
+		}
+		for (const source of sources) {
+			try {
+				result.pagesProcessed++
+				const meta = source.metadata ?? {}
+				const slug = `notion/${source.id}`
+				const perms = this.mapPermissions(source)
+				// Notion block tree is converted to markdown by the caller.
+				await createWikiPage(this.handle, {
+					kind: "source",
+					title: String(meta.title ?? source.id),
+					slug,
+					summary: String(meta.summary ?? source.content.slice(0, 100)),
+					body: source.content,
+					frontmatter: {
+						type: "source",
+						resource: String(meta.url ?? source.path),
+					},
+					scope: opts.scope as
+						| "workspace"
+						| "session"
+						| "user"
+						| "agent"
+						| "tenant"
+						| "global",
+					scopeRef: opts.scopeRef,
+					trustTier: (opts.trustTier ?? "standard") as
+						| "restricted"
+						| "standard"
+						| "admin",
+					permissions: { privacyTier: perms.privacyTier },
+				})
+				result.pagesCreated++
+			} catch (err) {
+				result.errors.push(
+					`${source.id}: ${err instanceof Error ? err.message : String(err)}`,
+				)
+			}
+		}
+		return result
+	}
+
+	mapPermissions(source: DiscoveredSource): ConnectorMapPermissionsResult {
+		const sharedWith = source.metadata?.sharedWith as string[] | undefined
+		if (sharedWith && sharedWith.includes("public"))
+			return { privacyTier: "public" }
+		if (sharedWith && sharedWith.length === 0)
+			return { privacyTier: "restricted" }
+		return { privacyTier: "internal" }
+	}
+}
+
+// Slack connector (T19) — messages → events → Dreamer → wiki pages
+export interface SlackConnectorConfig {
+	botToken: string // xoxb-...
+	channelIds?: string[] // limit to specific channels
+}
+
+export class SlackConnector implements SourceConnector {
+	name = "slack"
+	private config: SlackConnectorConfig
+	private handle: WikiDbHandle
+
+	constructor(handle: WikiDbHandle, config: SlackConnectorConfig) {
+		this.handle = handle
+		this.config = config
+	}
+
+	async authenticate(): Promise<ConnectorAuthenticateResult> {
+		if (!this.config.botToken || !this.config.botToken.startsWith("xoxb-")) {
+			return {
+				authenticated: false,
+				error: "Slack bot token (xoxb-...) is required",
+			}
+		}
+		return { authenticated: true, context: { token: this.config.botToken } }
+	}
+
+	async discover(cursor?: string): Promise<ConnectorDiscoverResult> {
+		// In production, this calls the Slack API:
+		// GET /api/conversations.list → GET /api/conversations.history?channel={id}&oldest={cursor}
+		return {
+			sources: [],
+			cursor: cursor ?? String(Math.floor(Date.now() / 1000)),
+		}
+	}
+
+	async ingest(
+		sources: DiscoveredSource[],
+		opts: IngestOpts,
+	): Promise<ConnectorIngestResult> {
+		const result: ConnectorIngestResult = {
+			pagesProcessed: 0,
+			pagesCreated: 0,
+			pagesUpdated: 0,
+			errors: [],
+		}
+		const events: EventInput[] = sources.map((s) => ({
+			id: s.id,
+			text: s.content,
+			agentId: String(s.metadata?.user ?? opts.agentId),
+			timestamp: s.metadata?.ts
+				? new Date(Number(s.metadata.ts) * 1000)
+				: undefined,
+		}))
+		const dreamerResult = await runDreamerPromotion(this.handle, events, {
+			scope: opts.scope,
+			scopeRef: opts.scopeRef,
+			trustTier: opts.trustTier,
+			agentId: opts.agentId,
+		})
+		result.pagesProcessed = dreamerResult.pagesProcessed
+		result.pagesCreated = dreamerResult.pagesRegenerated
+		result.pagesUpdated = dreamerResult.pagesRegenerated
+		result.errors = dreamerResult.errors
+		return result
+	}
+
+	mapPermissions(source: DiscoveredSource): ConnectorMapPermissionsResult {
+		const isPrivate = source.metadata?.isPrivate as boolean | undefined
+		if (isPrivate) return { privacyTier: "restricted" }
+		return { privacyTier: "internal" }
+	}
+}
+
+// CRM connector (T20) — Salesforce/HubSpot records → entity + person/company pages
+export interface CrmConnectorConfig {
+	provider: "salesforce" | "hubspot"
+	apiKey: string // OAuth token or API key
+	instanceUrl?: string // Salesforce instance URL
+}
+
+export class CrmConnector implements SourceConnector {
+	name = "crm"
+	private config: CrmConnectorConfig
+	private handle: WikiDbHandle
+
+	constructor(handle: WikiDbHandle, config: CrmConnectorConfig) {
+		this.handle = handle
+		this.config = config
+	}
+
+	async authenticate(): Promise<ConnectorAuthenticateResult> {
+		if (!this.config.apiKey) {
+			return {
+				authenticated: false,
+				error: `${this.config.provider} API key is required`,
+			}
+		}
+		return {
+			authenticated: true,
+			context: { provider: this.config.provider, apiKey: this.config.apiKey },
+		}
+	}
+
+	async discover(_cursor?: string): Promise<ConnectorDiscoverResult> {
+		// In production, this calls the CRM API:
+		// Salesforce: GET /services/data/v58.0/query?q=SELECT... FROM Contact
+		// HubSpot: GET /crm/v3/objects/contacts
+		return { sources: [], cursor: _cursor }
+	}
+
+	async ingest(
+		sources: DiscoveredSource[],
+		opts: IngestOpts,
+	): Promise<ConnectorIngestResult> {
+		const { createWikiPage } = await import("./wiki-bridge.js")
+		const result: ConnectorIngestResult = {
+			pagesProcessed: 0,
+			pagesCreated: 0,
+			pagesUpdated: 0,
+			errors: [],
+		}
+		for (const source of sources) {
+			try {
+				result.pagesProcessed++
+				const meta = source.metadata ?? {}
+				const recordType = String(meta.recordType ?? "contact")
+				const slug = `crm/${recordType}/${source.id}`
+				const perms = this.mapPermissions(source)
+				const kind = recordType === "contact" ? "entity" : "concept"
+				const personCard: WikiPersonCard | null =
+					recordType === "contact"
+						? {
+								canonicalId: source.id,
+								emails: meta.email ? [String(meta.email)] : undefined,
+								handles: meta.handle ? [String(meta.handle)] : undefined,
+							}
+						: null
+				await createWikiPage(this.handle, {
+					kind: kind as "entity" | "concept",
+					title: String(meta.name ?? source.id),
+					slug,
+					summary: `${recordType}: ${String(meta.name ?? source.id)}`,
+					body: source.content,
+					frontmatter: {
+						type: recordType === "contact" ? "person" : "organization",
+					},
+					scope: opts.scope as
+						| "workspace"
+						| "session"
+						| "user"
+						| "agent"
+						| "tenant"
+						| "global",
+					scopeRef: opts.scopeRef,
+					trustTier: (opts.trustTier ?? "standard") as
+						| "restricted"
+						| "standard"
+						| "admin",
+					personCard,
+					permissions: { privacyTier: perms.privacyTier },
+				})
+				result.pagesCreated++
+			} catch (err) {
+				result.errors.push(
+					`${source.id}: ${err instanceof Error ? err.message : String(err)}`,
+				)
+			}
+		}
+		return result
+	}
+
+	mapPermissions(source: DiscoveredSource): ConnectorMapPermissionsResult {
+		const ownerId = source.metadata?.ownerId as string | undefined
+		const isShared = source.metadata?.isShared as boolean | undefined
+		if (ownerId && !isShared) return { privacyTier: "restricted" }
+		return { privacyTier: "internal" }
 	}
 }
 

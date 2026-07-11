@@ -141,6 +141,10 @@ export {
 export {
 	ObsidianConnector,
 	GitHubConnector,
+	ConfluenceConnector,
+	NotionConnector,
+	SlackConnector,
+	CrmConnector,
 	ConnectorRegistry,
 	type SourceConnector,
 	type ConnectorAuthenticateResult,
@@ -151,4 +155,8 @@ export {
 	type IngestOpts,
 	type ObsidianConnectorConfig,
 	type GitHubConnectorConfig,
+	type ConfluenceConnectorConfig,
+	type NotionConnectorConfig,
+	type SlackConnectorConfig,
+	type CrmConnectorConfig,
 } from "./wiki-connectors.js"
