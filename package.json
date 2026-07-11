@@ -32,7 +32,8 @@
 		"agent-smoke": "bun scripts/real-agent-smoke.ts",
 		"capability-stress": "bun scripts/real-capability-stress.ts",
 		"wiki:init": "bun run scripts/mdbrian-init.ts",
-		"wiki:migrate": "bun run scripts/mdbrian-migrate.ts"
+		"wiki:migrate": "bun run scripts/mdbrian-migrate.ts",
+		"stress-test": "bun run scripts/stress-test.ts"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "^2.4.0",
