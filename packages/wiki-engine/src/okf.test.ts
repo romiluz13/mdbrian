@@ -105,7 +105,7 @@ describe("OKF import + export round-trip", () => {
 	let handle: WikiDbHandle
 
 	beforeEach(() => {
-		tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "mdbrian-okf-"))
+		tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "mdbrain-okf-"))
 		store = makeStore()
 		const { db } = mockDb(store)
 		handle = { db, prefix: "test_" }

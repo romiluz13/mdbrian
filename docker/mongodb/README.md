@@ -1,10 +1,10 @@
-# Mdbrian MongoDB Setup
+# Mdbrain MongoDB Setup
 
-Atlas Local preview is the canonical Mdbrian MongoDB stack.
+Atlas Local preview is the canonical Mdbrain MongoDB stack.
 
 ## Recommended: Preview (Single Container)
 
-The fastest way to run Mdbrian's full MongoDB stack:
+The fastest way to run Mdbrain's full MongoDB stack:
 
 ```bash
 # Start (bundles mongod + mongot + Atlas Search + Vector Search)
@@ -17,7 +17,7 @@ VOYAGE_API_KEY=al-your-atlas-model-api-key ./docker/mongodb/start-preview.sh
 ./docker/mongodb/start-preview.sh stop
 ```
 
-This uses `mongodb/mongodb-atlas-local:preview` (~584 MB) -- a single container with everything Mdbrian needs:
+This uses `mongodb/mongodb-atlas-local:preview` (~584 MB) -- a single container with everything Mdbrain needs:
 
 - mongod (MongoDB 8.x, single-node replica set)
 - mongot (community search engine)
@@ -93,9 +93,9 @@ docker compose -f docker/mongodb/docker-compose.mongodb.yml --profile standalone
 
 | Tier       | Connection String                                                                                      |
 | ---------- | ------------------------------------------------------------------------------------------------------ |
-| standalone | `mongodb://localhost:27017/mdbrian`                                                                   |
-| replicaset | `mongodb://admin:admin@localhost:27017/mdbrian?authSource=admin&replicaSet=rs0&directConnection=true` |
-| fullstack  | `mongodb://admin:admin@localhost:27017/mdbrian?authSource=admin&replicaSet=rs0&directConnection=true` |
+| standalone | `mongodb://localhost:27017/mdbrain`                                                                   |
+| replicaset | `mongodb://admin:admin@localhost:27017/mdbrain?authSource=admin&replicaSet=rs0&directConnection=true` |
+| fullstack  | `mongodb://admin:admin@localhost:27017/mdbrain?authSource=admin&replicaSet=rs0&directConnection=true` |
 
 ## Environment Variables
 
@@ -139,20 +139,20 @@ Use the multi-container stack below only if you specifically need separate mongo
 ### Standalone
 
 ```
-[Mdbrian] --> [mongod-standalone:27017]
+[Mdbrain] --> [mongod-standalone:27017]
 ```
 
 ### Replica Set
 
 ```
-[Mdbrian] --> [mongod:27017 (rs0)]
+[Mdbrain] --> [mongod:27017 (rs0)]
                  |-- auth via keyfile
 ```
 
 ### Full Stack
 
 ```
-[Mdbrian] --> [mongod:27017 (rs0)]
+[Mdbrain] --> [mongod:27017 (rs0)]
                  |-- auth via keyfile
                  |-- gRPC --> [mongot:27028]
                                |-- sync from mongod
@@ -170,7 +170,7 @@ Use the multi-container stack below only if you specifically need separate mongo
 
 ```bash
 # Check logs
-docker logs mdbrian-mongod
+docker logs mdbrain-mongod
 
 # Common issue: keyfile permissions
 docker compose -f docker/mongodb/docker-compose.mongodb.yml --profile setup run --rm setup-generator
@@ -184,7 +184,7 @@ docker compose -f docker/mongodb/docker-compose.mongodb.yml --profile setup run 
 
 ```bash
 # Check logs
-docker logs mdbrian-mongot
+docker logs mdbrain-mongot
 
 # mongot depends on mongod being healthy first
 # Wait for mongod health check to pass, then mongot starts automatically
@@ -193,7 +193,7 @@ docker compose -f docker/mongodb/docker-compose.mongodb.yml --profile fullstack 
 
 ### Connection refused
 
-**Symptom:** Mdbrian cannot connect to MongoDB.
+**Symptom:** Mdbrain cannot connect to MongoDB.
 
 **Fix:**
 
@@ -202,10 +202,10 @@ docker compose -f docker/mongodb/docker-compose.mongodb.yml --profile fullstack 
 docker compose -f docker/mongodb/docker-compose.mongodb.yml --profile fullstack ps
 
 # Test connection manually
-docker exec mdbrian-mongod mongosh --eval "db.adminCommand('ping')"
+docker exec mdbrain-mongod mongosh --eval "db.adminCommand('ping')"
 
 # Check port mapping
-docker port mdbrian-mongod
+docker port mdbrain-mongod
 ```
 
 ### Auth errors
@@ -226,10 +226,10 @@ docker port mdbrian-mongod
 
 ```bash
 # Verify mongot is healthy
-docker exec mdbrian-mongot wget -qO- http://localhost:9946/metrics | head -5
+docker exec mdbrain-mongot wget -qO- http://localhost:9946/metrics | head -5
 
 # Check mongot sync status
-docker logs mdbrian-mongot | tail -20
+docker logs mdbrain-mongot | tail -20
 ```
 
 ## Upgrading Between Tiers

@@ -1,5 +1,5 @@
 #!/bin/bash
-# Mdbrian MongoDB Quick Start
+# Mdbrain MongoDB Quick Start
 # Usage:
 #   ./docker/mongodb/start.sh standalone    # Simplest, no transactions/search
 #   ./docker/mongodb/start.sh replicaset    # Transactions, $text search
@@ -41,7 +41,7 @@ case "${1:-fullstack}" in
     docker compose -f "$COMPOSE_FILE" --profile replicaset up -d
     echo ""
     echo -e "${GREEN}MongoDB replica set is starting on port ${MONGODB_PORT:-27017}${NC}"
-    echo "Connection string: mongodb://admin:${ADMIN_PASSWORD:-admin}@localhost:${MONGODB_PORT:-27017}/mdbrian?authSource=admin&replicaSet=rs0&directConnection=true"
+    echo "Connection string: mongodb://admin:${ADMIN_PASSWORD:-admin}@localhost:${MONGODB_PORT:-27017}/mdbrain?authSource=admin&replicaSet=rs0&directConnection=true"
     echo ""
     echo "Features available:"
     echo "  - ACID transactions (withTransaction)"
@@ -63,7 +63,7 @@ case "${1:-fullstack}" in
     echo "  mongod: port ${MONGODB_PORT:-27017}"
     echo "  mongot: gRPC port ${MONGOT_GRPC_PORT:-27028}, health port ${MONGOT_HEALTH_PORT:-8080}"
     echo ""
-    echo "Connection string: mongodb://admin:${ADMIN_PASSWORD:-admin}@localhost:${MONGODB_PORT:-27017}/mdbrian?authSource=admin&replicaSet=rs0&directConnection=true"
+    echo "Connection string: mongodb://admin:${ADMIN_PASSWORD:-admin}@localhost:${MONGODB_PORT:-27017}/mdbrain?authSource=admin&replicaSet=rs0&directConnection=true"
     echo ""
     echo "Features available:"
     echo "  - ACID transactions (withTransaction)"
@@ -82,7 +82,7 @@ case "${1:-fullstack}" in
     ;;
 
   stop)
-    echo "Stopping all Mdbrian MongoDB services..."
+    echo "Stopping all Mdbrain MongoDB services..."
     docker compose -f "$COMPOSE_FILE" --profile standalone --profile replicaset --profile fullstack down
     echo -e "${GREEN}All services stopped.${NC}"
     ;;

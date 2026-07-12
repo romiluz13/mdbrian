@@ -1,14 +1,14 @@
 /**
- * Request shapes for the Mdbrian HTTP API.
- * Runtime implementation lives in @mdbrian/memory-bridge.
+ * Request shapes for the Mdbrain HTTP API.
+ * Runtime implementation lives in @mdbrain/memory-bridge.
  */
 
-export type MdbrianContainerTag = string
+export type MdbrainContainerTag = string
 
-export type MdbrianAddInput = {
+export type MdbrainAddInput = {
 	content: string
 	/** @deprecated Prefer `sessionId`. */
-	containerTag?: MdbrianContainerTag
+	containerTag?: MdbrainContainerTag
 	entityContext?: string
 	customId?: string
 	metadata?: Record<string, string | number | boolean | null>
@@ -16,10 +16,10 @@ export type MdbrianAddInput = {
 	sessionId?: string
 }
 
-export type MdbrianSearchInput = {
+export type MdbrainSearchInput = {
 	query: string
 	/** @deprecated Prefer `sessionKey`. */
-	containerTag?: MdbrianContainerTag
+	containerTag?: MdbrainContainerTag
 	limit?: number
 	agentId?: string
 	minScore?: number
@@ -49,7 +49,7 @@ export type SearchConfig = {
 	lexicalPrefilter?: "disabled" | "experimental"
 }
 
-export type MdbrianConversationRecallInput = {
+export type MdbrainConversationRecallInput = {
 	query?: string
 	sessionId?: string
 	roles?: Array<"user" | "assistant" | "system" | "tool">
@@ -61,7 +61,7 @@ export type MdbrianConversationRecallInput = {
 	agentId?: string
 }
 
-export type MdbrianConversationImportInput = {
+export type MdbrainConversationImportInput = {
 	datasetPath: string
 	scope?: "session" | "user" | "agent" | "workspace" | "tenant" | "global"
 	limitConversations?: number
@@ -69,33 +69,33 @@ export type MdbrianConversationImportInput = {
 	agentId?: string
 }
 
-export type MdbrianSourceAgent = {
+export type MdbrainSourceAgent = {
 	id: string
 	name: string
 	runId?: string
 }
 
-export type MdbrianActorRole = "user" | "assistant" | "system"
-export type MdbrianMemoryFeedbackSignal = "confirm" | "correct" | "irrelevant"
+export type MdbrainActorRole = "user" | "assistant" | "system"
+export type MdbrainMemoryFeedbackSignal = "confirm" | "correct" | "irrelevant"
 
-export type MdbrianLifecycleFamily = "structured" | "procedure"
-export type MdbrianLifecycleState = "active" | "invalidated" | "conflicted"
-export type MdbrianLifecycleHistoryKind = "revision" | "current"
+export type MdbrainLifecycleFamily = "structured" | "procedure"
+export type MdbrainLifecycleState = "active" | "invalidated" | "conflicted"
+export type MdbrainLifecycleHistoryKind = "revision" | "current"
 
-type MdbrianStableHandleBase = {
-	family: MdbrianLifecycleFamily
+type MdbrainStableHandleBase = {
+	family: MdbrainLifecycleFamily
 	id: string
 	agentId: string
 	scope: "session" | "user" | "agent" | "workspace" | "tenant" | "global"
 	scopeRef: string
 	revision: number
-	state: MdbrianLifecycleState
+	state: MdbrainLifecycleState
 	validFrom?: string
 	validTo?: string
 	updatedAt?: string
 }
 
-export type MdbrianStructuredStableHandle = MdbrianStableHandleBase & {
+export type MdbrainStructuredStableHandle = MdbrainStableHandleBase & {
 	family: "structured"
 	structured: {
 		type: string
@@ -103,18 +103,18 @@ export type MdbrianStructuredStableHandle = MdbrianStableHandleBase & {
 	}
 }
 
-export type MdbrianProcedureStableHandle = MdbrianStableHandleBase & {
+export type MdbrainProcedureStableHandle = MdbrainStableHandleBase & {
 	family: "procedure"
 	procedure: {
 		procedureId: string
 	}
 }
 
-export type MdbrianStableHandle =
-	| MdbrianStructuredStableHandle
-	| MdbrianProcedureStableHandle
+export type MdbrainStableHandle =
+	| MdbrainStructuredStableHandle
+	| MdbrainProcedureStableHandle
 
-export type MdbrianLifecycleStructuredData = {
+export type MdbrainLifecycleStructuredData = {
 	type: string
 	key: string
 	value: string
@@ -131,11 +131,11 @@ export type MdbrianLifecycleStructuredData = {
 	reinforcementCount?: number
 	reviewAt?: string
 	lastConfirmedAt?: string
-	sourceAgent?: MdbrianSourceAgent
+	sourceAgent?: MdbrainSourceAgent
 	artifact?: Record<string, unknown>
 }
 
-export type MdbrianLifecycleProcedureData = {
+export type MdbrainLifecycleProcedureData = {
 	procedureId: string
 	name: string
 	intentTags?: string[]
@@ -149,33 +149,33 @@ export type MdbrianLifecycleProcedureData = {
 	failCount?: number
 	lastSuccessAt?: string
 	lastFailureAt?: string
-	sourceAgent?: MdbrianSourceAgent
+	sourceAgent?: MdbrainSourceAgent
 }
 
-export type MdbrianLifecycleItem =
+export type MdbrainLifecycleItem =
 	| {
 			family: "structured"
-			handle: MdbrianStructuredStableHandle
-			data: MdbrianLifecycleStructuredData
+			handle: MdbrainStructuredStableHandle
+			data: MdbrainLifecycleStructuredData
 			createdAt?: string
 			updatedAt?: string
 	  }
 	| {
 			family: "procedure"
-			handle: MdbrianProcedureStableHandle
-			data: MdbrianLifecycleProcedureData
+			handle: MdbrainProcedureStableHandle
+			data: MdbrainLifecycleProcedureData
 			createdAt?: string
 			updatedAt?: string
 	  }
 
-export type MdbrianLifecycleHistoryEntry = MdbrianLifecycleItem & {
-	historyKind: MdbrianLifecycleHistoryKind
+export type MdbrainLifecycleHistoryEntry = MdbrainLifecycleItem & {
+	historyKind: MdbrainLifecycleHistoryKind
 	supersededAt?: string
 }
 
-export type MdbrianStructuredLifecyclePatch = Partial<
+export type MdbrainStructuredLifecyclePatch = Partial<
 	Pick<
-		MdbrianLifecycleStructuredData,
+		MdbrainLifecycleStructuredData,
 		| "value"
 		| "context"
 		| "confidence"
@@ -194,9 +194,9 @@ export type MdbrianStructuredLifecyclePatch = Partial<
 	> & { validTo: string }
 >
 
-export type MdbrianProcedureLifecyclePatch = Partial<
+export type MdbrainProcedureLifecyclePatch = Partial<
 	Pick<
-		MdbrianLifecycleProcedureData,
+		MdbrainLifecycleProcedureData,
 		| "name"
 		| "intentTags"
 		| "triggerQueries"
@@ -209,62 +209,62 @@ export type MdbrianProcedureLifecyclePatch = Partial<
 	>
 >
 
-export type MdbrianLifecycleGetInput = {
-	handle: MdbrianStableHandle
+export type MdbrainLifecycleGetInput = {
+	handle: MdbrainStableHandle
 }
 
-export type MdbrianLifecycleUpdateInput =
+export type MdbrainLifecycleUpdateInput =
 	| {
-			handle: MdbrianStructuredStableHandle
-			patch: MdbrianStructuredLifecyclePatch
+			handle: MdbrainStructuredStableHandle
+			patch: MdbrainStructuredLifecyclePatch
 	  }
 	| {
-			handle: MdbrianProcedureStableHandle
-			patch: MdbrianProcedureLifecyclePatch
+			handle: MdbrainProcedureStableHandle
+			patch: MdbrainProcedureLifecyclePatch
 	  }
 
-export type MdbrianLifecycleDeleteInput = {
-	handle: MdbrianStableHandle
+export type MdbrainLifecycleDeleteInput = {
+	handle: MdbrainStableHandle
 	invalidatedBy?: Record<string, unknown>
 }
 
-export type MdbrianLifecycleHistoryInput = {
-	handle: MdbrianStableHandle
+export type MdbrainLifecycleHistoryInput = {
+	handle: MdbrainStableHandle
 	limit?: number
 }
 
-export type MdbrianProcedureOutcomeInput = {
-	handle: MdbrianProcedureStableHandle
+export type MdbrainProcedureOutcomeInput = {
+	handle: MdbrainProcedureStableHandle
 	success: boolean
 	note?: string
-	actorRole?: MdbrianActorRole
+	actorRole?: MdbrainActorRole
 }
 
-export type MdbrianMemoryFeedbackInput =
+export type MdbrainMemoryFeedbackInput =
 	| {
-			handle: MdbrianStructuredStableHandle
+			handle: MdbrainStructuredStableHandle
 			signal: "confirm"
 			note?: string
-			actorRole?: MdbrianActorRole
+			actorRole?: MdbrainActorRole
 	  }
 	| {
-			handle: MdbrianStructuredStableHandle
+			handle: MdbrainStructuredStableHandle
 			signal: "correct"
-			patch: MdbrianStructuredLifecyclePatch
+			patch: MdbrainStructuredLifecyclePatch
 			note?: string
-			actorRole?: MdbrianActorRole
+			actorRole?: MdbrainActorRole
 	  }
 	| {
-			handle: MdbrianStructuredStableHandle
+			handle: MdbrainStructuredStableHandle
 			signal: "irrelevant"
 			note?: string
-			actorRole?: MdbrianActorRole
+			actorRole?: MdbrainActorRole
 			invalidatedBy?: Record<string, unknown>
 	  }
 
-export type MdbrianProfileInput = {
+export type MdbrainProfileInput = {
 	/** @deprecated Prefer `scopeRef`. */
-	containerTag?: MdbrianContainerTag
+	containerTag?: MdbrainContainerTag
 	agentId?: string
 	scope?: "session" | "user" | "agent" | "workspace" | "tenant" | "global"
 	scopeRef?: string
@@ -272,14 +272,14 @@ export type MdbrianProfileInput = {
 	maxEpisodes?: number
 }
 
-export type MdbrianActiveSlateInput = {
+export type MdbrainActiveSlateInput = {
 	agentId?: string
 	scope?: "session" | "user" | "agent" | "workspace" | "tenant" | "global"
 	scopeRef?: string
 	maxItems?: number
 }
 
-export type MdbrianDiscoveryProjectionInput = {
+export type MdbrainDiscoveryProjectionInput = {
 	agentId?: string
 	kind: "entity-brief" | "topic-brief" | "what-changed" | "contradiction-report"
 	query?: string
@@ -289,44 +289,44 @@ export type MdbrianDiscoveryProjectionInput = {
 	timeRange?: { preset?: string; start?: string; end?: string }
 }
 
-export type MdbrianTraceChainInput = {
+export type MdbrainTraceChainInput = {
 	factId: string
 	collection: string
 	agentId?: string
 	maxDepth?: number
 }
 
-export type MdbrianScanNoveltyInput = {
+export type MdbrainScanNoveltyInput = {
 	agentId?: string
 	limit?: number
 	scope?: string
 }
 
-export type MdbrianConsolidateInput = {
+export type MdbrainConsolidateInput = {
 	agentId?: string
 	maxEvents?: number
 	minCombinedScore?: number
 	scope?: string
 }
 
-export type MdbrianSelfEditInput = {
+export type MdbrainSelfEditInput = {
 	block: "user" | "persona" | "instructions"
 	action: "append" | "replace" | "prepend"
 	content: string
 	agentId?: string
 }
 
-export type MdbrianSelfEditResponse = {
+export type MdbrainSelfEditResponse = {
 	upserted: boolean
 	id: string
 }
 
-export type MdbrianExtractInput = {
+export type MdbrainExtractInput = {
 	eventId: string
 	agentId?: string
 }
 
-export type MdbrianExtractResponse = {
+export type MdbrainExtractResponse = {
 	ok: true
 	jobId: string
 	scheduled: boolean
@@ -336,7 +336,7 @@ export type MdbrianExtractResponse = {
 // Response types for typed client methods (JSON wire format — dates as strings)
 // ---------------------------------------------------------------------------
 
-export type MdbrianReadFileResponse = {
+export type MdbrainReadFileResponse = {
 	text: string
 	path: string
 	locator?: string
@@ -349,7 +349,7 @@ export type MdbrianReadFileResponse = {
 	disabled?: boolean
 }
 
-export type MdbrianStatusResponse = {
+export type MdbrainStatusResponse = {
 	backend: "mongodb"
 	provider: string
 	model?: string
@@ -382,7 +382,7 @@ export type MdbrianStatusResponse = {
 	custom?: Record<string, unknown>
 }
 
-export type MdbrianConversationRecallCitation = {
+export type MdbrainConversationRecallCitation = {
 	eventId: string
 	sessionId?: string
 	role: "user" | "assistant" | "system" | "tool"
@@ -391,14 +391,14 @@ export type MdbrianConversationRecallCitation = {
 	preview: string
 }
 
-export type MdbrianConversationRecallResult = {
-	citation: MdbrianConversationRecallCitation
+export type MdbrainConversationRecallResult = {
+	citation: MdbrainConversationRecallCitation
 	score?: number
 	matchType: "filter" | "semantic" | "hybrid"
 }
 
-export type MdbrianConversationRecallResponse = {
-	results: MdbrianConversationRecallResult[]
+export type MdbrainConversationRecallResponse = {
+	results: MdbrainConversationRecallResult[]
 	metadata: {
 		totalMatched: number
 		queryUsed?: string
@@ -408,7 +408,7 @@ export type MdbrianConversationRecallResponse = {
 	}
 }
 
-export type MdbrianDetailedStatusResponse = {
+export type MdbrainDetailedStatusResponse = {
 	events: { count: number; latestTimestamp?: string }
 	entities: { count: number }
 	relations: { count: number }
@@ -442,7 +442,7 @@ export type MdbrianDetailedStatusResponse = {
 	}
 }
 
-export type MdbrianStatsResponse = {
+export type MdbrainStatsResponse = {
 	sources: Array<{ source: string; files: number; chunks: number }>
 	totalFiles: number
 	totalChunks: number
@@ -459,12 +459,12 @@ export type MdbrianStatsResponse = {
 	}>
 }
 
-export type MdbrianProbeEmbeddingResponse = {
+export type MdbrainProbeEmbeddingResponse = {
 	ok: boolean
 	error?: string
 }
 
-export type MdbrianProfileResponse = {
+export type MdbrainProfileResponse = {
 	agentId: string
 	scope: string
 	scopeRef: string
@@ -507,7 +507,7 @@ export type MdbrianProfileResponse = {
 	synthesizedAt: string
 }
 
-export type MdbrianRelevanceExplainResponse = {
+export type MdbrainRelevanceExplainResponse = {
 	runId?: string
 	latencyMs: number
 	sourceScope: string
@@ -523,14 +523,14 @@ export type MdbrianRelevanceExplainResponse = {
 	results: Array<Record<string, unknown>>
 }
 
-export type MdbrianBenchmarkBuildIdentity = {
+export type MdbrainBenchmarkBuildIdentity = {
 	source: "env" | "unknown"
 	commitSha?: string
 	buildId?: string
 	buildLabel?: string
 }
 
-export type MdbrianBenchmarkReleaseGate = {
+export type MdbrainBenchmarkReleaseGate = {
 	gate:
 		| "official-retrieval"
 		| "internal-retrieval"
@@ -540,9 +540,9 @@ export type MdbrianBenchmarkReleaseGate = {
 	evidence: string
 }
 
-export type MdbrianBenchmarkRunReport = {
+export type MdbrainBenchmarkRunReport = {
 	generatedAt: string
-	build: MdbrianBenchmarkBuildIdentity
+	build: MdbrainBenchmarkBuildIdentity
 	corpus: {
 		datasetVersion: string
 		datasetName?: string
@@ -566,8 +566,8 @@ export type MdbrianBenchmarkRunReport = {
 			longMemEval?: {
 				retrievalCases: number
 				abstentionCases: number
-				session: MdbrianBenchmarkOfficialRetrievalMetrics
-				turn?: MdbrianBenchmarkOfficialRetrievalMetrics
+				session: MdbrainBenchmarkOfficialRetrievalMetrics
+				turn?: MdbrainBenchmarkOfficialRetrievalMetrics
 			}
 			loCoMo?: {
 				qaCases: number
@@ -579,12 +579,12 @@ export type MdbrianBenchmarkRunReport = {
 			}
 		}
 	}
-	releaseGates: MdbrianBenchmarkReleaseGate[]
+	releaseGates: MdbrainBenchmarkReleaseGate[]
 	warnings: string[]
 	degradations: string[]
 }
 
-export type MdbrianRelevanceBenchmarkResponse = {
+export type MdbrainRelevanceBenchmarkResponse = {
 	datasetVersion: string
 	datasetName?: string
 	datasetKind?: "generic" | "longmemeval" | "locomo" | "legacy-query"
@@ -612,8 +612,8 @@ export type MdbrianRelevanceBenchmarkResponse = {
 		longMemEval?: {
 			retrievalCases: number
 			abstentionCases: number
-			session: MdbrianBenchmarkOfficialRetrievalMetrics
-			turn?: MdbrianBenchmarkOfficialRetrievalMetrics
+			session: MdbrainBenchmarkOfficialRetrievalMetrics
+			turn?: MdbrainBenchmarkOfficialRetrievalMetrics
 		}
 		loCoMo?: {
 			qaCases: number
@@ -662,10 +662,10 @@ export type MdbrianRelevanceBenchmarkResponse = {
 		}>
 		notes: string[]
 	}
-	benchmarkReport?: MdbrianBenchmarkRunReport
+	benchmarkReport?: MdbrainBenchmarkRunReport
 }
 
-export type MdbrianBenchmarkOfficialRetrievalMetrics = {
+export type MdbrainBenchmarkOfficialRetrievalMetrics = {
 	recallAnyAt1: number
 	recallAllAt1: number
 	ndcgAnyAt1: number
@@ -686,7 +686,7 @@ export type MdbrianBenchmarkOfficialRetrievalMetrics = {
 	ndcgAnyAt50: number
 }
 
-export type MdbrianRelevanceReportResponse = {
+export type MdbrainRelevanceReportResponse = {
 	health: "ok" | "degraded" | "insufficient-data"
 	runs: number
 	sampledRuns: number
@@ -701,7 +701,7 @@ export type MdbrianRelevanceReportResponse = {
 	}
 }
 
-export type MdbrianRelevanceSampleRateResponse = {
+export type MdbrainRelevanceSampleRateResponse = {
 	enabled: boolean
 	current: number
 	base: number
@@ -710,7 +710,7 @@ export type MdbrianRelevanceSampleRateResponse = {
 	degradedSignals: number
 }
 
-export type MdbrianBenchmarkIngestResponse = {
+export type MdbrainBenchmarkIngestResponse = {
 	datasetPath: string
 	datasetName?: string
 	conversationsIngested: number
@@ -722,7 +722,7 @@ export type MdbrianBenchmarkIngestResponse = {
 	completedAt: string
 }
 
-export type MdbrianConversationImportResponse = {
+export type MdbrainConversationImportResponse = {
 	datasetPath: string
 	datasetName?: string
 	datasetKind?: "generic" | "longmemeval" | "locomo"
@@ -735,7 +735,7 @@ export type MdbrianConversationImportResponse = {
 	completedAt: string
 }
 
-export type MdbrianAccessTrendResponse = Array<{
+export type MdbrainAccessTrendResponse = Array<{
 	collection: string
 	memoryId: string
 	day: string
@@ -744,14 +744,14 @@ export type MdbrianAccessTrendResponse = Array<{
 	lastAccessedAt?: string
 }>
 
-export type MdbrianAccessSummaryResponse = Array<{
+export type MdbrainAccessSummaryResponse = Array<{
 	collection: string
 	memoryId: string
 	accessCount: number
 	lastAccessedAt?: string
 }>
 
-export type MdbrianTraceChainResponse = {
+export type MdbrainTraceChainResponse = {
 	factId: string
 	collection: string
 	nodes: Array<{
@@ -769,7 +769,7 @@ export type MdbrianTraceChainResponse = {
 	agentId: string
 }
 
-export type MdbrianNoveltyResponse = {
+export type MdbrainNoveltyResponse = {
 	events: Array<{
 		eventId: string
 		body: string
@@ -783,7 +783,7 @@ export type MdbrianNoveltyResponse = {
 	agentId: string
 }
 
-export type MdbrianConsolidateResponse = {
+export type MdbrainConsolidateResponse = {
 	runId: string
 	agentId: string
 	eventsProcessed: number
@@ -808,7 +808,7 @@ export type MdbrianConsolidateResponse = {
 	prunedCount?: number
 }
 
-export type MdbrianRecallTrace = {
+export type MdbrainRecallTrace = {
 	traceId: string
 	agentId: string
 	query: string
@@ -823,25 +823,25 @@ export type MdbrianRecallTrace = {
 	bundleMode?: "full" | "wake-up"
 }
 
-export type MdbrianMemoryJobStatus =
+export type MdbrainMemoryJobStatus =
 	| "pending"
 	| "running"
 	| "completed"
 	| "failed"
 	| "cancelled"
 
-export type MdbrianMemoryJobType =
+export type MdbrainMemoryJobType =
 	| "consolidation"
 	| "extraction"
 	| "import"
 	| "materialization"
 	| "enrichment"
 
-export type MdbrianMemoryJob = {
+export type MdbrainMemoryJob = {
 	jobId: string
-	jobType: MdbrianMemoryJobType
+	jobType: MdbrainMemoryJobType
 	agentId: string
-	status: MdbrianMemoryJobStatus
+	status: MdbrainMemoryJobStatus
 	createdAt: string
 	startedAt?: string
 	completedAt?: string
@@ -852,7 +852,7 @@ export type MdbrianMemoryJob = {
 	metadata?: Record<string, unknown>
 }
 
-export type MdbrianSearchKBResponse = {
+export type MdbrainSearchKBResponse = {
 	results: Array<{
 		path: string
 		startLine: number
@@ -867,7 +867,7 @@ export type MdbrianSearchKBResponse = {
 	}>
 }
 
-export type MdbrianSearchResponse = {
+export type MdbrainSearchResponse = {
 	results: Array<{
 		path: string
 		startLine: number
@@ -883,7 +883,7 @@ export type MdbrianSearchResponse = {
 	}>
 }
 
-export type MdbrianContextBundleInput = {
+export type MdbrainContextBundleInput = {
 	agentId?: string
 	query?: string
 	scope?: "session" | "user" | "agent" | "workspace" | "tenant" | "global"

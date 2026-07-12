@@ -14,7 +14,7 @@
  *   - "none" (default): fall back to regex-only userfact extraction
  */
 
-import { type MemoryScope, createSubsystemLogger } from "@mdbrian/lib"
+import { type MemoryScope, createSubsystemLogger } from "@mdbrain/lib"
 import type {
 	MemoryBenchmarkConversation,
 	MemoryBenchmarkTurn,

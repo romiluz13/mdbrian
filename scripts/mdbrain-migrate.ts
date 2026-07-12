@@ -1,16 +1,16 @@
-// scripts/mdbrian-migrate.ts — Legacy migration CLI (T9).
+// scripts/mdbrain-migrate.ts — Legacy migration CLI (T9).
 //
 // Usage:
-//   bun run scripts/mdbrian-migrate.ts [--scope <scope>] [--scopeRef <ref>] [--dry-run]
+//   bun run scripts/mdbrain-migrate.ts [--scope <scope>] [--scopeRef <ref>] [--dry-run]
 //
 // Migrates structured_mem + procedures records into wiki_pages. Idempotent.
 
-import { mdbrianBridgeGetManager } from "@mdbrian/memory-bridge"
+import { mdbrainBridgeGetManager } from "@mdbrain/memory-bridge"
 import {
 	migrateLegacyToWiki,
 	checkMigrationCoverage,
 	getWikiDbHandle,
-} from "@mdbrian/wiki-engine"
+} from "@mdbrain/wiki-engine"
 
 function parseArgs(argv: string[]): {
 	scope?: string
@@ -54,13 +54,13 @@ function parseArgs(argv: string[]): {
 async function main() {
 	const opts = parseArgs(process.argv)
 	const agentId = process.env.MDBRAIN_AGENT_ID ?? "default"
-	const manager = await mdbrianBridgeGetManager(agentId)
+	const manager = await mdbrainBridgeGetManager(agentId)
 	const handle = getWikiDbHandle(manager)
 
 	console.log(
 		opts.dryRun
 			? "MDBrain migration (DRY RUN — no writes)..."
-			: "MDBrian migration...",
+			: "MDBrain migration...",
 	)
 	const result = await migrateLegacyToWiki(handle, {
 		scope: opts.scope,

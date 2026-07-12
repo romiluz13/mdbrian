@@ -1,4 +1,4 @@
-# Mdbrian benchmark pack
+# Mdbrain benchmark pack
 
 This document defines **honest** benchmarking: what to measure, how to run it, and how to avoid fake leaderboard scores.
 
@@ -8,7 +8,7 @@ query-governance policy, see
 
 ## What to compare
 
-| Dimension | What “good” means | Mdbrian lever |
+| Dimension | What “good” means | Mdbrain lever |
 |-----------|-------------------|---------------|
 | **Retrieval quality** | Correct items in top-k for realistic agent queries | Hybrid vector + lexical fusion, reranking, relevance telemetry |
 | **Write latency** | Stable p95 for `add` / `write-event` under concurrency | MongoDB indexing, batching, engine write paths |

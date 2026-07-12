@@ -11,7 +11,7 @@ import {
 const tempDirs: string[] = []
 
 async function createTempDir(): Promise<string> {
-	const dir = await mkdtemp(path.join(os.tmpdir(), "mdbrian-proof-artifacts-"))
+	const dir = await mkdtemp(path.join(os.tmpdir(), "mdbrain-proof-artifacts-"))
 	tempDirs.push(dir)
 	return dir
 }

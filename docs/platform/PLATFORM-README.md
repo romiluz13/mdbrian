@@ -1,6 +1,6 @@
-# Mdbrian Platform
+# Mdbrain Platform
 
-This repository is the Mdbrian product: a Turborepo/Bun monorepo that ships MongoDB-native long-term AI memory on MongoDB Atlas cloud and Atlas Local Preview.
+This repository is the Mdbrain product: a Turborepo/Bun monorepo that ships MongoDB-native long-term AI memory on MongoDB Atlas cloud and Atlas Local Preview.
 
 ## What ships here
 
@@ -9,11 +9,11 @@ This repository is the Mdbrian product: a Turborepo/Bun monorepo that ships Mong
 | HTTP API | `apps/api` | Hono, `/v1/*`, `GET /openapi.json`, default `http://127.0.0.1:3847` |
 | MCP | `apps/mcp` | stdio MCP that calls the HTTP API |
 | Web console | `apps/web` | Next.js operator dashboard (default port **3040**) |
-| SDK | `packages/client` | `MdbrianClient` for the API |
+| SDK | `packages/client` | `MdbrainClient` for the API |
 | Engine | `packages/memory-engine` | MongoDB memory core |
 | Bridge | `packages/memory-bridge` | Stable facade used by `apps/api` |
-| Published re-export | `packages/mdbrian-memory` | `@mdbrian/memory` convenience barrel |
-| AI SDK tools | `packages/tools` | `createMdbrianTools` pattern |
+| Published re-export | `packages/mdbrain-memory` | `@mdbrain/memory` convenience barrel |
+| AI SDK tools | `packages/tools` | `createMdbrainTools` pattern |
 | Docs (Mintlify) | `apps/docs` | Product documentation site sources |
 
 Optional or historical surfaces such as `apps/browser-extension`, `apps/memory-graph-playground`, and `packages/memory-graph` are not part of the supported product core.
@@ -40,7 +40,7 @@ bun install
 Managed Atlas cloud:
 
 ```bash
-export MDBRAIN_MONGODB_URI="mongodb+srv://<user>:<password>@<cluster>.mongodb.net/?appName=mdbrian"
+export MDBRAIN_MONGODB_URI="mongodb+srv://<user>:<password>@<cluster>.mongodb.net/?appName=mdbrain"
 export VOYAGE_API_KEY="al-your-atlas-model-api-key"
 ```
 
@@ -70,7 +70,7 @@ cd apps/mcp && MDBRAIN_API_URL=http://127.0.0.1:3847 bun run start
 
 ## Configuration
 
-Standalone mode uses environment variables and optional `~/.mdbrian/mdbrian.json`. See `apps/docs/guides/memory-config.mdx`.
+Standalone mode uses environment variables and optional `~/.mdbrain/mdbrain.json`. See `apps/docs/guides/memory-config.mdx`.
 
 ## Documentation map
 

@@ -2,7 +2,7 @@
 
 **Date:** 2026-07-08
 **Status:** Draft (pending user review)
-**Baseline:** mdbrian (MongoDB-native long-term AI memory) → transformed into a wiki-first company brain.
+**Baseline:** mdbrain (MongoDB-native long-term AI memory) → transformed into a wiki-first company brain.
 **Inspirations:** LangChain OpenWiki (LLM-maintained code wiki, git-diff incremental), Google Open Knowledge Format / OKF (vendor-neutral concept-per-page interchange spec), arXiv:2606.24535 "Governed Shared Memory for Multi-Agent LLM Systems" (fleet-memory governance primitives).
 
 ---
@@ -11,7 +11,7 @@
 
 The "LLM wiki / company brain" category (crystallized by Karpathy's June 2026 gist) inverts RAG: instead of retrieving chunks at query time, an LLM builds and maintains a persistent, interlinked, pre-synthesized knowledge layer that compounds over time. The category's biggest pain is **knowledge staleness + maintenance burden** (humans abandon wikis because upkeep grows faster than value). The field has bifurcated into file-format systems (OpenWiki, OKF — markdown, no database) and infrastructure-first systems (Mem0, Letta, Graphiti, Cognee — vector+graph+metadata glue). No funded competitor uses MongoDB; the category is Postgres+pgvector dominated (Memclaw, mybrains.ai). The unclaimed position: **one MongoDB system that collapses semantic + structured + temporal into a single consistency boundary**, with OKF as the interchange format bridging both camps.
 
-MDBrain is that system. mdbrian already has ~80% of the infrastructure (hybrid retrieval, $graphLookup, Dreamer consolidation, injection classifier, bi-temporal, provenance, scoped retrieval). MDBrain transforms its conceptual center from "memory framework" to "LLM wiki" — wiki pages become the first-class, browsable artifact; the engine serves the wiki.
+MDBrain is that system. mdbrain already has ~80% of the infrastructure (hybrid retrieval, $graphLookup, Dreamer consolidation, injection classifier, bi-temporal, provenance, scoped retrieval). MDBrain transforms its conceptual center from "memory framework" to "LLM wiki" — wiki pages become the first-class, browsable artifact; the engine serves the wiki.
 
 ---
 
@@ -27,15 +27,15 @@ Layer 1: GRAPH+RAW       entities, relations, events, episodes, KB chunks, inges
          │               $graphLookup backbone + $vectorSearch/$search/$rankFusion retrieval
 ```
 
-- **Layer 1 (graph + raw):** the existing mdbrian engine — entities, relations, events, episodes, KB chunks. The structural backbone + immutable raw sources. `@mdbrian/memory-engine`.
-- **Layer 2 (wiki):** NEW — `wiki_pages` collection, the synthesized browsable artifact. Compiled from layer 1 by two maintenance strategies. `@mdbrian/wiki-engine`.
-- **Layer 3 (schema):** page-kind definitions, maintenance rules, governance policies (trust tiers, permission rules, contradiction resolution rules). Lives in `@mdbrian/wiki-engine` as config/types.
+- **Layer 1 (graph + raw):** the existing mdbrain engine — entities, relations, events, episodes, KB chunks. The structural backbone + immutable raw sources. `@mdbrain/memory-engine`.
+- **Layer 2 (wiki):** NEW — `wiki_pages` collection, the synthesized browsable artifact. Compiled from layer 1 by two maintenance strategies. `@mdbrain/wiki-engine`.
+- **Layer 3 (schema):** page-kind definitions, maintenance rules, governance policies (trust tiers, permission rules, contradiction resolution rules). Lives in `@mdbrain/wiki-engine` as config/types.
 
 ---
 
 ## 2. Approach: Transformative Refactor (chosen)
 
-mdbrian's conceptual center shifts from memory to wiki pages. Proven infrastructure is kept (hybrid retrieval, $graphLookup, Dreamer consolidation, injection classifier, API/MCP/web); the conceptual model is refactored.
+mdbrain's conceptual center shifts from memory to wiki pages. Proven infrastructure is kept (hybrid retrieval, $graphLookup, Dreamer consolidation, injection classifier, API/MCP/web); the conceptual model is refactored.
 
 **Transforms inside memory-engine:**
 
@@ -45,19 +45,19 @@ mdbrian's conceptual center shifts from memory to wiki pages. Proven infrastruct
 
 ---
 
-## 3. Package Structure (rename `@mdbrian/*` → `@mdbrian/*`)
+## 3. Package Structure (rename `@mdbrain/*` → `@mdbrain/*`)
 
 | Package | Status | Role |
 | --- | --- | --- |
-| `@mdbrian/wiki-engine` | **NEW** | `wiki_pages` + OKF import/export + page rendering + Map&Pointer + maintenance (git-diff + Dreamer-wiki) + contradiction detector + backlinks + permissions + trust tiers + connectors (Obsidian bidirectional, Confluence/Notion/Slack/CRM read-first) |
-| `@mdbrian/memory-engine` | **KEEP+refactor** | entities/relations graph, $graphLookup, $vectorSearch+$search+$rankFusion, embeddings, injection classifier, bitemporal, scope. Refactored to serve wiki-engine. Dreamer promoted to call wiki-engine. |
-| `@mdbrian/memory-bridge` | **KEEP+refactor** | stable facade, wiki operations added |
-| `@mdbrian/client` | **KEEP+extend** | HTTP client + wiki methods |
-| `@mdbrian/tools` | **KEEP+extend** | AI SDK tools: `wiki_search`, `wiki_get`, `wiki_apply`, `wiki_export_okf`, `wiki_lint` |
-| `@mdbrian/lib` | **KEEP** | shared types (add wiki types) |
-| `@mdbrian/api` | **KEEP+extend** | Hono API + `/v1/wiki/*` routes |
-| `@mdbrian/mcp` | **KEEP+extend** | MCP server + wiki tools |
-| `@mdbrian/web` | **KEEP+extend** | Next.js console + wiki browsing/rendering |
+| `@mdbrain/wiki-engine` | **NEW** | `wiki_pages` + OKF import/export + page rendering + Map&Pointer + maintenance (git-diff + Dreamer-wiki) + contradiction detector + backlinks + permissions + trust tiers + connectors (Obsidian bidirectional, Confluence/Notion/Slack/CRM read-first) |
+| `@mdbrain/memory-engine` | **KEEP+refactor** | entities/relations graph, $graphLookup, $vectorSearch+$search+$rankFusion, embeddings, injection classifier, bitemporal, scope. Refactored to serve wiki-engine. Dreamer promoted to call wiki-engine. |
+| `@mdbrain/memory-bridge` | **KEEP+refactor** | stable facade, wiki operations added |
+| `@mdbrain/client` | **KEEP+extend** | HTTP client + wiki methods |
+| `@mdbrain/tools` | **KEEP+extend** | AI SDK tools: `wiki_search`, `wiki_get`, `wiki_apply`, `wiki_export_okf`, `wiki_lint` |
+| `@mdbrain/lib` | **KEEP** | shared types (add wiki types) |
+| `@mdbrain/api` | **KEEP+extend** | Hono API + `/v1/wiki/*` routes |
+| `@mdbrain/mcp` | **KEEP+extend** | MCP server + wiki tools |
+| `@mdbrain/web` | **KEEP+extend** | Next.js console + wiki browsing/rendering |
 
 ---
 
@@ -160,7 +160,7 @@ mdbrian's conceptual center shifts from memory to wiki pages. Proven infrastruct
   okfConceptId: string,      // file path in OKF bundle (e.g., "tables/users")
   okfBundleId: string,       // which bundle this belongs to
 
-  // Governance (arXIV + mdbrian)
+  // Governance (arXIV + mdbrain)
   scope: "session" | "user" | "agent" | "workspace" | "tenant" | "global",
   scopeRef: string,
   trustTier: "restricted" | "standard" | "admin",   // arXIV trust tiers
@@ -230,7 +230,7 @@ The freshness engine — solves the category's #1 pain (staleness). One pipeline
 4. New/updated claims pass through governance gates.
 5. Triggered by: API call, CLI, or CI webhook.
 
-### Dreamer strategy (event/streaming/conversation sources — mdbrian adapted)
+### Dreamer strategy (event/streaming/conversation sources — mdbrain adapted)
 
 1. Novelty scan over new events/episodes.
 2. $vectorSearch similarity to existing wiki pages + claims.
@@ -254,7 +254,7 @@ The freshness engine — solves the category's #1 pain (staleness). One pipeline
 - **Scoped retrieval on EVERY access path:** scope filter (`scope`+`scopeRef`) applied not just in search but in `wiki_get` by slug, `wiki_get` by id, graph traversal, and export. The arXIV paper disclosed an asymmetric scope-enforcement bug on GET-by-id (remediated) — enforce scope on every read path, not just the API edge. <!-- scar: arXIV:2606.24535 GET-by-id scope leak -->
 - **Trust tiers:** `restricted` / `standard` / `admin`. Determines write visibility + propagation. A `restricted` agent's claims are visible only within its scope; an `admin` agent's claims can propagate cross-scope. Replaces numeric-only `sourceReliability` with a role-based tier (keeps the numeric as a sub-signal).
 - **Permissions:** `permissions.allowedRoles` + `allowedDepartments` + `privacyTier` on every page. Search/get filters by the caller's role+department. (Community suggestion, Dolev: metadata upfront + metadata filtering.)
-- **Temporal supersession:** `supersedesClaimId` + `state: "superseded"` (not deleted) — preserves audit trail. Already in mdbrian's `structured_mem`; promoted to claim-level + page-level.
+- **Temporal supersession:** `supersedesClaimId` + `state: "superseded"` (not deleted) — preserves audit trail. Already in mdbrain's `structured_mem`; promoted to claim-level + page-level.
 
 ---
 
@@ -262,21 +262,21 @@ The freshness engine — solves the category's #1 pain (staleness). One pipeline
 
 ### Connectors
 
-- **Obsidian connector** (bidirectional vault sync): `wiki_pages` ↔ Obsidian `.md` files. A hook watches the vault; changed files → `wiki_pages` (import). Changed `wiki_pages` → vault files (export, OKF format). `wikiSource: "obsidian"`, `vault`, `section` fields already in mdbrian's KB schema — reused.
+- **Obsidian connector** (bidirectional vault sync): `wiki_pages` ↔ Obsidian `.md` files. A hook watches the vault; changed files → `wiki_pages` (import). Changed `wiki_pages` → vault files (export, OKF format). `wikiSource: "obsidian"`, `vault`, `section` fields already in mdbrain's KB schema — reused.
 - **GitHub repo-as-source:** a repo is a source. Git-diff maintenance ingests changed files → wiki pages. Like OpenWiki but the wiki lives in MongoDB, not just markdown.
 - **Confluence connector (read-first, v1):** ingest Confluence spaces → KB chunks + wiki pages. Permission-aware (Confluence space permissions → `permissions` on the page). Write-back deferred to v1.1.
 - **Notion connector (read-first, v1):** ingest Notion workspaces → KB chunks + wiki pages. Block tree → page structure. Write-back deferred to v1.1.
 - **Slack connector (read-first, v1):** ingest Slack channels → events → Dreamer → wiki pages. Channel membership → `permissions`. Write-back (post summaries back) deferred to v1.1.
 - **CRM connector (read-first, v1):** ingest CRM records (Salesforce/HubSpot) → entities + wiki pages (person/company pages). Record ownership → `permissions`. Write-back deferred to v1.1.
 
-All four enterprise connectors share a common connector interface (`Connector` ABC: `authenticate`, `discover`, `ingest`, `mapPermissions`) in `@mdbrian/wiki-engine`. Each implements source-specific logic. Ingestion flows through the shared governance gates.
+All four enterprise connectors share a common connector interface (`Connector` ABC: `authenticate`, `discover`, `ingest`, `mapPermissions`) in `@mdbrain/wiki-engine`. Each implements source-specific logic. Ingestion flows through the shared governance gates.
 
 ### Surfaces
 
 - **Web console:** wiki browsing (page list by kind, full page render, backlinks, contradictions, questions, search). Next.js — extends existing `apps/web`.
 - **MCP server:** `wiki_search`, `wiki_get`, `wiki_apply`, `wiki_export_okf`, `wiki_lint` (contradictions/staleness check). Extends existing `apps/mcp`.
 - **API:** `/v1/wiki/*` — CRUD, search, export OKF, import OKF, maintenance trigger, contradiction list, connector management. Extends existing `apps/api`.
-- **Map & Pointer** (OpenWiki pattern): `mdbrian init` generates a pointer block in `AGENTS.md`/`CLAUDE.md` telling agents which wiki pages to `read` before tasks. The pointer is generated from `wiki_pages` (the map).
+- **Map & Pointer** (OpenWiki pattern): `mdbrain init` generates a pointer block in `AGENTS.md`/`CLAUDE.md` telling agents which wiki pages to `read` before tasks. The pointer is generated from `wiki_pages` (the map).
 
 ---
 
@@ -320,15 +320,15 @@ Sources (git repo, Obsidian vault, Confluence, Notion, Slack, CRM, conversations
 - **Unit:** wiki-engine modules (OKF import/export round-trip, contradiction detector, permission filter, backlink generator, page renderer, each connector's mapper).
 - **Integration:** wiki_pages CRUD through API + MCP; Dreamer promotes events → wiki pages; git-diff regenerates pages from changed sources; scoped retrieval on every access path (the arXIV GET-by-id test).
 - **E2E:** ingest a Confluence space + a Slack channel + a git repo → wiki pages compile → agent searches via MCP → correct scoped results → OKF export round-trips → import preserves structure.
-- **Migration:** existing mdbrian `structured_mem` + `procedures` records → wiki pages (Dreamer migration pass).
+- **Migration:** existing mdbrain `structured_mem` + `procedures` records → wiki pages (Dreamer migration pass).
 - **Governance:** contradiction-before-dedup ordering test (reproduce the arXIV pipeline bug and prove MDBrain doesn't have it); cross-scope leak test; trust-tier propagation test.
 
 ---
 
-## 12. Migration Plan (mdbrian → MDBrain)
+## 12. Migration Plan (mdbrain → MDBrain)
 
-1. Rename packages `@mdbrian/*` → `@mdbrian/*` across all package.json, imports, docs.
-2. Create `@mdbrian/wiki-engine` package with `wiki_pages` schema + collection helpers.
+1. Rename packages `@mdbrain/*` → `@mdbrain/*` across all package.json, imports, docs.
+2. Create `@mdbrain/wiki-engine` package with `wiki_pages` schema + collection helpers.
 3. Add `wiki_pages` collection + indexes + search indexes to `mongodb-schema.ts`.
 4. Refactor `memory-engine` exports to serve `wiki-engine` (graph, retrieval, embeddings, injection classifier exposed as internal APIs).
 5. Promote Dreamer to compile `wiki_pages` (not just `structured_mem`).
@@ -348,6 +348,6 @@ All research underpinning this design is in `docs/research/llm-wiki/`:
 - `02-github-code.out` — code-level analysis of 10+ OSS repos
 - `03-youtube.out` — YouTube coverage (architectures, pain points, MongoDB perception gap)
 - `04-mongodb-why.md` — the one-system MongoDB argument (semantic+structured+temporal in one consistency boundary)
-- `05-codebase.md` — mdbrian existing-impl recon
+- `05-codebase.md` — mdbrain existing-impl recon
 - `06-commercial.md` — Memclaw/Qontext/mybrains.ai/factory.ai verification
 - `07-academic.md` — arXiv:2606.24535 governance primitives + trained-embedding claim debunk + bidirectional intent prior art

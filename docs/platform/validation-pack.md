@@ -1,6 +1,6 @@
-# Mdbrian Validation Pack
+# Mdbrain Validation Pack
 
-Use this pack to prove that the supported Mdbrian core is healthy on managed MongoDB Atlas cloud, Atlas Local Preview, and the repo's official gates.
+Use this pack to prove that the supported Mdbrain core is healthy on managed MongoDB Atlas cloud, Atlas Local Preview, and the repo's official gates.
 
 ## Release-blocking lanes
 
@@ -62,7 +62,7 @@ This validates:
 Use managed Atlas cloud for the control lane:
 
 ```bash
-export MDBRAIN_MONGODB_URI="mongodb+srv://<user>:<password>@<cluster>.mongodb.net/?appName=mdbrian"
+export MDBRAIN_MONGODB_URI="mongodb+srv://<user>:<password>@<cluster>.mongodb.net/?appName=mdbrain"
 export VOYAGE_API_KEY="al-your-atlas-model-api-key"
 bun run mongodb:parity
 ```
@@ -96,7 +96,7 @@ These lanes are real but environment-specific:
   `packages/memory-engine/src/mongodb-e2e.e2e.test.ts` against `docker/mongodb/docker-compose.mongodb.yml` `replicaset` or `fullstack` using:
 
 ```bash
-MONGODB_TEST_URI="mongodb://admin:admin@localhost:27017/mdbrian?authSource=admin&replicaSet=rs0&directConnection=true"
+MONGODB_TEST_URI="mongodb://admin:admin@localhost:27017/mdbrain?authSource=admin&replicaSet=rs0&directConnection=true"
 ```
 
 ### 6. `real-agent`
@@ -113,7 +113,7 @@ bun run agent-smoke
 
 This lane proves a real tool-calling agent can:
 - call an OpenAI-compatible chat-completions endpoint
-- persist events into Mdbrian through the supported HTTP API
+- persist events into Mdbrain through the supported HTTP API
 - search memory through live retrieval paths
 - hydrate active memory for current-state questions
 - build discovery projections for changes and contradictions
@@ -170,7 +170,7 @@ This keeps baseline and candidate evidence local-only by default while still mak
 
 ## What this proves
 
-Mdbrian is ready for release only when every release-blocking lane is green and every claimed capability was validated in its correct environment.
+Mdbrain is ready for release only when every release-blocking lane is green and every claimed capability was validated in its correct environment.
 
 ## Related
 - [Benchmark pack](benchmark-pack.md)

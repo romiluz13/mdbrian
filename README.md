@@ -9,13 +9,13 @@
   <a href="#okf-interchange">OKF</a> ·
   <a href="#connectors">Connectors</a> ·
   <a href="#governance">Governance</a> ·
-  <a href="./docs/specs/2026-07-08-mdbrian-llm-wiki-design.md">Design Spec</a>
+  <a href="./docs/specs/2026-07-08-mdbrain-llm-wiki-design.md">Design Spec</a>
 </p>
 
 <p align="center">
-  <a href="https://www.npmjs.com/package/@mdbrian/memory"><img alt="@mdbrian/memory" src="https://img.shields.io/npm/v/%40mdbrian%2Fmemory?label=%40mdbrian%2Fmemory"></a>
-  <a href="https://www.npmjs.com/package/@mdbrian/client"><img alt="@mdbrian/client" src="https://img.shields.io/npm/v/%40mdbrian%2Fclient?label=%40mdbrian%2Fclient"></a>
-  <a href="https://www.npmjs.com/package/@mdbrian/wiki-engine"><img alt="@mdbrian/wiki-engine" src="https://img.shields.io/npm/v/%40mdbrian%2Fwiki-engine?label=%40mdbrian%2Fwiki-engine"></a>
+  <a href="https://www.npmjs.com/package/@mdbrain/memory"><img alt="@mdbrain/memory" src="https://img.shields.io/npm/v/%40mdbrain%2Fmemory?label=%40mdbrain%2Fmemory"></a>
+  <a href="https://www.npmjs.com/package/@mdbrain/client"><img alt="@mdbrain/client" src="https://img.shields.io/npm/v/%40mdbrain%2Fclient?label=%40mdbrain%2Fclient"></a>
+  <a href="https://www.npmjs.com/package/@mdbrain/wiki-engine"><img alt="@mdbrain/wiki-engine" src="https://img.shields.io/npm/v/%40mdbrain%2Fwiki-engine?label=%40mdbrain%2Fwiki-engine"></a>
 </p>
 
 MDBrain is a MongoDB-native LLM wiki engine. Instead of retrieving chunks at
@@ -31,7 +31,7 @@ Multi-Agent LLM Systems" (fleet-memory governance primitives).
 
 ## What's different
 
-| Feature | OpenWiki | Mem0/Letta | **MDBrian** |
+| Feature | OpenWiki | Mem0/Letta | **MDBrain** |
 | --- | --- | --- | --- |
 | Storage | File-system markdown | Postgres + pgvector | **MongoDB (Atlas)** |
 | Hybrid search | Planned | ✅ | ✅ ($vectorSearch + $search + $rankFusion) |
@@ -46,8 +46,8 @@ Multi-Agent LLM Systems" (fleet-memory governance primitives).
 Prerequisites: Node.js 20+, Bun 1.2+, Docker (for local MongoDB with Atlas Search).
 
 ```bash
-git clone https://github.com/romiluz13/mdbrian.git
-cd mdbrian
+git clone https://github.com/romiluz13/mdbrain.git
+cd mdbrain
 bun install
 
 # Start MongoDB (Atlas Local Preview with mongot for Atlas Search + Vector Search)
@@ -158,11 +158,11 @@ Two maintenance strategies, unified through the same governance gates:
 
 Five MCP tools for agent access to the wiki:
 
-- `mdbrian_wiki_search` — hybrid search (vector + text + rank fusion)
-- `mdbrian_wiki_get` — get page by slug (JSON, markdown, or HTML)
-- `mdbrian_wiki_apply` — create or update a page (upsert)
-- `mdbrian_wiki_export_okf` — export pages as OKF bundle
-- `mdbrian_wiki_lint` — list pages + unresolved contradictions
+- `mdbrain_wiki_search` — hybrid search (vector + text + rank fusion)
+- `mdbrain_wiki_get` — get page by slug (JSON, markdown, or HTML)
+- `mdbrain_wiki_apply` — create or update a page (upsert)
+- `mdbrain_wiki_export_okf` — export pages as OKF bundle
+- `mdbrain_wiki_lint` — list pages + unresolved contradictions
 
 ### Start the MCP server
 
@@ -203,15 +203,15 @@ search.
 
 | Package | Description |
 | --- | --- |
-| `@mdbrian/wiki-engine` | Wiki pages schema, CRUD, OKF, search, governance, maintenance, connectors |
-| `@mdbrian/memory-engine` | MongoDB memory manager (events, episodes, structured_mem, entities) |
-| `@mdbrian/memory-bridge` | Bridge layer (config resolution, manager lifecycle) |
-| `@mdbrian/client` | TypeScript HTTP client (wiki + memory methods) |
-| `@mdbrian/tools` | AI SDK tools |
-| `@mdbrian/lib` | Shared utilities |
-| `@mdbrian/api` | Hono HTTP API server |
-| `@mdbrian/mcp` | MCP server (5 wiki + existing memory tools) |
-| `@mdbrian/web` | Next.js web console (wiki browsing tab) |
+| `@mdbrain/wiki-engine` | Wiki pages schema, CRUD, OKF, search, governance, maintenance, connectors |
+| `@mdbrain/memory-engine` | MongoDB memory manager (events, episodes, structured_mem, entities) |
+| `@mdbrain/memory-bridge` | Bridge layer (config resolution, manager lifecycle) |
+| `@mdbrain/client` | TypeScript HTTP client (wiki + memory methods) |
+| `@mdbrain/tools` | AI SDK tools |
+| `@mdbrain/lib` | Shared utilities |
+| `@mdbrain/api` | Hono HTTP API server |
+| `@mdbrain/mcp` | MCP server (5 wiki + existing memory tools) |
+| `@mdbrain/web` | Next.js web console (wiki browsing tab) |
 
 ## Environment Variables
 

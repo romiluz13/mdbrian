@@ -8,7 +8,7 @@ import {
 	isSearchIndexQueryable,
 	type SearchIndexDescription,
 } from "../packages/memory-engine/src/mongodb-schema.ts"
-import type { MemoryMongoDBDeploymentProfile } from "@mdbrian/lib"
+import type { MemoryMongoDBDeploymentProfile } from "@mdbrain/lib"
 
 type PrepareOptions = {
 	uri: string
@@ -109,7 +109,7 @@ async function waitForSearchIndexes(db: Db, options: PrepareOptions) {
 
 async function prepareRuntime(options: PrepareOptions) {
 	const client = new MongoClient(options.uri, {
-		appName: "mdbrian-runtime-prepare",
+		appName: "mdbrain-runtime-prepare",
 		serverSelectionTimeoutMS: 10_000,
 	})
 	await client.connect()
@@ -154,7 +154,7 @@ const uri =
 	readRequiredEnv("MDB_MCP_CONNECTION_STRING")
 const options: PrepareOptions = {
 	uri,
-	database: process.env.MDBRAIN_DB_NAME?.trim() || "mdbrian",
+	database: process.env.MDBRAIN_DB_NAME?.trim() || "mdbrain",
 	prefix: readRequiredEnv("MDBRAIN_MONGODB_COLLECTION_PREFIX"),
 	profile: readProfile(uri),
 	waitMs: readPositiveInt("MDBRAIN_PREPARE_WAIT_MS", 120_000),

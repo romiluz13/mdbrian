@@ -1,5 +1,5 @@
 import type { Collection } from "mongodb"
-import type { MemoryScope } from "@mdbrian/lib"
+import type { MemoryScope } from "@mdbrain/lib"
 import type {
 	MemoryBenchmarkConversation,
 	MemoryBenchmarkTurn,

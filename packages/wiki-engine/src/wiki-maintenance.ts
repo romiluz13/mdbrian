@@ -1,4 +1,4 @@
-// @mdbrian/wiki-engine — self-maintenance strategies.
+// @mdbrain/wiki-engine — self-maintenance strategies.
 //
 // Two maintenance paths, unified through the same governance gates:
 //

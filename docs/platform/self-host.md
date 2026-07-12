@@ -1,6 +1,6 @@
-# Self-host Mdbrian
+# Self-host Mdbrain
 
-Mdbrian is data-plane memory you run next to your agents. This runbook describes the supported Mdbrian deployment layout for managed Atlas cloud and the local Atlas Preview parity stack.
+Mdbrain is data-plane memory you run next to your agents. This runbook describes the supported Mdbrain deployment layout for managed Atlas cloud and the local Atlas Preview parity stack.
 
 ## Components
 
@@ -16,14 +16,14 @@ Mdbrian is data-plane memory you run next to your agents. This runbook describes
 - `MDBRAIN_API_PORT` / `MDBRAIN_API_HOST` - bind address for `apps/api`.
 - `VOYAGE_API_KEY` - required for auto-embed and hybrid retrieval quality. Use an Atlas Model key with the `al-...` prefix.
 
-Optional file config: `~/.mdbrian/mdbrian.json` or `MDBRAIN_CONFIG_PATH`. See `apps/docs/guides/memory-config.mdx`.
+Optional file config: `~/.mdbrain/mdbrain.json` or `MDBRAIN_CONFIG_PATH`. See `apps/docs/guides/memory-config.mdx`.
 
 ## MongoDB runtimes
 
 Managed Atlas cloud:
 
 ```bash
-export MDBRAIN_MONGODB_URI="mongodb+srv://<user>:<password>@<cluster>.mongodb.net/?appName=mdbrian"
+export MDBRAIN_MONGODB_URI="mongodb+srv://<user>:<password>@<cluster>.mongodb.net/?appName=mdbrain"
 export VOYAGE_API_KEY="al-your-atlas-model-api-key"
 ```
 
@@ -40,7 +40,7 @@ Use managed Atlas cloud for benchmark/control runs and Atlas Local Preview for l
 ## Running the API
 
 ```bash
-cd /opt/mdbrian
+cd /opt/mdbrain
 bun install --frozen-lockfile
 export MDBRAIN_MONGODB_URI="mongodb://..."
 export MDBRAIN_API_HOST="0.0.0.0"
@@ -59,7 +59,7 @@ export MDBRAIN_API_SCOPED_KEYS='[
     "token": "agent-facing-secret",
     "agentIds": ["codex"],
     "scopes": ["workspace"],
-    "scopeRefs": ["/opt/workspaces/mdbrian"]
+    "scopeRefs": ["/opt/workspaces/mdbrain"]
   }
 ]'
 ```

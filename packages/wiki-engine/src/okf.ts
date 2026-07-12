@@ -1,4 +1,4 @@
-// @mdbrian/wiki-engine — OKF (Open Knowledge Format) interchange.
+// @mdbrain/wiki-engine — OKF (Open Knowledge Format) interchange.
 //
 // OKF spec (GoogleCloudPlatform/knowledge-catalog, v0.1):
 //   - Knowledge Bundle = directory of concept .md files
@@ -12,7 +12,7 @@
 // portable projection: export → import round-trips structure, but unexpressible
 // fields (embedding, backlinks, trustTier, permissions) stay in MongoDB.
 //
-// Design spec: docs/specs/2026-07-08-mdbrian-llm-wiki-design.md §5
+// Design spec: docs/specs/2026-07-08-mdbrain-llm-wiki-design.md §5
 
 import fs from "node:fs"
 import path from "node:path"

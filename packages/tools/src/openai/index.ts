@@ -1,4 +1,4 @@
-import type { MdbrianCoreOptions } from "../vercel/index.js"
+import type { MdbrainCoreOptions } from "../vercel/index.js"
 
 /* ------------------------------------------------------------------ */
 /*  OpenAI-compatible chat message shape                              */
@@ -24,11 +24,11 @@ interface ChatCompletion {
 }
 
 /* ------------------------------------------------------------------ */
-/*  Helpers: shared with Vercel middleware via MdbrianCoreOptions      */
+/*  Helpers: shared with Vercel middleware via MdbrainCoreOptions      */
 /* ------------------------------------------------------------------ */
 
 async function fetchContextBundle(
-	options: MdbrianCoreOptions,
+	options: MdbrainCoreOptions,
 	userQuery?: string,
 ): Promise<string> {
 	const mode =
@@ -62,7 +62,7 @@ async function fetchContextBundle(
 }
 
 function fireWriteEvent(
-	options: MdbrianCoreOptions,
+	options: MdbrainCoreOptions,
 	role: "user" | "assistant",
 	body: string,
 ): void {
@@ -78,7 +78,7 @@ function fireWriteEvent(
 			agentId: options.agentId ?? options.userId,
 		}),
 	}).catch((err) => {
-		console.warn("[mdbrian] write-event failed:", role, err)
+		console.warn("[mdbrain] write-event failed:", role, err)
 	})
 }
 
@@ -97,12 +97,12 @@ function extractUserQuery(messages: ChatMessage[]): string | undefined {
 
 /**
  * Wrap an OpenAI client instance so that every `chat.completions.create()`
- * call is enriched with Mdbrian memory context. No runtime `openai` dependency
+ * call is enriched with Mdbrain memory context. No runtime `openai` dependency
  * is required: the middleware accepts any object matching the shape.
  */
 export function createOpenAIMiddleware<
 	T extends { chat: { completions: { create: (...args: any[]) => any } } },
->(client: T, options: MdbrianCoreOptions): T {
+>(client: T, options: MdbrainCoreOptions): T {
 	const completionsProxy = new Proxy(client.chat.completions, {
 		get(target, prop, receiver) {
 			if (prop === "create") {

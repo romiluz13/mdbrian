@@ -1,12 +1,12 @@
 import { vi } from "vitest"
-import type { SsrFPolicy } from "@mdbrian/lib"
+import type { SsrFPolicy } from "@mdbrain/lib"
 
 export function mockSsrfPolicy(): SsrFPolicy {
 	return { allowPrivateNetwork: true }
 }
 
 export function mockPublicPinnedHostname(): void {
-	// The standalone Mdbrian test surface allows mocked fetch requests by default.
+	// The standalone Mdbrain test surface allows mocked fetch requests by default.
 }
 
 export function createMockLookup(addresses: string[] = ["93.184.216.34"]) {

@@ -2,7 +2,7 @@ import type { Collection, Db } from "mongodb"
 import fc from "fast-check"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 
-vi.mock("@mdbrian/lib", () => ({
+vi.mock("@mdbrain/lib", () => ({
 	createSubsystemLogger: () => ({
 		info: vi.fn(),
 		warn: vi.fn(),

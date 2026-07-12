@@ -4,7 +4,7 @@ import {
 	type MemoryMongoDBFusionMethod,
 	type MemoryScope,
 	createSubsystemLogger,
-} from "@mdbrian/lib"
+} from "@mdbrain/lib"
 import { mergeHybridResultsMongoDB } from "./mongodb-hybrid.js"
 import { summarizeExplain } from "./mongodb-relevance.js"
 import type { DetectedCapabilities } from "./mongodb-schema.js"
@@ -430,7 +430,7 @@ function buildTextSearchCompound(
 // ---------------------------------------------------------------------------
 // $vectorSearch stage builder
 // ---------------------------------------------------------------------------
-// Mdbrian uses MongoDB Community automatic embeddings. Query text is sent to
+// Mdbrain uses MongoDB Community automatic embeddings. Query text is sent to
 // MongoDB and the server handles query-time embedding generation via autoEmbed.
 // ---------------------------------------------------------------------------
 

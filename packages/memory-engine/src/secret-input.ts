@@ -1,4 +1,4 @@
-import { normalizeOptionalSecretInput, type SecretInput } from "@mdbrian/lib"
+import { normalizeOptionalSecretInput, type SecretInput } from "@mdbrain/lib"
 
 export function hasConfiguredMemorySecretInput(value: unknown): boolean {
 	if (!value) return false

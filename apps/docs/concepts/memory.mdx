@@ -1,10 +1,10 @@
 ---
 title: Memory
-description: How Mdbrian stores, indexes, and retrieves Company Brain memory using MongoDB.
+description: How Mdbrain stores, indexes, and retrieves Company Brain memory using MongoDB.
 icon: "brain"
 ---
 
-Mdbrian treats memory as a first-class MongoDB data model for AI apps, agents,
+Mdbrain treats memory as a first-class MongoDB data model for AI apps, agents,
 and team workflows. Memory documents can participate in automated vector
 embeddings, full-text indexing, hybrid retrieval, lifecycle updates, and graph
 relationships.
@@ -21,7 +21,7 @@ relationships.
 
 ## Hybrid search
 
-Mdbrian combines two search strategies using MongoDB hybrid search. `$rankFusion`
+Mdbrain combines two search strategies using MongoDB hybrid search. `$rankFusion`
 is the default broad retrieval lane; `$scoreFusion` is used only as a supported
 score-normalized lane when that row is explicitly selected and measured:
 
@@ -34,4 +34,4 @@ For the full framework taxonomy, see [Memory Taxonomy](/concepts/memory-taxonomy
 
 ## Automated embeddings
 
-When you add content to Mdbrian, embeddings are generated automatically using Voyage AI. No manual embedding step is required -- just send text and Mdbrian handles the rest.
+When you add content to Mdbrain, embeddings are generated automatically using Voyage AI. No manual embedding step is required -- just send text and Mdbrain handles the rest.

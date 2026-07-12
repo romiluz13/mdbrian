@@ -1,17 +1,17 @@
 import { describe, expect, it, vi } from "vitest"
-import type { MdbrianConfig } from "@mdbrian/lib"
+import type { MdbrainConfig } from "@mdbrain/lib"
 import { resolveMemoryBackendConfig } from "./backend-config.js"
 
 describe("resolveMemoryBackendConfig", () => {
 	it("defaults to mongodb backend when config missing and env URI is set", () => {
-		vi.stubEnv("MDBRAIN_MONGODB_URI", "mongodb://env-default:27017/mdbrian")
+		vi.stubEnv("MDBRAIN_MONGODB_URI", "mongodb://env-default:27017/mdbrain")
 		const cfg = {
 			agents: { defaults: { workspace: "/tmp/memory-test" } },
-		} as MdbrianConfig
+		} as MdbrainConfig
 		const resolved = resolveMemoryBackendConfig({ cfg, agentId: "main" })
 		expect(resolved.backend).toBe("mongodb")
 		expect(resolved.citations).toBe("auto")
-		expect(resolved.mongodb?.uri).toBe("mongodb://env-default:27017/mdbrian")
+		expect(resolved.mongodb?.uri).toBe("mongodb://env-default:27017/mdbrain")
 		vi.unstubAllEnvs()
 	})
 
@@ -19,7 +19,7 @@ describe("resolveMemoryBackendConfig", () => {
 		const cfg = {
 			agents: { defaults: { workspace: "/tmp/memory-test" } },
 			memory: { backend: "custom" as never },
-		} as unknown as MdbrianConfig
+		} as unknown as MdbrainConfig
 		expect(() => resolveMemoryBackendConfig({ cfg, agentId: "main" })).toThrow(
 			/Unsupported memory\.backend "custom"/,
 		)
@@ -38,13 +38,13 @@ describe("resolveMemoryBackendConfig", () => {
 					uri: "mongodb://localhost:27017",
 				},
 			},
-		} as unknown as MdbrianConfig
+		} as unknown as MdbrainConfig
 		const resolved = resolveMemoryBackendConfig({ cfg, agentId: "main" })
 		expect(resolved.backend).toBe("mongodb")
 		expect(resolved.mongodb).toBeDefined()
 		expect(resolved.mongodb!.uri).toBe("mongodb://localhost:27017")
-		expect(resolved.mongodb!.database).toBe("mdbrian")
-		expect(resolved.mongodb!.collectionPrefix).toBe("mdbrian_main_")
+		expect(resolved.mongodb!.database).toBe("mdbrain")
+		expect(resolved.mongodb!.collectionPrefix).toBe("mdbrain_main_")
 		expect(resolved.mongodb!.deploymentProfile).toBe("atlas-local-preview")
 		expect(resolved.mongodb!.embeddingMode).toBe("automated")
 		expect(resolved.mongodb!.fusionMethod).toBe("rankFusion")
@@ -67,7 +67,7 @@ describe("resolveMemoryBackendConfig", () => {
 		expect(resolved.mongodb!.relevance.retention.days).toBe(14)
 		expect(resolved.mongodb!.relevance.benchmark.enabled).toBe(true)
 		expect(resolved.mongodb!.relevance.benchmark.datasetPath).toContain(
-			".mdbrian/relevance/golden.jsonl",
+			".mdbrain/relevance/golden.jsonl",
 		)
 	})
 
@@ -87,7 +87,7 @@ describe("resolveMemoryBackendConfig", () => {
 					quantization: "scalar",
 				},
 			},
-		} as unknown as MdbrianConfig
+		} as unknown as MdbrainConfig
 		const resolved = resolveMemoryBackendConfig({ cfg, agentId: "main" })
 		expect(resolved.mongodb!.uri).toBe("mongodb://localhost:27017")
 		expect(resolved.mongodb!.database).toBe("mydb")
@@ -108,7 +108,7 @@ describe("resolveMemoryBackendConfig", () => {
 					backend: "mongodb",
 					mongodb: { uri: "mongodb://localhost:27017" },
 				},
-			} as unknown as MdbrianConfig
+			} as unknown as MdbrainConfig
 			const resolved = resolveMemoryBackendConfig({ cfg, agentId: "main" })
 			expect(resolved.mongodb!.recallProfile).toBe("proof")
 		} finally {
@@ -123,7 +123,7 @@ describe("resolveMemoryBackendConfig", () => {
 					backend: "mongodb",
 					mongodb: { uri: "mongodb://localhost:27017" },
 				},
-			} as unknown as MdbrianConfig
+			} as unknown as MdbrainConfig
 			const resolved = resolveMemoryBackendConfig({ cfg, agentId: "main" })
 			expect(resolved.mongodb!.recallProfile).toBe("balanced")
 		} finally {
@@ -142,7 +142,7 @@ describe("resolveMemoryBackendConfig", () => {
 					collectionPrefix: "custom_",
 				},
 			},
-		} as unknown as MdbrianConfig
+		} as unknown as MdbrainConfig
 
 		const resolved = resolveMemoryBackendConfig({ cfg, agentId: "main" })
 
@@ -178,7 +178,7 @@ describe("resolveMemoryBackendConfig", () => {
 					},
 				},
 			},
-		} as unknown as MdbrianConfig
+		} as unknown as MdbrainConfig
 		const resolved = resolveMemoryBackendConfig({ cfg, agentId: "main" })
 		expect(resolved.mongodb!.relevance.enabled).toBe(false)
 		expect(resolved.mongodb!.relevance.telemetry.enabled).toBe(true)
@@ -208,7 +208,7 @@ describe("resolveMemoryBackendConfig", () => {
 					backend: "mongodb",
 					mongodb: {},
 				},
-			} as MdbrianConfig
+			} as MdbrainConfig
 			const resolved = resolveMemoryBackendConfig({ cfg, agentId: "main" })
 			expect(resolved.mongodb!.uri).toBe("mongodb://from-env:27017")
 		} finally {
@@ -219,7 +219,7 @@ describe("resolveMemoryBackendConfig", () => {
 	it("MDBRAIN_FORCE_MONGODB_URI overrides memory.mongodb.uri from config", () => {
 		vi.stubEnv(
 			"MDBRAIN_FORCE_MONGODB_URI",
-			"mongodb://from-force:27017/mdbrian",
+			"mongodb://from-force:27017/mdbrain",
 		)
 		try {
 			const cfg = {
@@ -227,12 +227,12 @@ describe("resolveMemoryBackendConfig", () => {
 				memory: {
 					backend: "mongodb",
 					mongodb: {
-						uri: "mongodb://from-file:27017/mdbrian",
+						uri: "mongodb://from-file:27017/mdbrain",
 					},
 				},
-			} as unknown as MdbrianConfig
+			} as unknown as MdbrainConfig
 			const resolved = resolveMemoryBackendConfig({ cfg, agentId: "main" })
-			expect(resolved.mongodb!.uri).toBe("mongodb://from-force:27017/mdbrian")
+			expect(resolved.mongodb!.uri).toBe("mongodb://from-force:27017/mdbrain")
 		} finally {
 			vi.unstubAllEnvs()
 		}
@@ -245,7 +245,7 @@ describe("resolveMemoryBackendConfig", () => {
 				backend: "mongodb",
 				mongodb: { uri: "mongodb://localhost:27017" },
 			},
-		} as unknown as MdbrianConfig
+		} as unknown as MdbrainConfig
 		const resolved = resolveMemoryBackendConfig({ cfg, agentId: "main" })
 		expect(resolved.mongodb!.numDimensions).toBe(1024)
 	})
@@ -257,7 +257,7 @@ describe("resolveMemoryBackendConfig", () => {
 				backend: "mongodb",
 				mongodb: { uri: "mongodb://localhost:27017", numDimensions: 768 },
 			},
-		} as unknown as MdbrianConfig
+		} as unknown as MdbrainConfig
 		const resolved = resolveMemoryBackendConfig({ cfg, agentId: "main" })
 		expect(resolved.mongodb!.numDimensions).toBe(768)
 	})
@@ -269,7 +269,7 @@ describe("resolveMemoryBackendConfig", () => {
 				backend: "mongodb",
 				mongodb: { uri: "mongodb://localhost:27017" },
 			},
-		} as unknown as MdbrianConfig
+		} as unknown as MdbrainConfig
 		const resolved = resolveMemoryBackendConfig({ cfg, agentId: "main" })
 		expect(resolved.mongodb!.maxPoolSize).toBe(10)
 	})
@@ -281,7 +281,7 @@ describe("resolveMemoryBackendConfig", () => {
 				backend: "mongodb",
 				mongodb: { uri: "mongodb://localhost:27017", maxPoolSize: 20 },
 			},
-		} as unknown as MdbrianConfig
+		} as unknown as MdbrainConfig
 		const resolved = resolveMemoryBackendConfig({ cfg, agentId: "main" })
 		expect(resolved.mongodb!.maxPoolSize).toBe(20)
 	})
@@ -304,7 +304,7 @@ describe("resolveMemoryBackendConfig", () => {
 				backend: "mongodb",
 				mongodb: { uri: "mongodb://localhost:27017", maxPoolSize: 20 },
 			},
-		} as unknown as MdbrianConfig
+		} as unknown as MdbrainConfig
 
 		const resolved = resolveMemoryBackendConfig({ cfg, agentId: "main" })
 
@@ -329,7 +329,7 @@ describe("resolveMemoryBackendConfig", () => {
 				backend: "mongodb",
 				mongodb: { uri: "mongodb://localhost:27017" },
 			},
-		} as unknown as MdbrianConfig
+		} as unknown as MdbrainConfig
 		const resolved = resolveMemoryBackendConfig({ cfg, agentId: "main" })
 		expect(resolved.mongodb!.embeddingCacheTtlDays).toBe(30)
 	})
@@ -341,7 +341,7 @@ describe("resolveMemoryBackendConfig", () => {
 				backend: "mongodb",
 				mongodb: { uri: "mongodb://localhost:27017", embeddingCacheTtlDays: 7 },
 			},
-		} as unknown as MdbrianConfig
+		} as unknown as MdbrainConfig
 		const resolved = resolveMemoryBackendConfig({ cfg, agentId: "main" })
 		expect(resolved.mongodb!.embeddingCacheTtlDays).toBe(7)
 	})
@@ -353,7 +353,7 @@ describe("resolveMemoryBackendConfig", () => {
 				backend: "mongodb",
 				mongodb: { uri: "mongodb://localhost:27017" },
 			},
-		} as unknown as MdbrianConfig
+		} as unknown as MdbrainConfig
 		const resolved = resolveMemoryBackendConfig({ cfg, agentId: "main" })
 		expect(resolved.mongodb!.memoryTtlDays).toBe(0)
 	})
@@ -365,7 +365,7 @@ describe("resolveMemoryBackendConfig", () => {
 				backend: "mongodb",
 				mongodb: { uri: "mongodb://localhost:27017" },
 			},
-		} as MdbrianConfig
+		} as MdbrainConfig
 		const resolved = resolveMemoryBackendConfig({ cfg, agentId: "main" })
 		expect(resolved.mongodb!.enableChangeStreams).toBe(false)
 	})
@@ -380,7 +380,7 @@ describe("resolveMemoryBackendConfig", () => {
 					enableChangeStreams: true,
 				},
 			},
-		} as MdbrianConfig
+		} as MdbrainConfig
 		const resolved = resolveMemoryBackendConfig({ cfg, agentId: "main" })
 		expect(resolved.mongodb!.enableChangeStreams).toBe(true)
 	})
@@ -392,7 +392,7 @@ describe("resolveMemoryBackendConfig", () => {
 				backend: "mongodb",
 				mongodb: { uri: "mongodb://localhost:27017" },
 			},
-		} as MdbrianConfig
+		} as MdbrainConfig
 		const resolved = resolveMemoryBackendConfig({ cfg, agentId: "main" })
 		expect(resolved.mongodb!.changeStreamDebounceMs).toBe(1000)
 	})
@@ -407,7 +407,7 @@ describe("resolveMemoryBackendConfig", () => {
 					deploymentProfile: "atlas-local-preview",
 				},
 			},
-		} as MdbrianConfig
+		} as MdbrainConfig
 		const resolved = resolveMemoryBackendConfig({ cfg, agentId: "main" })
 		expect(resolved.mongodb!.embeddingMode).toBe("automated")
 	})
@@ -418,10 +418,10 @@ describe("resolveMemoryBackendConfig", () => {
 			memory: {
 				backend: "mongodb",
 				mongodb: {
-					uri: "mongodb+srv://user:pass@example.mongodb.net/?appName=mdbrian",
+					uri: "mongodb+srv://user:pass@example.mongodb.net/?appName=mdbrain",
 				},
 			},
-		} as MdbrianConfig
+		} as MdbrainConfig
 		const resolved = resolveMemoryBackendConfig({ cfg, agentId: "main" })
 		expect(resolved.mongodb!.deploymentProfile).toBe("atlas-managed")
 		expect(resolved.mongodb!.embeddingMode).toBe("automated")
@@ -433,11 +433,11 @@ describe("resolveMemoryBackendConfig", () => {
 			memory: {
 				backend: "mongodb",
 				mongodb: {
-					uri: "mongodb+srv://user:pass@example.mongodb.net/?appName=mdbrian",
+					uri: "mongodb+srv://user:pass@example.mongodb.net/?appName=mdbrain",
 					deploymentProfile: "atlas-managed",
 				},
 			},
-		} as MdbrianConfig
+		} as MdbrainConfig
 		const resolved = resolveMemoryBackendConfig({ cfg, agentId: "main" })
 		expect(resolved.mongodb!.deploymentProfile).toBe("atlas-managed")
 	})
@@ -452,7 +452,7 @@ describe("resolveMemoryBackendConfig", () => {
 					deploymentProfile: "community-bare",
 				},
 			},
-		} as unknown as MdbrianConfig
+		} as unknown as MdbrainConfig
 		expect(() => resolveMemoryBackendConfig({ cfg, agentId: "main" })).toThrow(
 			/deploymentProfile "community-bare" is not supported/,
 		)
@@ -468,7 +468,7 @@ describe("resolveMemoryBackendConfig", () => {
 					deploymentProfile: "atlas-m0",
 				},
 			},
-		} as unknown as MdbrianConfig
+		} as unknown as MdbrainConfig
 		expect(() => resolveMemoryBackendConfig({ cfg, agentId: "main" })).toThrow(
 			/deploymentProfile "atlas-m0" is not supported/,
 		)
@@ -485,7 +485,7 @@ describe("resolveMemoryBackendConfig", () => {
 					embeddingMode: "managed",
 				},
 			},
-		} as unknown as MdbrianConfig
+		} as unknown as MdbrainConfig
 		expect(() => resolveMemoryBackendConfig({ cfg, agentId: "main" })).toThrow(
 			/embeddingMode "managed" is not supported/,
 		)
@@ -501,7 +501,7 @@ describe("resolveMemoryBackendConfig", () => {
 					numCandidates: 15000,
 				},
 			},
-		} as MdbrianConfig
+		} as MdbrainConfig
 		const resolved = resolveMemoryBackendConfig({ cfg, agentId: "main" })
 		expect(resolved.mongodb!.numCandidates).toBe(10000)
 	})
@@ -513,7 +513,7 @@ describe("resolveMemoryBackendConfig", () => {
 				backend: "mongodb",
 				mongodb: { uri: "mongodb://localhost:27017" },
 			},
-		} as MdbrianConfig
+		} as MdbrainConfig
 		const resolved = resolveMemoryBackendConfig({ cfg, agentId: "main" })
 		expect(resolved.mongodb!.fusionMethod).toBe("rankFusion")
 	})
@@ -528,7 +528,7 @@ describe("resolveMemoryBackendConfig", () => {
 					fusionMethod: "scoreFusion",
 				},
 			},
-		} as MdbrianConfig
+		} as MdbrainConfig
 		const resolved = resolveMemoryBackendConfig({ cfg, agentId: "main" })
 		expect(resolved.mongodb!.fusionMethod).toBe("scoreFusion")
 	})
@@ -544,7 +544,7 @@ describe("resolveMemoryBackendConfig", () => {
 					fusionMethod: "rankFusion",
 				},
 			},
-		} as MdbrianConfig
+		} as MdbrainConfig
 		const resolved = resolveMemoryBackendConfig({ cfg, agentId: "main" })
 		expect(resolved.mongodb!.fusionMethod).toBe("js-merge")
 	})
@@ -556,7 +556,7 @@ describe("resolveMemoryBackendConfig", () => {
 				backend: "mongodb",
 				mongodb: {},
 			},
-		} as MdbrianConfig
+		} as MdbrainConfig
 		expect(() => resolveMemoryBackendConfig({ cfg, agentId: "main" })).toThrow(
 			/MongoDB URI required/,
 		)
@@ -573,7 +573,7 @@ describe("resolveMemoryBackendConfig", () => {
 						uri: "mongodb://from-config:27017",
 					},
 				},
-			} as MdbrianConfig
+			} as MdbrainConfig
 			const resolved = resolveMemoryBackendConfig({ cfg, agentId: "main" })
 			expect(resolved.mongodb!.uri).toBe("mongodb://from-config:27017")
 		} finally {
@@ -592,7 +592,7 @@ describe("resolveMemoryBackendConfig", () => {
 				backend: "mongodb",
 				mongodb: { uri: "mongodb://localhost:27017" },
 			},
-		} as MdbrianConfig
+		} as MdbrainConfig
 		const resolved = resolveMemoryBackendConfig({ cfg, agentId: "main" })
 		expect(resolved.mongodb!.kb).toBeDefined()
 		expect(resolved.mongodb!.kb.enabled).toBe(true)
@@ -613,7 +613,7 @@ describe("resolveMemoryBackendConfig", () => {
 				backend: "mongodb",
 				mongodb: { uri: "mongodb://localhost:27017" },
 			},
-		} as MdbrianConfig
+		} as MdbrainConfig
 		const resolved = resolveMemoryBackendConfig({ cfg, agentId: "main" })
 		expect(resolved.mongodb!.maxSessionChunks).toBe(50)
 	})
@@ -625,7 +625,7 @@ describe("resolveMemoryBackendConfig", () => {
 				backend: "mongodb",
 				mongodb: { uri: "mongodb://localhost:27017", maxSessionChunks: 100 },
 			},
-		} as MdbrianConfig
+		} as MdbrainConfig
 		const resolved = resolveMemoryBackendConfig({ cfg, agentId: "main" })
 		expect(resolved.mongodb!.maxSessionChunks).toBe(100)
 	})
@@ -637,7 +637,7 @@ describe("resolveMemoryBackendConfig", () => {
 				backend: "mongodb",
 				mongodb: { uri: "mongodb://localhost:27017", maxSessionChunks: -5 },
 			},
-		} as MdbrianConfig
+		} as MdbrainConfig
 		const resolved = resolveMemoryBackendConfig({ cfg, agentId: "main" })
 		expect(resolved.mongodb!.maxSessionChunks).toBe(50)
 	})
@@ -649,7 +649,7 @@ describe("resolveMemoryBackendConfig", () => {
 				backend: "mongodb",
 				mongodb: { uri: "mongodb://localhost:27017", maxSessionChunks: 75.9 },
 			},
-		} as MdbrianConfig
+		} as MdbrainConfig
 		const resolved = resolveMemoryBackendConfig({ cfg, agentId: "main" })
 		expect(resolved.mongodb!.maxSessionChunks).toBe(75)
 	})
@@ -665,7 +665,7 @@ describe("resolveMemoryBackendConfig", () => {
 				backend: "mongodb",
 				mongodb: { uri: "mongodb://localhost:27017" },
 			},
-		} as unknown as MdbrianConfig
+		} as unknown as MdbrainConfig
 		const resolved = resolveMemoryBackendConfig({ cfg, agentId: "main" })
 		expect(resolved.mongodb!.episodes.enabled).toBe(true)
 		expect(resolved.mongodb!.graph.enabled).toBe(true)
@@ -681,7 +681,7 @@ describe("resolveMemoryBackendConfig", () => {
 					episodes: { enabled: false },
 				},
 			},
-		} as unknown as MdbrianConfig
+		} as unknown as MdbrainConfig
 		const resolved = resolveMemoryBackendConfig({ cfg, agentId: "main" })
 		expect(resolved.mongodb!.episodes.enabled).toBe(false)
 	})
@@ -696,7 +696,7 @@ describe("resolveMemoryBackendConfig", () => {
 					graph: { enabled: false },
 				},
 			},
-		} as unknown as MdbrianConfig
+		} as unknown as MdbrainConfig
 		const resolved = resolveMemoryBackendConfig({ cfg, agentId: "main" })
 		expect(resolved.mongodb!.graph.enabled).toBe(false)
 	})
@@ -709,7 +709,7 @@ describe("resolveMemoryBackendConfig", () => {
 				runtimeMode: "mongo_v2",
 				mongodb: { uri: "mongodb://localhost:27017" },
 			},
-		} as unknown as MdbrianConfig
+		} as unknown as MdbrainConfig
 		// Should not throw
 		const resolved = resolveMemoryBackendConfig({ cfg, agentId: "main" })
 		expect(resolved.mongodb).toBeDefined()
@@ -728,7 +728,7 @@ describe("resolveMemoryBackendConfig", () => {
 					graph: { enabled: false, maxGraphDepth: 5 },
 				},
 			},
-		} as unknown as MdbrianConfig
+		} as unknown as MdbrainConfig
 		const resolved = resolveMemoryBackendConfig({ cfg, agentId: "main" })
 		expect(resolved.mongodb!.episodes).toEqual({
 			enabled: false,
@@ -756,7 +756,7 @@ describe("resolveMemoryBackendConfig", () => {
 					},
 				},
 			},
-		} as MdbrianConfig
+		} as MdbrainConfig
 		const resolved = resolveMemoryBackendConfig({ cfg, agentId: "main" })
 		expect(resolved.mongodb!.kb.enabled).toBe(false)
 		expect(resolved.mongodb!.kb.chunking.tokens).toBe(800)
@@ -776,7 +776,7 @@ describe("resolveMemoryBackendConfig", () => {
 				backend: "mongodb",
 				mongodb: { uri: "mongodb://localhost:27017" },
 			},
-		} as unknown as MdbrianConfig
+		} as unknown as MdbrainConfig
 		const resolved = resolveMemoryBackendConfig({ cfg, agentId: "main" })
 		expect(resolved.mongodb!.cache.enabled).toBe(true)
 		expect(resolved.mongodb!.cache.conversationTtlSec).toBe(300)
@@ -799,7 +799,7 @@ describe("resolveMemoryBackendConfig", () => {
 					},
 				},
 			},
-		} as unknown as MdbrianConfig
+		} as unknown as MdbrainConfig
 		const resolved = resolveMemoryBackendConfig({ cfg, agentId: "main" })
 		expect(resolved.mongodb!.cache.enabled).toBe(true)
 		expect(resolved.mongodb!.cache.conversationTtlSec).toBe(600)
@@ -817,7 +817,7 @@ describe("resolveMemoryBackendConfig", () => {
 					cache: { enabled: false },
 				},
 			},
-		} as unknown as MdbrianConfig
+		} as unknown as MdbrainConfig
 		const resolved = resolveMemoryBackendConfig({ cfg, agentId: "main" })
 		expect(resolved.mongodb!.cache.enabled).toBe(false)
 		// Defaults still apply for other fields
@@ -833,7 +833,7 @@ describe("resolveMemoryBackendConfig", () => {
 				backend: "mongodb",
 				mongodb: { uri: "mongodb://localhost:27017" },
 			},
-		} as unknown as MdbrianConfig
+		} as unknown as MdbrainConfig
 		const resolved = resolveMemoryBackendConfig({ cfg, agentId: "main" })
 		// cache?.enabled !== false => true when undefined
 		expect(resolved.mongodb!.cache.enabled).toBe(true)
@@ -849,7 +849,7 @@ describe("resolveMemoryBackendConfig", () => {
 					cache: { kbTtlSec: 1800 },
 				},
 			},
-		} as unknown as MdbrianConfig
+		} as unknown as MdbrainConfig
 		const resolved = resolveMemoryBackendConfig({ cfg, agentId: "main" })
 		expect(resolved.mongodb!.cache.enabled).toBe(true) // default
 		expect(resolved.mongodb!.cache.conversationTtlSec).toBe(300) // default
@@ -870,7 +870,7 @@ describe("resolveMemoryBackendConfig", () => {
 					},
 				},
 			},
-		} as unknown as MdbrianConfig
+		} as unknown as MdbrainConfig
 		const resolved = resolveMemoryBackendConfig({ cfg, agentId: "main" })
 		// The resolved config stores both TTLs; the search() method decides which to use
 		expect(resolved.mongodb!.cache.conversationTtlSec).toBe(120)
@@ -886,7 +886,7 @@ describe("resolveMemoryBackendConfig", () => {
 				backend: "mongodb",
 				mongodb: { uri: "mongodb://localhost:27017", cache: {} },
 			},
-		} as unknown as MdbrianConfig
+		} as unknown as MdbrainConfig
 		expect(
 			resolveMemoryBackendConfig({ cfg: cfgUndefined, agentId: "main" })
 				.mongodb!.cache.enabled,
@@ -898,7 +898,7 @@ describe("resolveMemoryBackendConfig", () => {
 				backend: "mongodb",
 				mongodb: { uri: "mongodb://localhost:27017", cache: { enabled: true } },
 			},
-		} as unknown as MdbrianConfig
+		} as unknown as MdbrainConfig
 		expect(
 			resolveMemoryBackendConfig({ cfg: cfgTrue, agentId: "main" }).mongodb!
 				.cache.enabled,
@@ -913,7 +913,7 @@ describe("resolveMemoryBackendConfig", () => {
 					cache: { enabled: false },
 				},
 			},
-		} as unknown as MdbrianConfig
+		} as unknown as MdbrainConfig
 		expect(
 			resolveMemoryBackendConfig({ cfg: cfgFalse, agentId: "main" }).mongodb!
 				.cache.enabled,
@@ -931,7 +931,7 @@ describe("resolveMemoryBackendConfig", () => {
 				backend: "mongodb",
 				mongodb: { uri: "mongodb://localhost:27017" },
 			},
-		} as unknown as MdbrianConfig
+		} as unknown as MdbrainConfig
 		const resolved = resolveMemoryBackendConfig({ cfg, agentId: "main" })
 		expect(resolved.mongodb!.queryRewriting.enabled).toBe(false)
 		expect(resolved.mongodb!.queryRewriting.method).toBe("synonym-expansion")
@@ -952,7 +952,7 @@ describe("resolveMemoryBackendConfig", () => {
 					},
 				},
 			},
-		} as unknown as MdbrianConfig
+		} as unknown as MdbrainConfig
 		const resolved = resolveMemoryBackendConfig({ cfg, agentId: "main" })
 		expect(resolved.mongodb!.queryRewriting.enabled).toBe(true)
 		expect(resolved.mongodb!.queryRewriting.method).toBe("synonym-expansion")
@@ -969,7 +969,7 @@ describe("resolveMemoryBackendConfig", () => {
 					queryRewriting: { enabled: true, method: "hyde", maxTokens: 256 },
 				},
 			},
-		} as unknown as MdbrianConfig
+		} as unknown as MdbrainConfig
 
 		expect(() => resolveMemoryBackendConfig({ cfg, agentId: "main" })).toThrow(
 			/synonym-expansion/,
@@ -989,7 +989,7 @@ describe("resolveMemoryBackendConfig", () => {
 					backend: "mongodb",
 					mongodb: { uri: "mongodb://localhost:27017" },
 				},
-			} as unknown as MdbrianConfig
+			} as unknown as MdbrainConfig
 			const resolved = resolveMemoryBackendConfig({ cfg, agentId: "main" })
 			expect(resolved.mongodb!.reranking.enabled).toBe(true)
 			expect(resolved.mongodb!.reranking.model).toBe("rerank-2.5")
@@ -1018,7 +1018,7 @@ describe("resolveMemoryBackendConfig", () => {
 					},
 				},
 			},
-		} as unknown as MdbrianConfig
+		} as unknown as MdbrainConfig
 		const resolved = resolveMemoryBackendConfig({ cfg, agentId: "main" })
 		expect(resolved.mongodb!.reranking.enabled).toBe(true)
 		expect(resolved.mongodb!.reranking.model).toBe("rerank-2.5-lite")
@@ -1036,7 +1036,7 @@ describe("resolveMemoryBackendConfig", () => {
 					backend: "mongodb",
 					mongodb: { uri: "mongodb://localhost:27017" },
 				},
-			} as unknown as MdbrianConfig
+			} as unknown as MdbrainConfig
 			const resolved = resolveMemoryBackendConfig({ cfg, agentId: "main" })
 			expect(resolved.mongodb!.reranking.voyageApiKey).toBe("voy-from-env")
 		} finally {
@@ -1053,7 +1053,7 @@ describe("resolveMemoryBackendConfig", () => {
 					backend: "mongodb",
 					mongodb: { uri: "mongodb://localhost:27017" },
 				},
-			} as unknown as MdbrianConfig
+			} as unknown as MdbrainConfig
 			const resolved = resolveMemoryBackendConfig({ cfg, agentId: "main" })
 			expect(resolved.mongodb!.reranking.enabled).toBe(false)
 		} finally {
@@ -1072,7 +1072,7 @@ describe("resolveMemoryBackendConfig", () => {
 				backend: "mongodb",
 				mongodb: { uri: "mongodb://localhost:27017" },
 			},
-		} as unknown as MdbrianConfig
+		} as unknown as MdbrainConfig
 		const resolved = resolveMemoryBackendConfig({ cfg, agentId: "main" })
 		expect(resolved.mongodb!.graph.entityExtraction.method).toBe("regex")
 		expect(resolved.mongodb!.graph.entityExtraction.model).toBeUndefined()
@@ -1095,7 +1095,7 @@ describe("resolveMemoryBackendConfig", () => {
 					},
 				},
 			},
-		} as unknown as MdbrianConfig
+		} as unknown as MdbrainConfig
 		const resolved = resolveMemoryBackendConfig({ cfg, agentId: "main" })
 		expect(resolved.mongodb!.graph.entityExtraction.method).toBe("llm")
 		expect(resolved.mongodb!.graph.entityExtraction.model).toBe(
@@ -1118,7 +1118,7 @@ describe("resolveMemoryBackendConfig", () => {
 					},
 				},
 			},
-		} as unknown as MdbrianConfig
+		} as unknown as MdbrainConfig
 		const resolved = resolveMemoryBackendConfig({ cfg, agentId: "main" })
 		// Existing graph fields preserved
 		expect(resolved.mongodb!.graph.enabled).toBe(false)
@@ -1138,7 +1138,7 @@ describe("resolveMemoryBackendConfig", () => {
 					graph: { entityExtraction: { method: "llm" } },
 				},
 			},
-		} as unknown as MdbrianConfig
+		} as unknown as MdbrainConfig
 		const resolved = resolveMemoryBackendConfig({ cfg, agentId: "main" })
 		expect(resolved.mongodb!.graph.entityExtraction.method).toBe("llm")
 		// The warning is logged via createSubsystemLogger, which we cannot easily spy on
@@ -1158,7 +1158,7 @@ describe("resolveMemoryBackendConfig", () => {
 				backend: "mongodb",
 				mongodb: { uri: "mongodb://localhost:27017" },
 			},
-		} as MdbrianConfig
+		} as MdbrainConfig
 		const resolved = resolveMemoryBackendConfig({ cfg, agentId: "main" })
 		expect(resolved.mongodb!.numCandidates).toBe(500)
 	})
@@ -1170,7 +1170,7 @@ describe("resolveMemoryBackendConfig", () => {
 				backend: "mongodb",
 				mongodb: { uri: "mongodb://localhost:27017" },
 			},
-		} as unknown as MdbrianConfig
+		} as unknown as MdbrainConfig
 		const resolved = resolveMemoryBackendConfig({ cfg, agentId: "main" })
 		expect(resolved.mongodb!.reranking.minScore).toBe(0.01)
 	})
@@ -1183,7 +1183,7 @@ describe("resolveMemoryBackendConfig", () => {
 				backend: "mongodb",
 				mongodb: { uri: "mongodb://localhost:27017" },
 			},
-		} as MdbrianConfig
+		} as MdbrainConfig
 		const resolved = resolveMemoryBackendConfig({ cfg, agentId: "main" })
 		expect(resolved.mongodb!.numCandidates).toBe(300)
 		vi.unstubAllEnvs()
@@ -1197,7 +1197,7 @@ describe("resolveMemoryBackendConfig", () => {
 				backend: "mongodb",
 				mongodb: { uri: "mongodb://localhost:27017" },
 			},
-		} as unknown as MdbrianConfig
+		} as unknown as MdbrainConfig
 		const resolved = resolveMemoryBackendConfig({ cfg, agentId: "main" })
 		expect(resolved.mongodb!.reranking.minScore).toBe(0.05)
 		vi.unstubAllEnvs()

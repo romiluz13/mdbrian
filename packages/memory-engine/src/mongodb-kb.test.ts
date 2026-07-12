@@ -73,7 +73,7 @@ let mockKBChunks: Collection
 
 beforeEach(async () => {
 	vi.clearAllMocks()
-	tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), "mdbrian-kb-test-"))
+	tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), "mdbrain-kb-test-"))
 	mockKB = createMockKBCol()
 	mockKBChunks = createMockKBChunksCol()
 	vi.mocked(kbCollection).mockReturnValue(mockKB)

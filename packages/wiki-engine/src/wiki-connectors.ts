@@ -1,4 +1,4 @@
-// @mdbrian/wiki-engine — source connectors.
+// @mdbrain/wiki-engine — source connectors.
 //
 // Connector ABC for ingesting external sources into wiki_pages, plus concrete
 // implementations for Obsidian (bidirectional vault sync) and GitHub

@@ -10,11 +10,11 @@ import {
 	type MongoClientOptions,
 } from "mongodb"
 import {
-	type MdbrianConfig,
+	type MdbrainConfig,
 	type MemoryScope,
 	createSubsystemLogger,
 	resolveUserPath,
-} from "@mdbrian/lib"
+} from "@mdbrain/lib"
 import {
 	AccessTracker,
 	getAccessSummaries as listAccessSummaries,
@@ -1969,7 +1969,7 @@ function redactMongoURI(uri: string): string {
 // ---------------------------------------------------------------------------
 
 /**
- * Core runtime coordinator for the Mdbrian engine.
+ * Core runtime coordinator for the Mdbrain engine.
  *
  * The file is intentionally large today because it still hosts several stable
  * subsystems in one place:
@@ -2050,7 +2050,7 @@ export class MongoDBMemoryManager implements MemorySearchManager {
 	// ---------------------------------------------------------------------------
 
 	static async create(params: {
-		cfg: MdbrianConfig
+		cfg: MdbrainConfig
 		agentId: string
 		resolved: ResolvedMemoryBackendConfig
 		extraPaths?: string[]
@@ -6663,7 +6663,7 @@ export class MongoDBMemoryManager implements MemorySearchManager {
 			) {
 				return {
 					ok: false,
-					error: `embeddingMode "automated" is only supported on atlas-local-preview or atlas-managed in Mdbrian`,
+					error: `embeddingMode "automated" is only supported on atlas-local-preview or atlas-managed in Mdbrain`,
 				}
 			}
 			return this.capabilities.vectorSearch

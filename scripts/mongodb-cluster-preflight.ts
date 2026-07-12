@@ -51,7 +51,7 @@ function readArg(name: string): string | undefined {
 }
 
 function readDatabaseName(): string {
-	return process.env.MDBRAIN_DB_NAME?.trim() || "mdbrian"
+	return process.env.MDBRAIN_DB_NAME?.trim() || "mdbrain"
 }
 
 function readPrefix(): string {
@@ -59,7 +59,7 @@ function readPrefix(): string {
 		readArg("prefix") || process.env.MDBRAIN_MONGODB_COLLECTION_PREFIX?.trim()
 	if (!prefix) {
 		throw new Error(
-			"pass --prefix=mdbrian_bench_<lane>_<date>_<suffix>_ or set MDBRAIN_MONGODB_COLLECTION_PREFIX",
+			"pass --prefix=mdbrain_bench_<lane>_<date>_<suffix>_ or set MDBRAIN_MONGODB_COLLECTION_PREFIX",
 		)
 	}
 	validateCollectionPrefix(prefix)
@@ -67,9 +67,9 @@ function readPrefix(): string {
 }
 
 function validateCollectionPrefix(prefix: string): void {
-	if (!/^mdbrian_bench_[a-z0-9][a-z0-9_-]*_$/.test(prefix)) {
+	if (!/^mdbrain_bench_[a-z0-9][a-z0-9_-]*_$/.test(prefix)) {
 		throw new Error(
-			"collection prefix must start with mdbrian_bench_, contain only lowercase letters, numbers, underscores, and hyphens, and end with _",
+			"collection prefix must start with mdbrain_bench_, contain only lowercase letters, numbers, underscores, and hyphens, and end with _",
 		)
 	}
 }
@@ -133,7 +133,7 @@ async function verifyAtlasModelKey(): Promise<{
 				"Content-Type": "application/json",
 			},
 			body: JSON.stringify({
-				input: "Mdbrian MongoDB preflight probe",
+				input: "Mdbrain MongoDB preflight probe",
 				model: "voyage-4-lite",
 				input_type: "document",
 			}),
@@ -180,7 +180,7 @@ async function listActiveOperations(
 					$match: {
 						$or: [
 							{ ns: { $regex: `^${escapedDatabase}\\.` } },
-							{ appName: { $regex: "mdbrian|benchmark", $options: "i" } },
+							{ appName: { $regex: "mdbrain|benchmark", $options: "i" } },
 						],
 					},
 				},
@@ -290,7 +290,7 @@ if (!process.env.MDBRAIN_MONGODB_URI?.trim()) {
 	report.warnings.push("MDBRAIN_MONGODB_URI is required for publication runs")
 } else {
 	const client = new MongoClient(process.env.MDBRAIN_MONGODB_URI.trim(), {
-		appName: "mdbrian-mongodb-cluster-preflight-readonly",
+		appName: "mdbrain-mongodb-cluster-preflight-readonly",
 		serverSelectionTimeoutMS: 10_000,
 	})
 	await client.connect()
@@ -302,7 +302,7 @@ if (!process.env.MDBRAIN_MONGODB_URI?.trim()) {
 		const names = collections.map((collection) => collection.name).sort()
 		const nonSystem = names.filter((name) => !isSystemCollection(name))
 		const benchmarkNames = names.filter((name) =>
-			name.startsWith("mdbrian_bench_"),
+			name.startsWith("mdbrain_bench_"),
 		)
 		const matchingPrefixNames = names.filter((name) => name.startsWith(prefix))
 		const active = await listActiveOperations(client, database)

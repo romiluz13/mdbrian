@@ -3,7 +3,7 @@ import {
 	type MemoryMongoDBDeploymentProfile,
 	type MemoryMongoDBEmbeddingMode,
 	createSubsystemLogger,
-} from "@mdbrian/lib"
+} from "@mdbrain/lib"
 import { isEvidenceMirrorEnabled } from "./mongodb-evidence-mirror.js"
 import { sortObject } from "./search-utils.js"
 

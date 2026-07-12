@@ -1,9 +1,9 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
-import * as authModule from "@mdbrian/lib"
+import * as authModule from "@mdbrain/lib"
 import { mockPublicPinnedHostname } from "./test-helpers/ssrf.js"
 
-vi.mock("@mdbrian/lib", async (importOriginal) => {
-	const original = await importOriginal<typeof import("@mdbrian/lib")>()
+vi.mock("@mdbrain/lib", async (importOriginal) => {
+	const original = await importOriginal<typeof import("@mdbrain/lib")>()
 	const { createModelAuthMockModule } = await import(
 		"./test-helpers/model-auth-mock.js"
 	)

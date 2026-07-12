@@ -22,7 +22,7 @@
 
 import { randomUUID } from "node:crypto"
 import type { Db, Document } from "mongodb"
-import { createSubsystemLogger, type MemoryScope } from "@mdbrian/lib"
+import { createSubsystemLogger, type MemoryScope } from "@mdbrain/lib"
 import { scanNovelty } from "./mongodb-novelty.js"
 import { traceReasoningChain } from "./mongodb-reasoning-chain.js"
 import { computeImportanceDecay } from "./mongodb-trust.js"

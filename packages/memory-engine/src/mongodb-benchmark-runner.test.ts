@@ -737,7 +737,7 @@ describe("mongodb benchmark runner", () => {
 		const { writeFileSync, mkdtempSync } = await import("node:fs")
 		const { tmpdir } = await import("node:os")
 		const path = await import("node:path")
-		const dir = mkdtempSync(path.join(tmpdir(), "mdbrian-parity-proj-"))
+		const dir = mkdtempSync(path.join(tmpdir(), "mdbrain-parity-proj-"))
 		const datasetPath = path.join(dir, "canary.jsonl")
 		writeFileSync(datasetPath, "parity-fixture-bytes")
 
@@ -749,7 +749,7 @@ describe("mongodb benchmark runner", () => {
 			db: mockDb as unknown as Parameters<
 				typeof projectBenchmarkParityFields
 			>[0]["db"],
-			collectionName: "mdbrian_bench_events",
+			collectionName: "mdbrain_bench_events",
 			datasetPath,
 			datasetKind: "longmemeval",
 			mongoEmbeddingConfig: {
@@ -796,7 +796,7 @@ describe("mongodb benchmark runner", () => {
 			db: mockDb as unknown as Parameters<
 				typeof projectBenchmarkParityFields
 			>[0]["db"],
-			collectionName: "mdbrian_bench_session_chunks",
+			collectionName: "mdbrain_bench_session_chunks",
 			datasetSha256Override: "a".repeat(64),
 			datasetKind: "longmemeval",
 			retrievalLane: "raw-session",
@@ -826,7 +826,7 @@ describe("mongodb benchmark runner", () => {
 		const { writeFileSync, mkdtempSync } = await import("node:fs")
 		const { tmpdir } = await import("node:os")
 		const path = await import("node:path")
-		const dir = mkdtempSync(path.join(tmpdir(), "mdbrian-parity-proj-"))
+		const dir = mkdtempSync(path.join(tmpdir(), "mdbrain-parity-proj-"))
 		const datasetPath = path.join(dir, "canary.jsonl")
 		writeFileSync(datasetPath, "x")
 
@@ -840,7 +840,7 @@ describe("mongodb benchmark runner", () => {
 			db: throwingDb as unknown as Parameters<
 				typeof projectBenchmarkParityFields
 			>[0]["db"],
-			collectionName: "mdbrian_bench_events",
+			collectionName: "mdbrain_bench_events",
 			datasetPath,
 			datasetKind: "longmemeval",
 			mongoEmbeddingConfig: {

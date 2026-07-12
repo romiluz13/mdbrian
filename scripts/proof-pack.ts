@@ -1,4 +1,4 @@
-import { MdbrianClient } from "@mdbrian/client"
+import { MdbrainClient } from "@mdbrain/client"
 import proofPackBaseline from "./proof-pack-baseline.js"
 import { writeProofArtifact } from "./proof-artifacts.js"
 
@@ -20,7 +20,7 @@ const sessionScope =
 	process.env.MDBRAIN_CONTAINER_TAG ??
 	`proof-session-${new Date().toISOString().replace(/[:.]/g, "-")}`
 
-const client = new MdbrianClient({
+const client = new MdbrainClient({
 	baseUrl,
 	apiKey,
 })

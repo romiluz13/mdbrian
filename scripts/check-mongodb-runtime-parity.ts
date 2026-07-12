@@ -5,7 +5,7 @@ import {
 	isSearchIndexQueryable,
 	type SearchIndexDescription,
 } from "../packages/memory-engine/src/mongodb-schema.ts"
-import type { MemoryMongoDBDeploymentProfile } from "@mdbrian/lib"
+import type { MemoryMongoDBDeploymentProfile } from "@mdbrain/lib"
 
 type RuntimeInput = {
 	name: string
@@ -147,11 +147,11 @@ async function listSearchIndexes(
 }
 
 async function inspectRuntime(input: RuntimeInput): Promise<RuntimeReport> {
-	const database = process.env.MDBRAIN_PARITY_DATABASE?.trim() || "mdbrian"
+	const database = process.env.MDBRAIN_PARITY_DATABASE?.trim() || "mdbrain"
 	const prefix =
-		process.env.MDBRAIN_PARITY_COLLECTION_PREFIX?.trim() || "mdbrian_default_"
+		process.env.MDBRAIN_PARITY_COLLECTION_PREFIX?.trim() || "mdbrain_default_"
 	const client = new MongoClient(input.uri, {
-		appName: "mdbrian-runtime-parity-check",
+		appName: "mdbrain-runtime-parity-check",
 		serverSelectionTimeoutMS: 10_000,
 	})
 	try {

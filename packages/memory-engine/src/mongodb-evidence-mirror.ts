@@ -1,6 +1,6 @@
 import { createHash } from "node:crypto"
 import type { Collection, Document } from "mongodb"
-import type { MemoryScope } from "@mdbrian/lib"
+import type { MemoryScope } from "@mdbrain/lib"
 import { truncateAtSentenceBoundary } from "./mongodb-session-evidence.js"
 import type { MemoryBenchmarkConversation } from "./types.js"
 

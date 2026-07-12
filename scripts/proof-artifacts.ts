@@ -7,7 +7,7 @@ const LOCAL_WORKFLOW_ARTIFACT_SEGMENTS = [
 	"cc10x",
 	"v10",
 	"workflows",
-	"mdbrian-memory-hardening",
+	"mdbrain-memory-hardening",
 	"artifacts",
 ] as const
 

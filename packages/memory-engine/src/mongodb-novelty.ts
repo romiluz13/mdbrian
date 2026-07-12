@@ -21,7 +21,7 @@
  */
 
 import type { Db, Document } from "mongodb"
-import { createSubsystemLogger } from "@mdbrian/lib"
+import { createSubsystemLogger } from "@mdbrain/lib"
 import type { NoveltyEvent, NoveltyOptions, NoveltyReport } from "./types.js"
 
 export type { NoveltyEvent, NoveltyReport, NoveltyOptions }

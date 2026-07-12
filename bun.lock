@@ -12,12 +12,12 @@
       },
     },
     "apps/api": {
-      "name": "@mdbrian/api",
+      "name": "@mdbrain/api",
       "version": "0.1.0",
       "dependencies": {
         "@hono/node-server": "^1.19.0",
-        "@mdbrian/memory-bridge": "workspace:*",
-        "@mdbrian/wiki-engine": "workspace:*",
+        "@mdbrain/memory-bridge": "workspace:*",
+        "@mdbrain/wiki-engine": "workspace:*",
         "hono": "^4.12.0",
         "tsx": "^4.19.0",
       },
@@ -28,16 +28,16 @@
       },
     },
     "apps/docs": {
-      "name": "@mdbrian/docs",
+      "name": "@mdbrain/docs",
       "devDependencies": {
         "mintlify": "^4.2.112",
       },
     },
     "apps/mcp": {
-      "name": "@mdbrian/mcp",
+      "name": "@mdbrain/mcp",
       "version": "0.1.0",
       "dependencies": {
-        "@mdbrian/client": "workspace:*",
+        "@mdbrain/client": "workspace:*",
         "@modelcontextprotocol/sdk": "^1.25.0",
         "tsx": "^4.19.0",
       },
@@ -47,10 +47,10 @@
       },
     },
     "apps/web": {
-      "name": "@mdbrian/web",
+      "name": "@mdbrain/web",
       "version": "0.1.0",
       "dependencies": {
-        "@mdbrian/client": "workspace:*",
+        "@mdbrain/client": "workspace:*",
         "gsap": "3.15.0",
         "next": "^15.1.0",
         "react": "^19.0.0",
@@ -65,49 +65,49 @@
       },
     },
     "packages/client": {
-      "name": "@mdbrian/client",
+      "name": "@mdbrain/client",
       "version": "1.1.0",
       "devDependencies": {
         "typescript": "^5.8.0",
       },
     },
     "packages/lib": {
-      "name": "@mdbrian/lib",
+      "name": "@mdbrain/lib",
       "version": "1.1.0",
       "devDependencies": {
         "typescript": "^5.8.0",
       },
     },
-    "packages/mdbrian-memory": {
-      "name": "@mdbrian/memory",
+    "packages/mdbrain-memory": {
+      "name": "@mdbrain/memory",
       "version": "1.1.0",
       "dependencies": {
-        "@mdbrian/memory-bridge": "1.1.0",
-        "@mdbrian/memory-engine": "1.1.0",
+        "@mdbrain/memory-bridge": "1.1.0",
+        "@mdbrain/memory-engine": "1.1.0",
       },
       "devDependencies": {
         "typescript": "^5.8.0",
       },
     },
     "packages/memory-bridge": {
-      "name": "@mdbrian/memory-bridge",
+      "name": "@mdbrain/memory-bridge",
       "version": "1.1.0",
       "dependencies": {
-        "@mdbrian/lib": "1.1.0",
-        "@mdbrian/memory-engine": "1.1.0",
-        "@mdbrian/wiki-engine": "workspace:*",
+        "@mdbrain/lib": "1.1.0",
+        "@mdbrain/memory-engine": "1.1.0",
+        "@mdbrain/wiki-engine": "workspace:*",
       },
       "devDependencies": {
-        "@mdbrian/tools": "workspace:*",
+        "@mdbrain/tools": "workspace:*",
         "typescript": "^5.8.0",
         "vitest": "^4.1.0",
       },
     },
     "packages/memory-engine": {
-      "name": "@mdbrian/memory-engine",
+      "name": "@mdbrain/memory-engine",
       "version": "1.1.0",
       "dependencies": {
-        "@mdbrian/lib": "1.1.0",
+        "@mdbrain/lib": "1.1.0",
         "chokidar": "^4.0.3",
         "mongodb": "7.2.0",
       },
@@ -121,10 +121,10 @@
       },
     },
     "packages/tools": {
-      "name": "@mdbrian/tools",
+      "name": "@mdbrain/tools",
       "version": "1.1.0",
       "dependencies": {
-        "@mdbrian/client": "1.1.0",
+        "@mdbrain/client": "1.1.0",
         "zod": "^3.25.0",
       },
       "devDependencies": {
@@ -137,11 +137,11 @@
       },
     },
     "packages/wiki-engine": {
-      "name": "@mdbrian/wiki-engine",
+      "name": "@mdbrain/wiki-engine",
       "version": "0.1.0",
       "dependencies": {
-        "@mdbrian/lib": "workspace:*",
-        "@mdbrian/memory-engine": "workspace:*",
+        "@mdbrain/lib": "workspace:*",
+        "@mdbrain/memory-engine": "workspace:*",
         "js-yaml": "^4.1.0",
       },
       "devDependencies": {
@@ -500,27 +500,27 @@
 
     "@leichtgewicht/ip-codec": ["@leichtgewicht/ip-codec@2.0.5", "", {}, "sha512-Vo+PSpZG2/fmgmiNzYK9qWRh8h/CHrwD0mo1h1DzL4yzHNSfWYujGTYsWGreD000gcgmZ7K4Ys6Tx9TxtsKdDw=="],
 
-    "@mdbrian/api": ["@mdbrian/api@workspace:apps/api"],
+    "@mdbrain/api": ["@mdbrain/api@workspace:apps/api"],
 
-    "@mdbrian/client": ["@mdbrian/client@workspace:packages/client"],
+    "@mdbrain/client": ["@mdbrain/client@workspace:packages/client"],
 
-    "@mdbrian/docs": ["@mdbrian/docs@workspace:apps/docs"],
+    "@mdbrain/docs": ["@mdbrain/docs@workspace:apps/docs"],
 
-    "@mdbrian/lib": ["@mdbrian/lib@workspace:packages/lib"],
+    "@mdbrain/lib": ["@mdbrain/lib@workspace:packages/lib"],
 
-    "@mdbrian/mcp": ["@mdbrian/mcp@workspace:apps/mcp"],
+    "@mdbrain/mcp": ["@mdbrain/mcp@workspace:apps/mcp"],
 
-    "@mdbrian/memory": ["@mdbrian/memory@workspace:packages/mdbrian-memory"],
+    "@mdbrain/memory": ["@mdbrain/memory@workspace:packages/mdbrain-memory"],
 
-    "@mdbrian/memory-bridge": ["@mdbrian/memory-bridge@workspace:packages/memory-bridge"],
+    "@mdbrain/memory-bridge": ["@mdbrain/memory-bridge@workspace:packages/memory-bridge"],
 
-    "@mdbrian/memory-engine": ["@mdbrian/memory-engine@workspace:packages/memory-engine"],
+    "@mdbrain/memory-engine": ["@mdbrain/memory-engine@workspace:packages/memory-engine"],
 
-    "@mdbrian/tools": ["@mdbrian/tools@workspace:packages/tools"],
+    "@mdbrain/tools": ["@mdbrain/tools@workspace:packages/tools"],
 
-    "@mdbrian/web": ["@mdbrian/web@workspace:apps/web"],
+    "@mdbrain/web": ["@mdbrain/web@workspace:apps/web"],
 
-    "@mdbrian/wiki-engine": ["@mdbrian/wiki-engine@workspace:packages/wiki-engine"],
+    "@mdbrain/wiki-engine": ["@mdbrain/wiki-engine@workspace:packages/wiki-engine"],
 
     "@mdx-js/mdx": ["@mdx-js/mdx@3.1.1", "", { "dependencies": { "@types/estree": "^1.0.0", "@types/estree-jsx": "^1.0.0", "@types/hast": "^3.0.0", "@types/mdx": "^2.0.0", "acorn": "^8.0.0", "collapse-white-space": "^2.0.0", "devlop": "^1.0.0", "estree-util-is-identifier-name": "^3.0.0", "estree-util-scope": "^1.0.0", "estree-walker": "^3.0.0", "hast-util-to-jsx-runtime": "^2.0.0", "markdown-extensions": "^2.0.0", "recma-build-jsx": "^1.0.0", "recma-jsx": "^1.0.0", "recma-stringify": "^1.0.0", "rehype-recma": "^1.0.0", "remark-mdx": "^3.0.0", "remark-parse": "^11.0.0", "remark-rehype": "^11.0.0", "source-map": "^0.7.0", "unified": "^11.0.0", "unist-util-position-from-estree": "^2.0.0", "unist-util-stringify-position": "^4.0.0", "unist-util-visit": "^5.0.0", "vfile": "^6.0.0" } }, "sha512-f6ZO2ifpwAQIpzGWaBQT2TXxPv6z3RBzQKpVftEWN78Vl/YweF1uwussDx8ECAXVtr3Rs89fKyG9YlzUs9DyGQ=="],
 

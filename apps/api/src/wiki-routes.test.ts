@@ -1,6 +1,6 @@
 // Wiki routes (/v1/wiki/*) integration tests.
 //
-// Mocks the @mdbrian/wiki-engine + @mdbrian/memory-bridge modules so the
+// Mocks the @mdbrain/wiki-engine + @mdbrain/memory-bridge modules so the
 // HTTP contract is tested in isolation (same pattern as app.test.ts mocks
 // the memory-bridge). The route handlers are thin: validation → bridge →
 // response shaping. The bridge logic itself is covered by wiki-bridge tests.
@@ -26,10 +26,10 @@ const wikiMocks = vi.hoisted(() => ({
 }))
 
 const bridgeMocks = vi.hoisted(() => ({
-	mdbrianBridgeGetManager: vi.fn(),
+	mdbrainBridgeGetManager: vi.fn(),
 }))
 
-vi.mock("@mdbrian/wiki-engine", () => ({
+vi.mock("@mdbrain/wiki-engine", () => ({
 	...wikiMocks,
 	WikiDuplicateSlugError: class WikiDuplicateSlugError extends Error {
 		constructor(
@@ -45,12 +45,12 @@ vi.mock("@mdbrian/wiki-engine", () => ({
 	},
 }))
 
-vi.mock("@mdbrian/memory-bridge", () => ({
+vi.mock("@mdbrain/memory-bridge", () => ({
 	...bridgeMocks,
 }))
 
 import { createApp } from "./app.js"
-import { WikiDuplicateSlugError } from "@mdbrian/wiki-engine"
+import { WikiDuplicateSlugError } from "@mdbrain/wiki-engine"
 
 type WikiJson = {
 	slug?: string
@@ -111,8 +111,8 @@ describe("wiki routes", () => {
 		for (const k of Object.keys(wikiMocks)) {
 			;(wikiMocks as Record<string, ReturnType<typeof vi.fn>>)[k].mockReset()
 		}
-		bridgeMocks.mdbrianBridgeGetManager.mockReset()
-		bridgeMocks.mdbrianBridgeGetManager.mockResolvedValue({
+		bridgeMocks.mdbrainBridgeGetManager.mockReset()
+		bridgeMocks.mdbrainBridgeGetManager.mockResolvedValue({
 			db: {},
 			prefix: "test_",
 		})

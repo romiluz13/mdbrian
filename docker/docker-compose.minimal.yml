@@ -7,7 +7,7 @@ services:
     ports:
       - "27017:27017"
     volumes:
-      - mdbrian_mongo_data:/data/db
+      - mdbrain_mongo_data:/data/db
 
 volumes:
-  mdbrian_mongo_data: {}
+  mdbrain_mongo_data: {}

@@ -40,7 +40,7 @@ function mockDb(collectionMap: Record<string, Collection> = {}): Db {
 // Module-level mocks for dependencies
 // ---------------------------------------------------------------------------
 
-vi.mock("@mdbrian/lib", () => ({
+vi.mock("@mdbrain/lib", () => ({
 	createSubsystemLogger: () => ({
 		info: vi.fn(),
 		warn: vi.fn(),
@@ -263,7 +263,7 @@ describe("consolidateMemory", () => {
 								timestamp: new Date(),
 								role: "user",
 								scope: "workspace",
-								scopeRef: "workspace:mdbrian",
+								scopeRef: "workspace:mdbrain",
 							},
 						]),
 					})),
@@ -298,13 +298,13 @@ describe("consolidateMemory", () => {
 		expect(pipeline[0]?.$vectorSearch?.filter).toEqual({
 			agentId: "agent-1",
 			scope: "workspace",
-			scopeRef: "workspace:mdbrian",
+			scopeRef: "workspace:mdbrain",
 		})
 		expect(writeStructuredMemory).toHaveBeenCalledWith(
 			expect.objectContaining({
 				entry: expect.objectContaining({
 					scope: "workspace",
-					scopeRef: "workspace:mdbrian",
+					scopeRef: "workspace:mdbrain",
 				}),
 			}),
 		)
@@ -330,7 +330,7 @@ describe("consolidateMemory", () => {
 								timestamp: new Date(),
 								role: "user",
 								scope: "workspace",
-								scopeRef: "workspace:mdbrian",
+								scopeRef: "workspace:mdbrain",
 							},
 						]),
 					})),

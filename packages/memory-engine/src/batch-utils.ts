@@ -1,4 +1,4 @@
-import type { SsrFPolicy } from "@mdbrian/lib"
+import type { SsrFPolicy } from "@mdbrain/lib"
 
 export type BatchHttpClientConfig = {
 	baseUrl?: string

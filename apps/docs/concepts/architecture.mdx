@@ -1,10 +1,10 @@
 ---
 title: Architecture
-description: Mdbrian's package structure, data flow, and deployment topology.
+description: Mdbrain's package structure, data flow, and deployment topology.
 icon: "sitemap"
 ---
 
-Mdbrian is a Turborepo monorepo built around a small supported core. The
+Mdbrain is a Turborepo monorepo built around a small supported core. The
 Company Brain framework runtime is `apps/api` -> `packages/memory-bridge` ->
 `packages/memory-engine`.
 
@@ -12,12 +12,12 @@ Company Brain framework runtime is `apps/api` -> `packages/memory-bridge` ->
 
 | Package | Role |
 |---------|------|
-| `@mdbrian/memory-engine` | Core MongoDB memory: embeddings, graph, episodes, search, KB, analytics |
-| `@mdbrian/memory-bridge` | Stable facade for the engine -- config resolution, bridge API |
-| `@mdbrian/memory` | Published re-export of the engine + bridge |
-| `@mdbrian/client` | TypeScript HTTP client SDK |
-| `@mdbrian/tools` | AI SDK tool helpers (Vercel AI SDK compatible) |
-| `@mdbrian/lib` | Shared types and utilities (internal) |
+| `@mdbrain/memory-engine` | Core MongoDB memory: embeddings, graph, episodes, search, KB, analytics |
+| `@mdbrain/memory-bridge` | Stable facade for the engine -- config resolution, bridge API |
+| `@mdbrain/memory` | Published re-export of the engine + bridge |
+| `@mdbrain/client` | TypeScript HTTP client SDK |
+| `@mdbrain/tools` | AI SDK tool helpers (Vercel AI SDK compatible) |
+| `@mdbrain/lib` | Shared types and utilities (internal) |
 
 ## Framework surfaces
 
@@ -29,7 +29,7 @@ Company Brain framework runtime is `apps/api` -> `packages/memory-bridge` ->
 | MCP server | Agent and IDE client integration |
 | Web console | Operator review and inspection |
 
-The `@mdbrian/tools` middleware helpers can write conversation events
+The `@mdbrain/tools` middleware helpers can write conversation events
 automatically after model calls. Use explicit function tools or the TypeScript
 client when an app needs strict read-first behavior.
 
@@ -46,7 +46,7 @@ client when an app needs strict read-first behavior.
 
 | Status | Surfaces |
 |--------|----------|
-| Supported public | `apps/api`, `apps/mcp`, `apps/web`, `apps/docs`, `packages/memory-engine`, `packages/memory-bridge`, `packages/mdbrian-memory`, `packages/client`, `packages/tools` |
+| Supported public | `apps/api`, `apps/mcp`, `apps/web`, `apps/docs`, `packages/memory-engine`, `packages/memory-bridge`, `packages/mdbrain-memory`, `packages/client`, `packages/tools` |
 | Runtime support | `packages/lib`, `docker/mongodb`, repo-owned validation scripts |
 | Not shipped | Historical research, diagnostic runs, raw artifacts, and planning notes |
 

@@ -1,4 +1,4 @@
-import { createSubsystemLogger } from "@mdbrian/lib"
+import { createSubsystemLogger } from "@mdbrain/lib"
 import type { EpisodeSummarizer } from "./mongodb-episodes.js"
 
 const log = createSubsystemLogger("memory:mongodb:tiered-summary")

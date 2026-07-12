@@ -1,4 +1,4 @@
-import type { MemoryScope } from "@mdbrian/lib"
+import type { MemoryScope } from "@mdbrain/lib"
 import type {
 	MemoryResultTrust,
 	MemorySearchClassification,

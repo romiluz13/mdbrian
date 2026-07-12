@@ -2,7 +2,7 @@
  * MongoDB E2E tests — requires a running MongoDB 8.2+ instance.
  *
  * Run manually:
- *   MONGODB_TEST_URI="mongodb://admin:admin@localhost:27017/mdbrian?authSource=admin&replicaSet=rs0&directConnection=true" \
+ *   MONGODB_TEST_URI="mongodb://admin:admin@localhost:27017/mdbrain?authSource=admin&replicaSet=rs0&directConnection=true" \
  *     pnpm vitest run --config vitest.e2e.config.ts src/memory/mongodb-e2e.e2e.test.ts --reporter=verbose
  *
  * These tests exercise the real MongoDB driver and server operations.
@@ -60,9 +60,9 @@ import { resolvePreviewMongoTestUri } from "./test-helpers/preview-env.js"
 // ---------------------------------------------------------------------------
 
 const TEST_URI = resolvePreviewMongoTestUri(
-	"mongodb://admin:admin@localhost:27017/mdbrian?authSource=admin&replicaSet=rs0&directConnection=true",
+	"mongodb://admin:admin@localhost:27017/mdbrain?authSource=admin&replicaSet=rs0&directConnection=true",
 )
-const TEST_DB = "mdbrian_e2e_test"
+const TEST_DB = "mdbrain_e2e_test"
 const TEST_PREFIX = "e2e_"
 const EXPECTED_COLLECTION_SUFFIXES = [
 	"chunks",
@@ -131,7 +131,7 @@ beforeEach(async () => {
 // ---------------------------------------------------------------------------
 
 async function setupWorkspace(files: Record<string, string>): Promise<string> {
-	tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), "mdbrian-e2e-"))
+	tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), "mdbrain-e2e-"))
 	const memDir = path.join(tmpDir, "memory")
 	await fs.mkdir(memDir, { recursive: true })
 	for (const [name, content] of Object.entries(files)) {
@@ -770,7 +770,7 @@ describe("E2E: Chunk IDs and Deduplication", () => {
 		await chunksCollection(db, TEST_PREFIX).deleteMany({})
 		await filesCollection(db, TEST_PREFIX).deleteMany({})
 
-		dedupWorkspace = await fs.mkdtemp(path.join(os.tmpdir(), "mdbrian-dedup-"))
+		dedupWorkspace = await fs.mkdtemp(path.join(os.tmpdir(), "mdbrain-dedup-"))
 		const memDir = path.join(dedupWorkspace, "memory")
 		await fs.mkdir(memDir, { recursive: true })
 		await fs.writeFile(
@@ -1252,7 +1252,7 @@ describe("E2E v2: event -> chunk projection", () => {
 			event: {
 				agentId,
 				role: "user",
-				body: "Mdbrian uses MongoDB for canonical event storage and chunk projection",
+				body: "Mdbrain uses MongoDB for canonical event storage and chunk projection",
 				scope: "agent",
 			},
 		})
@@ -1273,7 +1273,7 @@ describe("E2E v2: event -> chunk projection", () => {
 		})
 		expect(chunk).not.toBeNull()
 		expect(chunk!.source).toBe("conversation")
-		expect(chunk!.text).toContain("Mdbrian")
+		expect(chunk!.text).toContain("Mdbrain")
 
 		// 4. Verify $text search finds the chunk
 		const textResults = await chunksCollection(db, TEST_PREFIX)
@@ -1431,13 +1431,13 @@ describe("E2E v2: graph expansion", () => {
 		})
 		expect(romResult.upserted).toBe(true)
 
-		// 2. upsertEntity("Mdbrian", project)
+		// 2. upsertEntity("Mdbrain", project)
 		const projectResult = await upsertEntity({
 			db,
 			prefix: TEST_PREFIX,
 			entity: {
 				entityId: projectEntityId,
-				name: "Mdbrian",
+				name: "Mdbrain",
 				type: "project",
 				agentId,
 				scope: "agent",
@@ -1446,7 +1446,7 @@ describe("E2E v2: graph expansion", () => {
 		})
 		expect(projectResult.upserted).toBe(true)
 
-		// 3. upsertRelation(Rom -> works_on -> Mdbrian)
+		// 3. upsertRelation(Rom -> works_on -> Mdbrain)
 		const relResult = await upsertRelation({
 			db,
 			prefix: TEST_PREFIX,
@@ -1461,7 +1461,7 @@ describe("E2E v2: graph expansion", () => {
 		})
 		expect(relResult.upserted).toBe(true)
 
-		// 4. expandGraph from Rom entityId -> finds Mdbrian
+		// 4. expandGraph from Rom entityId -> finds Mdbrain
 		const expansion = await expandGraph({
 			db,
 			prefix: TEST_PREFIX,
@@ -1473,7 +1473,7 @@ describe("E2E v2: graph expansion", () => {
 		expect(expansion).not.toBeNull()
 		expect(expansion!.rootEntity.name).toBe("Rom")
 		expect(expansion!.connections.length).toBe(1)
-		expect(expansion!.connections[0].entity.name).toBe("Mdbrian")
+		expect(expansion!.connections[0].entity.name).toBe("Mdbrain")
 		expect(expansion!.connections[0].relation.type).toBe("works_on")
 		expect(expansion!.connections[0].depth).toBe(0)
 	})
@@ -1608,7 +1608,7 @@ describe("E2E v2: episode materialization", () => {
 				event: {
 					agentId,
 					role: i % 2 === 0 ? "user" : "assistant",
-					body: `Message number ${i + 1} about Mdbrian memory architecture`,
+					body: `Message number ${i + 1} about Mdbrain memory architecture`,
 					scope: "agent",
 					timestamp: new Date(
 						`2026-03-15T${String(8 + i).padStart(2, "0")}:00:00Z`,
@@ -1631,29 +1631,29 @@ describe("E2E v2: episode materialization", () => {
 			type: "daily",
 			timeRange: { start: dayStart, end: dayEnd },
 			summarizer: async (events) => ({
-				title: "Daily Mdbrian Discussion",
-				summary: `Discussion about Mdbrian memory architecture with ${events.length} messages`,
-				tags: ["mdbrian", "memory"],
+				title: "Daily Mdbrain Discussion",
+				summary: `Discussion about Mdbrain memory architecture with ${events.length} messages`,
+				tags: ["mdbrain", "memory"],
 			}),
 		})
 
 		// 3. Verify episode created with correct sourceEventCount
 		expect(episode).not.toBeNull()
 		expect(episode!.sourceEventCount).toBe(5)
-		expect(episode!.title).toBe("Daily Mdbrian Discussion")
+		expect(episode!.title).toBe("Daily Mdbrain Discussion")
 		expect(episode!.type).toBe("daily")
-		expect(episode!.tags).toEqual(["mdbrian", "memory"])
+		expect(episode!.tags).toEqual(["mdbrain", "memory"])
 
 		// 4. searchEpisodes finds the episode
 		const searchResults = await searchEpisodes({
 			db,
 			prefix: TEST_PREFIX,
-			query: "Mdbrian",
+			query: "Mdbrain",
 			agentId,
 		})
 
 		expect(searchResults.length).toBe(1)
-		expect(searchResults[0].title).toBe("Daily Mdbrian Discussion")
+		expect(searchResults[0].title).toBe("Daily Mdbrain Discussion")
 	})
 })
 
@@ -1678,7 +1678,7 @@ describe("E2E v2: migration backfill", () => {
 					import("mongodb").Document
 				>,
 				path: "memory/notes.md",
-				text: "Project notes about Mdbrian v1 architecture",
+				text: "Project notes about Mdbrain v1 architecture",
 				hash: "abc123hash",
 				source: "conversation",
 				startLine: 1,
@@ -1720,7 +1720,7 @@ describe("E2E v2: migration backfill", () => {
 			.sort({ timestamp: 1 })
 			.toArray()
 		expect(events.length).toBe(2)
-		expect(events[0].body).toBe("Project notes about Mdbrian v1 architecture")
+		expect(events[0].body).toBe("Project notes about Mdbrain v1 architecture")
 		expect(events[1].body).toBe("Decision to use MongoDB-only backend")
 
 		// 4. Run backfill again -> verify idempotent (no duplicates)

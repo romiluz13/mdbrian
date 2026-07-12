@@ -1,4 +1,4 @@
-// @mdbrian/wiki-engine — migration from memongo's legacy collections to
+// @mdbrain/wiki-engine — migration from memongo's legacy collections to
 // wiki_pages.
 //
 // Reads `structured_mem` records and compiles them into claims on the relevant

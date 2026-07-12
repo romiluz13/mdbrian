@@ -1,6 +1,6 @@
 # Maintainer Map
 
-This is the shortest path to understanding what Mdbrian is, what is supported, and what must be green before a release.
+This is the shortest path to understanding what Mdbrain is, what is supported, and what must be green before a release.
 
 ## Start here
 

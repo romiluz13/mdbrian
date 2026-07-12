@@ -1,23 +1,23 @@
-# @mdbrian/memory-engine
+# @mdbrain/memory-engine
 
-MongoDB-native memory engine for Mdbrian. Use this package when you need direct access to search, graph, episodes, structured memory, procedures, sync, telemetry, reasoning chains, novelty detection, access tracking, memory consolidation, and retrieval internals.
+MongoDB-native memory engine for Mdbrain. Use this package when you need direct access to search, graph, episodes, structured memory, procedures, sync, telemetry, reasoning chains, novelty detection, access tracking, memory consolidation, and retrieval internals.
 
 ## Install
 
 ```bash
-npm install @mdbrian/memory-engine
+npm install @mdbrain/memory-engine
 ```
 
 ## When to use this package
 
-- You are building server-side infrastructure around Mdbrian.
+- You are building server-side infrastructure around Mdbrain.
 - You need direct engine access instead of the HTTP API.
 - You want the lowest-level supported memory primitives in this repo.
 
 ## Example
 
 ```ts
-import { getMemorySearchManager } from "@mdbrian/memory-engine"
+import { getMemorySearchManager } from "@mdbrain/memory-engine"
 
 const { manager } = await getMemorySearchManager({
 	cfg,
@@ -25,7 +25,7 @@ const { manager } = await getMemorySearchManager({
 })
 
 if (!manager) {
-	throw new Error("Mdbrian memory unavailable")
+	throw new Error("Mdbrain memory unavailable")
 }
 
 const results = await manager.search("release notes")
@@ -40,4 +40,4 @@ const results = await manager.search("release notes")
 - `mongodb-consolidator.ts` -- offline consolidation agent (Dreamer) with rule-based pattern matching
 - KB schema fields: `wikiSource`, `vault`, `section` for wiki source categorization
 
-Most apps should use [`@mdbrian/memory-bridge`](../memory-bridge/README.md) or [`@mdbrian/client`](../client/README.md) instead of calling the engine directly.
+Most apps should use [`@mdbrain/memory-bridge`](../memory-bridge/README.md) or [`@mdbrain/client`](../client/README.md) instead of calling the engine directly.

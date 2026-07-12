@@ -1,11 +1,11 @@
-# @mdbrian/client
+# @mdbrain/client
 
-TypeScript HTTP client for the Mdbrian API. Use this package when you want to call the supported public API from an app, job, or integration.
+TypeScript HTTP client for the Mdbrain API. Use this package when you want to call the supported public API from an app, job, or integration.
 
 ## Install
 
 ```bash
-npm install @mdbrian/client
+npm install @mdbrain/client
 ```
 
 ## When to use this package
@@ -17,9 +17,9 @@ npm install @mdbrian/client
 ## Example
 
 ```ts
-import { MdbrianClient } from "@mdbrian/client"
+import { MdbrainClient } from "@mdbrain/client"
 
-const client = new MdbrianClient({
+const client = new MdbrainClient({
 	baseUrl: "http://127.0.0.1:3847",
 })
 
@@ -40,4 +40,4 @@ const results = await client.search({
 - `client.scanNovelty()` -- surprisal novelty detection (`POST /v1/novelty-scan`)
 - `client.consolidate()` -- trigger consolidation agent (`POST /v1/consolidate`)
 
-If you need server-side helpers or direct engine access, use [`@mdbrian/memory-bridge`](../memory-bridge/README.md) or [`@mdbrian/memory-engine`](../memory-engine/README.md).
+If you need server-side helpers or direct engine access, use [`@mdbrain/memory-bridge`](../memory-bridge/README.md) or [`@mdbrain/memory-engine`](../memory-engine/README.md).

@@ -1,6 +1,6 @@
 "use client"
 
-import { MdbrianClient } from "@mdbrian/client"
+import { MdbrainClient } from "@mdbrain/client"
 import type { ReactNode } from "react"
 import { useMemo, useState } from "react"
 
@@ -176,7 +176,7 @@ export default function Home() {
 	const [loading, setLoading] = useState(false)
 	const [output, setOutput] = useState<OutputState>({
 		title: "Console output",
-		body: "Run an action to inspect live Mdbrian responses.",
+		body: "Run an action to inspect live Mdbrain responses.",
 		state: "idle",
 	})
 	const [overview, setOverview] = useState<OverviewState>({})
@@ -184,7 +184,7 @@ export default function Home() {
 	const root = useMemo(() => baseUrl.replace(/\/$/, ""), [baseUrl])
 	const client = useMemo(
 		() =>
-			new MdbrianClient({
+			new MdbrainClient({
 				baseUrl: root,
 				apiKey: apiKey.trim() || undefined,
 			}),
@@ -360,7 +360,7 @@ export default function Home() {
 							MongoDB-native memory
 						</div>
 						<h1 style={{ margin: 0, fontSize: 34, letterSpacing: 0 }}>
-							Mdbrian Console
+							Mdbrain Console
 						</h1>
 						<p
 							style={{
@@ -371,7 +371,7 @@ export default function Home() {
 								lineHeight: 1.5,
 							}}
 						>
-							Operate the supported Mdbrian API surface: inspect health, search
+							Operate the supported Mdbrain API surface: inspect health, search
 							memory, query the knowledge base, synthesize profiles, and write a
 							test event.
 						</p>

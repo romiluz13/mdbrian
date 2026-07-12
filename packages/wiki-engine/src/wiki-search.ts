@@ -1,4 +1,4 @@
-// @mdbrian/wiki-engine — hybrid search over wiki_pages.
+// @mdbrain/wiki-engine — hybrid search over wiki_pages.
 //
 // $vectorSearch (HNSW on embedding) + Atlas Search (full-text on
 // title+summary+body+aliases+frontmatter.tags) + $rankFusion (RRF) merged,

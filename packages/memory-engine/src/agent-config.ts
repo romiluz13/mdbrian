@@ -1,4 +1,4 @@
-import { type MdbrianConfig, resolveUserPath } from "@mdbrian/lib"
+import { type MdbrainConfig, resolveUserPath } from "@mdbrain/lib"
 
 const SAFE_AGENT_PATH_SEGMENT = /^[A-Za-z0-9._-]+$/
 
@@ -21,14 +21,14 @@ function isAgentConfigShape(value: unknown): value is AgentConfigShape {
 	return typeof value === "object" && value !== null
 }
 
-function getAgents(cfg: MdbrianConfig): AgentsShape | undefined {
+function getAgents(cfg: MdbrainConfig): AgentsShape | undefined {
 	return typeof cfg.agents === "object" && cfg.agents !== null
 		? (cfg.agents as AgentsShape)
 		: undefined
 }
 
 export function resolveAgentConfig(
-	cfg: MdbrianConfig,
+	cfg: MdbrainConfig,
 	agentId: string,
 ): AgentConfigShape | undefined {
 	const agents = getAgents(cfg)
@@ -48,7 +48,7 @@ export function resolveAgentConfig(
 }
 
 export function resolveAgentWorkspaceDir(
-	cfg: MdbrianConfig,
+	cfg: MdbrainConfig,
 	agentId: string,
 ): string {
 	const agentConfig = resolveAgentConfig(cfg, agentId)
@@ -57,7 +57,7 @@ export function resolveAgentWorkspaceDir(
 		agentConfig?.workspace?.trim() || defaults?.workspace?.trim()
 	return workspace
 		? resolveUserPath(workspace)
-		: resolveUserPath(`~/.mdbrian/agents/${agentIdPathSegment(agentId)}`)
+		: resolveUserPath(`~/.mdbrain/agents/${agentIdPathSegment(agentId)}`)
 }
 
 function agentIdPathSegment(agentId: string): string {
@@ -73,7 +73,7 @@ function agentIdPathSegment(agentId: string): string {
 }
 
 export function resolveAgentMemorySearchExtraPaths(
-	cfg: MdbrianConfig,
+	cfg: MdbrainConfig,
 	agentId: string,
 ): string[] | undefined {
 	const agentConfig = resolveAgentConfig(cfg, agentId)

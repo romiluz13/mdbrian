@@ -1,4 +1,4 @@
-// @mdbrian/wiki-engine — wiki page rendering (markdown + HTML).
+// @mdbrain/wiki-engine — wiki page rendering (markdown + HTML).
 //
 // Markdown render: agent-readable, dense, OKF-export-friendly structure.
 // HTML render: human-browsable, minimal styling (no framework dependency).
@@ -109,7 +109,7 @@ export function renderWikiPageHtml(view: WikiPageView): string {
 	const bodyHtml = markdownToHtml(esc(view.body))
 	const parts: string[] = []
 	parts.push(
-		`<article class="mdbrian-wiki-page" data-slug="${esc(view.slug)}" data-kind="${esc(view.kind)}">`,
+		`<article class="mdbrain-wiki-page" data-slug="${esc(view.slug)}" data-kind="${esc(view.kind)}">`,
 	)
 	parts.push(`<h1>${esc(view.title)}</h1>`)
 	if (view.aliases.length > 0) {

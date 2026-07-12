@@ -15,9 +15,9 @@ const loggerMocks = vi.hoisted(() => ({
 	debug: vi.fn(),
 }))
 
-vi.mock("@mdbrian/lib", async () => {
+vi.mock("@mdbrain/lib", async () => {
 	const actual =
-		await vi.importActual<typeof import("@mdbrian/lib")>("@mdbrian/lib")
+		await vi.importActual<typeof import("@mdbrain/lib")>("@mdbrain/lib")
 	return {
 		...actual,
 		createSubsystemLogger: () => loggerMocks,

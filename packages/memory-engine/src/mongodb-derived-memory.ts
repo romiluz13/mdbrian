@@ -4,7 +4,7 @@ import {
 	type MemoryMongoDBEmbeddingMode,
 	type MemoryScope,
 	createSubsystemLogger,
-} from "@mdbrian/lib"
+} from "@mdbrain/lib"
 import { recordProjectionRun } from "./mongodb-ops.js"
 import { isDerivableFromContext } from "./mongodb-consolidator.js"
 import { type ProcedureEntry, writeProcedure } from "./mongodb-procedures.js"

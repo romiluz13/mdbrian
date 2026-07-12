@@ -1,5 +1,5 @@
 import { randomUUID } from "node:crypto"
-import { MdbrianClient } from "@mdbrian/client"
+import { MdbrainClient } from "@mdbrain/client"
 import { writeProofArtifact } from "./proof-artifacts.js"
 
 type ChatMessage =
@@ -45,9 +45,9 @@ const llmAuthStyle =
 const llmTokenParam =
 	(process.env.MDBRAIN_LLM_TOKEN_PARAM?.trim() as LlmTokenParam | undefined) ??
 	"max_tokens"
-const mdbrianApiUrl =
+const mdbrainApiUrl =
 	process.env.MDBRAIN_API_URL?.trim() ?? "http://127.0.0.1:3847"
-const mdbrianApiKey = process.env.MDBRAIN_API_KEY?.trim() || undefined
+const mdbrainApiKey = process.env.MDBRAIN_API_KEY?.trim() || undefined
 const agentId =
 	process.env.MDBRAIN_AGENT_ID?.trim() ??
 	`real-agent-smoke-${randomUUID().slice(0, 8)}`
@@ -66,9 +66,9 @@ const configuredLlmBaseUrl = llmBaseUrl
 const configuredLlmApiKey = llmApiKey
 const configuredLlmModel = llmModel
 
-const mdbrian = new MdbrianClient({
-	baseUrl: mdbrianApiUrl,
-	apiKey: mdbrianApiKey,
+const mdbrain = new MdbrainClient({
+	baseUrl: mdbrainApiUrl,
+	apiKey: mdbrainApiKey,
 	maxRetries: 2,
 })
 const runLog: unknown[] = []
@@ -82,9 +82,9 @@ const tools = [
 	{
 		type: "function",
 		function: {
-			name: "mdbrian_write_event",
+			name: "mdbrain_write_event",
 			description:
-				"Persist a conversational event into Mdbrian canonical memory.",
+				"Persist a conversational event into Mdbrain canonical memory.",
 			parameters: {
 				type: "object",
 				properties: {
@@ -102,9 +102,9 @@ const tools = [
 	{
 		type: "function",
 		function: {
-			name: "mdbrian_search_detailed",
+			name: "mdbrain_search_detailed",
 			description:
-				"Search Mdbrian memory and return the top evidence snippets.",
+				"Search Mdbrain memory and return the top evidence snippets.",
 			parameters: {
 				type: "object",
 				properties: {
@@ -119,8 +119,8 @@ const tools = [
 	{
 		type: "function",
 		function: {
-			name: "mdbrian_status",
-			description: "Read Mdbrian backend status for the current agent.",
+			name: "mdbrain_status",
+			description: "Read Mdbrain backend status for the current agent.",
 			parameters: {
 				type: "object",
 				properties: {},
@@ -131,7 +131,7 @@ const tools = [
 	{
 		type: "function",
 		function: {
-			name: "mdbrian_hydrate_active_slate",
+			name: "mdbrain_hydrate_active_slate",
 			description:
 				"Read a tiny active-state slate for current blockers, decisions, and live procedures.",
 			parameters: {
@@ -146,7 +146,7 @@ const tools = [
 	{
 		type: "function",
 		function: {
-			name: "mdbrian_build_discovery_projection",
+			name: "mdbrain_build_discovery_projection",
 			description:
 				"Build a rebuildable synthesis view for changes, contradictions, entities, or topics.",
 			parameters: {
@@ -172,7 +172,7 @@ const tools = [
 	{
 		type: "function",
 		function: {
-			name: "mdbrian_build_context_bundle",
+			name: "mdbrain_build_context_bundle",
 			description:
 				"Build a prompt-ready context bundle that combines active state, durable evidence, summaries, and recent events.",
 			parameters: {
@@ -266,8 +266,8 @@ async function executeToolCall(toolCall: ToolCall): Promise<unknown> {
 	const args = JSON.parse(rawArgs) as Record<string, unknown>
 
 	switch (toolCall.function.name) {
-		case "mdbrian_write_event":
-			return mdbrian.writeEvent({
+		case "mdbrain_write_event":
+			return mdbrain.writeEvent({
 				role: String(args.role ?? "user") as
 					| "user"
 					| "assistant"
@@ -277,8 +277,8 @@ async function executeToolCall(toolCall: ToolCall): Promise<unknown> {
 				agentId,
 				sessionId,
 			})
-		case "mdbrian_search_detailed": {
-			const response = await mdbrian.searchDetailed({
+		case "mdbrain_search_detailed": {
+			const response = await mdbrain.searchDetailed({
 				query: String(args.query ?? ""),
 				agentId,
 				limit:
@@ -302,10 +302,10 @@ async function executeToolCall(toolCall: ToolCall): Promise<unknown> {
 				})),
 			}
 		}
-		case "mdbrian_status":
-			return mdbrian.status(agentId)
-		case "mdbrian_hydrate_active_slate":
-			return mdbrian.hydrateActiveSlate({
+		case "mdbrain_status":
+			return mdbrain.status(agentId)
+		case "mdbrain_hydrate_active_slate":
+			return mdbrain.hydrateActiveSlate({
 				agentId,
 				scope: "agent",
 				scopeRef: agentScopeRef,
@@ -314,8 +314,8 @@ async function executeToolCall(toolCall: ToolCall): Promise<unknown> {
 						? args.maxItems
 						: 4,
 			})
-		case "mdbrian_build_discovery_projection":
-			return mdbrian.buildDiscoveryProjection({
+		case "mdbrain_build_discovery_projection":
+			return mdbrain.buildDiscoveryProjection({
 				agentId,
 				kind: String(args.kind ?? "topic-brief") as
 					| "entity-brief"
@@ -333,14 +333,14 @@ async function executeToolCall(toolCall: ToolCall): Promise<unknown> {
 						? args.maxItems
 						: 4,
 			})
-		case "mdbrian_build_context_bundle": {
+		case "mdbrain_build_context_bundle": {
 			const requestedTokenBudget =
 				typeof args.tokenBudget === "number" &&
 				Number.isFinite(args.tokenBudget)
 					? args.tokenBudget
 					: 520
 
-			return mdbrian.buildContextBundle({
+			return mdbrain.buildContextBundle({
 				agentId,
 				query:
 					typeof args.query === "string" && args.query.trim().length > 0
@@ -378,13 +378,13 @@ async function runAgentTurn(userPrompt: string): Promise<{
 		{
 			role: "system",
 			content: [
-				"You are a real Mdbrian smoke-test agent.",
-				"Always persist the user's message with mdbrian_write_event before answering.",
-				"When asked to recall prior facts, call mdbrian_search_detailed before answering.",
-				"When asked about current state, blockers, or active work, call mdbrian_hydrate_active_slate before answering.",
-				"When asked about changes or contradictions, call mdbrian_build_discovery_projection before answering.",
-				"When asked for a handoff brief or prompt-ready context, call mdbrian_build_context_bundle before answering.",
-				"Persist your final answer with mdbrian_write_event before you return it.",
+				"You are a real Mdbrain smoke-test agent.",
+				"Always persist the user's message with mdbrain_write_event before answering.",
+				"When asked to recall prior facts, call mdbrain_search_detailed before answering.",
+				"When asked about current state, blockers, or active work, call mdbrain_hydrate_active_slate before answering.",
+				"When asked about changes or contradictions, call mdbrain_build_discovery_projection before answering.",
+				"When asked for a handoff brief or prompt-ready context, call mdbrain_build_context_bundle before answering.",
+				"Persist your final answer with mdbrain_write_event before you return it.",
 				"Do not guess if memory evidence is missing.",
 			].join(" "),
 		},
@@ -430,17 +430,17 @@ async function runAgentTurn(userPrompt: string): Promise<{
 async function main() {
 	emitRunStep({
 		step: "start",
-		mdbrianApiUrl,
+		mdbrainApiUrl,
 		llmBaseUrl: configuredLlmBaseUrl,
 		model: configuredLlmModel,
 		agentId,
 		sessionId,
 	})
 
-	const status = await mdbrian.status(agentId)
-	emitRunStep({ step: "mdbrian-status", status })
+	const status = await mdbrain.status(agentId)
+	emitRunStep({ step: "mdbrain-status", status })
 
-	await mdbrian.writeStructured({
+	await mdbrain.writeStructured({
 		agentId,
 		entry: {
 			type: "decision",
@@ -455,7 +455,7 @@ async function main() {
 			tags: ["phoenix", "release"],
 		},
 	})
-	await mdbrian.writeStructured({
+	await mdbrain.writeStructured({
 		agentId,
 		entry: {
 			type: "decision",
@@ -470,7 +470,7 @@ async function main() {
 			tags: ["phoenix", "release"],
 		},
 	})
-	await mdbrian.writeStructured({
+	await mdbrain.writeStructured({
 		agentId,
 		entry: {
 			type: "project",
@@ -485,7 +485,7 @@ async function main() {
 			tags: ["phoenix", "blocker"],
 		},
 	})
-	await mdbrian.writeStructured({
+	await mdbrain.writeStructured({
 		agentId,
 		entry: {
 			type: "fact",
@@ -500,7 +500,7 @@ async function main() {
 			tags: ["phoenix", "approval"],
 		},
 	})
-	await mdbrian.writeProcedure({
+	await mdbrain.writeProcedure({
 		agentId,
 		entry: {
 			procedureId: "phoenix-rollback",
@@ -516,7 +516,7 @@ async function main() {
 			agentId,
 		},
 	})
-	await mdbrian.writeProcedure({
+	await mdbrain.writeProcedure({
 		agentId,
 		entry: {
 			procedureId: "phoenix-rollback",
@@ -533,7 +533,7 @@ async function main() {
 			agentId,
 		},
 	})
-	await mdbrian.writeProcedure({
+	await mdbrain.writeProcedure({
 		agentId,
 		entry: {
 			procedureId: "phoenix-contingency",
@@ -563,8 +563,8 @@ async function main() {
 			`Recall failed. Expected final answer to include marker "${marker}", got: ${turn2.answer}`,
 		)
 	}
-	if (!turn2.toolsUsed.includes("mdbrian_search_detailed")) {
-		throw new Error("Recall turn did not use mdbrian_search_detailed.")
+	if (!turn2.toolsUsed.includes("mdbrain_search_detailed")) {
+		throw new Error("Recall turn did not use mdbrain_search_detailed.")
 	}
 
 	const turn3 = await runAgentTurn(
@@ -577,9 +577,9 @@ async function main() {
 	) {
 		throw new Error(`Active-state recall failed. Got: ${turn3.answer}`)
 	}
-	if (!turn3.toolsUsed.includes("mdbrian_hydrate_active_slate")) {
+	if (!turn3.toolsUsed.includes("mdbrain_hydrate_active_slate")) {
 		throw new Error(
-			"Current-state turn did not use mdbrian_hydrate_active_slate.",
+			"Current-state turn did not use mdbrain_hydrate_active_slate.",
 		)
 	}
 
@@ -593,9 +593,9 @@ async function main() {
 	) {
 		throw new Error(`What-changed summary failed. Got: ${turn4.answer}`)
 	}
-	if (!turn4.toolsUsed.includes("mdbrian_build_discovery_projection")) {
+	if (!turn4.toolsUsed.includes("mdbrain_build_discovery_projection")) {
 		throw new Error(
-			"What-changed turn did not use mdbrian_build_discovery_projection.",
+			"What-changed turn did not use mdbrain_build_discovery_projection.",
 		)
 	}
 
@@ -610,9 +610,9 @@ async function main() {
 	) {
 		throw new Error(`Contradiction summary failed. Got: ${turn5.answer}`)
 	}
-	if (!turn5.toolsUsed.includes("mdbrian_build_discovery_projection")) {
+	if (!turn5.toolsUsed.includes("mdbrain_build_discovery_projection")) {
 		throw new Error(
-			"Contradiction turn did not use mdbrian_build_discovery_projection.",
+			"Contradiction turn did not use mdbrain_build_discovery_projection.",
 		)
 	}
 
@@ -629,11 +629,11 @@ async function main() {
 	) {
 		throw new Error(`Context-bundle handoff failed. Got: ${turn6.answer}`)
 	}
-	if (!turn6.toolsUsed.includes("mdbrian_build_context_bundle")) {
-		throw new Error("Handoff turn did not use mdbrian_build_context_bundle.")
+	if (!turn6.toolsUsed.includes("mdbrain_build_context_bundle")) {
+		throw new Error("Handoff turn did not use mdbrain_build_context_bundle.")
 	}
 
-	const directSearch = await mdbrian.searchDetailed({
+	const directSearch = await mdbrain.searchDetailed({
 		query: marker,
 		agentId,
 		limit: 4,

@@ -4,7 +4,7 @@ import path from "node:path"
 import { randomUUID } from "node:crypto"
 import { spawn } from "node:child_process"
 import { MongoClient } from "mongodb"
-import { MdbrianClient } from "@mdbrian/client"
+import { MdbrainClient } from "@mdbrain/client"
 import {
 	emptyLaneCoverage,
 	getCacheHitRate,
@@ -20,8 +20,8 @@ import {
 	synthesizeProfile,
 	updateLaneCoverage,
 	writeCache,
-} from "@mdbrian/memory-engine"
-import { buildMdbrianConfig } from "../packages/memory-bridge/src/memory-config.ts"
+} from "@mdbrain/memory-engine"
+import { buildMdbrainConfig } from "../packages/memory-bridge/src/memory-config.ts"
 import { resolveMemoryBackendConfig } from "../packages/memory-engine/src/backend-config.ts"
 import { writeProofArtifact } from "./proof-artifacts.js"
 import {
@@ -111,9 +111,9 @@ const sessionId =
 	`capability-session-${randomUUID().slice(0, 8)}`
 const workspaceDir =
 	process.env.MDBRAIN_WORKSPACE_DIR?.trim() ||
-	path.join(os.tmpdir(), `mdbrian-workspace-${randomUUID().slice(0, 8)}`)
+	path.join(os.tmpdir(), `mdbrain-workspace-${randomUUID().slice(0, 8)}`)
 
-const client = new MdbrianClient({
+const client = new MdbrainClient({
 	baseUrl,
 	apiKey,
 	maxRetries: 2,
@@ -291,7 +291,7 @@ async function main() {
 	const workspaceBenchmarkDir = path.join(workspaceDir, "benchmarks")
 	const relevanceDatasetPath = path.join(
 		workspaceBenchmarkDir,
-		`mdbrian-relevance-${randomUUID().slice(0, 8)}.jsonl`,
+		`mdbrain-relevance-${randomUUID().slice(0, 8)}.jsonl`,
 	)
 
 	await mkdir(workspaceMemoryDir, { recursive: true })
@@ -307,7 +307,7 @@ async function main() {
 		"utf8",
 	)
 
-	const cfg = buildMdbrianConfig({
+	const cfg = buildMdbrainConfig({
 		...process.env,
 		MDBRAIN_WORKSPACE_DIR: workspaceDir,
 	})
@@ -1389,7 +1389,7 @@ async function main() {
 					name: "batch-voyage",
 					classification: "dormant-capability",
 					reason:
-						"The Voyage batch embedding runner exists in the engine, but the supported Mdbrian contract is atlas-local-preview with embeddingMode=automated, so it is not part of the hot path. batch-openai and batch-gemini were removed as dead code.",
+						"The Voyage batch embedding runner exists in the engine, but the supported Mdbrain contract is atlas-local-preview with embeddingMode=automated, so it is not part of the hot path. batch-openai and batch-gemini were removed as dead code.",
 				},
 			],
 			checks,

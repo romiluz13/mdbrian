@@ -9,7 +9,7 @@ import {
 	type MemoryMongoDBEmbeddingMode,
 	type MemoryScope,
 	createSubsystemLogger,
-} from "@mdbrian/lib"
+} from "@mdbrain/lib"
 import { recordMutation, type MutationMeta } from "./mongodb-mutations.js"
 import { summarizeExplain } from "./mongodb-relevance.js"
 import type { DetectedCapabilities } from "./mongodb-schema.js"

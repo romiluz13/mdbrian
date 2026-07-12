@@ -8,14 +8,14 @@ function parseTextPayload(result: { content: Array<{ text: string }> }) {
 describe("toolList", () => {
 	it("includes Wave 5 semantic aliases for stable recall and memory flows", () => {
 		const names = new Set(toolList.map((tool) => tool.name))
-		expect(names.has("mdbrian_recall_messages")).toBe(true)
-		expect(names.has("mdbrian_memory_get")).toBe(true)
-		expect(names.has("mdbrian_memory_update")).toBe(true)
-		expect(names.has("mdbrian_memory_delete")).toBe(true)
-		expect(names.has("mdbrian_memory_history")).toBe(true)
-		expect(names.has("mdbrian_import_conversation_history")).toBe(true)
-		expect(names.has("mdbrian_procedure_outcome")).toBe(true)
-		expect(names.has("mdbrian_memory_feedback")).toBe(true)
+		expect(names.has("mdbrain_recall_messages")).toBe(true)
+		expect(names.has("mdbrain_memory_get")).toBe(true)
+		expect(names.has("mdbrain_memory_update")).toBe(true)
+		expect(names.has("mdbrain_memory_delete")).toBe(true)
+		expect(names.has("mdbrain_memory_history")).toBe(true)
+		expect(names.has("mdbrain_import_conversation_history")).toBe(true)
+		expect(names.has("mdbrain_procedure_outcome")).toBe(true)
+		expect(names.has("mdbrain_memory_feedback")).toBe(true)
 	})
 })
 
@@ -26,7 +26,7 @@ describe("handleToolCall", () => {
 		})
 
 		const out = await handleToolCall(
-			"mdbrian_recall_messages",
+			"mdbrain_recall_messages",
 			{
 				query: "rollback plan",
 				roles: ["assistant", "tool"],
@@ -59,7 +59,7 @@ describe("handleToolCall", () => {
 		const recallConversation = vi.fn()
 
 		const out = await handleToolCall(
-			"mdbrian_recall_messages",
+			"mdbrain_recall_messages",
 			{
 				roles: ["assistant", "bad-role"],
 			},
@@ -95,24 +95,24 @@ describe("handleToolCall", () => {
 			structured: { type: "fact", key: "deployment" },
 		}
 
-		await handleToolCall("mdbrian_memory_get", { handle }, {
+		await handleToolCall("mdbrain_memory_get", { handle }, {
 			getLifecycleItem,
 		} as any)
 		await handleToolCall(
-			"mdbrian_memory_update",
+			"mdbrain_memory_update",
 			{ handle, patch: { value: "new value" } },
 			{
 				updateLifecycleItem,
 			} as any,
 		)
 		await handleToolCall(
-			"mdbrian_memory_delete",
+			"mdbrain_memory_delete",
 			{ handle, invalidatedBy: { reason: "cleanup" } },
 			{
 				deleteLifecycleItem,
 			} as any,
 		)
-		await handleToolCall("mdbrian_memory_history", { handle, limit: 999 }, {
+		await handleToolCall("mdbrain_memory_history", { handle, limit: 999 }, {
 			getLifecycleHistory,
 		} as any)
 
@@ -142,7 +142,7 @@ describe("handleToolCall", () => {
 		}
 
 		const out = await handleToolCall(
-			"mdbrian_memory_history",
+			"mdbrain_memory_history",
 			{ handle, limit: 10 },
 			{
 				getLifecycleHistory,
@@ -159,7 +159,7 @@ describe("handleToolCall", () => {
 		const importConversations = vi.fn().mockResolvedValue({ importedTurns: 12 })
 
 		const out = await handleToolCall(
-			"mdbrian_import_conversation_history",
+			"mdbrain_import_conversation_history",
 			{
 				datasetPath: "imports/history.json",
 				scope: "workspace",
@@ -198,7 +198,7 @@ describe("handleToolCall", () => {
 		}
 
 		const out = await handleToolCall(
-			"mdbrian_procedure_outcome",
+			"mdbrain_procedure_outcome",
 			{
 				handle,
 				success: true,
@@ -239,7 +239,7 @@ describe("handleToolCall", () => {
 		}
 
 		const out = await handleToolCall(
-			"mdbrian_memory_feedback",
+			"mdbrain_memory_feedback",
 			{
 				handle,
 				signal: "correct",
@@ -267,11 +267,11 @@ describe("handleToolCall", () => {
 describe("wiki MCP tools", () => {
 	it("toolList includes all 5 wiki tools", () => {
 		const names = new Set(toolList.map((tool) => tool.name))
-		expect(names.has("mdbrian_wiki_search")).toBe(true)
-		expect(names.has("mdbrian_wiki_get")).toBe(true)
-		expect(names.has("mdbrian_wiki_apply")).toBe(true)
-		expect(names.has("mdbrian_wiki_export_okf")).toBe(true)
-		expect(names.has("mdbrian_wiki_lint")).toBe(true)
+		expect(names.has("mdbrain_wiki_search")).toBe(true)
+		expect(names.has("mdbrain_wiki_get")).toBe(true)
+		expect(names.has("mdbrain_wiki_apply")).toBe(true)
+		expect(names.has("mdbrain_wiki_export_okf")).toBe(true)
+		expect(names.has("mdbrain_wiki_lint")).toBe(true)
 	})
 
 	it("wiki_search calls the client and returns results", async () => {
@@ -282,7 +282,7 @@ describe("wiki MCP tools", () => {
 			mode: "hybrid",
 		})
 		const out = await handleToolCall(
-			"mdbrian_wiki_search",
+			"mdbrain_wiki_search",
 			{ query: "accounts", scope: "workspace", scopeRef: "ws-1" },
 			{ wikiSearch } as any,
 		)
@@ -307,7 +307,7 @@ describe("wiki MCP tools", () => {
 	it("wiki_get calls the client with slug+scope+scopeRef", async () => {
 		const wikiGet = vi.fn().mockResolvedValue({ slug: "x", title: "X" })
 		await handleToolCall(
-			"mdbrian_wiki_get",
+			"mdbrain_wiki_get",
 			{
 				slug: "tables/users",
 				scope: "workspace",
@@ -328,7 +328,7 @@ describe("wiki MCP tools", () => {
 	it("wiki_apply calls the client with page fields", async () => {
 		const wikiApply = vi.fn().mockResolvedValue({ _id: "id1", slug: "x" })
 		await handleToolCall(
-			"mdbrian_wiki_apply",
+			"mdbrain_wiki_apply",
 			{
 				kind: "concept",
 				title: "Test",
@@ -363,7 +363,7 @@ describe("wiki MCP tools", () => {
 			.fn()
 			.mockResolvedValue({ _id: "id1", slug: "test", revision: 2 })
 		await handleToolCall(
-			"mdbrian_wiki_apply",
+			"mdbrain_wiki_apply",
 			{
 				kind: "concept",
 				title: "Updated",
@@ -391,7 +391,7 @@ describe("wiki MCP tools", () => {
 	it("wiki_export_okf calls the client with outDir", async () => {
 		const wikiExportOkf = vi.fn().mockResolvedValue({ exported: 3, files: [] })
 		await handleToolCall(
-			"mdbrian_wiki_export_okf",
+			"mdbrain_wiki_export_okf",
 			{ scope: "workspace", scopeRef: "ws-1", outDir: "/tmp/out" },
 			{ wikiExportOkf } as any,
 		)
@@ -407,7 +407,7 @@ describe("wiki MCP tools", () => {
 	it("wiki_lint calls the client with scope+scopeRef", async () => {
 		const wikiLint = vi.fn().mockResolvedValue({ pages: [], total: 0 })
 		await handleToolCall(
-			"mdbrian_wiki_lint",
+			"mdbrain_wiki_lint",
 			{ scope: "workspace", scopeRef: "ws-1", kind: "concept" },
 			{ wikiLint } as any,
 		)
@@ -421,7 +421,7 @@ describe("wiki MCP tools", () => {
 	})
 
 	it("returns an error on unknown wiki tool", async () => {
-		const out = await handleToolCall("mdbrian_wiki_unknown", {}, {} as any)
+		const out = await handleToolCall("mdbrain_wiki_unknown", {}, {} as any)
 		expect(out.isError).toBe(true)
 	})
 })

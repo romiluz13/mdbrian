@@ -3,7 +3,7 @@ import {
 	formatErrorMessage,
 	type SsrFPolicy,
 	normalizeOptionalSecretInput,
-} from "@mdbrian/lib"
+} from "@mdbrain/lib"
 
 const OLLAMA_DEFAULT_BASE_URL = "http://127.0.0.1:11434"
 

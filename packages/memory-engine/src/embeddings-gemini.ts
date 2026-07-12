@@ -1,4 +1,4 @@
-import { requireApiKey, type SsrFPolicy } from "@mdbrian/lib"
+import { requireApiKey, type SsrFPolicy } from "@mdbrain/lib"
 
 function parseGeminiAuth(apiKey: string): { headers: Record<string, string> } {
 	if (apiKey.startsWith("{")) {

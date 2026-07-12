@@ -8,7 +8,7 @@
 //   MDBRAIN_API_KEY=local-dev-secret \
 //   bun run scripts/stress-test.ts --pages 1000 --concurrency 10
 
-import { MdbrianClient } from "@mdbrian/client"
+import { MdbrainClient } from "@mdbrain/client"
 
 const baseUrl = process.env.MDBRAIN_API_URL ?? "http://127.0.0.1:3847"
 const apiKey = process.env.MDBRAIN_API_KEY ?? "local-dev-secret"
@@ -34,7 +34,7 @@ function parseArgs(): { pages: number; concurrency: number } {
 
 async function main() {
 	const { pages, concurrency } = parseArgs()
-	const client = new MdbrianClient({ baseUrl, apiKey })
+	const client = new MdbrainClient({ baseUrl, apiKey })
 
 	console.log(`MDBrain Stress Test`)
 	console.log(`  Pages: ${pages}`)

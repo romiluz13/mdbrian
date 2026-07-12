@@ -1,6 +1,6 @@
 ---
 title: Quickstart
-description: Start Mdbrian, add one memory, and search it.
+description: Start Mdbrain, add one memory, and search it.
 icon: "play"
 ---
 
@@ -13,8 +13,8 @@ icon: "play"
 ## 1. Clone and install
 
 ```bash
-git clone https://github.com/romiluz13/mdbrian.git
-cd mdbrian
+git clone https://github.com/romiluz13/mdbrain.git
+cd mdbrain
 bun install
 ```
 
@@ -64,9 +64,9 @@ Look for a healthy API response and a memory status payload.
 <Tabs>
 <Tab title="TypeScript">
 ```typescript
-import { MdbrianClient } from "@mdbrian/client";
+import { MdbrainClient } from "@mdbrain/client";
 
-const client = new MdbrianClient({
+const client = new MdbrainClient({
   baseUrl: "http://127.0.0.1:3847",
   apiKey: "local-dev-secret",
 });
@@ -102,7 +102,7 @@ curl -s http://127.0.0.1:3847/v1/search \
 
 ## Optional surfaces
 
-Mdbrian can be used directly by apps or exposed to agents as a Company Brain.
+Mdbrain can be used directly by apps or exposed to agents as a Company Brain.
 Start read-first, then add explicit write workflows once scopes and safety are
 clear.
 
@@ -141,7 +141,7 @@ bun run start
 
 <CardGroup cols={2}>
   <Card title="Memory Concepts" icon="brain" href="/concepts/memory">
-    Learn how Mdbrian stores and retrieves memory.
+    Learn how Mdbrain stores and retrieves memory.
   </Card>
   <Card title="Memory Framework" icon="network" href="/concepts/framework">
     Understand the Company Brain contract.

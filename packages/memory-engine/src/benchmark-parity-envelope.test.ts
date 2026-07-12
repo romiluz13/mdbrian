@@ -67,9 +67,9 @@ describe("computeDatasetSha256FromPath", () => {
 		const { writeFileSync, mkdtempSync } = await import("node:fs")
 		const { tmpdir } = await import("node:os")
 		const path = await import("node:path")
-		const dir = mkdtempSync(path.join(tmpdir(), "mdbrian-dataset-sha-"))
+		const dir = mkdtempSync(path.join(tmpdir(), "mdbrain-dataset-sha-"))
 		const filePath = path.join(dir, "canary.jsonl")
-		writeFileSync(filePath, "hello-mdbrian-dataset")
+		writeFileSync(filePath, "hello-mdbrain-dataset")
 		const sha = await computeDatasetSha256FromPath(filePath)
 		expect(sha).toMatch(/^[0-9a-f]{64}$/)
 	})
@@ -78,7 +78,7 @@ describe("computeDatasetSha256FromPath", () => {
 		const { writeFileSync, mkdtempSync } = await import("node:fs")
 		const { tmpdir } = await import("node:os")
 		const path = await import("node:path")
-		const dir = mkdtempSync(path.join(tmpdir(), "mdbrian-dataset-sha-"))
+		const dir = mkdtempSync(path.join(tmpdir(), "mdbrain-dataset-sha-"))
 		const a = path.join(dir, "a.jsonl")
 		const b = path.join(dir, "b.jsonl")
 		writeFileSync(a, "same-bytes")
@@ -112,7 +112,7 @@ describe("resolveDatasetSha256", () => {
 		const { writeFileSync, mkdtempSync } = await import("node:fs")
 		const { tmpdir } = await import("node:os")
 		const path = await import("node:path")
-		const dir = mkdtempSync(path.join(tmpdir(), "mdbrian-dataset-sha-"))
+		const dir = mkdtempSync(path.join(tmpdir(), "mdbrain-dataset-sha-"))
 		const filePath = path.join(dir, "canary.jsonl")
 		writeFileSync(filePath, "fallback-bytes")
 		const original = process.env.MDBRAIN_BENCHMARK_DATASET_SHA
@@ -245,7 +245,7 @@ describe("collectStorageFootprint", () => {
 	it("returns populated bytes when collStats succeeds", async () => {
 		const mockDb = {
 			command: async (cmd: Record<string, unknown>) => {
-				expect(cmd).toEqual({ collStats: "mdbrian_bench_events" })
+				expect(cmd).toEqual({ collStats: "mdbrain_bench_events" })
 				return { size: 1234, totalIndexSize: 5678, storageSize: 9000 }
 			},
 		}
@@ -253,7 +253,7 @@ describe("collectStorageFootprint", () => {
 			db: mockDb as unknown as Parameters<
 				typeof collectStorageFootprint
 			>[0]["db"],
-			collectionName: "mdbrian_bench_events",
+			collectionName: "mdbrain_bench_events",
 		})
 		expect(footprint.collectionBytes).toBe(1234)
 		expect(footprint.indexBytes).toBe(5678)
@@ -270,7 +270,7 @@ describe("collectStorageFootprint", () => {
 			db: mockDb as unknown as Parameters<
 				typeof collectStorageFootprint
 			>[0]["db"],
-			collectionName: "mdbrian_bench_events",
+			collectionName: "mdbrain_bench_events",
 		})
 		expect(footprint.collectionBytes).toBeNull()
 		expect(footprint.indexBytes).toBeNull()
@@ -285,7 +285,7 @@ describe("collectStorageFootprint", () => {
 			db: mockDb as unknown as Parameters<
 				typeof collectStorageFootprint
 			>[0]["db"],
-			collectionName: "mdbrian_bench_events",
+			collectionName: "mdbrain_bench_events",
 		})
 		expect(footprint.collectionBytes).toBeNull()
 		expect(footprint.indexBytes).toBeNull()

@@ -1,8 +1,8 @@
 /**
- * Stable entry for the Mdbrian HTTP product layer: loads standalone config and
+ * Stable entry for the Mdbrain HTTP product layer: loads standalone config and
  * delegates to the MongoDB memory manager.
  */
-import type { MemoryScope } from "@mdbrian/lib/types/memory"
+import type { MemoryScope } from "@mdbrain/lib/types/memory"
 import type {
 	ConversationRecallResponse,
 	MemoryProviderStatus,
@@ -33,12 +33,12 @@ import type {
 	StructuredMemoryLifecyclePatch,
 	StructuredMemoryEntry,
 	V2Status,
-} from "@mdbrian/memory-engine"
+} from "@mdbrain/memory-engine"
 import {
 	closeAllMemorySearchManagers,
 	getMemorySearchManager,
 	materializeBlocks,
-} from "@mdbrian/memory-engine"
+} from "@mdbrain/memory-engine"
 import { resolveBridgeConfig } from "./memory-config.js"
 
 /**
@@ -48,11 +48,11 @@ import { resolveBridgeConfig } from "./memory-config.js"
  * via `closeAllMemorySearchManagers` so one failing manager does not block
  * the rest.
  */
-export async function mdbrianBridgeShutdown(): Promise<void> {
+export async function mdbrainBridgeShutdown(): Promise<void> {
 	await closeAllMemorySearchManagers()
 }
 
-type MdbrianBridgeActiveSlate = {
+type MdbrainBridgeActiveSlate = {
 	agentId: string
 	scope: MemoryScope
 	scopeRef: string
@@ -81,7 +81,7 @@ type MdbrianBridgeActiveSlate = {
 	hydratedAt: Date
 }
 
-type MdbrianBridgeDiscoveryProjection = {
+type MdbrainBridgeDiscoveryProjection = {
 	kind: "entity-brief" | "topic-brief" | "what-changed" | "contradiction-report"
 	query?: string
 	title: string
@@ -116,7 +116,7 @@ type MdbrianBridgeDiscoveryProjection = {
 	builtAt: Date
 }
 
-type MdbrianBridgeContextBundle = {
+type MdbrainBridgeContextBundle = {
 	agentId: string
 	query?: string
 	scope: MemoryScope
@@ -193,7 +193,7 @@ type ActiveSlateCapableManager = MongoDBMemoryManager & {
 		scope?: MemoryScope
 		scopeRef?: string
 		maxItems?: number
-	}) => Promise<MdbrianBridgeActiveSlate>
+	}) => Promise<MdbrainBridgeActiveSlate>
 }
 
 type DiscoveryProjectionCapableManager = MongoDBMemoryManager & {
@@ -212,7 +212,7 @@ type DiscoveryProjectionCapableManager = MongoDBMemoryManager & {
 			start?: string
 			end?: string
 		}
-	}) => Promise<MdbrianBridgeDiscoveryProjection>
+	}) => Promise<MdbrainBridgeDiscoveryProjection>
 }
 
 type ContextBundleCapableManager = MongoDBMemoryManager & {
@@ -238,7 +238,7 @@ type ContextBundleCapableManager = MongoDBMemoryManager & {
 			end?: string
 		}
 		mode?: "full" | "wake-up"
-	}) => Promise<MdbrianBridgeContextBundle>
+	}) => Promise<MdbrainBridgeContextBundle>
 }
 
 type ConversationRecallCapableManager = MongoDBMemoryManager & {
@@ -346,7 +346,7 @@ type ConversationImportCapableManager = MongoDBMemoryManager & {
 	}) => Promise<MemoryConversationImportResult>
 }
 
-export type MdbrianBridgeContext = {
+export type MdbrainBridgeContext = {
 	agentId: string
 }
 
@@ -354,7 +354,7 @@ function resolveAgentId(explicit?: string): string {
 	return (explicit ?? process.env.MDBRAIN_AGENT_ID ?? "main").trim() || "main"
 }
 
-export async function mdbrianBridgeGetManager(
+export async function mdbrainBridgeGetManager(
 	agentId?: string,
 ): Promise<MongoDBMemoryManager> {
 	const id = resolveAgentId(agentId)
@@ -369,7 +369,7 @@ export async function mdbrianBridgeGetManager(
 	// empty results (no vector/text search indexes on wiki_pages).
 	try {
 		const { getWikiDbHandle, ensureWikiSchema } = await import(
-			"@mdbrian/wiki-engine"
+			"@mdbrain/wiki-engine"
 		)
 		const handle = getWikiDbHandle(m)
 		await ensureWikiSchema(handle.db, handle.prefix)
@@ -383,7 +383,7 @@ export async function mdbrianBridgeGetManager(
 	return m
 }
 
-export async function mdbrianBridgeSearch(params: {
+export async function mdbrainBridgeSearch(params: {
 	query: string
 	agentId?: string
 	maxResults?: number
@@ -392,7 +392,7 @@ export async function mdbrianBridgeSearch(params: {
 	scope?: MemoryScope
 	scopeRef?: string
 }) {
-	const m = await mdbrianBridgeGetManager(params.agentId)
+	const m = await mdbrainBridgeGetManager(params.agentId)
 	return m.search(params.query, {
 		maxResults: params.maxResults,
 		minScore: params.minScore,
@@ -402,14 +402,14 @@ export async function mdbrianBridgeSearch(params: {
 	})
 }
 
-export async function mdbrianBridgeWaitForBenchmarkSearchReadiness(params: {
+export async function mdbrainBridgeWaitForBenchmarkSearchReadiness(params: {
 	agentId?: string
 	retrievalLane?: "native" | "raw-session"
 	scope?: MemoryScope
 	scopeRef?: string
 	sessionId?: string
 }) {
-	const m = await mdbrianBridgeGetManager(params.agentId)
+	const m = await mdbrainBridgeGetManager(params.agentId)
 	await m.waitForBenchmarkSearchReadiness({
 		retrievalLane: params.retrievalLane,
 		scope: params.scope,
@@ -418,14 +418,14 @@ export async function mdbrianBridgeWaitForBenchmarkSearchReadiness(params: {
 	})
 }
 
-export async function mdbrianBridgeSearchKB(params: {
+export async function mdbrainBridgeSearchKB(params: {
 	query: string
 	agentId?: string
 	maxResults?: number
 	minScore?: number
 	filter?: { tags?: string[]; category?: string; source?: string }
 }) {
-	const m = await mdbrianBridgeGetManager(params.agentId)
+	const m = await mdbrainBridgeGetManager(params.agentId)
 	return m.searchKB(params.query, {
 		maxResults: params.maxResults,
 		minScore: params.minScore,
@@ -433,13 +433,13 @@ export async function mdbrianBridgeSearchKB(params: {
 	})
 }
 
-export async function mdbrianBridgeReadFile(params: {
+export async function mdbrainBridgeReadFile(params: {
 	relPath: string
 	from?: number
 	lines?: number
 	agentId?: string
 }) {
-	const m = await mdbrianBridgeGetManager(params.agentId)
+	const m = await mdbrainBridgeGetManager(params.agentId)
 	return m.readFile({
 		relPath: params.relPath,
 		from: params.from,
@@ -448,7 +448,7 @@ export async function mdbrianBridgeReadFile(params: {
 }
 
 /** Legacy: append a user message (same as `writeConversationEvent` with role user). */
-export async function mdbrianBridgeAdd(params: {
+export async function mdbrainBridgeAdd(params: {
 	content: string
 	agentId?: string
 	sessionId?: string
@@ -456,7 +456,7 @@ export async function mdbrianBridgeAdd(params: {
 	scope?: MemoryScope
 	scopeRef?: string
 }) {
-	return mdbrianBridgeWriteConversationEvent({
+	return mdbrainBridgeWriteConversationEvent({
 		agentId: params.agentId,
 		role: "user",
 		body: params.content,
@@ -467,7 +467,7 @@ export async function mdbrianBridgeAdd(params: {
 	})
 }
 
-export async function mdbrianBridgeWriteConversationEvent(params: {
+export async function mdbrainBridgeWriteConversationEvent(params: {
 	agentId?: string
 	role: "user" | "assistant" | "system" | "tool"
 	body: string
@@ -477,7 +477,7 @@ export async function mdbrianBridgeWriteConversationEvent(params: {
 	scope?: MemoryScope
 	scopeRef?: string
 }) {
-	const m = await mdbrianBridgeGetManager(params.agentId)
+	const m = await mdbrainBridgeGetManager(params.agentId)
 	const timestamp = params.timestamp ? new Date(params.timestamp) : undefined
 	return m.writeConversationEvent({
 		role: params.role,
@@ -490,11 +490,11 @@ export async function mdbrianBridgeWriteConversationEvent(params: {
 	})
 }
 
-export async function mdbrianBridgeExtractEvent(params: {
+export async function mdbrainBridgeExtractEvent(params: {
 	agentId?: string
 	eventId: string
 }): Promise<{ jobId: string; scheduled: boolean }> {
-	const m = (await mdbrianBridgeGetManager(
+	const m = (await mdbrainBridgeGetManager(
 		params.agentId,
 	)) as ExtractionCapableManager
 	if (!m.extractEvent) {
@@ -503,11 +503,11 @@ export async function mdbrianBridgeExtractEvent(params: {
 	return m.extractEvent({ eventId: params.eventId })
 }
 
-export async function mdbrianBridgeWriteStructuredMemory(params: {
+export async function mdbrainBridgeWriteStructuredMemory(params: {
 	agentId?: string
 	entry: StructuredMemoryEntry
 }) {
-	const m = await mdbrianBridgeGetManager(params.agentId)
+	const m = await mdbrainBridgeGetManager(params.agentId)
 	const id = resolveAgentId(params.agentId)
 	return m.writeStructuredMemory({
 		...params.entry,
@@ -515,11 +515,11 @@ export async function mdbrianBridgeWriteStructuredMemory(params: {
 	})
 }
 
-export async function mdbrianBridgeWriteProcedure(params: {
+export async function mdbrainBridgeWriteProcedure(params: {
 	agentId?: string
 	entry: ProcedureEntry
 }) {
-	const m = await mdbrianBridgeGetManager(params.agentId)
+	const m = await mdbrainBridgeGetManager(params.agentId)
 	const id = resolveAgentId(params.agentId)
 	return m.writeProcedure({
 		...params.entry,
@@ -527,7 +527,7 @@ export async function mdbrianBridgeWriteProcedure(params: {
 	})
 }
 
-export async function mdbrianBridgeProfile(params: {
+export async function mdbrainBridgeProfile(params: {
 	agentId?: string
 	scope?: MemoryScope
 	scopeRef?: string
@@ -536,7 +536,7 @@ export async function mdbrianBridgeProfile(params: {
 	maxPerType?: number
 	activityWindowMs?: number
 }) {
-	const m = await mdbrianBridgeGetManager(params.agentId)
+	const m = await mdbrainBridgeGetManager(params.agentId)
 	return m.synthesizeProfile({
 		scope: params.scope,
 		scopeRef: params.scopeRef,
@@ -547,13 +547,13 @@ export async function mdbrianBridgeProfile(params: {
 	})
 }
 
-export async function mdbrianBridgeHydrateActiveSlate(params: {
+export async function mdbrainBridgeHydrateActiveSlate(params: {
 	agentId?: string
 	scope?: MemoryScope
 	scopeRef?: string
 	maxItems?: number
-}): Promise<MdbrianBridgeActiveSlate> {
-	const m = (await mdbrianBridgeGetManager(
+}): Promise<MdbrainBridgeActiveSlate> {
+	const m = (await mdbrainBridgeGetManager(
 		params.agentId,
 	)) as ActiveSlateCapableManager
 	if (!m.hydrateActiveSlate) {
@@ -566,7 +566,7 @@ export async function mdbrianBridgeHydrateActiveSlate(params: {
 	})
 }
 
-export async function mdbrianBridgeBuildDiscoveryProjection(params: {
+export async function mdbrainBridgeBuildDiscoveryProjection(params: {
 	agentId?: string
 	kind: "entity-brief" | "topic-brief" | "what-changed" | "contradiction-report"
 	query?: string
@@ -578,8 +578,8 @@ export async function mdbrianBridgeBuildDiscoveryProjection(params: {
 		start?: string
 		end?: string
 	}
-}): Promise<MdbrianBridgeDiscoveryProjection> {
-	const m = (await mdbrianBridgeGetManager(
+}): Promise<MdbrainBridgeDiscoveryProjection> {
+	const m = (await mdbrainBridgeGetManager(
 		params.agentId,
 	)) as DiscoveryProjectionCapableManager
 	if (!m.buildDiscoveryProjection) {
@@ -595,7 +595,7 @@ export async function mdbrianBridgeBuildDiscoveryProjection(params: {
 	})
 }
 
-export async function mdbrianBridgeBuildContextBundle(params: {
+export async function mdbrainBridgeBuildContextBundle(params: {
 	agentId?: string
 	query?: string
 	scope?: MemoryScope
@@ -618,8 +618,8 @@ export async function mdbrianBridgeBuildContextBundle(params: {
 		end?: string
 	}
 	mode?: "full" | "wake-up"
-}): Promise<MdbrianBridgeContextBundle> {
-	const m = (await mdbrianBridgeGetManager(
+}): Promise<MdbrainBridgeContextBundle> {
+	const m = (await mdbrainBridgeGetManager(
 		params.agentId,
 	)) as ContextBundleCapableManager
 	if (!m.buildContextBundle) {
@@ -642,7 +642,7 @@ export async function mdbrianBridgeBuildContextBundle(params: {
 	})
 }
 
-export async function mdbrianBridgeRecallConversation(params: {
+export async function mdbrainBridgeRecallConversation(params: {
 	agentId?: string
 	query?: string
 	sessionId?: string
@@ -653,7 +653,7 @@ export async function mdbrianBridgeRecallConversation(params: {
 	includeToolMessages?: boolean
 	limit?: number
 }): Promise<ConversationRecallResponse> {
-	const m = (await mdbrianBridgeGetManager(
+	const m = (await mdbrainBridgeGetManager(
 		params.agentId,
 	)) as ConversationRecallCapableManager
 	if (!m.recallConversation) {
@@ -671,10 +671,10 @@ export async function mdbrianBridgeRecallConversation(params: {
 	})
 }
 
-export async function mdbrianBridgeGetLifecycleItem(params: {
+export async function mdbrainBridgeGetLifecycleItem(params: {
 	handle: MemoryStableHandle
 }): Promise<MemoryLifecycleItem | null> {
-	const m = (await mdbrianBridgeGetManager(
+	const m = (await mdbrainBridgeGetManager(
 		params.handle.agentId,
 	)) as LifecycleCapableManager
 	if (!m.getLifecycleItem) {
@@ -683,11 +683,11 @@ export async function mdbrianBridgeGetLifecycleItem(params: {
 	return m.getLifecycleItem(params.handle)
 }
 
-export async function mdbrianBridgeUpdateLifecycleItem(params: {
+export async function mdbrainBridgeUpdateLifecycleItem(params: {
 	handle: MemoryStableHandle
 	patch: StructuredMemoryLifecyclePatch | ProcedureLifecyclePatch
 }): Promise<MemoryLifecycleItem | null> {
-	const m = (await mdbrianBridgeGetManager(
+	const m = (await mdbrainBridgeGetManager(
 		params.handle.agentId,
 	)) as LifecycleCapableManager
 	if (!m.updateLifecycleItem) {
@@ -696,11 +696,11 @@ export async function mdbrianBridgeUpdateLifecycleItem(params: {
 	return m.updateLifecycleItem(params.handle, params.patch)
 }
 
-export async function mdbrianBridgeDeleteLifecycleItem(params: {
+export async function mdbrainBridgeDeleteLifecycleItem(params: {
 	handle: MemoryStableHandle
 	invalidatedBy?: Record<string, unknown>
 }): Promise<MemoryLifecycleItem | null> {
-	const m = (await mdbrianBridgeGetManager(
+	const m = (await mdbrainBridgeGetManager(
 		params.handle.agentId,
 	)) as LifecycleCapableManager
 	if (!m.invalidateLifecycleItem) {
@@ -709,11 +709,11 @@ export async function mdbrianBridgeDeleteLifecycleItem(params: {
 	return m.invalidateLifecycleItem(params.handle, params.invalidatedBy)
 }
 
-export async function mdbrianBridgeGetLifecycleHistory(params: {
+export async function mdbrainBridgeGetLifecycleHistory(params: {
 	handle: MemoryStableHandle
 	limit?: number
 }): Promise<MemoryLifecycleHistoryEntry[]> {
-	const m = (await mdbrianBridgeGetManager(
+	const m = (await mdbrainBridgeGetManager(
 		params.handle.agentId,
 	)) as LifecycleCapableManager
 	if (!m.getLifecycleHistory) {
@@ -725,13 +725,13 @@ export async function mdbrianBridgeGetLifecycleHistory(params: {
 	})
 }
 
-export async function mdbrianBridgeReportProcedureOutcome(params: {
+export async function mdbrainBridgeReportProcedureOutcome(params: {
 	handle: Extract<MemoryStableHandle, { family: "procedure" }>
 	success: boolean
 	note?: string
 	actorRole?: MemoryActorRole
 }): Promise<Extract<MemoryLifecycleItem, { family: "procedure" }> | null> {
-	const m = (await mdbrianBridgeGetManager(
+	const m = (await mdbrainBridgeGetManager(
 		params.handle.agentId,
 	)) as LifecycleCapableManager
 	if (!m.reportProcedureOutcome) {
@@ -740,7 +740,7 @@ export async function mdbrianBridgeReportProcedureOutcome(params: {
 	return m.reportProcedureOutcome(params)
 }
 
-export async function mdbrianBridgeApplyMemoryFeedback(params: {
+export async function mdbrainBridgeApplyMemoryFeedback(params: {
 	handle: Extract<MemoryStableHandle, { family: "structured" }>
 	signal: MemoryFeedbackSignal
 	patch?: StructuredMemoryLifecyclePatch
@@ -748,7 +748,7 @@ export async function mdbrianBridgeApplyMemoryFeedback(params: {
 	note?: string
 	actorRole?: MemoryActorRole
 }): Promise<Extract<MemoryLifecycleItem, { family: "structured" }> | null> {
-	const m = (await mdbrianBridgeGetManager(
+	const m = (await mdbrainBridgeGetManager(
 		params.handle.agentId,
 	)) as LifecycleCapableManager
 	if (!m.applyMemoryFeedback) {
@@ -757,7 +757,7 @@ export async function mdbrianBridgeApplyMemoryFeedback(params: {
 	return m.applyMemoryFeedback(params)
 }
 
-export async function mdbrianBridgeSearchDetailed(params: {
+export async function mdbrainBridgeSearchDetailed(params: {
 	agentId?: string
 	query: string
 	scope?: MemoryScope
@@ -806,7 +806,7 @@ export async function mdbrianBridgeSearchDetailed(params: {
 		lexicalPrefilter?: "disabled" | "experimental"
 	}
 }) {
-	const m = await mdbrianBridgeGetManager(params.agentId)
+	const m = await mdbrainBridgeGetManager(params.agentId)
 	if (!m.searchDetailed) {
 		throw new Error("searchDetailed is not available on this manager")
 	}
@@ -886,52 +886,52 @@ export async function mdbrianBridgeSearchDetailed(params: {
 	})
 }
 
-export async function mdbrianBridgeStatus(params: {
+export async function mdbrainBridgeStatus(params: {
 	agentId?: string
 }): Promise<MemoryProviderStatus> {
-	const m = await mdbrianBridgeGetManager(params.agentId)
+	const m = await mdbrainBridgeGetManager(params.agentId)
 	return m.status()
 }
 
-export async function mdbrianBridgeGetDetailedStatus(params: {
+export async function mdbrainBridgeGetDetailedStatus(params: {
 	agentId?: string
 }): Promise<V2Status> {
-	const m = await mdbrianBridgeGetManager(params.agentId)
+	const m = await mdbrainBridgeGetManager(params.agentId)
 	return m.getDetailedStatus()
 }
 
-export async function mdbrianBridgeStats(params: {
+export async function mdbrainBridgeStats(params: {
 	agentId?: string
 }): Promise<MemoryStats> {
-	const m = await mdbrianBridgeGetManager(params.agentId)
+	const m = await mdbrainBridgeGetManager(params.agentId)
 	return m.stats()
 }
 
-export async function mdbrianBridgeSync(params: {
+export async function mdbrainBridgeSync(params: {
 	agentId?: string
 	reason?: string
 	force?: boolean
 }) {
-	const m = await mdbrianBridgeGetManager(params.agentId)
+	const m = await mdbrainBridgeGetManager(params.agentId)
 	return m.sync({
 		reason: params.reason,
 		force: params.force,
 	})
 }
 
-export async function mdbrianBridgeProbeEmbedding(params: {
+export async function mdbrainBridgeProbeEmbedding(params: {
 	agentId?: string
 }) {
-	const m = await mdbrianBridgeGetManager(params.agentId)
+	const m = await mdbrainBridgeGetManager(params.agentId)
 	return m.probeEmbeddingAvailability()
 }
 
-export async function mdbrianBridgeProbeVector(params: { agentId?: string }) {
-	const m = await mdbrianBridgeGetManager(params.agentId)
+export async function mdbrainBridgeProbeVector(params: { agentId?: string }) {
+	const m = await mdbrainBridgeGetManager(params.agentId)
 	return m.probeVectorAvailability()
 }
 
-export async function mdbrianBridgeRelevanceExplain(params: {
+export async function mdbrainBridgeRelevanceExplain(params: {
 	agentId?: string
 	query: string
 	sourceScope?: RelevanceSourceScope
@@ -940,7 +940,7 @@ export async function mdbrianBridgeRelevanceExplain(params: {
 	minScore?: number
 	deep?: boolean
 }): Promise<RelevanceExplainResult> {
-	const m = await mdbrianBridgeGetManager(params.agentId)
+	const m = await mdbrainBridgeGetManager(params.agentId)
 	return m.relevanceExplain({
 		query: params.query,
 		sourceScope: params.sourceScope,
@@ -951,7 +951,7 @@ export async function mdbrianBridgeRelevanceExplain(params: {
 	})
 }
 
-export async function mdbrianBridgeRelevanceBenchmark(params: {
+export async function mdbrainBridgeRelevanceBenchmark(params: {
 	agentId?: string
 	datasetPath?: string
 	maxResults?: number
@@ -970,7 +970,7 @@ export async function mdbrianBridgeRelevanceBenchmark(params: {
 	}
 	retrievalLane?: "native" | "raw-session"
 }): Promise<RelevanceBenchmarkResult> {
-	const m = await mdbrianBridgeGetManager(params.agentId)
+	const m = await mdbrainBridgeGetManager(params.agentId)
 	return m.relevanceBenchmark({
 		datasetPath: params.datasetPath,
 		maxResults: params.maxResults,
@@ -984,29 +984,29 @@ export async function mdbrianBridgeRelevanceBenchmark(params: {
 	})
 }
 
-export async function mdbrianBridgeRelevanceReport(params: {
+export async function mdbrainBridgeRelevanceReport(params: {
 	agentId?: string
 	windowMs?: number
 }): Promise<RelevanceReport> {
-	const m = await mdbrianBridgeGetManager(params.agentId)
+	const m = await mdbrainBridgeGetManager(params.agentId)
 	return m.relevanceReport({ windowMs: params.windowMs })
 }
 
-export async function mdbrianBridgeRelevanceSampleRate(params: {
+export async function mdbrainBridgeRelevanceSampleRate(params: {
 	agentId?: string
 }): Promise<RelevanceSampleState> {
-	const m = await mdbrianBridgeGetManager(params.agentId)
+	const m = await mdbrainBridgeGetManager(params.agentId)
 	return m.relevanceSampleRate()
 }
 
-export async function mdbrianBridgeBenchmarkIngest(params: {
+export async function mdbrainBridgeBenchmarkIngest(params: {
 	agentId?: string
 	datasetPath: string
 	scope?: MemoryScope
 	limitConversations?: number
 	limitTurnsPerConversation?: number
 }): Promise<MemoryBenchmarkIngestResult> {
-	const m = await mdbrianBridgeGetManager(params.agentId)
+	const m = await mdbrainBridgeGetManager(params.agentId)
 	return m.benchmarkIngest({
 		datasetPath: params.datasetPath,
 		scope: params.scope,
@@ -1015,14 +1015,14 @@ export async function mdbrianBridgeBenchmarkIngest(params: {
 	})
 }
 
-export async function mdbrianBridgeImportConversations(params: {
+export async function mdbrainBridgeImportConversations(params: {
 	agentId?: string
 	datasetPath: string
 	scope?: MemoryScope
 	limitConversations?: number
 	limitTurnsPerConversation?: number
 }): Promise<MemoryConversationImportResult> {
-	const m = (await mdbrianBridgeGetManager(
+	const m = (await mdbrainBridgeGetManager(
 		params.agentId,
 	)) as ConversationImportCapableManager
 	if (!m.importConversations) {
@@ -1036,14 +1036,14 @@ export async function mdbrianBridgeImportConversations(params: {
 	})
 }
 
-export async function mdbrianBridgeAccessTrends(params: {
+export async function mdbrainBridgeAccessTrends(params: {
 	agentId?: string
 	collection?: AccessEventCollection
 	memoryIds?: string[]
 	windowDays?: number
 	limit?: number
 }): Promise<MemoryAccessTrend[]> {
-	const m = await mdbrianBridgeGetManager(params.agentId)
+	const m = await mdbrainBridgeGetManager(params.agentId)
 	return m.accessTrends({
 		collection: params.collection,
 		memoryIds: params.memoryIds,
@@ -1052,13 +1052,13 @@ export async function mdbrianBridgeAccessTrends(params: {
 	})
 }
 
-export async function mdbrianBridgeAccessSummaries(params: {
+export async function mdbrainBridgeAccessSummaries(params: {
 	agentId?: string
 	collection: AccessEventCollection
 	memoryIds: string[]
 	windowDays?: number
 }): Promise<MemoryAccessSummary[]> {
-	const m = await mdbrianBridgeGetManager(params.agentId)
+	const m = await mdbrainBridgeGetManager(params.agentId)
 	if (!m.accessSummaries) {
 		return []
 	}
@@ -1069,13 +1069,13 @@ export async function mdbrianBridgeAccessSummaries(params: {
 	})
 }
 
-export async function mdbrianBridgeTraceChain(params: {
+export async function mdbrainBridgeTraceChain(params: {
 	agentId?: string
 	factId: string
 	collection: string
 	maxDepth?: number
 }) {
-	const m = (await mdbrianBridgeGetManager(
+	const m = (await mdbrainBridgeGetManager(
 		params.agentId,
 	)) as ChainCapableManager
 	if (!m.traceChain) {
@@ -1089,12 +1089,12 @@ export async function mdbrianBridgeTraceChain(params: {
 	})
 }
 
-export async function mdbrianBridgeScanNovelty(params: {
+export async function mdbrainBridgeScanNovelty(params: {
 	agentId?: string
 	limit?: number
 	scope?: string
 }) {
-	const m = (await mdbrianBridgeGetManager(
+	const m = (await mdbrainBridgeGetManager(
 		params.agentId,
 	)) as NoveltyCapableManager
 	if (!m.scanNovelty) {
@@ -1106,13 +1106,13 @@ export async function mdbrianBridgeScanNovelty(params: {
 	})
 }
 
-export async function mdbrianBridgeConsolidate(params: {
+export async function mdbrainBridgeConsolidate(params: {
 	agentId?: string
 	maxEvents?: number
 	minCombinedScore?: number
 	scope?: string
 }) {
-	const m = (await mdbrianBridgeGetManager(
+	const m = (await mdbrainBridgeGetManager(
 		params.agentId,
 	)) as ConsolidateCapableManager
 	if (!m.consolidate) {
@@ -1125,13 +1125,13 @@ export async function mdbrianBridgeConsolidate(params: {
 	})
 }
 
-export async function mdbrianBridgeSelfEdit(params: {
+export async function mdbrainBridgeSelfEdit(params: {
 	agentId?: string
 	block: "user" | "persona" | "instructions"
 	action: "append" | "replace" | "prepend"
 	content: string
 }): Promise<{ upserted: boolean; id: string }> {
-	const m = (await mdbrianBridgeGetManager(
+	const m = (await mdbrainBridgeGetManager(
 		params.agentId,
 	)) as SelfEditCapableManager
 	if (!m.selfEditBlock) {
@@ -1144,23 +1144,23 @@ export async function mdbrianBridgeSelfEdit(params: {
 	})
 }
 
-export async function mdbrianBridgeGetState(params: {
+export async function mdbrainBridgeGetState(params: {
 	agentId?: string
 	scope?: MemoryScope
 	scopeRef?: string
 }): Promise<MemoryStateFamily & { partial?: boolean }> {
 	const results = await Promise.allSettled([
-		mdbrianBridgeProfile({
+		mdbrainBridgeProfile({
 			agentId: params.agentId,
 			scope: params.scope,
 			scopeRef: params.scopeRef,
 		}),
-		mdbrianBridgeHydrateActiveSlate({
+		mdbrainBridgeHydrateActiveSlate({
 			agentId: params.agentId,
 			scope: params.scope,
 			scopeRef: params.scopeRef,
 		}),
-		mdbrianBridgeBuildContextBundle({
+		mdbrainBridgeBuildContextBundle({
 			agentId: params.agentId,
 			scope: params.scope,
 			scopeRef: params.scopeRef,
@@ -1178,11 +1178,11 @@ export async function mdbrianBridgeGetState(params: {
 	return { profile, blocks, bundle, ...(partial ? { partial: true } : {}) }
 }
 
-export async function mdbrianBridgeListRecallTraces(params: {
+export async function mdbrainBridgeListRecallTraces(params: {
 	agentId?: string
 	limit?: number
 }): Promise<RecallTrace[]> {
-	const m = (await mdbrianBridgeGetManager(
+	const m = (await mdbrainBridgeGetManager(
 		params.agentId,
 	)) as RecallTraceCapableManager
 	if (!m.listRecallTraces) {
@@ -1191,11 +1191,11 @@ export async function mdbrianBridgeListRecallTraces(params: {
 	return m.listRecallTraces({ limit: params.limit })
 }
 
-export async function mdbrianBridgeGetRecallTrace(params: {
+export async function mdbrainBridgeGetRecallTrace(params: {
 	agentId?: string
 	traceId: string
 }): Promise<RecallTrace | null> {
-	const m = (await mdbrianBridgeGetManager(
+	const m = (await mdbrainBridgeGetManager(
 		params.agentId,
 	)) as RecallTraceCapableManager
 	if (!m.getRecallTrace) {
@@ -1204,13 +1204,13 @@ export async function mdbrianBridgeGetRecallTrace(params: {
 	return m.getRecallTrace({ traceId: params.traceId })
 }
 
-export async function mdbrianBridgeListMemoryJobs(params: {
+export async function mdbrainBridgeListMemoryJobs(params: {
 	agentId?: string
 	status?: MemoryJobStatus
 	limit?: number
 	jobType?: MemoryJobType
 }): Promise<MemoryJob[]> {
-	const m = (await mdbrianBridgeGetManager(
+	const m = (await mdbrainBridgeGetManager(
 		params.agentId,
 	)) as MemoryJobsCapableManager
 	if (!m.listMemoryJobs) {
@@ -1223,11 +1223,11 @@ export async function mdbrianBridgeListMemoryJobs(params: {
 	})
 }
 
-export async function mdbrianBridgeGetMemoryJob(params: {
+export async function mdbrainBridgeGetMemoryJob(params: {
 	agentId?: string
 	jobId: string
 }): Promise<MemoryJob | null> {
-	const m = (await mdbrianBridgeGetManager(
+	const m = (await mdbrainBridgeGetManager(
 		params.agentId,
 	)) as MemoryJobsCapableManager
 	if (!m.getMemoryJob) {
@@ -1243,4 +1243,4 @@ export type {
 	MemoryStableHandle,
 	ProcedureEntry,
 	StructuredMemoryEntry,
-} from "@mdbrian/memory-engine"
+} from "@mdbrain/memory-engine"

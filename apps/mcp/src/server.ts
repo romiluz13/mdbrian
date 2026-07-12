@@ -4,39 +4,39 @@ import {
 	CallToolRequestSchema,
 	ListToolsRequestSchema,
 } from "@modelcontextprotocol/sdk/types.js"
-import { MdbrianClient } from "@mdbrian/client"
+import { MdbrainClient } from "@mdbrain/client"
 import { pathToFileURL } from "node:url"
 
-const mdbrian = new MdbrianClient({
+const mdbrain = new MdbrainClient({
 	baseUrl: process.env.MDBRAIN_API_URL,
 	apiKey: process.env.MDBRAIN_API_KEY,
 })
 
-type MdbrianMcpClient = typeof mdbrian
+type MdbrainMcpClient = typeof mdbrain
 
 const RECALL_TOOL_NAMES = new Set([
-	"mdbrian_recall_conversation",
-	"mdbrian_recall_messages",
+	"mdbrain_recall_conversation",
+	"mdbrain_recall_messages",
 ])
 const LIFECYCLE_GET_TOOL_NAMES = new Set([
-	"mdbrian_lifecycle_get",
-	"mdbrian_memory_get",
+	"mdbrain_lifecycle_get",
+	"mdbrain_memory_get",
 ])
 const LIFECYCLE_UPDATE_TOOL_NAMES = new Set([
-	"mdbrian_lifecycle_update",
-	"mdbrian_memory_update",
+	"mdbrain_lifecycle_update",
+	"mdbrain_memory_update",
 ])
 const LIFECYCLE_DELETE_TOOL_NAMES = new Set([
-	"mdbrian_lifecycle_delete",
-	"mdbrian_memory_delete",
+	"mdbrain_lifecycle_delete",
+	"mdbrain_memory_delete",
 ])
 const LIFECYCLE_HISTORY_TOOL_NAMES = new Set([
-	"mdbrian_lifecycle_history",
-	"mdbrian_memory_history",
+	"mdbrain_lifecycle_history",
+	"mdbrain_memory_history",
 ])
 const IMPORT_TOOL_NAMES = new Set([
-	"mdbrian_import_conversations",
-	"mdbrian_import_conversation_history",
+	"mdbrain_import_conversations",
+	"mdbrain_import_conversation_history",
 ])
 
 function jsonResult(payload: unknown, isError = false) {
@@ -55,8 +55,8 @@ function jsonResult(payload: unknown, isError = false) {
 
 export const toolList = [
 	{
-		name: "mdbrian_search",
-		description: "Search Mdbrian memory",
+		name: "mdbrain_search",
+		description: "Search Mdbrain memory",
 		inputSchema: {
 			type: "object",
 			properties: {
@@ -69,8 +69,8 @@ export const toolList = [
 		},
 	},
 	{
-		name: "mdbrian_search_kb",
-		description: "Search Mdbrian knowledge base",
+		name: "mdbrain_search_kb",
+		description: "Search Mdbrain knowledge base",
 		inputSchema: {
 			type: "object",
 			properties: {
@@ -82,7 +82,7 @@ export const toolList = [
 		},
 	},
 	{
-		name: "mdbrian_read_file",
+		name: "mdbrain_read_file",
 		description: "Read memory file by path (memory_get parity)",
 		inputSchema: {
 			type: "object",
@@ -96,7 +96,7 @@ export const toolList = [
 		},
 	},
 	{
-		name: "mdbrian_add",
+		name: "mdbrain_add",
 		description: "Add user message to memory",
 		inputSchema: {
 			type: "object",
@@ -109,7 +109,7 @@ export const toolList = [
 		},
 	},
 	{
-		name: "mdbrian_write_event",
+		name: "mdbrain_write_event",
 		description: "Write conversation event (any role)",
 		inputSchema: {
 			type: "object",
@@ -123,8 +123,8 @@ export const toolList = [
 		},
 	},
 	{
-		name: "mdbrian_profile",
-		description: "Synthesize profile from Mdbrian memory",
+		name: "mdbrain_profile",
+		description: "Synthesize profile from Mdbrain memory",
 		inputSchema: {
 			type: "object",
 			properties: {
@@ -134,8 +134,8 @@ export const toolList = [
 		},
 	},
 	{
-		name: "mdbrian_build_context_bundle",
-		description: "Build a prompt-ready context bundle from Mdbrian memory",
+		name: "mdbrain_build_context_bundle",
+		description: "Build a prompt-ready context bundle from Mdbrain memory",
 		inputSchema: {
 			type: "object",
 			properties: {
@@ -180,7 +180,7 @@ export const toolList = [
 		},
 	},
 	{
-		name: "mdbrian_recall_conversation",
+		name: "mdbrain_recall_conversation",
 		description:
 			"Search and retrieve past conversation messages with canonical citations. Use exact ISO 8601 timestamps (for example `2026-04-08T14:30:00Z`); for date-only input (`2026-04-08`), include timezone to resolve local day boundaries correctly. Tool messages are excluded by default unless includeToolMessages is true.",
 		inputSchema: {
@@ -231,9 +231,9 @@ export const toolList = [
 		},
 	},
 	{
-		name: "mdbrian_recall_messages",
+		name: "mdbrain_recall_messages",
 		description:
-			"Semantic alias for mdbrian_recall_conversation. Recall past messages with exact time/session/role filters and canonical citations from the same runtime truth.",
+			"Semantic alias for mdbrain_recall_conversation. Recall past messages with exact time/session/role filters and canonical citations from the same runtime truth.",
 		inputSchema: {
 			type: "object",
 			properties: {
@@ -282,7 +282,7 @@ export const toolList = [
 		},
 	},
 	{
-		name: "mdbrian_lifecycle_get",
+		name: "mdbrain_lifecycle_get",
 		description:
 			"Get the current structured memory or procedure referenced by a stable lifecycle handle.",
 		inputSchema: {
@@ -298,9 +298,9 @@ export const toolList = [
 		},
 	},
 	{
-		name: "mdbrian_memory_get",
+		name: "mdbrain_memory_get",
 		description:
-			"Semantic alias for mdbrian_lifecycle_get. Fetch the current structured memory or procedure for a stable memory handle.",
+			"Semantic alias for mdbrain_lifecycle_get. Fetch the current structured memory or procedure for a stable memory handle.",
 		inputSchema: {
 			type: "object",
 			properties: {
@@ -314,7 +314,7 @@ export const toolList = [
 		},
 	},
 	{
-		name: "mdbrian_lifecycle_update",
+		name: "mdbrain_lifecycle_update",
 		description:
 			"Update a structured memory or procedure via its stable lifecycle handle. Creates a new current revision and preserves history.",
 		inputSchema: {
@@ -335,9 +335,9 @@ export const toolList = [
 		},
 	},
 	{
-		name: "mdbrian_memory_update",
+		name: "mdbrain_memory_update",
 		description:
-			"Semantic alias for mdbrian_lifecycle_update. Update a memory item by stable handle while preserving revision history.",
+			"Semantic alias for mdbrain_lifecycle_update. Update a memory item by stable handle while preserving revision history.",
 		inputSchema: {
 			type: "object",
 			properties: {
@@ -356,9 +356,9 @@ export const toolList = [
 		},
 	},
 	{
-		name: "mdbrian_lifecycle_delete",
+		name: "mdbrain_lifecycle_delete",
 		description:
-			"Delete a memory item using Mdbrian lifecycle semantics. This invalidates the current version and preserves history instead of hard-deleting it.",
+			"Delete a memory item using Mdbrain lifecycle semantics. This invalidates the current version and preserves history instead of hard-deleting it.",
 		inputSchema: {
 			type: "object",
 			properties: {
@@ -377,9 +377,9 @@ export const toolList = [
 		},
 	},
 	{
-		name: "mdbrian_memory_delete",
+		name: "mdbrain_memory_delete",
 		description:
-			"Semantic alias for mdbrian_lifecycle_delete. Delete a memory item using invalidate-with-history semantics rather than hard delete.",
+			"Semantic alias for mdbrain_lifecycle_delete. Delete a memory item using invalidate-with-history semantics rather than hard delete.",
 		inputSchema: {
 			type: "object",
 			properties: {
@@ -398,7 +398,7 @@ export const toolList = [
 		},
 	},
 	{
-		name: "mdbrian_lifecycle_history",
+		name: "mdbrain_lifecycle_history",
 		description:
 			"Fetch ordered revision history for a structured memory or procedure from its stable lifecycle handle.",
 		inputSchema: {
@@ -419,9 +419,9 @@ export const toolList = [
 		},
 	},
 	{
-		name: "mdbrian_memory_history",
+		name: "mdbrain_memory_history",
 		description:
-			"Semantic alias for mdbrian_lifecycle_history. Fetch ordered memory revision history from a stable handle.",
+			"Semantic alias for mdbrain_lifecycle_history. Fetch ordered memory revision history from a stable handle.",
 		inputSchema: {
 			type: "object",
 			properties: {
@@ -440,7 +440,7 @@ export const toolList = [
 		},
 	},
 	{
-		name: "mdbrian_procedure_outcome",
+		name: "mdbrain_procedure_outcome",
 		description:
 			"Record whether a procedure succeeded or failed using its stable handle. Updates outcome counters without bypassing the canonical procedure record.",
 		inputSchema: {
@@ -470,7 +470,7 @@ export const toolList = [
 		},
 	},
 	{
-		name: "mdbrian_memory_feedback",
+		name: "mdbrain_memory_feedback",
 		description:
 			"Apply confirm/correct/irrelevant feedback to a structured memory using its stable handle. Confirm reinforces, correct routes through revision-aware updates, and irrelevant invalidates with history.",
 		inputSchema: {
@@ -511,7 +511,7 @@ export const toolList = [
 		},
 	},
 	{
-		name: "mdbrian_status",
+		name: "mdbrain_status",
 		description: "Memory provider status",
 		inputSchema: {
 			type: "object",
@@ -521,7 +521,7 @@ export const toolList = [
 		},
 	},
 	{
-		name: "mdbrian_chain_trace",
+		name: "mdbrain_chain_trace",
 		description:
 			"Trace the provenance chain of a derived fact back to its source events",
 		inputSchema: {
@@ -545,7 +545,7 @@ export const toolList = [
 		},
 	},
 	{
-		name: "mdbrian_novelty_scan",
+		name: "mdbrain_novelty_scan",
 		description:
 			"Scan for the most novel/surprising events using vector distance scoring",
 		inputSchema: {
@@ -558,7 +558,7 @@ export const toolList = [
 		},
 	},
 	{
-		name: "mdbrian_consolidate",
+		name: "mdbrain_consolidate",
 		description:
 			"Run the consolidation pipeline to promote high-value events to structured facts",
 		inputSchema: {
@@ -572,7 +572,7 @@ export const toolList = [
 		},
 	},
 	{
-		name: "mdbrian_self_edit",
+		name: "mdbrain_self_edit",
 		description:
 			"Edit your own core memory blocks directly. Use 'user' for user preferences/profile, 'persona' for your identity/behavior, 'instructions' for task instructions. Changes persist across sessions.",
 		inputSchema: {
@@ -598,7 +598,7 @@ export const toolList = [
 		},
 	},
 	{
-		name: "mdbrian_state_unified",
+		name: "mdbrain_state_unified",
 		description:
 			"Get all three state surfaces (profile, blocks, bundle) in one call",
 		inputSchema: {
@@ -611,7 +611,7 @@ export const toolList = [
 		},
 	},
 	{
-		name: "mdbrian_benchmark_ingest",
+		name: "mdbrain_benchmark_ingest",
 		description:
 			"Replay a benchmark conversation dataset through the canonical writeConversationEvent() pipeline",
 		inputSchema: {
@@ -630,7 +630,7 @@ export const toolList = [
 		},
 	},
 	{
-		name: "mdbrian_import_conversations",
+		name: "mdbrain_import_conversations",
 		description:
 			"Import conversation history through the canonical writeConversationEvent() pipeline",
 		inputSchema: {
@@ -649,9 +649,9 @@ export const toolList = [
 		},
 	},
 	{
-		name: "mdbrian_import_conversation_history",
+		name: "mdbrain_import_conversation_history",
 		description:
-			"Semantic alias for mdbrian_import_conversations. Import conversation history through the same canonical writeConversationEvent() runtime path.",
+			"Semantic alias for mdbrain_import_conversations. Import conversation history through the same canonical writeConversationEvent() runtime path.",
 		inputSchema: {
 			type: "object",
 			properties: {
@@ -668,7 +668,7 @@ export const toolList = [
 		},
 	},
 	{
-		name: "mdbrian_admin_access_trends",
+		name: "mdbrain_admin_access_trends",
 		description:
 			"Inspect rolling 7-day access trends from the access_events time series collection",
 		inputSchema: {
@@ -696,7 +696,7 @@ export const toolList = [
 		},
 	},
 	{
-		name: "mdbrian_admin_access_summaries",
+		name: "mdbrain_admin_access_summaries",
 		description:
 			"Inspect aggregate access counts and last-access timestamps from the access_events time series collection",
 		inputSchema: {
@@ -724,7 +724,7 @@ export const toolList = [
 		},
 	},
 	{
-		name: "mdbrian_admin_list_traces",
+		name: "mdbrain_admin_list_traces",
 		description: "List recent recall traces for operator debugging",
 		inputSchema: {
 			type: "object",
@@ -735,7 +735,7 @@ export const toolList = [
 		},
 	},
 	{
-		name: "mdbrian_admin_get_trace",
+		name: "mdbrain_admin_get_trace",
 		description: "Fetch one recall trace by traceId",
 		inputSchema: {
 			type: "object",
@@ -747,7 +747,7 @@ export const toolList = [
 		},
 	},
 	{
-		name: "mdbrian_list_jobs",
+		name: "mdbrain_list_jobs",
 		description: "List memory jobs for an agent",
 		inputSchema: {
 			type: "object",
@@ -772,7 +772,7 @@ export const toolList = [
 		},
 	},
 	{
-		name: "mdbrian_get_job",
+		name: "mdbrain_get_job",
 		description: "Fetch one memory job by jobId",
 		inputSchema: {
 			type: "object",
@@ -784,7 +784,7 @@ export const toolList = [
 		},
 	},
 	{
-		name: "mdbrian_search_detailed",
+		name: "mdbrain_search_detailed",
 		description:
 			"Full CRAG search pipeline with scored results, trust annotations, and source provenance",
 		inputSchema: {
@@ -849,7 +849,7 @@ export const toolList = [
 		},
 	},
 	{
-		name: "mdbrian_hydrate_active_slate",
+		name: "mdbrain_hydrate_active_slate",
 		description:
 			"Load the highest-salience active memories (hot context for current session)",
 		inputSchema: {
@@ -863,7 +863,7 @@ export const toolList = [
 		},
 	},
 	{
-		name: "mdbrian_discovery_projection",
+		name: "mdbrain_discovery_projection",
 		description:
 			"Build a discovery projection (entity-brief, topic-brief, what-changed, contradiction-report)",
 		inputSchema: {
@@ -888,7 +888,7 @@ export const toolList = [
 		},
 	},
 	{
-		name: "mdbrian_write_structured",
+		name: "mdbrain_write_structured",
 		description: "Write a structured memory entry directly",
 		inputSchema: {
 			type: "object",
@@ -900,7 +900,7 @@ export const toolList = [
 		},
 	},
 	{
-		name: "mdbrian_write_procedure",
+		name: "mdbrain_write_procedure",
 		description: "Write a step-by-step procedure",
 		inputSchema: {
 			type: "object",
@@ -912,7 +912,7 @@ export const toolList = [
 		},
 	},
 	{
-		name: "mdbrian_status_detailed",
+		name: "mdbrain_status_detailed",
 		description:
 			"Detailed health status: events, entities, projection lag, lane coverage, diagnostics",
 		inputSchema: {
@@ -921,7 +921,7 @@ export const toolList = [
 		},
 	},
 	{
-		name: "mdbrian_stats",
+		name: "mdbrain_stats",
 		description:
 			"Memory statistics: source counts, embedding coverage, index stats",
 		inputSchema: {
@@ -930,7 +930,7 @@ export const toolList = [
 		},
 	},
 	{
-		name: "mdbrian_sync",
+		name: "mdbrain_sync",
 		description: "Trigger a memory sync operation",
 		inputSchema: {
 			type: "object",
@@ -942,7 +942,7 @@ export const toolList = [
 		},
 	},
 	{
-		name: "mdbrian_probe_embedding",
+		name: "mdbrain_probe_embedding",
 		description: "Probe embedding model availability",
 		inputSchema: {
 			type: "object",
@@ -950,7 +950,7 @@ export const toolList = [
 		},
 	},
 	{
-		name: "mdbrian_probe_vector",
+		name: "mdbrain_probe_vector",
 		description: "Probe vector search availability",
 		inputSchema: {
 			type: "object",
@@ -958,7 +958,7 @@ export const toolList = [
 		},
 	},
 	{
-		name: "mdbrian_relevance_explain",
+		name: "mdbrain_relevance_explain",
 		description:
 			"Detailed relevance diagnostics for a query: artifacts, health, scores",
 		inputSchema: {
@@ -978,7 +978,7 @@ export const toolList = [
 		},
 	},
 	{
-		name: "mdbrian_relevance_benchmark",
+		name: "mdbrain_relevance_benchmark",
 		description: "Run relevance benchmark suite",
 		inputSchema: {
 			type: "object",
@@ -991,7 +991,7 @@ export const toolList = [
 		},
 	},
 	{
-		name: "mdbrian_relevance_report",
+		name: "mdbrain_relevance_report",
 		description: "Relevance health report: hit rate, empty rate, fallback rate",
 		inputSchema: {
 			type: "object",
@@ -1002,7 +1002,7 @@ export const toolList = [
 		},
 	},
 	{
-		name: "mdbrian_relevance_sample_rate",
+		name: "mdbrain_relevance_sample_rate",
 		description: "Current relevance sampling rate and degraded signal count",
 		inputSchema: {
 			type: "object",
@@ -1010,7 +1010,7 @@ export const toolList = [
 		},
 	},
 	{
-		name: "mdbrian_wiki_search",
+		name: "mdbrain_wiki_search",
 		description:
 			"Hybrid search over the MDBrain wiki (vector + full-text + RRF fusion). Returns ranked wiki pages with scoped retrieval + governance filters.",
 		inputSchema: {
@@ -1048,7 +1048,7 @@ export const toolList = [
 		},
 	},
 	{
-		name: "mdbrian_wiki_get",
+		name: "mdbrain_wiki_get",
 		description:
 			"Get a wiki page by slug (OKF concept ID, may contain slashes). Returns JSON by default, or markdown/HTML via format.",
 		inputSchema: {
@@ -1067,7 +1067,7 @@ export const toolList = [
 		},
 	},
 	{
-		name: "mdbrian_wiki_apply",
+		name: "mdbrain_wiki_apply",
 		description:
 			"Create or update a wiki page. When the slug+scope+scopeRef matches an existing page, it updates (bumps revision); otherwise it creates a new page.",
 		inputSchema: {
@@ -1135,7 +1135,7 @@ export const toolList = [
 		},
 	},
 	{
-		name: "mdbrian_wiki_export_okf",
+		name: "mdbrain_wiki_export_okf",
 		description:
 			"Export wiki pages to an OKF (Open Knowledge Format) bundle on disk. Portable, vendor-neutral interchange with Google Knowledge Catalog + OKF consumers.",
 		inputSchema: {
@@ -1154,7 +1154,7 @@ export const toolList = [
 		},
 	},
 	{
-		name: "mdbrian_wiki_lint",
+		name: "mdbrain_wiki_lint",
 		description:
 			"List wiki pages (optionally by kind) for lint review — spot stale/superseded entries needing attention. Contradiction surfacing lands with the T12 contradiction detector.",
 		inputSchema: {
@@ -1183,7 +1183,7 @@ export const toolList = [
 
 const server = new Server(
 	{
-		name: "mdbrian",
+		name: "mdbrain",
 		version: "0.1.0",
 	},
 	{
@@ -1198,12 +1198,12 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
 export async function handleToolCall(
 	name: string,
 	args: Record<string, unknown>,
-	client: MdbrianMcpClient = mdbrian,
+	client: MdbrainMcpClient = mdbrain,
 ) {
 	try {
-		const mdbrian = client
-		if (name === "mdbrian_search") {
-			const out = await mdbrian.search({
+		const mdbrain = client
+		if (name === "mdbrain_search") {
+			const out = await mdbrain.search({
 				query: typeof args.query === "string" ? args.query : "",
 				agentId: typeof args.agentId === "string" ? args.agentId : undefined,
 				limit: typeof args.limit === "number" ? args.limit : undefined,
@@ -1211,16 +1211,16 @@ export async function handleToolCall(
 			})
 			return { content: [{ type: "text", text: JSON.stringify(out) }] }
 		}
-		if (name === "mdbrian_search_kb") {
-			const out = await mdbrian.searchKB({
+		if (name === "mdbrain_search_kb") {
+			const out = await mdbrain.searchKB({
 				query: typeof args.query === "string" ? args.query : "",
 				agentId: typeof args.agentId === "string" ? args.agentId : undefined,
 				limit: typeof args.limit === "number" ? args.limit : undefined,
 			})
 			return { content: [{ type: "text", text: JSON.stringify(out) }] }
 		}
-		if (name === "mdbrian_read_file") {
-			const out = await mdbrian.readFile({
+		if (name === "mdbrain_read_file") {
+			const out = await mdbrain.readFile({
 				relPath: typeof args.relPath === "string" ? args.relPath : "",
 				agentId: typeof args.agentId === "string" ? args.agentId : undefined,
 				from: typeof args.from === "number" ? args.from : undefined,
@@ -1228,8 +1228,8 @@ export async function handleToolCall(
 			})
 			return { content: [{ type: "text", text: JSON.stringify(out) }] }
 		}
-		if (name === "mdbrian_add") {
-			const out = await mdbrian.add({
+		if (name === "mdbrain_add") {
+			const out = await mdbrain.add({
 				content: typeof args.content === "string" ? args.content : "",
 				agentId: typeof args.agentId === "string" ? args.agentId : undefined,
 				sessionId:
@@ -1237,7 +1237,7 @@ export async function handleToolCall(
 			})
 			return { content: [{ type: "text", text: JSON.stringify(out) }] }
 		}
-		if (name === "mdbrian_write_event") {
+		if (name === "mdbrain_write_event") {
 			const role = args.role
 			if (
 				role !== "user" &&
@@ -1247,7 +1247,7 @@ export async function handleToolCall(
 			) {
 				throw new Error("invalid role")
 			}
-			const out = await mdbrian.writeEvent({
+			const out = await mdbrain.writeEvent({
 				role,
 				body: typeof args.body === "string" ? args.body : "",
 				agentId: typeof args.agentId === "string" ? args.agentId : undefined,
@@ -1256,14 +1256,14 @@ export async function handleToolCall(
 			})
 			return { content: [{ type: "text", text: JSON.stringify(out) }] }
 		}
-		if (name === "mdbrian_profile") {
-			const out = await mdbrian.profile({
+		if (name === "mdbrain_profile") {
+			const out = await mdbrain.profile({
 				agentId: typeof args.agentId === "string" ? args.agentId : undefined,
 				scopeRef: typeof args.scopeRef === "string" ? args.scopeRef : undefined,
 			})
 			return { content: [{ type: "text", text: JSON.stringify(out) }] }
 		}
-		if (name === "mdbrian_build_context_bundle") {
+		if (name === "mdbrain_build_context_bundle") {
 			const scope = args.scope
 			if (
 				scope !== undefined &&
@@ -1308,7 +1308,7 @@ export async function handleToolCall(
 				!Array.isArray(args.timeRange)
 					? (args.timeRange as Record<string, unknown>)
 					: undefined
-			const out = await mdbrian.buildContextBundle({
+			const out = await mdbrain.buildContextBundle({
 				query: typeof args.query === "string" ? args.query : undefined,
 				agentId: typeof args.agentId === "string" ? args.agentId : undefined,
 				scope: validatedScope,
@@ -1359,18 +1359,18 @@ export async function handleToolCall(
 			})
 			return { content: [{ type: "text", text: JSON.stringify(out) }] }
 		}
-		if (name === "mdbrian_status") {
-			const out = await mdbrian.status(
+		if (name === "mdbrain_status") {
+			const out = await mdbrain.status(
 				typeof args.agentId === "string" ? args.agentId : undefined,
 			)
 			const guidance = {
 				quickStart:
-					"Call mdbrian_profile first. Then mdbrian_search_detailed for queries. Use mdbrian_write_event to save insights.",
+					"Call mdbrain_profile first. Then mdbrain_search_detailed for queries. Use mdbrain_write_event to save insights.",
 				bestPractices: [
-					"Call mdbrian_profile or mdbrian_state_unified at session start",
-					"Save decisions with mdbrian_write_structured",
-					"Use mdbrian_search_detailed before answering knowledge questions",
-					"Use mdbrian_build_context_bundle with mode: wake-up for fast session start",
+					"Call mdbrain_profile or mdbrain_state_unified at session start",
+					"Save decisions with mdbrain_write_structured",
+					"Use mdbrain_search_detailed before answering knowledge questions",
+					"Use mdbrain_build_context_bundle with mode: wake-up for fast session start",
 				],
 				capabilities: [
 					"semantic search",
@@ -1402,7 +1402,7 @@ export async function handleToolCall(
 			if (Array.isArray(args.roles) && roles?.length !== args.roles.length) {
 				throw new Error("roles must contain only user|assistant|system|tool")
 			}
-			const out = await mdbrian.recallConversation({
+			const out = await mdbrain.recallConversation({
 				query: typeof args.query === "string" ? args.query : undefined,
 				agentId: typeof args.agentId === "string" ? args.agentId : undefined,
 				sessionId:
@@ -1424,7 +1424,7 @@ export async function handleToolCall(
 			return jsonResult(out)
 		}
 		if (LIFECYCLE_GET_TOOL_NAMES.has(name)) {
-			const out = await mdbrian.getLifecycleItem({
+			const out = await mdbrain.getLifecycleItem({
 				handle:
 					typeof args.handle === "object" && args.handle !== null
 						? (args.handle as any)
@@ -1433,7 +1433,7 @@ export async function handleToolCall(
 			return jsonResult(out)
 		}
 		if (LIFECYCLE_UPDATE_TOOL_NAMES.has(name)) {
-			const out = await mdbrian.updateLifecycleItem({
+			const out = await mdbrain.updateLifecycleItem({
 				handle:
 					typeof args.handle === "object" && args.handle !== null
 						? (args.handle as any)
@@ -1446,7 +1446,7 @@ export async function handleToolCall(
 			return jsonResult(out)
 		}
 		if (LIFECYCLE_DELETE_TOOL_NAMES.has(name)) {
-			const out = await mdbrian.deleteLifecycleItem({
+			const out = await mdbrain.deleteLifecycleItem({
 				handle:
 					typeof args.handle === "object" && args.handle !== null
 						? (args.handle as any)
@@ -1459,7 +1459,7 @@ export async function handleToolCall(
 			return jsonResult(out)
 		}
 		if (LIFECYCLE_HISTORY_TOOL_NAMES.has(name)) {
-			const out = await mdbrian.getLifecycleHistory({
+			const out = await mdbrain.getLifecycleHistory({
 				handle:
 					typeof args.handle === "object" && args.handle !== null
 						? (args.handle as any)
@@ -1471,7 +1471,7 @@ export async function handleToolCall(
 			})
 			return jsonResult(out)
 		}
-		if (name === "mdbrian_procedure_outcome") {
+		if (name === "mdbrain_procedure_outcome") {
 			if (typeof args.success !== "boolean") {
 				throw new Error("success must be a boolean")
 			}
@@ -1489,7 +1489,7 @@ export async function handleToolCall(
 				args.actorRole === "system"
 					? args.actorRole
 					: undefined
-			const out = await mdbrian.reportProcedureOutcome({
+			const out = await mdbrain.reportProcedureOutcome({
 				handle:
 					typeof args.handle === "object" && args.handle !== null
 						? (args.handle as any)
@@ -1500,7 +1500,7 @@ export async function handleToolCall(
 			})
 			return jsonResult(out)
 		}
-		if (name === "mdbrian_memory_feedback") {
+		if (name === "mdbrain_memory_feedback") {
 			const signal =
 				args.signal === "confirm" ||
 				args.signal === "correct" ||
@@ -1535,7 +1535,7 @@ export async function handleToolCall(
 			}
 			const out =
 				signal === "correct"
-					? await mdbrian.applyMemoryFeedback({
+					? await mdbrain.applyMemoryFeedback({
 							...common,
 							signal,
 							patch:
@@ -1544,7 +1544,7 @@ export async function handleToolCall(
 									: ({} as any),
 						})
 					: signal === "irrelevant"
-						? await mdbrian.applyMemoryFeedback({
+						? await mdbrain.applyMemoryFeedback({
 								...common,
 								signal,
 								...(typeof args.invalidatedBy === "object" &&
@@ -1557,14 +1557,14 @@ export async function handleToolCall(
 										}
 									: {}),
 							})
-						: await mdbrian.applyMemoryFeedback({
+						: await mdbrain.applyMemoryFeedback({
 								...common,
 								signal,
 							})
 			return jsonResult(out)
 		}
-		if (name === "mdbrian_chain_trace") {
-			const out = await mdbrian.traceChain({
+		if (name === "mdbrain_chain_trace") {
+			const out = await mdbrain.traceChain({
 				factId: typeof args.factId === "string" ? args.factId : "",
 				collection: typeof args.collection === "string" ? args.collection : "",
 				agentId: typeof args.agentId === "string" ? args.agentId : undefined,
@@ -1572,16 +1572,16 @@ export async function handleToolCall(
 			})
 			return { content: [{ type: "text", text: JSON.stringify(out) }] }
 		}
-		if (name === "mdbrian_novelty_scan") {
-			const out = await mdbrian.scanNovelty({
+		if (name === "mdbrain_novelty_scan") {
+			const out = await mdbrain.scanNovelty({
 				agentId: typeof args.agentId === "string" ? args.agentId : undefined,
 				limit: typeof args.limit === "number" ? args.limit : undefined,
 				scope: typeof args.scope === "string" ? args.scope : undefined,
 			})
 			return { content: [{ type: "text", text: JSON.stringify(out) }] }
 		}
-		if (name === "mdbrian_consolidate") {
-			const out = await mdbrian.consolidate({
+		if (name === "mdbrain_consolidate") {
+			const out = await mdbrain.consolidate({
 				agentId: typeof args.agentId === "string" ? args.agentId : undefined,
 				maxEvents:
 					typeof args.maxEvents === "number" ? args.maxEvents : undefined,
@@ -1593,7 +1593,7 @@ export async function handleToolCall(
 			})
 			return { content: [{ type: "text", text: JSON.stringify(out) }] }
 		}
-		if (name === "mdbrian_self_edit") {
+		if (name === "mdbrain_self_edit") {
 			const block = typeof args.block === "string" ? args.block : ""
 			const action = typeof args.action === "string" ? args.action : "replace"
 			const validBlocks = ["user", "persona", "instructions"]
@@ -1624,7 +1624,7 @@ export async function handleToolCall(
 					isError: true,
 				}
 			}
-			const out = await mdbrian.selfEdit({
+			const out = await mdbrain.selfEdit({
 				block: block as "user" | "persona" | "instructions",
 				action: action as "append" | "replace" | "prepend",
 				content: typeof args.content === "string" ? args.content : "",
@@ -1632,7 +1632,7 @@ export async function handleToolCall(
 			})
 			return { content: [{ type: "text", text: JSON.stringify(out) }] }
 		}
-		if (name === "mdbrian_search_detailed") {
+		if (name === "mdbrain_search_detailed") {
 			const searchConfig =
 				typeof args.searchConfig === "object" &&
 				args.searchConfig !== null &&
@@ -1666,7 +1666,7 @@ export async function handleToolCall(
 							value === "graph",
 					)
 				: undefined
-			const out = await mdbrian.searchDetailed({
+			const out = await mdbrain.searchDetailed({
 				query: typeof args.query === "string" ? args.query : "",
 				agentId: typeof args.agentId === "string" ? args.agentId : undefined,
 				limit: typeof args.limit === "number" ? args.limit : undefined,
@@ -1763,8 +1763,8 @@ export async function handleToolCall(
 			})
 			return { content: [{ type: "text", text: JSON.stringify(out) }] }
 		}
-		if (name === "mdbrian_hydrate_active_slate") {
-			const out = await mdbrian.hydrateActiveSlate({
+		if (name === "mdbrain_hydrate_active_slate") {
+			const out = await mdbrain.hydrateActiveSlate({
 				agentId: typeof args.agentId === "string" ? args.agentId : undefined,
 				scope:
 					typeof args.scope === "string" ? (args.scope as "user") : undefined,
@@ -1773,7 +1773,7 @@ export async function handleToolCall(
 			})
 			return { content: [{ type: "text", text: JSON.stringify(out) }] }
 		}
-		if (name === "mdbrian_discovery_projection") {
+		if (name === "mdbrain_discovery_projection") {
 			const kind = args.kind
 			if (
 				kind !== "entity-brief" &&
@@ -1785,7 +1785,7 @@ export async function handleToolCall(
 					"kind is required and must be entity-brief|topic-brief|what-changed|contradiction-report",
 				)
 			}
-			const out = await mdbrian.buildDiscoveryProjection({
+			const out = await mdbrain.buildDiscoveryProjection({
 				kind,
 				query: typeof args.query === "string" ? args.query : undefined,
 				agentId: typeof args.agentId === "string" ? args.agentId : undefined,
@@ -1796,62 +1796,62 @@ export async function handleToolCall(
 			})
 			return { content: [{ type: "text", text: JSON.stringify(out) }] }
 		}
-		if (name === "mdbrian_write_structured") {
+		if (name === "mdbrain_write_structured") {
 			const entry =
 				typeof args.entry === "object" && args.entry !== null
 					? (args.entry as Record<string, unknown>)
 					: {}
-			const out = await mdbrian.writeStructured({
+			const out = await mdbrain.writeStructured({
 				entry,
 				agentId: typeof args.agentId === "string" ? args.agentId : undefined,
 			})
 			return { content: [{ type: "text", text: JSON.stringify(out) }] }
 		}
-		if (name === "mdbrian_write_procedure") {
+		if (name === "mdbrain_write_procedure") {
 			const entry =
 				typeof args.entry === "object" && args.entry !== null
 					? (args.entry as Record<string, unknown>)
 					: {}
-			const out = await mdbrian.writeProcedure({
+			const out = await mdbrain.writeProcedure({
 				entry,
 				agentId: typeof args.agentId === "string" ? args.agentId : undefined,
 			})
 			return { content: [{ type: "text", text: JSON.stringify(out) }] }
 		}
-		if (name === "mdbrian_status_detailed") {
-			const out = await mdbrian.getDetailedStatus(
+		if (name === "mdbrain_status_detailed") {
+			const out = await mdbrain.getDetailedStatus(
 				typeof args.agentId === "string" ? args.agentId : undefined,
 			)
 			return { content: [{ type: "text", text: JSON.stringify(out) }] }
 		}
-		if (name === "mdbrian_stats") {
-			const out = await mdbrian.stats(
+		if (name === "mdbrain_stats") {
+			const out = await mdbrain.stats(
 				typeof args.agentId === "string" ? args.agentId : undefined,
 			)
 			return { content: [{ type: "text", text: JSON.stringify(out) }] }
 		}
-		if (name === "mdbrian_sync") {
-			const out = await mdbrian.sync({
+		if (name === "mdbrain_sync") {
+			const out = await mdbrain.sync({
 				agentId: typeof args.agentId === "string" ? args.agentId : undefined,
 				reason: typeof args.reason === "string" ? args.reason : undefined,
 				force: typeof args.force === "boolean" ? args.force : undefined,
 			})
 			return { content: [{ type: "text", text: JSON.stringify(out) }] }
 		}
-		if (name === "mdbrian_probe_embedding") {
-			const out = await mdbrian.probeEmbedding(
+		if (name === "mdbrain_probe_embedding") {
+			const out = await mdbrain.probeEmbedding(
 				typeof args.agentId === "string" ? args.agentId : undefined,
 			)
 			return { content: [{ type: "text", text: JSON.stringify(out) }] }
 		}
-		if (name === "mdbrian_probe_vector") {
-			const out = await mdbrian.probeVector(
+		if (name === "mdbrain_probe_vector") {
+			const out = await mdbrain.probeVector(
 				typeof args.agentId === "string" ? args.agentId : undefined,
 			)
 			return { content: [{ type: "text", text: JSON.stringify(out) }] }
 		}
-		if (name === "mdbrian_relevance_explain") {
-			const out = await mdbrian.relevanceExplain({
+		if (name === "mdbrain_relevance_explain") {
+			const out = await mdbrain.relevanceExplain({
 				query: typeof args.query === "string" ? args.query : "",
 				agentId: typeof args.agentId === "string" ? args.agentId : undefined,
 				sourceScope:
@@ -1868,8 +1868,8 @@ export async function handleToolCall(
 			})
 			return { content: [{ type: "text", text: JSON.stringify(out) }] }
 		}
-		if (name === "mdbrian_relevance_benchmark") {
-			const out = await mdbrian.relevanceBenchmark({
+		if (name === "mdbrain_relevance_benchmark") {
+			const out = await mdbrain.relevanceBenchmark({
 				agentId: typeof args.agentId === "string" ? args.agentId : undefined,
 				datasetPath:
 					typeof args.datasetPath === "string" ? args.datasetPath : undefined,
@@ -1879,21 +1879,21 @@ export async function handleToolCall(
 			})
 			return { content: [{ type: "text", text: JSON.stringify(out) }] }
 		}
-		if (name === "mdbrian_relevance_report") {
-			const out = await mdbrian.relevanceReport(
+		if (name === "mdbrain_relevance_report") {
+			const out = await mdbrain.relevanceReport(
 				typeof args.agentId === "string" ? args.agentId : undefined,
 				typeof args.windowMs === "number" ? args.windowMs : undefined,
 			)
 			return { content: [{ type: "text", text: JSON.stringify(out) }] }
 		}
-		if (name === "mdbrian_relevance_sample_rate") {
-			const out = await mdbrian.relevanceSampleRate(
+		if (name === "mdbrain_relevance_sample_rate") {
+			const out = await mdbrain.relevanceSampleRate(
 				typeof args.agentId === "string" ? args.agentId : undefined,
 			)
 			return { content: [{ type: "text", text: JSON.stringify(out) }] }
 		}
-		if (name === "mdbrian_state_unified") {
-			const out = await mdbrian.state({
+		if (name === "mdbrain_state_unified") {
+			const out = await mdbrain.state({
 				agentId: typeof args.agentId === "string" ? args.agentId : undefined,
 				scope:
 					typeof args.scope === "string"
@@ -1916,14 +1916,14 @@ export async function handleToolCall(
 				],
 			}
 		}
-		if (name === "mdbrian_benchmark_ingest") {
+		if (name === "mdbrain_benchmark_ingest") {
 			if (
 				typeof args.datasetPath !== "string" ||
 				args.datasetPath.length === 0
 			) {
 				throw new Error("datasetPath is required")
 			}
-			const out = await mdbrian.benchmarkIngest({
+			const out = await mdbrain.benchmarkIngest({
 				datasetPath: args.datasetPath,
 				agentId: typeof args.agentId === "string" ? args.agentId : undefined,
 				scope:
@@ -1953,7 +1953,7 @@ export async function handleToolCall(
 			) {
 				throw new Error("datasetPath is required")
 			}
-			const out = await mdbrian.importConversations({
+			const out = await mdbrain.importConversations({
 				datasetPath: args.datasetPath,
 				agentId: typeof args.agentId === "string" ? args.agentId : undefined,
 				scope:
@@ -1976,8 +1976,8 @@ export async function handleToolCall(
 			})
 			return jsonResult(out)
 		}
-		if (name === "mdbrian_admin_access_trends") {
-			const out = await mdbrian.accessTrends({
+		if (name === "mdbrain_admin_access_trends") {
+			const out = await mdbrain.accessTrends({
 				agentId: typeof args.agentId === "string" ? args.agentId : undefined,
 				collection:
 					args.collection === "events" ||
@@ -2003,7 +2003,7 @@ export async function handleToolCall(
 			})
 			return { content: [{ type: "text", text: JSON.stringify(out) }] }
 		}
-		if (name === "mdbrian_admin_access_summaries") {
+		if (name === "mdbrain_admin_access_summaries") {
 			const memoryIds = Array.isArray(args.memoryIds)
 				? args.memoryIds.filter(
 						(memoryId): memoryId is string =>
@@ -2023,7 +2023,7 @@ export async function handleToolCall(
 			) {
 				throw new Error("collection is required")
 			}
-			const out = await mdbrian.accessSummaries({
+			const out = await mdbrain.accessSummaries({
 				agentId: typeof args.agentId === "string" ? args.agentId : undefined,
 				collection: args.collection,
 				memoryIds,
@@ -2032,8 +2032,8 @@ export async function handleToolCall(
 			})
 			return { content: [{ type: "text", text: JSON.stringify(out) }] }
 		}
-		if (name === "mdbrian_admin_list_traces") {
-			const out = await mdbrian.listRecallTraces({
+		if (name === "mdbrain_admin_list_traces") {
+			const out = await mdbrain.listRecallTraces({
 				agentId: typeof args.agentId === "string" ? args.agentId : undefined,
 				limit:
 					typeof args.limit === "number"
@@ -2042,18 +2042,18 @@ export async function handleToolCall(
 			})
 			return { content: [{ type: "text", text: JSON.stringify(out) }] }
 		}
-		if (name === "mdbrian_admin_get_trace") {
+		if (name === "mdbrain_admin_get_trace") {
 			if (typeof args.traceId !== "string" || !args.traceId.trim()) {
 				throw new Error("traceId is required")
 			}
-			const out = await mdbrian.getRecallTrace({
+			const out = await mdbrain.getRecallTrace({
 				traceId: args.traceId,
 				agentId: typeof args.agentId === "string" ? args.agentId : undefined,
 			})
 			return { content: [{ type: "text", text: JSON.stringify(out) }] }
 		}
-		if (name === "mdbrian_list_jobs") {
-			const out = await mdbrian.listJobs({
+		if (name === "mdbrain_list_jobs") {
+			const out = await mdbrain.listJobs({
 				agentId: typeof args.agentId === "string" ? args.agentId : undefined,
 				status:
 					args.status === "pending" ||
@@ -2078,18 +2078,18 @@ export async function handleToolCall(
 			})
 			return { content: [{ type: "text", text: JSON.stringify(out) }] }
 		}
-		if (name === "mdbrian_get_job") {
+		if (name === "mdbrain_get_job") {
 			if (typeof args.jobId !== "string" || !args.jobId.trim()) {
 				throw new Error("jobId is required")
 			}
-			const out = await mdbrian.getJob({
+			const out = await mdbrain.getJob({
 				jobId: args.jobId,
 				agentId: typeof args.agentId === "string" ? args.agentId : undefined,
 			})
 			return { content: [{ type: "text", text: JSON.stringify(out) }] }
 		}
-		if (name === "mdbrian_wiki_search") {
-			const out = await mdbrian.wikiSearch({
+		if (name === "mdbrain_wiki_search") {
+			const out = await mdbrain.wikiSearch({
 				query: typeof args.query === "string" ? args.query : "",
 				scope: typeof args.scope === "string" ? args.scope : undefined,
 				scopeRef: typeof args.scopeRef === "string" ? args.scopeRef : undefined,
@@ -2108,8 +2108,8 @@ export async function handleToolCall(
 			})
 			return { content: [{ type: "text", text: JSON.stringify(out) }] }
 		}
-		if (name === "mdbrian_wiki_get") {
-			const out = await mdbrian.wikiGet({
+		if (name === "mdbrain_wiki_get") {
+			const out = await mdbrain.wikiGet({
 				slug: typeof args.slug === "string" ? args.slug : "",
 				scope: typeof args.scope === "string" ? args.scope : "",
 				scopeRef: typeof args.scopeRef === "string" ? args.scopeRef : "",
@@ -2123,8 +2123,8 @@ export async function handleToolCall(
 			})
 			return { content: [{ type: "text", text: JSON.stringify(out) }] }
 		}
-		if (name === "mdbrian_wiki_apply") {
-			const out = await mdbrian.wikiApply({
+		if (name === "mdbrain_wiki_apply") {
+			const out = await mdbrain.wikiApply({
 				kind: typeof args.kind === "string" ? args.kind : "",
 				title: typeof args.title === "string" ? args.title : "",
 				slug: typeof args.slug === "string" ? args.slug : "",
@@ -2146,8 +2146,8 @@ export async function handleToolCall(
 			})
 			return { content: [{ type: "text", text: JSON.stringify(out) }] }
 		}
-		if (name === "mdbrian_wiki_export_okf") {
-			const out = await mdbrian.wikiExportOkf({
+		if (name === "mdbrain_wiki_export_okf") {
+			const out = await mdbrain.wikiExportOkf({
 				scope: typeof args.scope === "string" ? args.scope : "",
 				scopeRef: typeof args.scopeRef === "string" ? args.scopeRef : "",
 				outDir: typeof args.outDir === "string" ? args.outDir : "",
@@ -2157,8 +2157,8 @@ export async function handleToolCall(
 			})
 			return { content: [{ type: "text", text: JSON.stringify(out) }] }
 		}
-		if (name === "mdbrian_wiki_lint") {
-			const out = await mdbrian.wikiLint({
+		if (name === "mdbrain_wiki_lint") {
+			const out = await mdbrain.wikiLint({
 				scope: typeof args.scope === "string" ? args.scope : "",
 				scopeRef: typeof args.scopeRef === "string" ? args.scopeRef : "",
 				kind: typeof args.kind === "string" ? args.kind : undefined,

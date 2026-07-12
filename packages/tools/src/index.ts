@@ -1,6 +1,6 @@
-import type { MdbrianClient } from "@mdbrian/client"
+import type { MdbrainClient } from "@mdbrain/client"
 /**
- * Vercel AI SDK–compatible tool definitions that call the Mdbrian HTTP API
+ * Vercel AI SDK–compatible tool definitions that call the Mdbrain HTTP API
  * (same integration role as @supermemory/tools).
  */
 import { tool, type Tool } from "ai"
@@ -10,7 +10,7 @@ import { z } from "zod"
 /*  SDK middleware re-exports                                          */
 /* ------------------------------------------------------------------ */
 
-export { withMdbrian, type MdbrianCoreOptions } from "./vercel/index.js"
+export { withMdbrain, type MdbrainCoreOptions } from "./vercel/index.js"
 export { createOpenAIMiddleware } from "./openai/index.js"
 
 const searchSchema = z.object({
@@ -305,20 +305,20 @@ const accessSummariesSchema = z.object({
 	windowDays: z.number().int().positive().optional(),
 })
 
-export type MdbrianToolSet = Record<string, Tool>
+export type MdbrainToolSet = Record<string, Tool>
 
-export function createMdbrianTools(client: MdbrianClient): MdbrianToolSet {
+export function createMdbrainTools(client: MdbrainClient): MdbrainToolSet {
 	return {
-		mdbrian_search: tool({
-			description: "Search Mdbrian memory (MongoDB-backed hybrid retrieval).",
+		mdbrain_search: tool({
+			description: "Search Mdbrain memory (MongoDB-backed hybrid retrieval).",
 			inputSchema: searchSchema,
 			execute: async (input) => {
 				const { results } = await client.search(input)
 				return { results }
 			},
 		}),
-		mdbrian_search_kb: tool({
-			description: "Search Mdbrian knowledge base chunks only.",
+		mdbrain_search_kb: tool({
+			description: "Search Mdbrain knowledge base chunks only.",
 			inputSchema: searchKbSchema,
 			execute: async (input) => {
 				const { results } = await client.searchKB({
@@ -329,81 +329,81 @@ export function createMdbrianTools(client: MdbrianClient): MdbrianToolSet {
 				return { results }
 			},
 		}),
-		mdbrian_read_file: tool({
+		mdbrain_read_file: tool({
 			description:
 				"Read a memory file path or structured: URI (memory_get parity).",
 			inputSchema: readFileSchema,
 			execute: async (input) => client.readFile(input),
 		}),
-		mdbrian_add: tool({
+		mdbrain_add: tool({
 			description: "Append a user message to conversational memory.",
 			inputSchema: addSchema,
 			execute: async (input) => client.add(input),
 		}),
-		mdbrian_write_event: tool({
+		mdbrain_write_event: tool({
 			description: "Write a full conversation event (any role).",
 			inputSchema: writeEventSchema,
 			execute: async (input) => client.writeEvent(input),
 		}),
-		mdbrian_profile: tool({
-			description: "Synthesize a profile from Mdbrian memory.",
+		mdbrain_profile: tool({
+			description: "Synthesize a profile from Mdbrain memory.",
 			inputSchema: profileSchema,
 			execute: async (input) => client.profile(input),
 		}),
-		mdbrian_build_context_bundle: tool({
+		mdbrain_build_context_bundle: tool({
 			description:
-				"Build a prompt-ready Mdbrian context bundle from durable memory and recent events.",
+				"Build a prompt-ready Mdbrain context bundle from durable memory and recent events.",
 			inputSchema: contextBundleSchema,
 			execute: async (input) => client.buildContextBundle(input),
 		}),
-		mdbrian_recall_conversation: tool({
+		mdbrain_recall_conversation: tool({
 			description:
 				"Search past conversation messages by content, session, role, and exact time range. Use ISO 8601 timestamps; date-only values should include timezone when local day boundaries matter.",
 			inputSchema: recallConversationSchema,
 			execute: async (input) => client.recallConversation(input),
 		}),
-		mdbrian_lifecycle_get: tool({
+		mdbrain_lifecycle_get: tool({
 			description:
 				"Get the current structured memory or procedure referenced by a stable lifecycle handle.",
 			inputSchema: lifecycleGetSchema,
 			execute: async (input) => client.getLifecycleItem(input),
 		}),
-		mdbrian_lifecycle_update: tool({
+		mdbrain_lifecycle_update: tool({
 			description:
 				"Update a structured memory or procedure via its stable lifecycle handle. Reuses revision history instead of overwriting in place.",
 			inputSchema: lifecycleUpdateSchema,
 			execute: async (input) => client.updateLifecycleItem(input),
 		}),
-		mdbrian_lifecycle_delete: tool({
+		mdbrain_lifecycle_delete: tool({
 			description:
-				"Delete a memory item using Mdbrian lifecycle semantics. This invalidates the current version and preserves history instead of hard-deleting it.",
+				"Delete a memory item using Mdbrain lifecycle semantics. This invalidates the current version and preserves history instead of hard-deleting it.",
 			inputSchema: lifecycleDeleteSchema,
 			execute: async (input) => client.deleteLifecycleItem(input),
 		}),
-		mdbrian_lifecycle_history: tool({
+		mdbrain_lifecycle_history: tool({
 			description:
 				"Fetch ordered revision history for a structured memory or procedure from its stable lifecycle handle.",
 			inputSchema: lifecycleHistorySchema,
 			execute: async (input) => client.getLifecycleHistory(input),
 		}),
-		mdbrian_procedure_outcome: tool({
+		mdbrain_procedure_outcome: tool({
 			description:
 				"Record whether a procedure succeeded or failed using its stable handle. Updates success/failure counters without bypassing the canonical procedure record.",
 			inputSchema: procedureOutcomeSchema,
 			execute: async (input) => client.reportProcedureOutcome(input),
 		}),
-		mdbrian_memory_feedback: tool({
+		mdbrain_memory_feedback: tool({
 			description:
 				"Apply confirm/correct/irrelevant feedback to a structured memory using its stable handle. Confirm reinforces, correct routes through revision-aware updates, and irrelevant invalidates with history.",
 			inputSchema: memoryFeedbackSchema,
 			execute: async (input) => client.applyMemoryFeedback(input),
 		}),
-		mdbrian_status: tool({
+		mdbrain_status: tool({
 			description: "Memory provider status (model, backend, health).",
 			inputSchema: statusSchema,
 			execute: async (input) => client.status(input.agentId),
 		}),
-		mdbrian_chain_trace: tool({
+		mdbrain_chain_trace: tool({
 			description:
 				"Trace the provenance chain of a derived fact back to source events.",
 			inputSchema: z.object({
@@ -414,7 +414,7 @@ export function createMdbrianTools(client: MdbrianClient): MdbrianToolSet {
 			}),
 			execute: async (input) => client.traceChain(input),
 		}),
-		mdbrian_novelty_scan: tool({
+		mdbrain_novelty_scan: tool({
 			description:
 				"Scan for the most novel/surprising events using vector distance scoring.",
 			inputSchema: z.object({
@@ -424,7 +424,7 @@ export function createMdbrianTools(client: MdbrianClient): MdbrianToolSet {
 			}),
 			execute: async (input) => client.scanNovelty(input),
 		}),
-		mdbrian_consolidate: tool({
+		mdbrain_consolidate: tool({
 			description:
 				"Run consolidation pipeline to promote high-value events to structured facts.",
 			inputSchema: z.object({
@@ -435,7 +435,7 @@ export function createMdbrianTools(client: MdbrianClient): MdbrianToolSet {
 			}),
 			execute: async (input) => client.consolidate(input),
 		}),
-		mdbrian_self_edit: tool({
+		mdbrain_self_edit: tool({
 			description:
 				"Edit your own core memory blocks directly. Use 'user' for user preferences/profile, 'persona' for your identity/behavior, 'instructions' for task instructions. Changes persist across sessions.",
 			inputSchema: z.object({
@@ -446,7 +446,7 @@ export function createMdbrianTools(client: MdbrianClient): MdbrianToolSet {
 			}),
 			execute: async (input) => client.selfEdit(input),
 		}),
-		mdbrian_state_unified: tool({
+		mdbrain_state_unified: tool({
 			description:
 				"Get all three state surfaces (profile, blocks, bundle) in one call.",
 			inputSchema: z.object({
@@ -458,31 +458,31 @@ export function createMdbrianTools(client: MdbrianClient): MdbrianToolSet {
 			}),
 			execute: async (input) => client.state(input),
 		}),
-		mdbrian_benchmark_ingest: tool({
+		mdbrain_benchmark_ingest: tool({
 			description:
 				"Replay a benchmark conversation dataset through the canonical writeConversationEvent() pipeline.",
 			inputSchema: benchmarkIngestSchema,
 			execute: async (input) => client.benchmarkIngest(input),
 		}),
-		mdbrian_import_conversations: tool({
+		mdbrain_import_conversations: tool({
 			description:
 				"Import conversation history through the canonical writeConversationEvent() pipeline.",
 			inputSchema: conversationImportSchema,
 			execute: async (input) => client.importConversations(input),
 		}),
-		mdbrian_admin_access_trends: tool({
+		mdbrain_admin_access_trends: tool({
 			description:
 				"Inspect rolling 7-day access trends from the access_events time series collection.",
 			inputSchema: accessTrendsSchema,
 			execute: async (input) => client.accessTrends(input),
 		}),
-		mdbrian_admin_access_summaries: tool({
+		mdbrain_admin_access_summaries: tool({
 			description:
 				"Inspect aggregate access counts and last-access timestamps from the access_events time series collection.",
 			inputSchema: accessSummariesSchema,
 			execute: async (input) => client.accessSummaries(input),
 		}),
-		mdbrian_admin_list_traces: tool({
+		mdbrain_admin_list_traces: tool({
 			description: "List recent recall traces for operator debugging.",
 			inputSchema: z.object({
 				agentId: z.string().optional(),
@@ -490,7 +490,7 @@ export function createMdbrianTools(client: MdbrianClient): MdbrianToolSet {
 			}),
 			execute: async (input) => client.listRecallTraces(input),
 		}),
-		mdbrian_admin_get_trace: tool({
+		mdbrain_admin_get_trace: tool({
 			description: "Fetch one recall trace by traceId.",
 			inputSchema: z.object({
 				traceId: z.string().min(1),
@@ -498,7 +498,7 @@ export function createMdbrianTools(client: MdbrianClient): MdbrianToolSet {
 			}),
 			execute: async (input) => client.getRecallTrace(input),
 		}),
-		mdbrian_list_jobs: tool({
+		mdbrain_list_jobs: tool({
 			description: "List memory background jobs for an agent.",
 			inputSchema: z.object({
 				agentId: z.string().optional(),
@@ -518,7 +518,7 @@ export function createMdbrianTools(client: MdbrianClient): MdbrianToolSet {
 			}),
 			execute: async (input) => client.listJobs(input),
 		}),
-		mdbrian_get_job: tool({
+		mdbrain_get_job: tool({
 			description: "Fetch one memory job by jobId.",
 			inputSchema: z.object({
 				jobId: z.string().min(1),

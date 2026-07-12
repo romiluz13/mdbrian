@@ -6,7 +6,7 @@
  *   MDBRAIN_MONGODB_URI="mongodb://localhost:27017" vitest run src/e2e-evaluation.e2e.test.ts --reporter=verbose
  *
  * Or from repo root:
- *   MDBRAIN_MONGODB_URI="mongodb://localhost:27017" bun run --filter @mdbrian/memory-engine test:e2e
+ *   MDBRAIN_MONGODB_URI="mongodb://localhost:27017" bun run --filter @mdbrain/memory-engine test:e2e
  *
  * 10-Dimension Score Card:
  *   1. Chain Completeness (15%)
@@ -50,7 +50,7 @@ import { resolvePreviewMongoTestUri } from "./test-helpers/preview-env.js"
 // ---------------------------------------------------------------------------
 
 const TEST_URI = resolvePreviewMongoTestUri("mongodb://localhost:27017")
-const TEST_DB = "mdbrian_evaluation"
+const TEST_DB = "mdbrain_evaluation"
 const TEST_PREFIX = "eval_"
 
 // ---------------------------------------------------------------------------

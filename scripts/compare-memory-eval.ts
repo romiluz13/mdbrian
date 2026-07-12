@@ -1,5 +1,5 @@
 import { randomUUID } from "node:crypto"
-import { MdbrianClient } from "@mdbrian/client"
+import { MdbrainClient } from "@mdbrain/client"
 
 import { compareEvalRuns, runMemoryEvalSuite } from "./memory-eval-core.js"
 import { writeProofArtifact } from "./proof-artifacts.js"
@@ -16,7 +16,7 @@ async function main() {
 	const seed =
 		process.env.MDBRAIN_EVAL_SEED?.trim() ??
 		`compare-${randomUUID().slice(0, 8)}`
-	const baselineClient = new MdbrianClient({
+	const baselineClient = new MdbrainClient({
 		baseUrl: readBaseUrl(
 			"MDBRAIN_BASELINE_API_URL",
 			process.env.MDBRAIN_API_URL,
@@ -24,7 +24,7 @@ async function main() {
 		apiKey: process.env.MDBRAIN_BASELINE_API_KEY?.trim() || undefined,
 		maxRetries: 2,
 	})
-	const candidateClient = new MdbrianClient({
+	const candidateClient = new MdbrainClient({
 		baseUrl: readBaseUrl(
 			"MDBRAIN_CANDIDATE_API_URL",
 			process.env.MDBRAIN_API_URL,

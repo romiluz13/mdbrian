@@ -1,5 +1,5 @@
 import type { Db, Document } from "mongodb"
-import { createSubsystemLogger } from "@mdbrian/lib"
+import { createSubsystemLogger } from "@mdbrain/lib"
 import { renderEventChunkText } from "./mongodb-events.js"
 import { eventsCollection } from "./mongodb-schema.js"
 import type { MemorySearchResult } from "./types.js"

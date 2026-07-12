@@ -31,32 +31,32 @@ const rootDir = process.cwd()
 const publishablePackages: PublishablePackage[] = [
 	{
 		dir: "packages/lib",
-		name: "@mdbrian/lib",
+		name: "@mdbrain/lib",
 		supportedSurface: false,
 	},
 	{
 		dir: "packages/memory-engine",
-		name: "@mdbrian/memory-engine",
+		name: "@mdbrain/memory-engine",
 		supportedSurface: true,
 	},
 	{
 		dir: "packages/memory-bridge",
-		name: "@mdbrian/memory-bridge",
+		name: "@mdbrain/memory-bridge",
 		supportedSurface: true,
 	},
 	{
-		dir: "packages/mdbrian-memory",
-		name: "@mdbrian/memory",
+		dir: "packages/mdbrain-memory",
+		name: "@mdbrain/memory",
 		supportedSurface: true,
 	},
 	{
 		dir: "packages/client",
-		name: "@mdbrian/client",
+		name: "@mdbrain/client",
 		supportedSurface: true,
 	},
 	{
 		dir: "packages/tools",
-		name: "@mdbrian/tools",
+		name: "@mdbrain/tools",
 		supportedSurface: true,
 	},
 ] as const
@@ -81,10 +81,10 @@ const forbiddenTarballPatterns = [
 	/^tsconfig\.json$/,
 ] as const
 const forbiddenPrivateDeps = new Set([
-	"@mdbrian/api",
-	"@mdbrian/mcp",
-	"@mdbrian/web",
-	"@mdbrian/docs",
+	"@mdbrain/api",
+	"@mdbrain/mcp",
+	"@mdbrain/web",
+	"@mdbrain/docs",
 ])
 
 function fail(message: string): never {
@@ -312,7 +312,7 @@ function installSmoke(
 	tarballsByName: Map<string, string>,
 ) {
 	const installDir = fs.mkdtempSync(
-		path.join(os.tmpdir(), "mdbrian-pack-smoke-"),
+		path.join(os.tmpdir(), "mdbrain-pack-smoke-"),
 	)
 	const dependencies = Object.fromEntries(
 		Array.from(tarballsByName.entries()).map(([name, tarballPath]) => [
@@ -321,7 +321,7 @@ function installSmoke(
 		]),
 	)
 
-	if (targetPackage.name === "@mdbrian/tools") {
+	if (targetPackage.name === "@mdbrain/tools") {
 		dependencies.ai = "^5.0.0"
 	}
 
@@ -329,7 +329,7 @@ function installSmoke(
 		path.join(installDir, "package.json"),
 		JSON.stringify(
 			{
-				name: "mdbrian-pack-smoke",
+				name: "mdbrain-pack-smoke",
 				private: true,
 				type: "module",
 				dependencies,
@@ -361,7 +361,7 @@ function main() {
 	checkRemovedPaths()
 	checkPublishWorkflow()
 
-	const packDir = fs.mkdtempSync(path.join(os.tmpdir(), "mdbrian-packs-"))
+	const packDir = fs.mkdtempSync(path.join(os.tmpdir(), "mdbrain-packs-"))
 	const tarballs = publishablePackages.map((packageSpec) =>
 		checkPackage(packageSpec, packDir),
 	)

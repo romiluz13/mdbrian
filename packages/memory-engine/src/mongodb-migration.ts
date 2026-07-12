@@ -1,6 +1,6 @@
 import { createHash } from "node:crypto"
 import type { Db } from "mongodb"
-import { createSubsystemLogger } from "@mdbrian/lib"
+import { createSubsystemLogger } from "@mdbrain/lib"
 import { chunksCollection, eventsCollection } from "./mongodb-schema.js"
 import { resolveScopeRef } from "./mongodb-scope.js"
 

@@ -1,4 +1,4 @@
-import type { MemoryScope } from "@mdbrian/lib"
+import type { MemoryScope } from "@mdbrain/lib"
 
 export type MemorySource = "reference" | "conversation" | "structured"
 export type LegacyMemorySource = "memory" | "sessions" | "kb" | "structured"

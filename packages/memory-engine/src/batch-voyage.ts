@@ -118,7 +118,7 @@ async function submitVoyageBatch(params: {
 				input_type: "document",
 			},
 			metadata: {
-				source: "mdbrian",
+				source: "mdbrain",
 				agent: params.agentId,
 			},
 		},

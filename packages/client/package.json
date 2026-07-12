@@ -1,17 +1,17 @@
 {
-	"name": "@mdbrian/client",
+	"name": "@mdbrain/client",
 	"version": "1.1.0",
-	"description": "TypeScript client SDK for the Mdbrian HTTP API",
+	"description": "TypeScript client SDK for the Mdbrain HTTP API",
 	"type": "module",
 	"license": "Apache-2.0",
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/romiluz13/mdbrian.git",
+		"url": "git+https://github.com/romiluz13/mdbrain.git",
 		"directory": "packages/client"
 	},
 	"author": "Rom Iluz",
 	"keywords": [
-		"mdbrian",
+		"mdbrain",
 		"client",
 		"sdk",
 		"mongodb",
@@ -36,8 +36,8 @@
 	"devDependencies": {
 		"typescript": "^5.8.0"
 	},
-	"homepage": "https://github.com/romiluz13/mdbrian#readme",
+	"homepage": "https://github.com/romiluz13/mdbrain#readme",
 	"bugs": {
-		"url": "https://github.com/romiluz13/mdbrian/issues"
+		"url": "https://github.com/romiluz13/mdbrain/issues"
 	}
 }

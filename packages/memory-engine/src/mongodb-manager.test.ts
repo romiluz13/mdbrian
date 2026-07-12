@@ -459,7 +459,7 @@ describe("benchmarkIngest", () => {
 		})
 
 		const workspaceDir = await mkdtemp(
-			path.join(os.tmpdir(), "mdbrian-manager-workspace-"),
+			path.join(os.tmpdir(), "mdbrain-manager-workspace-"),
 		)
 		const datasetDir = path.join(workspaceDir, "benchmarks")
 		const datasetPath = path.join(datasetDir, "dataset.jsonl")
@@ -500,9 +500,9 @@ describe("benchmarkIngest", () => {
 
 	it("rejects benchmark datasets outside allowed roots", async () => {
 		const workspaceDir = await mkdtemp(
-			path.join(os.tmpdir(), "mdbrian-manager-workspace-"),
+			path.join(os.tmpdir(), "mdbrain-manager-workspace-"),
 		)
-		const outsideDir = await mkdtemp(path.join(os.tmpdir(), "mdbrian-outside-"))
+		const outsideDir = await mkdtemp(path.join(os.tmpdir(), "mdbrain-outside-"))
 		const outsideFile = path.join(outsideDir, "dataset.jsonl")
 		try {
 			await writeFile(outsideFile, "")
@@ -553,9 +553,9 @@ describe("benchmarkIngest", () => {
 		})
 
 		const workspaceDir = await mkdtemp(
-			path.join(os.tmpdir(), "mdbrian-manager-workspace-"),
+			path.join(os.tmpdir(), "mdbrain-manager-workspace-"),
 		)
-		const outsideDir = await mkdtemp(path.join(os.tmpdir(), "mdbrian-outside-"))
+		const outsideDir = await mkdtemp(path.join(os.tmpdir(), "mdbrain-outside-"))
 		const outsideFile = path.join(outsideDir, "dataset.jsonl")
 		const previous = process.env.MDBRAIN_BENCHMARK_ALLOWED_ROOTS
 		try {
@@ -1592,7 +1592,7 @@ describe("importConversations", () => {
 		})
 
 		const workspaceDir = await mkdtemp(
-			path.join(os.tmpdir(), "mdbrian-manager-import-workspace-"),
+			path.join(os.tmpdir(), "mdbrain-manager-import-workspace-"),
 		)
 		const importDir = path.join(workspaceDir, "imports")
 		const datasetPath = path.join(importDir, "history.json")
@@ -1633,9 +1633,9 @@ describe("importConversations", () => {
 
 	it("rejects conversation imports outside allowed roots", async () => {
 		const workspaceDir = await mkdtemp(
-			path.join(os.tmpdir(), "mdbrian-manager-import-workspace-"),
+			path.join(os.tmpdir(), "mdbrain-manager-import-workspace-"),
 		)
-		const outsideDir = await mkdtemp(path.join(os.tmpdir(), "mdbrian-outside-"))
+		const outsideDir = await mkdtemp(path.join(os.tmpdir(), "mdbrain-outside-"))
 		const outsideFile = path.join(outsideDir, "history.json")
 		try {
 			await writeFile(outsideFile, JSON.stringify({ conversations: [] }))
@@ -1676,7 +1676,7 @@ describe("relevanceBenchmark", () => {
 
 	it("routes scenario datasets through the new scenario benchmark runner", async () => {
 		const workspaceDir = await mkdtemp(
-			path.join(os.tmpdir(), "mdbrian-relevance-bench-"),
+			path.join(os.tmpdir(), "mdbrain-relevance-bench-"),
 		)
 		const datasetDir = path.join(workspaceDir, "benchmarks")
 		const datasetPath = path.join(datasetDir, "dataset.json")
@@ -1731,7 +1731,7 @@ describe("relevanceBenchmark", () => {
 				db: {
 					command: vi.fn().mockResolvedValue({ size: 0, totalIndexSize: 0 }),
 				},
-				prefix: "mdbrian_bench_",
+				prefix: "mdbrain_bench_",
 				config: {
 					mongodb: {
 						relevance: {
@@ -1814,7 +1814,7 @@ describe("relevanceBenchmark", () => {
 
 	it("falls back to the legacy benchmark path for query-only datasets", async () => {
 		const workspaceDir = await mkdtemp(
-			path.join(os.tmpdir(), "mdbrian-relevance-bench-"),
+			path.join(os.tmpdir(), "mdbrain-relevance-bench-"),
 		)
 		const datasetDir = path.join(workspaceDir, "benchmarks")
 		const datasetPath = path.join(datasetDir, "dataset.jsonl")
@@ -1846,7 +1846,7 @@ describe("relevanceBenchmark", () => {
 				db: {
 					command: vi.fn().mockResolvedValue({ size: 0, totalIndexSize: 0 }),
 				},
-				prefix: "mdbrian_bench_",
+				prefix: "mdbrain_bench_",
 				config: {
 					mongodb: {
 						relevance: {
@@ -1902,7 +1902,7 @@ describe("relevanceBenchmark", () => {
 
 	it("does not silently fall back to legacy when scenario execution fails", async () => {
 		const workspaceDir = await mkdtemp(
-			path.join(os.tmpdir(), "mdbrian-relevance-bench-"),
+			path.join(os.tmpdir(), "mdbrain-relevance-bench-"),
 		)
 		const datasetDir = path.join(workspaceDir, "benchmarks")
 		const datasetPath = path.join(datasetDir, "dataset.json")
@@ -2056,7 +2056,7 @@ describe("runScenarioBenchmarkDataset", () => {
 
 	it("hashes the raw dataset file to build scenario datasetVersion", async () => {
 		const workspaceDir = await mkdtemp(
-			path.join(os.tmpdir(), "mdbrian-benchmark-version-"),
+			path.join(os.tmpdir(), "mdbrain-benchmark-version-"),
 		)
 		const datasetPath = path.join(workspaceDir, "dataset.json")
 		const datasetText =
@@ -3479,7 +3479,7 @@ describe("MongoDBMemoryManager background extraction", () => {
 				agentId: "agent-1",
 				client: undefined,
 				config: { mongodb: { embeddingMode: "automated" } },
-				workspaceDir: "/tmp/mdbrian",
+				workspaceDir: "/tmp/mdbrain",
 				derivationQueue: Promise.resolve(),
 			},
 		) as MongoDBMemoryManager & { derivationQueue: Promise<void> }
@@ -3509,7 +3509,7 @@ describe("MongoDBMemoryManager background extraction", () => {
 					agentId: "agent-1",
 					scope: "agent",
 					scopeRef: "agent:agent-1",
-					workspaceDir: "/tmp/mdbrian",
+					workspaceDir: "/tmp/mdbrain",
 				}),
 			}),
 		)
@@ -3636,7 +3636,7 @@ describe("MongoDBMemoryManager background extraction", () => {
 						episodes: { enabled: false, minEventsForEpisode: 6 },
 					},
 				},
-				workspaceDir: "/tmp/mdbrian",
+				workspaceDir: "/tmp/mdbrain",
 				writeQueue: Promise.resolve(),
 				derivationQueue: Promise.resolve(),
 				chunkCount: 0,
@@ -3704,7 +3704,7 @@ describe("MongoDBMemoryManager background extraction", () => {
 							episodes: { enabled: true, minEventsForEpisode: 6 },
 						},
 					},
-					workspaceDir: "/tmp/mdbrian",
+					workspaceDir: "/tmp/mdbrain",
 					writeQueue: Promise.resolve(),
 					derivationQueue: Promise.resolve(),
 					derivationSchedulingQueue: Promise.resolve(),
@@ -3774,7 +3774,7 @@ describe("MongoDBMemoryManager background extraction", () => {
 							episodes: { enabled: true, minEventsForEpisode: 6 },
 						},
 					},
-					workspaceDir: "/tmp/mdbrian",
+					workspaceDir: "/tmp/mdbrain",
 					writeQueue: Promise.resolve(),
 					derivationQueue: Promise.resolve(),
 					derivationSchedulingQueue: Promise.resolve(),
@@ -3867,7 +3867,7 @@ describe("MongoDBMemoryManager background extraction", () => {
 							episodes: { enabled: false, minEventsForEpisode: 6 },
 						},
 					},
-					workspaceDir: "/tmp/mdbrian",
+					workspaceDir: "/tmp/mdbrain",
 					writeQueue: Promise.resolve(),
 					derivationQueue: Promise.resolve(),
 					derivationSchedulingQueue: Promise.resolve(),
@@ -3939,7 +3939,7 @@ describe("MongoDBMemoryManager background extraction", () => {
 							episodes: { enabled: false, minEventsForEpisode: 6 },
 						},
 					},
-					workspaceDir: "/tmp/mdbrian",
+					workspaceDir: "/tmp/mdbrain",
 					writeQueue: Promise.resolve(),
 					derivationQueue: Promise.resolve(),
 					derivationSchedulingQueue: Promise.resolve(),

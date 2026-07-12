@@ -895,7 +895,7 @@ describe("ensureSearchIndexes", () => {
 		expect(isSearchIndexTypeCompatible("vectorSearch", "search")).toBe(false)
 	})
 
-	it("creates text + vector search indexes for the Mdbrian community profile", async () => {
+	it("creates text + vector search indexes for the Mdbrain community profile", async () => {
 		const db = mockDb()
 		const result = await ensureSearchIndexes(
 			db,

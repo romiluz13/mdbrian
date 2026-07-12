@@ -1,5 +1,5 @@
 {
-	"name": "mdbrian",
+	"name": "mdbrain",
 	"private": true,
 	"description": "MongoDB-native LLM wiki / company brain with reasoning chains, novelty detection, and consolidation: engine, SDK, HTTP API, MCP server, and web console",
 	"license": "Apache-2.0",
@@ -31,8 +31,8 @@
 		"compare-memory-eval": "bun scripts/compare-memory-eval.ts",
 		"agent-smoke": "bun scripts/real-agent-smoke.ts",
 		"capability-stress": "bun scripts/real-capability-stress.ts",
-		"wiki:init": "bun run scripts/mdbrian-init.ts",
-		"wiki:migrate": "bun run scripts/mdbrian-migrate.ts",
+		"wiki:init": "bun run scripts/mdbrain-init.ts",
+		"wiki:migrate": "bun run scripts/mdbrain-migrate.ts",
 		"stress-test": "bun run scripts/stress-test.ts"
 	},
 	"devDependencies": {

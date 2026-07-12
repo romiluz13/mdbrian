@@ -10,7 +10,7 @@ import {
 
 describe("benchmark harness", () => {
 	it("loads a benchmark conversation dataset from JSON", async () => {
-		const dir = await mkdtemp(path.join(os.tmpdir(), "mdbrian-bench-"))
+		const dir = await mkdtemp(path.join(os.tmpdir(), "mdbrain-bench-"))
 		const datasetPath = path.join(dir, "dataset.json")
 		try {
 			await writeFile(
@@ -47,7 +47,7 @@ describe("benchmark harness", () => {
 	})
 
 	it("imports conversation datasets through the canonical write callback without benchmark metadata", async () => {
-		const dir = await mkdtemp(path.join(os.tmpdir(), "mdbrian-import-"))
+		const dir = await mkdtemp(path.join(os.tmpdir(), "mdbrain-import-"))
 		const datasetPath = path.join(dir, "history.json")
 		const writeTurn = vi.fn(async () => undefined)
 		try {
@@ -102,7 +102,7 @@ describe("benchmark harness", () => {
 	})
 
 	it("normalizes LongMemEval sessions and evaluation cases", async () => {
-		const dir = await mkdtemp(path.join(os.tmpdir(), "mdbrian-bench-"))
+		const dir = await mkdtemp(path.join(os.tmpdir(), "mdbrain-bench-"))
 		const datasetPath = path.join(dir, "longmemeval.json")
 		try {
 			await writeFile(
@@ -158,7 +158,7 @@ describe("benchmark harness", () => {
 	})
 
 	it("normalizes LoCoMo conversations and evidence-backed evaluations", async () => {
-		const dir = await mkdtemp(path.join(os.tmpdir(), "mdbrian-bench-"))
+		const dir = await mkdtemp(path.join(os.tmpdir(), "mdbrain-bench-"))
 		const datasetPath = path.join(dir, "locomo.json")
 		try {
 			await writeFile(
@@ -215,7 +215,7 @@ describe("benchmark harness", () => {
 	})
 
 	it("replays benchmark turns through the canonical write callback", async () => {
-		const dir = await mkdtemp(path.join(os.tmpdir(), "mdbrian-bench-"))
+		const dir = await mkdtemp(path.join(os.tmpdir(), "mdbrain-bench-"))
 		const datasetPath = path.join(dir, "dataset.jsonl")
 		const writeTurn = vi.fn(async () => undefined)
 		try {
@@ -268,7 +268,7 @@ describe("benchmark harness", () => {
 	})
 
 	it("skips malformed JSONL lines and tracks failedLines", async () => {
-		const dir = await mkdtemp(path.join(os.tmpdir(), "mdbrian-bench-"))
+		const dir = await mkdtemp(path.join(os.tmpdir(), "mdbrain-bench-"))
 		const datasetPath = path.join(dir, "dataset.jsonl")
 		try {
 			await writeFile(
@@ -291,7 +291,7 @@ describe("benchmark harness", () => {
 	})
 
 	it("continues after failed writes and tracks failedTurns", async () => {
-		const dir = await mkdtemp(path.join(os.tmpdir(), "mdbrian-bench-"))
+		const dir = await mkdtemp(path.join(os.tmpdir(), "mdbrain-bench-"))
 		const datasetPath = path.join(dir, "dataset.json")
 		try {
 			await writeFile(
@@ -322,10 +322,10 @@ describe("benchmark harness", () => {
 
 	it("rejects benchmark datasets outside allowed roots", async () => {
 		const allowedDir = await mkdtemp(
-			path.join(os.tmpdir(), "mdbrian-bench-allow-"),
+			path.join(os.tmpdir(), "mdbrain-bench-allow-"),
 		)
 		const outsideDir = await mkdtemp(
-			path.join(os.tmpdir(), "mdbrian-bench-outside-"),
+			path.join(os.tmpdir(), "mdbrain-bench-outside-"),
 		)
 		const datasetPath = path.join(outsideDir, "dataset.jsonl")
 		try {

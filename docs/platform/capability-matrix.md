@@ -1,6 +1,6 @@
-# Mdbrian Capability Matrix
+# Mdbrain Capability Matrix
 
-This matrix maps the supported Mdbrian memory engine to the standalone product surface that ships in this repo.
+This matrix maps the supported Mdbrain memory engine to the standalone product surface that ships in this repo.
 
 ## Public contract
 
@@ -20,36 +20,36 @@ This matrix maps the supported Mdbrian memory engine to the standalone product s
 
 | Capability | Engine | Bridge | HTTP | SDK | Verification |
 |---|---|---|---|---|---|
-| Memory search | `packages/memory-engine/src/mongodb-manager.ts` `search()` | `packages/memory-bridge/src/mdbrian-bridge.ts` `mdbrianBridgeSearch()` | `POST /v1/search` | `packages/client/src/client.ts` `search()` | `apps/api/src/app.test.ts`, `packages/memory-engine` unit suite |
-| Memory search (detailed) | `searchDetailed()` | `mdbrianBridgeSearchDetailed()` | `POST /v1/search-detailed` | `client.searchDetailed()` | production readiness E2E |
-| KB search | `packages/memory-engine/src/mongodb-manager.ts` `searchKB()` | `mdbrianBridgeSearchKB()` | `POST /v1/search-kb` | `searchKB()` | `packages/memory-engine` unit suite |
-| Memory reopen | `packages/memory-engine/src/types.ts` `readFile()` contract | `mdbrianBridgeReadFile()` | `POST /v1/read-file` | `readFile()` | `packages/memory-engine` unit suite |
-| Conversation ingest | `writeConversationEvent()` | `mdbrianBridgeWriteConversationEvent()` | `POST /v1/write-event` | `writeEvent()` | `packages/memory-engine` unit suite |
-| User-message shortcut | `writeConversationEvent({ role: "user" })` | `mdbrianBridgeAdd()` | `POST /v1/add` | `add()` | `apps/api/src/app.test.ts` |
-| Structured memory | `packages/memory-engine/src/mongodb-structured-memory.ts` | `mdbrianBridgeWriteStructuredMemory()` | `POST /v1/write-structured` | `writeStructured()` | `packages/memory-engine` unit suite |
-| Procedures | `packages/memory-engine/src/mongodb-procedures.ts` | `mdbrianBridgeWriteProcedure()` | `POST /v1/write-procedure` | `writeProcedure()` | `packages/memory-engine` unit suite |
-| Profile synthesis | `packages/memory-engine/src/mongodb-profile.ts` | `mdbrianBridgeProfile()` | `POST /v1/profile` | `profile()` | `apps/api/src/app.test.ts`, `packages/memory-engine` unit suite |
-| Context bundle | `packages/memory-engine/src/mongodb-context-bundle.ts` | `mdbrianBridgeBuildContextBundle()` | `POST /v1/context-bundle` | `buildContextBundle()` | `packages/memory-engine/src/mongodb-context-bundle.test.ts`, `apps/api/src/app.test.ts`, `scripts/proof-pack.ts`, `scripts/real-agent-smoke.ts` |
-| Status | `status()` | `mdbrianBridgeStatus()` | `GET /v1/status` | `status()` | `apps/api/src/app.test.ts`, `scripts/proof-pack.ts` |
-| Detailed status | `getDetailedStatus()` | `mdbrianBridgeGetDetailedStatus()` | `GET /v1/status/detailed` | `getDetailedStatus()` | `packages/memory-engine` unit suite |
-| Stats | `stats()` | `mdbrianBridgeStats()` | `GET /v1/stats` | `stats()` | `scripts/proof-pack.ts` |
-| Sync | `sync()` | `mdbrianBridgeSync()` | `POST /v1/sync` | `sync()` | `packages/memory-engine` unit suite |
-| Embedding probe | `probeEmbeddingAvailability()` | `mdbrianBridgeProbeEmbedding()` | `GET /v1/probes/embedding` | `probeEmbedding()` | `scripts/proof-pack.ts` |
-| Vector probe | `probeVectorAvailability()` | `mdbrianBridgeProbeVector()` | `GET /v1/probes/vector` | `probeVector()` | `scripts/proof-pack.ts` |
-| Relevance explain | `packages/memory-engine/src/mongodb-relevance.ts` | `mdbrianBridgeRelevanceExplain()` | `POST /v1/admin/relevance/explain` | `relevanceExplain()` | `packages/memory-engine` unit suite |
-| Relevance benchmark | `relevanceBenchmark()` | `mdbrianBridgeRelevanceBenchmark()` | `POST /v1/admin/relevance/benchmark` | `relevanceBenchmark()` | `packages/memory-engine/src/production-readiness.e2e.test.ts` |
-| Relevance report | `relevanceReport()` | `mdbrianBridgeRelevanceReport()` | `GET /v1/admin/relevance/report` | `relevanceReport()` | `scripts/proof-pack.ts` |
-| Relevance sample rate | `relevanceSampleRate()` | `mdbrianBridgeRelevanceSampleRate()` | `GET /v1/admin/relevance/sample-rate` | `relevanceSampleRate()` | `packages/memory-engine` unit suite |
-| Reasoning chain trace | `packages/memory-engine/src/mongodb-reasoning-chain.ts` | `mdbrianBridgeTraceChain()` | `POST /v1/chain-trace` | `traceChain()` | `packages/memory-engine` unit suite |
-| Novelty scan | `packages/memory-engine/src/mongodb-novelty.ts` | `mdbrianBridgeScanNovelty()` | `POST /v1/novelty-scan` | `scanNovelty()` | `packages/memory-engine` unit suite |
-| Consolidate (Dreamer) | `packages/memory-engine/src/mongodb-consolidator.ts` | `mdbrianBridgeConsolidate()` | `POST /v1/consolidate` | `consolidate()` | `packages/memory-engine` unit suite |
+| Memory search | `packages/memory-engine/src/mongodb-manager.ts` `search()` | `packages/memory-bridge/src/mdbrain-bridge.ts` `mdbrainBridgeSearch()` | `POST /v1/search` | `packages/client/src/client.ts` `search()` | `apps/api/src/app.test.ts`, `packages/memory-engine` unit suite |
+| Memory search (detailed) | `searchDetailed()` | `mdbrainBridgeSearchDetailed()` | `POST /v1/search-detailed` | `client.searchDetailed()` | production readiness E2E |
+| KB search | `packages/memory-engine/src/mongodb-manager.ts` `searchKB()` | `mdbrainBridgeSearchKB()` | `POST /v1/search-kb` | `searchKB()` | `packages/memory-engine` unit suite |
+| Memory reopen | `packages/memory-engine/src/types.ts` `readFile()` contract | `mdbrainBridgeReadFile()` | `POST /v1/read-file` | `readFile()` | `packages/memory-engine` unit suite |
+| Conversation ingest | `writeConversationEvent()` | `mdbrainBridgeWriteConversationEvent()` | `POST /v1/write-event` | `writeEvent()` | `packages/memory-engine` unit suite |
+| User-message shortcut | `writeConversationEvent({ role: "user" })` | `mdbrainBridgeAdd()` | `POST /v1/add` | `add()` | `apps/api/src/app.test.ts` |
+| Structured memory | `packages/memory-engine/src/mongodb-structured-memory.ts` | `mdbrainBridgeWriteStructuredMemory()` | `POST /v1/write-structured` | `writeStructured()` | `packages/memory-engine` unit suite |
+| Procedures | `packages/memory-engine/src/mongodb-procedures.ts` | `mdbrainBridgeWriteProcedure()` | `POST /v1/write-procedure` | `writeProcedure()` | `packages/memory-engine` unit suite |
+| Profile synthesis | `packages/memory-engine/src/mongodb-profile.ts` | `mdbrainBridgeProfile()` | `POST /v1/profile` | `profile()` | `apps/api/src/app.test.ts`, `packages/memory-engine` unit suite |
+| Context bundle | `packages/memory-engine/src/mongodb-context-bundle.ts` | `mdbrainBridgeBuildContextBundle()` | `POST /v1/context-bundle` | `buildContextBundle()` | `packages/memory-engine/src/mongodb-context-bundle.test.ts`, `apps/api/src/app.test.ts`, `scripts/proof-pack.ts`, `scripts/real-agent-smoke.ts` |
+| Status | `status()` | `mdbrainBridgeStatus()` | `GET /v1/status` | `status()` | `apps/api/src/app.test.ts`, `scripts/proof-pack.ts` |
+| Detailed status | `getDetailedStatus()` | `mdbrainBridgeGetDetailedStatus()` | `GET /v1/status/detailed` | `getDetailedStatus()` | `packages/memory-engine` unit suite |
+| Stats | `stats()` | `mdbrainBridgeStats()` | `GET /v1/stats` | `stats()` | `scripts/proof-pack.ts` |
+| Sync | `sync()` | `mdbrainBridgeSync()` | `POST /v1/sync` | `sync()` | `packages/memory-engine` unit suite |
+| Embedding probe | `probeEmbeddingAvailability()` | `mdbrainBridgeProbeEmbedding()` | `GET /v1/probes/embedding` | `probeEmbedding()` | `scripts/proof-pack.ts` |
+| Vector probe | `probeVectorAvailability()` | `mdbrainBridgeProbeVector()` | `GET /v1/probes/vector` | `probeVector()` | `scripts/proof-pack.ts` |
+| Relevance explain | `packages/memory-engine/src/mongodb-relevance.ts` | `mdbrainBridgeRelevanceExplain()` | `POST /v1/admin/relevance/explain` | `relevanceExplain()` | `packages/memory-engine` unit suite |
+| Relevance benchmark | `relevanceBenchmark()` | `mdbrainBridgeRelevanceBenchmark()` | `POST /v1/admin/relevance/benchmark` | `relevanceBenchmark()` | `packages/memory-engine/src/production-readiness.e2e.test.ts` |
+| Relevance report | `relevanceReport()` | `mdbrainBridgeRelevanceReport()` | `GET /v1/admin/relevance/report` | `relevanceReport()` | `scripts/proof-pack.ts` |
+| Relevance sample rate | `relevanceSampleRate()` | `mdbrainBridgeRelevanceSampleRate()` | `GET /v1/admin/relevance/sample-rate` | `relevanceSampleRate()` | `packages/memory-engine` unit suite |
+| Reasoning chain trace | `packages/memory-engine/src/mongodb-reasoning-chain.ts` | `mdbrainBridgeTraceChain()` | `POST /v1/chain-trace` | `traceChain()` | `packages/memory-engine` unit suite |
+| Novelty scan | `packages/memory-engine/src/mongodb-novelty.ts` | `mdbrainBridgeScanNovelty()` | `POST /v1/novelty-scan` | `scanNovelty()` | `packages/memory-engine` unit suite |
+| Consolidate (Dreamer) | `packages/memory-engine/src/mongodb-consolidator.ts` | `mdbrainBridgeConsolidate()` | `POST /v1/consolidate` | `consolidate()` | `packages/memory-engine` unit suite |
 | Access tracking | `packages/memory-engine/src/mongodb-access-tracker.ts` (`AccessTracker`) | -- | -- | -- | `packages/memory-engine` unit suite |
 | Importance decay | `computeImportanceDecay()` in `packages/memory-engine/src/mongodb-trust.ts` | -- | -- | -- | `packages/memory-engine` unit suite |
 | Wiki source categorization | `wikiSource`/`vault`/`section` fields on KB schema | -- | -- | -- | `packages/memory-engine` unit suite |
 
 ## Memory coverage
 
-| Mdbrian memory area | Active modules |
+| Mdbrain memory area | Active modules |
 |---|---|
 | Event sourcing and projection | `packages/memory-engine/src/mongodb-events.ts`, `packages/memory-engine/src/mongodb-manager.ts` |
 | Retrieval planning | `packages/memory-engine/src/mongodb-retrieval-planner.ts` |

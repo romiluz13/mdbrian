@@ -1,4 +1,4 @@
-// @mdbrian/wiki-engine — governance layer.
+// @mdbrain/wiki-engine — governance layer.
 //
 // Centralizes scope enforcement, trust-tier propagation, and role/department
 // permissions filtering. Applied on EVERY read path — search, get-by-slug,

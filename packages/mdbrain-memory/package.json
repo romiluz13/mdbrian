@@ -1,17 +1,17 @@
 {
-	"name": "@mdbrian/memory",
+	"name": "@mdbrain/memory",
 	"version": "1.1.0",
-	"description": "Mdbrian memory: published re-export surface for the memory engine and bridge",
+	"description": "Mdbrain memory: published re-export surface for the memory engine and bridge",
 	"type": "module",
 	"license": "Apache-2.0",
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/romiluz13/mdbrian.git",
-		"directory": "packages/mdbrian-memory"
+		"url": "git+https://github.com/romiluz13/mdbrain.git",
+		"directory": "packages/mdbrain-memory"
 	},
 	"author": "Rom Iluz",
 	"keywords": [
-		"mdbrian",
+		"mdbrain",
 		"memory",
 		"mongodb",
 		"agent-memory"
@@ -33,14 +33,14 @@
 		"check-types": "node ../../node_modules/typescript/bin/tsc --noEmit -p tsconfig.json"
 	},
 	"dependencies": {
-		"@mdbrian/memory-engine": "1.1.0",
-		"@mdbrian/memory-bridge": "1.1.0"
+		"@mdbrain/memory-engine": "1.1.0",
+		"@mdbrain/memory-bridge": "1.1.0"
 	},
 	"devDependencies": {
 		"typescript": "^5.8.0"
 	},
-	"homepage": "https://github.com/romiluz13/mdbrian#readme",
+	"homepage": "https://github.com/romiluz13/mdbrain#readme",
 	"bugs": {
-		"url": "https://github.com/romiluz13/mdbrian/issues"
+		"url": "https://github.com/romiluz13/mdbrain/issues"
 	}
 }

@@ -1,14 +1,14 @@
-# Mdbrian Repository Guidelines
+# Mdbrain Repository Guidelines
 
-- Repo: https://github.com/romiluz13/mdbrian
+- Repo: https://github.com/romiluz13/mdbrain
 - In chat replies, file references must be repo-root relative only (example: `packages/memory-engine/src/mongodb-manager.ts:80`); never absolute paths or `~/...`.
 
 ## Project Structure
 
-Mdbrian is a **Turborepo/Bun monorepo** providing MongoDB-native long-term AI memory.
+Mdbrain is a **Turborepo/Bun monorepo** providing MongoDB-native long-term AI memory.
 
 ```
-mdbrian/
+mdbrain/
   apps/
     api/          HTTP API server (Hono)
     mcp/          MCP server (stdio, calls HTTP API)
@@ -16,13 +16,13 @@ mdbrian/
   packages/
     memory-engine/   Core MongoDB memory: embeddings, graph, episodes, search, KB, analytics
     memory-bridge/   Stable facade for the engine used by apps
-    mdbrian-memory/  Published re-export package
+    mdbrain-memory/  Published re-export package
     client/          TypeScript HTTP client SDK
     tools/           AI SDK tool helpers
     lib/             Shared types and utilities
   docker/
     mongodb/         Local MongoDB dev stack (atlas-local + mongot)
-  docs/              Mdbrian documentation
+  docs/              Mdbrain documentation
 ```
 
 ## Build, Test, and Development
@@ -46,12 +46,12 @@ mdbrian/
 
 ## Package Naming
 
-- `@mdbrian/memory-engine` -- core engine
-- `@mdbrian/memory-bridge` -- facade
-- `@mdbrian/client` -- HTTP client SDK
-- `@mdbrian/tools` -- AI SDK tools
-- `@mdbrian/lib` -- shared utilities (private)
-- `@mdbrian/api`, `@mdbrian/mcp`, `@mdbrian/web` -- apps (private)
+- `@mdbrain/memory-engine` -- core engine
+- `@mdbrain/memory-bridge` -- facade
+- `@mdbrain/client` -- HTTP client SDK
+- `@mdbrain/tools` -- AI SDK tools
+- `@mdbrain/lib` -- shared utilities (private)
+- `@mdbrain/api`, `@mdbrain/mcp`, `@mdbrain/web` -- apps (private)
 
 ## Commit Guidelines
 

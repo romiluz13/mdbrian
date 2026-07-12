@@ -1,7 +1,7 @@
 import fs from "node:fs/promises"
 import path from "node:path"
 import os from "node:os"
-import { redactSecrets, createSubsystemLogger } from "@mdbrian/lib"
+import { redactSecrets, createSubsystemLogger } from "@mdbrain/lib"
 import { hashText } from "./internal.js"
 
 const log = createSubsystemLogger("memory")
@@ -20,8 +20,8 @@ export type SessionFileEntry = {
 function resolveSessionTranscriptsDir(agentId: string): string {
 	const home = process.env.HOME || process.env.USERPROFILE || os.homedir()
 	return agentId
-		? path.join(home, ".mdbrian", "agents", agentId, "sessions")
-		: path.join(home, ".mdbrian", "agents", "sessions")
+		? path.join(home, ".mdbrain", "agents", agentId, "sessions")
+		: path.join(home, ".mdbrain", "agents", "sessions")
 }
 
 export async function listSessionFilesForAgent(

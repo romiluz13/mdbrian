@@ -1,5 +1,5 @@
 import type { Db } from "mongodb"
-import { createSubsystemLogger } from "@mdbrian/lib"
+import { createSubsystemLogger } from "@mdbrain/lib"
 import { emitTelemetry } from "./mongodb-telemetry.js"
 import type { MemorySearchResult } from "./types.js"
 

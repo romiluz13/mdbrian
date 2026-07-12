@@ -1,21 +1,21 @@
 import fs from "node:fs"
 import os from "node:os"
 import path from "node:path"
-import type { MemoryConfig, MdbrianConfig } from "@mdbrian/lib"
+import type { MemoryConfig, MdbrainConfig } from "@mdbrain/lib"
 
-export const MDBRAIN_CONFIG_FILENAME = path.join(".mdbrian", "mdbrian.json")
+export const MDBRAIN_CONFIG_FILENAME = path.join(".mdbrain", "mdbrain.json")
 
-export function resolveMdbrianStandaloneWorkspaceDir(
+export function resolveMdbrainStandaloneWorkspaceDir(
 	env: NodeJS.ProcessEnv = process.env,
 ): string {
 	const explicit = env.MDBRAIN_WORKSPACE_DIR?.trim()
 	if (explicit) {
 		return path.resolve(explicit)
 	}
-	return path.join(os.homedir(), ".mdbrian", "workspace")
+	return path.join(os.homedir(), ".mdbrain", "workspace")
 }
 
-export function resolveMdbrianConfigFilePath(
+export function resolveMdbrainConfigFilePath(
 	env: NodeJS.ProcessEnv = process.env,
 ): string {
 	const fromEnv = env.MDBRAIN_CONFIG_PATH?.trim()
@@ -25,9 +25,9 @@ export function resolveMdbrianConfigFilePath(
 	return path.join(os.homedir(), MDBRAIN_CONFIG_FILENAME)
 }
 
-function readMdbrianJsonFile(
+function readMdbrainJsonFile(
 	filePath: string,
-): { memory?: MemoryConfig; agents?: MdbrianConfig["agents"] } | undefined {
+): { memory?: MemoryConfig; agents?: MdbrainConfig["agents"] } | undefined {
 	try {
 		if (!fs.existsSync(filePath)) {
 			return undefined
@@ -37,17 +37,17 @@ function readMdbrianJsonFile(
 		if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
 			return undefined
 		}
-		return parsed as { memory?: MemoryConfig; agents?: MdbrianConfig["agents"] }
+		return parsed as { memory?: MemoryConfig; agents?: MdbrainConfig["agents"] }
 	} catch {
 		return undefined
 	}
 }
 
-export function buildMdbrianConfig(
+export function buildMdbrainConfig(
 	env: NodeJS.ProcessEnv = process.env,
-): MdbrianConfig {
-	const filePath = resolveMdbrianConfigFilePath(env)
-	const fromFile = readMdbrianJsonFile(filePath)
+): MdbrainConfig {
+	const filePath = resolveMdbrainConfigFilePath(env)
+	const fromFile = readMdbrainJsonFile(filePath)
 
 	const uriFromEnv =
 		env.MDBRAIN_MONGODB_URI?.trim() || env.MDBRAIN_FORCE_MONGODB_URI?.trim()
@@ -70,7 +70,7 @@ export function buildMdbrianConfig(
 		mongodb: mergedMongo,
 	}
 
-	const workspace = resolveMdbrianStandaloneWorkspaceDir(env)
+	const workspace = resolveMdbrainStandaloneWorkspaceDir(env)
 
 	return {
 		memory,
@@ -84,6 +84,6 @@ export function buildMdbrianConfig(
 	}
 }
 
-export function resolveBridgeConfig(): MdbrianConfig {
-	return buildMdbrianConfig()
+export function resolveBridgeConfig(): MdbrainConfig {
+	return buildMdbrainConfig()
 }

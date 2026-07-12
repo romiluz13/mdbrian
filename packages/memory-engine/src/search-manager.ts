@@ -1,4 +1,4 @@
-import { type MdbrianConfig, createSubsystemLogger } from "@mdbrian/lib"
+import { type MdbrainConfig, createSubsystemLogger } from "@mdbrain/lib"
 import type {
 	ResolvedMemoryBackendConfig,
 	ResolvedMongoDBConfig,
@@ -28,7 +28,7 @@ export type MemorySearchManagerResult = {
 }
 
 export async function getMemorySearchManager(params: {
-	cfg: MdbrianConfig
+	cfg: MdbrainConfig
 	agentId: string
 	purpose?: "default" | "status"
 }): Promise<MemorySearchManagerResult> {
@@ -87,7 +87,7 @@ export async function getMemorySearchManager(params: {
 }
 
 async function initializeManager(params: {
-	cfg: MdbrianConfig
+	cfg: MdbrainConfig
 	agentId: string
 	resolved: ResolvedMemoryBackendConfig
 	extraMemoryPaths?: string[]

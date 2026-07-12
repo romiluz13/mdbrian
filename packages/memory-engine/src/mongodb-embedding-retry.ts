@@ -7,7 +7,7 @@
  * @module mongodb-embedding-retry
  */
 
-import { createSubsystemLogger } from "@mdbrian/lib"
+import { createSubsystemLogger } from "@mdbrain/lib"
 
 const log = createSubsystemLogger("memory:mongodb:embedding-retry")
 

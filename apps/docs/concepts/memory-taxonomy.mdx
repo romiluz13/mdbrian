@@ -1,10 +1,10 @@
 ---
 title: "Memory Taxonomy"
-description: "Canonical memory types and operations in the Mdbrian framework."
+description: "Canonical memory types and operations in the Mdbrain framework."
 icon: "brain"
 ---
 
-Mdbrian models memory as scoped evidence, not as a single vector bucket. The
+Mdbrain models memory as scoped evidence, not as a single vector bucket. The
 taxonomy gives apps, agents, and operators a shared language for deciding what
 to store, how to retrieve it, and when it is safe to update.
 
@@ -25,18 +25,18 @@ Use the smallest operation that matches the user's intent:
 
 | Intent | Operation | Existing surfaces |
 |---|---|---|
-| Find relevant context | Recall | `search`, `searchDetailed`, `searchKB`, `mdbrian_search` |
-| Start an answer or agent turn | Context bundle | `buildContextBundle`, `/v1/context-bundle`, `mdbrian_build_context_bundle` |
-| Save a new event | Remember event | `writeEvent`, `/v1/write-event`, `mdbrian_write_event` |
-| Save a stable fact | Remember fact | `writeStructured`, `/v1/write-structured`, `mdbrian_write_structured` |
-| Save a playbook | Remember procedure | `writeProcedure`, `/v1/write-procedure`, `mdbrian_write_procedure` |
+| Find relevant context | Recall | `search`, `searchDetailed`, `searchKB`, `mdbrain_search` |
+| Start an answer or agent turn | Context bundle | `buildContextBundle`, `/v1/context-bundle`, `mdbrain_build_context_bundle` |
+| Save a new event | Remember event | `writeEvent`, `/v1/write-event`, `mdbrain_write_event` |
+| Save a stable fact | Remember fact | `writeStructured`, `/v1/write-structured`, `mdbrain_write_structured` |
+| Save a playbook | Remember procedure | `writeProcedure`, `/v1/write-procedure`, `mdbrain_write_procedure` |
 | Correct memory | Update or feedback | Lifecycle update, `applyMemoryFeedback`, MCP lifecycle tools |
 | Remove stale memory | Forget | Lifecycle delete or invalidation |
 | Explain why memory appeared | Trace provenance | `traceChain`, detailed search metadata, admin trace tools |
 
 ## Retrieval lanes
 
-Mdbrian separates retrieval quality from answer quality. A memory framework can
+Mdbrain separates retrieval quality from answer quality. A memory framework can
 retrieve the right evidence and still need an app or agent to answer well.
 
 | Lane | Goal |
@@ -67,7 +67,7 @@ Provenance is part of the framework contract:
 | One chat thread | `session` | `support-ticket-314` |
 | One person | `user` | `user_123` |
 | One named agent | `agent` | `research-agent` |
-| One repo, app, or work area | `workspace` | `mdbrian` |
+| One repo, app, or work area | `workspace` | `mdbrain` |
 | One company or customer tenant | `tenant` | `acme-corp` |
 | Shared defaults | `global` | `default` |
 

@@ -1,4 +1,4 @@
-// @mdbrian/wiki-engine — cross-page contradiction detector.
+// @mdbrain/wiki-engine — cross-page contradiction detector.
 //
 // Detects contradictory claims across pages. CRITICAL: runs BEFORE the
 // near-duplicate (dedup) gate in the write pipeline — a synchronous near-

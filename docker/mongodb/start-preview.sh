@@ -1,6 +1,6 @@
 #!/bin/bash
-# Mdbrian Atlas Local Preview Quick Start
-# One command to start the canonical Mdbrian MongoDB stack
+# Mdbrain Atlas Local Preview Quick Start
+# One command to start the canonical Mdbrain MongoDB stack
 #
 # Usage:
 #   ./docker/mongodb/start-preview.sh                             # Start (no auto-embed)
@@ -19,7 +19,7 @@ NC='\033[0m'
 
 case "${1:-start}" in
   start|up)
-    echo -e "${GREEN}Starting Mdbrian Atlas Local preview stack...${NC}"
+    echo -e "${GREEN}Starting Mdbrain Atlas Local preview stack...${NC}"
     docker compose -f "$COMPOSE_FILE" up -d
 
     echo ""
@@ -28,7 +28,7 @@ case "${1:-start}" in
     TIMEOUT=90
     ELAPSED=0
     while [ $ELAPSED -lt $TIMEOUT ]; do
-      STATUS=$(docker inspect --format='{{.State.Health.Status}}' mdbrian-preview 2>/dev/null || echo "missing")
+      STATUS=$(docker inspect --format='{{.State.Health.Status}}' mdbrain-preview 2>/dev/null || echo "missing")
       if [ "$STATUS" = "healthy" ]; then
         break
       fi
@@ -39,7 +39,7 @@ case "${1:-start}" in
 
     if [ "$STATUS" = "healthy" ]; then
       echo ""
-      echo -e "${GREEN}Mdbrian MongoDB is ready.${NC}"
+      echo -e "${GREEN}Mdbrain MongoDB is ready.${NC}"
       echo ""
       echo "Connection string: mongodb://localhost:${MONGODB_PORT:-27017}/?directConnection=true"
       echo ""
@@ -58,16 +58,16 @@ case "${1:-start}" in
         echo -e "  - ${YELLOW}Auto-embeddings disabled (set VOYAGE_API_KEY=al-... to enable)${NC}"
       fi
       echo ""
-      echo "Next: mdbrian setup"
+      echo "Next: mdbrain setup"
     else
       echo -e "${RED}Container did not become healthy within ${TIMEOUT}s.${NC}"
-      echo "Check: docker logs mdbrian-preview"
+      echo "Check: docker logs mdbrain-preview"
       exit 1
     fi
     ;;
 
   stop|down)
-    echo "Stopping Mdbrian..."
+    echo "Stopping Mdbrain..."
     docker compose -f "$COMPOSE_FILE" down
     echo -e "${GREEN}Stopped.${NC}"
     ;;

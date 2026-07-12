@@ -323,7 +323,7 @@ describe("renderWikiPageMarkdown", () => {
 describe("renderWikiPageHtml", () => {
 	it("produces an <article> with title, escaped content, and links", () => {
 		const html = renderWikiPageHtml(SAMPLE_VIEW)
-		expect(html).toContain('<article class="mdbrian-wiki-page"')
+		expect(html).toContain('<article class="mdbrain-wiki-page"')
 		expect(html).toContain("<h1>Accounts Table</h1>")
 		expect(html).toContain("<blockquote>Holds balances.</blockquote>")
 		expect(html).toContain('<a href="/wiki/tables/users">Users</a>')

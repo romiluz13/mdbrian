@@ -1,19 +1,19 @@
-// scripts/mdbrian-init.ts — Map & Pointer generator CLI (T8).
+// scripts/mdbrain-init.ts — Map & Pointer generator CLI (T8).
 //
 // Usage:
-//   bun run scripts/mdbrian-init.ts [--kind <kind>] [--scope <scope>] [--scopeRef <ref>]
+//   bun run scripts/mdbrain-init.ts [--kind <kind>] [--scope <scope>] [--scopeRef <ref>]
 //                                   [--files AGENTS.md,CLAUDE.md] [--max-pages 50]
 //
 // Connects to MongoDB (via the same config as the API), fetches wiki pages,
 // and writes a "## MDBrain Wiki Map" block to the target files (default:
 // AGENTS.md + CLAUDE.md). Idempotent — re-run to refresh.
 
-import { mdbrianBridgeGetManager } from "@mdbrian/memory-bridge"
+import { mdbrainBridgeGetManager } from "@mdbrain/memory-bridge"
 import {
 	generateAndWriteWikiMap,
 	getWikiDbHandle,
 	type MapPointerOptions,
-} from "@mdbrian/wiki-engine"
+} from "@mdbrain/wiki-engine"
 
 function parseArgs(argv: string[]): {
 	files: string[]
@@ -81,7 +81,7 @@ function parseArgs(argv: string[]): {
 async function main() {
 	const { files, opts } = parseArgs(process.argv)
 	const agentId = process.env.MDBRAIN_AGENT_ID ?? "default"
-	const manager = await mdbrianBridgeGetManager(agentId)
+	const manager = await mdbrainBridgeGetManager(agentId)
 	const handle = getWikiDbHandle(manager)
 	const result = await generateAndWriteWikiMap(handle, files, opts)
 	console.log(`MDBrain Wiki Map written to ${result.files.length} file(s):`)

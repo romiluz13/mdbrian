@@ -27,7 +27,7 @@ function mockDb(collectionMap: Record<string, Collection> = {}): Db {
 	} as unknown as Db
 }
 
-vi.mock("@mdbrian/lib", () => ({
+vi.mock("@mdbrain/lib", () => ({
 	createSubsystemLogger: () => ({
 		info: vi.fn(),
 		warn: vi.fn(),

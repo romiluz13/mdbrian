@@ -1,6 +1,6 @@
 import { createHash } from "node:crypto"
 import type { Db, Document } from "mongodb"
-import { type MemoryScope, createSubsystemLogger } from "@mdbrian/lib"
+import { type MemoryScope, createSubsystemLogger } from "@mdbrain/lib"
 import { queryCacheCollection } from "./mongodb-schema.js"
 import {
 	buildVectorSearchStage,

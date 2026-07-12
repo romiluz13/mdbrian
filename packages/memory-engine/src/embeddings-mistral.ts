@@ -1,4 +1,4 @@
-import type { SsrFPolicy } from "@mdbrian/lib"
+import type { SsrFPolicy } from "@mdbrain/lib"
 import { normalizeEmbeddingModelWithPrefixes } from "./embeddings-model-normalize.js"
 import {
 	createRemoteEmbeddingProvider,

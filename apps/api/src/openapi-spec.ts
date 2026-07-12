@@ -1,5 +1,5 @@
 /**
- * OpenAPI 3.0 document for the Mdbrian HTTP API.
+ * OpenAPI 3.0 document for the Mdbrain HTTP API.
  * Keep this aligned with the supported route contract in `routes/v1.ts`.
  */
 const benchmarkOfficialRetrievalMetricsSchema = {
@@ -399,10 +399,10 @@ const lifecycleHistoryEntrySchema = {
 export const openApiSpec = {
 	openapi: "3.0.3",
 	info: {
-		title: "Mdbrian API",
+		title: "Mdbrain API",
 		version: "1.0.0",
 		description:
-			"HTTP API for the Mdbrian memory platform. Configure it with MDBRAIN_MONGODB_URI and, optionally, ~/.mdbrian/mdbrian.json.",
+			"HTTP API for the Mdbrain memory platform. Configure it with MDBRAIN_MONGODB_URI and, optionally, ~/.mdbrain/mdbrain.json.",
 	},
 	servers: [{ url: "/", description: "Default" }],
 	paths: {

@@ -1,6 +1,6 @@
 import path, { basename } from "node:path"
 import { readFile, realpath } from "node:fs/promises"
-import type { MemoryScope } from "@mdbrian/lib"
+import type { MemoryScope } from "@mdbrain/lib"
 import type {
 	MemoryBenchmarkConversation,
 	MemoryBenchmarkDataset,

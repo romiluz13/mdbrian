@@ -1,4 +1,4 @@
-import { createSubsystemLogger } from "@mdbrian/lib"
+import { createSubsystemLogger } from "@mdbrain/lib"
 import type { Db } from "mongodb"
 import { memoryJobsCollection } from "./mongodb-schema.js"
 import type { MemoryJob, MemoryJobStatus, MemoryJobType } from "./types.js"

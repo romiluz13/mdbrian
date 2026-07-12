@@ -11,7 +11,7 @@ import {
 	signExportBundle,
 	verifyExportBundle,
 	type ExportBundle,
-} from "./mdbrian-export.js"
+} from "./mdbrain-export.js"
 
 const FAST_CHECK_SEED = 20260512
 

@@ -1,4 +1,4 @@
-// @mdbrian/wiki-engine — backlinks auto-generation.
+// @mdbrain/wiki-engine — backlinks auto-generation.
 //
 // Backlinks are computed from relationships[] across all pages: if page A has
 // a relationship targeting page B, then B has a backlink to A. Updated

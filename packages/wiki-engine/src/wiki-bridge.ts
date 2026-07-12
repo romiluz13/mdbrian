@@ -1,8 +1,8 @@
-// @mdbrian/wiki-engine — wiki CRUD bridge.
+// @mdbrain/wiki-engine — wiki CRUD bridge.
 //
 // Wiki page create/read/list/update/delete over MongoDB, plus page rendering
 // (markdown for agents, HTML for humans). Obtains a MongoDB Db + prefix via
-// the existing @mdbrian/memory-engine manager (reuses connection + config +
+// the existing @mdbrain/memory-engine manager (reuses connection + config +
 // collection-prefix conventions) — no separate connection management.
 //
 // T3 (this commit): CRUD + rendering. Later tickets add OKF interchange,

@@ -1,31 +1,31 @@
 {
-	"name": "@mdbrian/memory-bridge",
+	"name": "@mdbrain/memory-bridge",
 	"version": "1.1.0",
-	"description": "Mdbrian bridge: stable facade for the memory engine used by HTTP API and MCP",
+	"description": "Mdbrain bridge: stable facade for the memory engine used by HTTP API and MCP",
 	"type": "module",
 	"license": "Apache-2.0",
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/romiluz13/mdbrian.git",
+		"url": "git+https://github.com/romiluz13/mdbrain.git",
 		"directory": "packages/memory-bridge"
 	},
 	"author": "Rom Iluz",
 	"keywords": [
-		"mdbrian",
+		"mdbrain",
 		"mongodb",
 		"memory",
 		"bridge"
 	],
-	"main": "./dist/mdbrian-bridge.js",
-	"types": "./dist/mdbrian-bridge.d.ts",
+	"main": "./dist/mdbrain-bridge.js",
+	"types": "./dist/mdbrain-bridge.d.ts",
 	"files": [
 		"dist",
 		"README.md"
 	],
 	"exports": {
 		".": {
-			"types": "./dist/mdbrian-bridge.d.ts",
-			"default": "./dist/mdbrian-bridge.js"
+			"types": "./dist/mdbrain-bridge.d.ts",
+			"default": "./dist/mdbrain-bridge.js"
 		}
 	},
 	"scripts": {
@@ -34,17 +34,17 @@
 		"test": "vitest run"
 	},
 	"dependencies": {
-		"@mdbrian/lib": "1.1.0",
-		"@mdbrian/memory-engine": "1.1.0",
-		"@mdbrian/wiki-engine": "workspace:*"
+		"@mdbrain/lib": "1.1.0",
+		"@mdbrain/memory-engine": "1.1.0",
+		"@mdbrain/wiki-engine": "workspace:*"
 	},
 	"devDependencies": {
-		"@mdbrian/tools": "workspace:*",
+		"@mdbrain/tools": "workspace:*",
 		"typescript": "^5.8.0",
 		"vitest": "^4.1.0"
 	},
-	"homepage": "https://github.com/romiluz13/mdbrian#readme",
+	"homepage": "https://github.com/romiluz13/mdbrain#readme",
 	"bugs": {
-		"url": "https://github.com/romiluz13/mdbrian/issues"
+		"url": "https://github.com/romiluz13/mdbrain/issues"
 	}
 }

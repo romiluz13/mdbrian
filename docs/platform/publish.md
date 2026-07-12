@@ -1,6 +1,6 @@
-# Publishing `@mdbrian/*` packages
+# Publishing `@mdbrain/*` packages
 
-This monorepo uses the `@mdbrian` npm scope. Publishing is maintainer-operated; the repo root is `private: true` and does not publish itself.
+This monorepo uses the `@mdbrain` npm scope. Publishing is maintainer-operated; the repo root is `private: true` and does not publish itself.
 
 ## Before you publish anything
 
@@ -8,19 +8,19 @@ This monorepo uses the `@mdbrian` npm scope. Publishing is maintainer-operated; 
 2. Confirm no secrets in the working tree.
 3. Bump semver in the package(s) you ship; tag releases in git to match.
 4. Configure `NPM_TOKEN` as a GitHub Actions secret with publish access to the
-   `@mdbrian` npm scope.
+   `@mdbrain` npm scope.
 
 ## Which packages are intended for npm
 
 | Package | Name | Typical consumers |
 |---------|------|-------------------|
-| Engine | `@mdbrian/memory-engine` | Advanced integrations |
-| Bridge | `@mdbrian/memory-bridge` | API and custom servers |
-| Barrel | `@mdbrian/memory` (`packages/mdbrian-memory`) | Single import for engine + bridge |
-| Client | `@mdbrian/client` | Apps using the HTTP API |
-| Tools | `@mdbrian/tools` | Vercel AI SDK tool helpers |
+| Engine | `@mdbrain/memory-engine` | Advanced integrations |
+| Bridge | `@mdbrain/memory-bridge` | API and custom servers |
+| Barrel | `@mdbrain/memory` (`packages/mdbrain-memory`) | Single import for engine + bridge |
+| Client | `@mdbrain/client` | Apps using the HTTP API |
+| Tools | `@mdbrain/tools` | Vercel AI SDK tool helpers |
 
-`@mdbrian/lib` is also published as a runtime support package because the engine and bridge depend on it, but it is not a primary integration surface.
+`@mdbrain/lib` is also published as a runtime support package because the engine and bridge depend on it, but it is not a primary integration surface.
 
 ## Publish mechanics
 
@@ -48,19 +48,19 @@ policy.
 
 ## Recommended publish order
 
-When shipping the coordinated `@mdbrian/*` package set, publish in dependency
+When shipping the coordinated `@mdbrain/*` package set, publish in dependency
 order so install smoke and downstream resolution stay clean:
 
-1. `@mdbrian/lib`
-2. `@mdbrian/memory-engine`
-3. `@mdbrian/memory-bridge`
-4. `@mdbrian/memory`
-5. `@mdbrian/client`
-6. `@mdbrian/tools`
+1. `@mdbrain/lib`
+2. `@mdbrain/memory-engine`
+3. `@mdbrain/memory-bridge`
+4. `@mdbrain/memory`
+5. `@mdbrain/client`
+6. `@mdbrain/tools`
 
 ## Docker
 
-There is no single Mdbrian all-in-one image in-tree as of this writing. Production deployments typically:
+There is no single Mdbrain all-in-one image in-tree as of this writing. Production deployments typically:
 
 - Run MongoDB.
 - Run `apps/api` as a container or process behind a reverse proxy.
@@ -70,7 +70,7 @@ See [self-host.md](self-host.md).
 
 ## Scope and naming
 
-- Do not publish under legacy `@romiluz/*` names for new releases; this repo standardizes on `@mdbrian/*`.
+- Do not publish under legacy `@romiluz/*` names for new releases; this repo standardizes on `@mdbrain/*`.
 - Historical material is kept outside the public launch tree.
 
 ## Related docs

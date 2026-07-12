@@ -1,4 +1,4 @@
-import { isTruthyEnvValue, createSubsystemLogger } from "@mdbrian/lib"
+import { isTruthyEnvValue, createSubsystemLogger } from "@mdbrain/lib"
 
 const debugEmbeddings = isTruthyEnvValue(process.env.MDBRAIN_DEBUG_EMBEDDINGS)
 const log = createSubsystemLogger("memory/embeddings")

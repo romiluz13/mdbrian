@@ -11,7 +11,7 @@ export type {
 	MemorySourceToggleConfig,
 } from "./types.memory.js"
 
-export type { MdbrianConfig, SecretInput } from "./types.js"
+export type { MdbrainConfig, SecretInput } from "./types.js"
 
 export {
 	isTruthyEnvValue,
@@ -60,8 +60,8 @@ export {
 } from "./auth.js"
 export {
 	resolveUserPath,
-	mdbrianDataDir,
-	mdbrianAgentDir,
+	mdbrainDataDir,
+	mdbrainAgentDir,
 	ensureTrailingSlash,
 } from "./paths.js"
 export {

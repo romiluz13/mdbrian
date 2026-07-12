@@ -1,10 +1,10 @@
 ---
 title: Configuration
-description: Configure Mdbrian via environment variables or config file.
+description: Configure Mdbrain via environment variables or config file.
 icon: "settings"
 ---
 
-Mdbrian reads configuration from environment variables and an optional JSON config file at `~/.mdbrian/mdbrian.json`.
+Mdbrain reads configuration from environment variables and an optional JSON config file at `~/.mdbrain/mdbrain.json`.
 
 ## Environment variables
 
@@ -15,8 +15,8 @@ Mdbrian reads configuration from environment variables and an optional JSON conf
 | `MDBRAIN_API_KEY` | Bearer token for the HTTP server; recommended outside trusted local dev | (none) |
 | `MDBRAIN_API_PORT` | API listen port | `3847` |
 | `MDBRAIN_API_HOST` | API bind address | `127.0.0.1` |
-| `MDBRAIN_CONFIG_PATH` | Alternate JSON config file path | `~/.mdbrian/mdbrian.json` |
-| `MDBRAIN_WORKSPACE_DIR` | Workspace directory used by the bridge | `~/.mdbrian/workspace` |
+| `MDBRAIN_CONFIG_PATH` | Alternate JSON config file path | `~/.mdbrain/mdbrain.json` |
+| `MDBRAIN_WORKSPACE_DIR` | Workspace directory used by the bridge | `~/.mdbrain/workspace` |
 | `VOYAGE_API_KEY` | Atlas Model API key for MongoDB auto-embed lanes | (none) |
 | `MDBRAIN_ENRICHMENT_BASE_URL` | Optional OpenAI-compatible or Anthropic endpoint for LLM enrichment | (none) |
 | `MDBRAIN_ENRICHMENT_API_KEY` | API key for LLM enrichment | (none) |
@@ -24,7 +24,7 @@ Mdbrian reads configuration from environment variables and an optional JSON conf
 
 ## Config file
 
-Create `~/.mdbrian/mdbrian.json`:
+Create `~/.mdbrain/mdbrain.json`:
 
 ```json
 {
@@ -32,7 +32,7 @@ Create `~/.mdbrian/mdbrian.json`:
     "backend": "mongodb",
     "mongodb": {
       "uri": "mongodb://localhost:27017",
-      "database": "mdbrian"
+      "database": "mdbrain"
     }
   }
 }

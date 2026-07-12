@@ -1,10 +1,10 @@
 ---
 title: "Adapter Contract"
-description: "How apps, agents, and MCP clients should connect to the Mdbrian framework."
+description: "How apps, agents, and MCP clients should connect to the Mdbrain framework."
 icon: "plug"
 ---
 
-Mdbrian adapters should be thin. They translate a client surface into the
+Mdbrain adapters should be thin. They translate a client surface into the
 existing framework operations without changing API behavior or inventing client
 specific memory semantics.
 
@@ -20,7 +20,7 @@ specific memory semantics.
 | Secrets | Never store API keys, tokens, passwords, or private connection strings |
 
 For AI SDK apps, read-first means direct TypeScript client calls or explicit
-`createMdbrianTools` tools. The `withMdbrian` and `createOpenAIMiddleware`
+`createMdbrainTools` tools. The `withMdbrain` and `createOpenAIMiddleware`
 helpers persist conversation events by design, so use them only when automatic
 conversation persistence is an explicit app workflow.
 
@@ -44,13 +44,13 @@ For client config files, use an absolute `cwd` pointing at `apps/mcp`, pass
 
 | Use case | MCP tools |
 |---|---|
-| Recall memory | `mdbrian_search`, `mdbrian_search_detailed`, `mdbrian_search_kb` |
-| Build prompt context | `mdbrian_build_context_bundle` |
-| Read evidence | `mdbrian_read_file`, trace and admin trace tools |
-| Remember events | `mdbrian_write_event`, `mdbrian_add` |
-| Remember facts and playbooks | `mdbrian_write_structured`, `mdbrian_write_procedure` |
-| Correct memory | Lifecycle update/delete/history tools, `mdbrian_memory_feedback` |
-| Check health | `mdbrian_status`, `mdbrian_status_detailed`, probes, stats |
+| Recall memory | `mdbrain_search`, `mdbrain_search_detailed`, `mdbrain_search_kb` |
+| Build prompt context | `mdbrain_build_context_bundle` |
+| Read evidence | `mdbrain_read_file`, trace and admin trace tools |
+| Remember events | `mdbrain_write_event`, `mdbrain_add` |
+| Remember facts and playbooks | `mdbrain_write_structured`, `mdbrain_write_procedure` |
+| Correct memory | Lifecycle update/delete/history tools, `mdbrain_memory_feedback` |
+| Check health | `mdbrain_status`, `mdbrain_status_detailed`, probes, stats |
 
 ## Codex template
 
@@ -59,10 +59,10 @@ servers. Project-scoped MCP config belongs in `.codex/config.toml` for trusted
 projects, or in user config for personal setup.
 
 ```toml
-[mcp_servers.mdbrian]
+[mcp_servers.mdbrain]
 command = "bun"
 args = ["run", "start"]
-cwd = "/absolute/path/to/mdbrian/apps/mcp"
+cwd = "/absolute/path/to/mdbrain/apps/mcp"
 env = { MDBRAIN_API_URL = "http://127.0.0.1:3847", MDBRAIN_API_KEY = "local-dev-secret" }
 default_tools_approval_mode = "prompt"
 ```
@@ -70,7 +70,7 @@ default_tools_approval_mode = "prompt"
 Add this to `AGENTS.md` or another durable instruction file:
 
 ```md
-Use Mdbrian as the read-first Company Brain for durable project and workflow
+Use Mdbrain as the read-first Company Brain for durable project and workflow
 context. Search or build a context bundle before answering when remembered
 company, customer, user, project, or workflow context would help. Do not write
 memory automatically. Write only when the user explicitly asks to remember,
@@ -85,7 +85,7 @@ Claude Code's MCP flow with the command and environment values above.
 Add this to `CLAUDE.md`:
 
 ```md
-Use Mdbrian as a read-first Company Brain. Search Mdbrian before answering when
+Use Mdbrain as a read-first Company Brain. Search Mdbrain before answering when
 durable team, customer, project, user, or workflow context would help. Do not
 write memory automatically. Write only on explicit remember, update, or forget
 intent, and include the narrowest useful scope.
@@ -97,8 +97,8 @@ Cursor supports Project, Team, and User Rules plus MCP servers. Add the same
 read-first policy to the rule scope that matches your team.
 
 ```md
-When durable context may matter, use the Mdbrian MCP server to search memory or
-build a context bundle before answering. Treat Mdbrian as a Company Brain, not
+When durable context may matter, use the Mdbrain MCP server to search memory or
+build a context bundle before answering. Treat Mdbrain as a Company Brain, not
 as a coding-only memory store. Do not persist memory unless the user or app
 explicitly asks to remember, update, or forget something.
 ```
@@ -106,35 +106,35 @@ explicitly asks to remember, update, or forget something.
 ## Windsurf template
 
 Windsurf separates memories and rules. Put durable shared behavior in rules, and
-wire Mdbrian through Windsurf's MCP setup when the client needs live tools.
+wire Mdbrain through Windsurf's MCP setup when the client needs live tools.
 
 ```md
-Use Mdbrian for durable Company Brain recall across apps, agents, and team
+Use Mdbrain for durable Company Brain recall across apps, agents, and team
 workflows. Prefer read operations. Persist memory only when the user or workflow
 explicitly asks for a memory write, update, or deletion.
 ```
 
 ## Cline template
 
-Cline supports project rules and a Memory Bank methodology. Keep Mdbrian as the
+Cline supports project rules and a Memory Bank methodology. Keep Mdbrain as the
 live memory backend and use local rule files only to tell Cline when to read or
 write.
 
 ```md
 Before work that depends on durable company, customer, user, project, or
-workflow context, use Mdbrian recall or a context bundle. Do not mirror every
-turn into Mdbrian. Write only explicit memories, corrections, procedures, or
+workflow context, use Mdbrain recall or a context bundle. Do not mirror every
+turn into Mdbrain. Write only explicit memories, corrections, procedures, or
 forget requests.
 ```
 
 ## Serena template
 
-Serena is an MCP toolkit. Wire Mdbrian through the MCP client that hosts Serena
+Serena is an MCP toolkit. Wire Mdbrain through the MCP client that hosts Serena
 or through the same client that uses Serena.
 
 ```md
-Mdbrian is the durable Company Brain. Serena may provide code and project
-tooling, but durable memory reads and writes should go through Mdbrian. Read
+Mdbrain is the durable Company Brain. Serena may provide code and project
+tooling, but durable memory reads and writes should go through Mdbrain. Read
 first, write only on explicit intent, and keep scopes narrow.
 ```
 
@@ -144,7 +144,7 @@ Continue supports rules and MCP in Agent mode. Put the policy in a rule and use
 Continue's MCP configuration for the server command.
 
 ```md
-Use Mdbrian through MCP when an Agent-mode task needs durable Company Brain
+Use Mdbrain through MCP when an Agent-mode task needs durable Company Brain
 context. Search or build a context bundle first. Do not write memory unless the
 user or workflow explicitly asks to remember, update, or forget something.
 ```

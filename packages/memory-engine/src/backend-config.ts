@@ -1,5 +1,5 @@
 import {
-	type MdbrianConfig,
+	type MdbrainConfig,
 	type MemoryCitationsMode,
 	type MemoryMongoDBDeploymentProfile,
 	type MemoryMongoDBEmbeddingMode,
@@ -7,7 +7,7 @@ import {
 	type MemoryMongoDBRecallProfile,
 	createSubsystemLogger,
 	resolveUserPath,
-} from "@mdbrian/lib"
+} from "@mdbrain/lib"
 
 const log = createSubsystemLogger("memory:backend-config")
 
@@ -123,7 +123,7 @@ export type ResolvedMemoryBackendConfig = {
 }
 const DEFAULT_BACKEND = "mongodb"
 const DEFAULT_CITATIONS: MemoryCitationsMode = "auto"
-const DEFAULT_RELEVANCE_DATASET = "~/.mdbrian/relevance/golden.jsonl"
+const DEFAULT_RELEVANCE_DATASET = "~/.mdbrain/relevance/golden.jsonl"
 const DEFAULT_MONGODB_PROFILE: MemoryMongoDBDeploymentProfile =
 	"atlas-local-preview"
 const DEFAULT_MONGODB_EMBEDDING_MODE: MemoryMongoDBEmbeddingMode = "automated"
@@ -135,7 +135,7 @@ function sanitizeName(input: string): string {
 }
 
 export function resolveMemoryBackendConfig(params: {
-	cfg: MdbrianConfig
+	cfg: MdbrainConfig
 	agentId: string
 }): ResolvedMemoryBackendConfig {
 	const backend = params.cfg.memory?.backend ?? DEFAULT_BACKEND
@@ -143,7 +143,7 @@ export function resolveMemoryBackendConfig(params: {
 
 	if (backend !== "mongodb") {
 		throw new Error(
-			`Unsupported memory.backend "${String(backend)}". Mdbrian supports only the MongoDB memory backend.`,
+			`Unsupported memory.backend "${String(backend)}". Mdbrain supports only the MongoDB memory backend.`,
 		)
 	}
 
@@ -159,9 +159,9 @@ export function resolveMemoryBackendConfig(params: {
 		if (!uri) {
 			throw new Error(
 				[
-					"MongoDB URI required for Mdbrian.",
+					"MongoDB URI required for Mdbrain.",
 					"Set `memory.mongodb.uri` in config or `MDBRAIN_MONGODB_URI` in the environment.",
-					"Use `MDBRAIN_FORCE_MONGODB_URI` to override a file URI (for example mdbrian-api or CI).",
+					"Use `MDBRAIN_FORCE_MONGODB_URI` to override a file URI (for example mdbrain-api or CI).",
 				].join(" "),
 			)
 		}
@@ -187,7 +187,7 @@ export function resolveMemoryBackendConfig(params: {
 			const unsupportedDeploymentProfile = String(mongoCfg?.deploymentProfile)
 			throw new Error(
 				[
-					`deploymentProfile "${unsupportedDeploymentProfile}" is not supported in Mdbrian.`,
+					`deploymentProfile "${unsupportedDeploymentProfile}" is not supported in Mdbrain.`,
 					'Use deploymentProfile "atlas-local-preview" or "atlas-managed".',
 				].join(" "),
 			)
@@ -196,7 +196,7 @@ export function resolveMemoryBackendConfig(params: {
 			const unsupportedEmbeddingMode = String(mongoCfg?.embeddingMode)
 			throw new Error(
 				[
-					`embeddingMode "${unsupportedEmbeddingMode}" is not supported in Mdbrian.`,
+					`embeddingMode "${unsupportedEmbeddingMode}" is not supported in Mdbrain.`,
 					'Use embeddingMode "automated" with atlas-local-preview or atlas-managed.',
 				].join(" "),
 			)
@@ -207,7 +207,7 @@ export function resolveMemoryBackendConfig(params: {
 		) {
 			throw new Error(
 				[
-					`queryRewriting.method "${mongoCfg.queryRewriting.method}" is not supported in Mdbrian.`,
+					`queryRewriting.method "${mongoCfg.queryRewriting.method}" is not supported in Mdbrain.`,
 					'Use queryRewriting.method "synonym-expansion" or disable query rewriting.',
 				].join(" "),
 			)
@@ -218,13 +218,13 @@ export function resolveMemoryBackendConfig(params: {
 			citations,
 			mongodb: {
 				uri,
-				database: mongoCfg?.database ?? "mdbrian",
+				database: mongoCfg?.database ?? "mdbrain",
 				collectionPrefix:
 					(envCollectionPrefix && envCollectionPrefix.length > 0
 						? envCollectionPrefix
 						: undefined) ??
 					mongoCfg?.collectionPrefix ??
-					`mdbrian_${sanitizeName(params.agentId)}_`,
+					`mdbrain_${sanitizeName(params.agentId)}_`,
 				deploymentProfile,
 				embeddingMode,
 				fusionMethod: resolveEnvFusionMethod(

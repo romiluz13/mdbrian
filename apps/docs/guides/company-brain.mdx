@@ -1,10 +1,10 @@
 ---
 title: "Company Brain Guide"
-description: "Use Mdbrian as shared memory for AI apps, agents, and teams."
+description: "Use Mdbrain as shared memory for AI apps, agents, and teams."
 icon: "building-2"
 ---
 
-Mdbrian can serve as a Company Brain: a durable memory layer for AI systems that
+Mdbrain can serve as a Company Brain: a durable memory layer for AI systems that
 need shared context across people, apps, agents, and workflows.
 
 This guide keeps the product broad. Coding agents are a useful adapter path, but
@@ -50,7 +50,7 @@ User asks a question
 
 ```text
 Agent receives a task
-  -> Agent searches Mdbrian or builds a context bundle
+  -> Agent searches Mdbrain or builds a context bundle
   -> Agent uses retrieved context while working
   -> Agent asks before storing new durable memory
   -> User confirms, corrects, or rejects the memory write
@@ -85,7 +85,7 @@ Keep these gates separate:
 | Path | Surface |
 |---|---|
 | Product app | HTTP API or TypeScript client |
-| AI SDK app | `@mdbrian/tools` explicit tools for read-first use; middleware only when auto event persistence is intended |
+| AI SDK app | `@mdbrain/tools` explicit tools for read-first use; middleware only when auto event persistence is intended |
 | Coding agent | MCP server plus client-specific instructions |
 | Operator review | Web console and lifecycle APIs |
 | Data import | Explicit import or benchmark scripts |

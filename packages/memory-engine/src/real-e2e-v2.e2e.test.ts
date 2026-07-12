@@ -4,7 +4,7 @@
  * Tests ALL v2 capabilities against a live MongoDB (atlas-local:preview)
  * with realistic multi-turn AI agent simulation data.
  *
- * Run: MONGODB_TEST_URI="mongodb://admin:admin@localhost:27017/mdbrian?authSource=admin&replicaSet=rs0&directConnection=true" \
+ * Run: MONGODB_TEST_URI="mongodb://admin:admin@localhost:27017/mdbrain?authSource=admin&replicaSet=rs0&directConnection=true" \
  *      pnpm vitest run --config vitest.e2e.config.ts src/memory/real-e2e-v2.e2e.test.ts --reporter=verbose
  */
 
@@ -88,7 +88,7 @@ import type { MemorySearchResult } from "./types.js"
 // ─── Constants ─────────────────────────────────────────────────────────────────
 
 const TEST_URI = resolvePreviewMongoTestUri(
-	"mongodb://admin:admin@localhost:27017/mdbrian?authSource=admin&replicaSet=rs0&directConnection=true",
+	"mongodb://admin:admin@localhost:27017/mdbrain?authSource=admin&replicaSet=rs0&directConnection=true",
 )
 const PREFIX = "memtest_"
 const AGENT_ID = `agent-e2e-${randomUUID().slice(0, 8)}`
@@ -305,7 +305,7 @@ describe("Real E2E: Memory v2 Full Capability Test", () => {
 			serverSelectionTimeoutMS: 10_000,
 		})
 		await client.connect()
-		db = client.db("mdbrian")
+		db = client.db("mdbrain")
 
 		// Setup fresh collections and indexes
 		await ensureCollections(db, PREFIX)
@@ -1767,7 +1767,7 @@ describe("Real E2E: Memory v2 Full Capability Test", () => {
 
 		it("should return null stage when embeddingMode is not automated", () => {
 			// When embeddingMode is not "automated", buildVectorSearchStage should return null
-			// (no manual embedding support in Mdbrian)
+			// (no manual embedding support in Mdbrain)
 			const stage = buildVectorSearchStage({
 				queryVector: null,
 				queryText: "test query",

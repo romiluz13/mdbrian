@@ -1,5 +1,5 @@
 import { randomUUID } from "node:crypto"
-import { MdbrianClient } from "@mdbrian/client"
+import { MdbrainClient } from "@mdbrain/client"
 
 import { runMemoryEvalSuite } from "./memory-eval-core.js"
 import { writeProofArtifact } from "./proof-artifacts.js"
@@ -13,7 +13,7 @@ const seed =
 	process.env.MDBRAIN_EVAL_SEED?.trim() ?? `eval-${randomUUID().slice(0, 8)}`
 
 async function main() {
-	const client = new MdbrianClient({
+	const client = new MdbrainClient({
 		baseUrl,
 		apiKey,
 		maxRetries: 2,

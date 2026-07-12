@@ -148,7 +148,7 @@ describe("writeEvent", () => {
 			.mockRejectedValueOnce(
 				Object.assign(
 					new Error(
-						"Connection to mdbrian-shard interrupted due to server monitor timeout",
+						"Connection to mdbrain-shard interrupted due to server monitor timeout",
 					),
 					{ name: "MongoNetworkError" },
 				),

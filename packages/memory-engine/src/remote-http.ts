@@ -1,4 +1,4 @@
-import { type SsrFPolicy, defaultSsrfPolicy } from "@mdbrian/lib"
+import { type SsrFPolicy, defaultSsrfPolicy } from "@mdbrain/lib"
 
 export function buildRemoteBaseUrlPolicy(
 	baseUrl: string,

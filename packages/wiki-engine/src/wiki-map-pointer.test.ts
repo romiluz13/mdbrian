@@ -190,7 +190,7 @@ describe("generateWikiMapBlock", () => {
 describe("writeWikiMapToFile", () => {
 	let tmp: string
 	beforeEach(() => {
-		tmp = fs.mkdtempSync(path.join(os.tmpdir(), "mdbrian-map-"))
+		tmp = fs.mkdtempSync(path.join(os.tmpdir(), "mdbrain-map-"))
 	})
 	afterEach(() => {
 		fs.rmSync(tmp, { recursive: true, force: true })

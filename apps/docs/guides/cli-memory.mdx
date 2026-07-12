@@ -1,11 +1,11 @@
 ---
 title: MCP memory tools
-description: Run the Mdbrian MCP server and expose memory tools to MCP-compatible clients.
+description: Run the Mdbrain MCP server and expose memory tools to MCP-compatible clients.
 icon: "terminal"
 ---
 
-The MCP server at `apps/mcp` exposes Mdbrian memory operations over stdio. Use
-it as one adapter path for the Mdbrian Company Brain framework.
+The MCP server at `apps/mcp` exposes Mdbrain memory operations over stdio. Use
+it as one adapter path for the Mdbrain Company Brain framework.
 
 MCP clients should be read-first. They can search memory and build context
 bundles freely, but should write memory only when the user or workflow
@@ -30,23 +30,23 @@ tools, not the full server inventory:
 
 | Tool | Description |
 |------|-------------|
-| `mdbrian_search` | Search memory with hybrid vector + full-text |
-| `mdbrian_search_detailed` | Search with plans, passes, metadata, and evidence |
-| `mdbrian_search_kb` | Search imported knowledge base content |
-| `mdbrian_read_file` | Reopen a memory locator or file path |
-| `mdbrian_build_context_bundle` | Build a prompt-ready context bundle |
-| `mdbrian_add` | Add content to memory |
-| `mdbrian_write_event` | Write a conversation event |
-| `mdbrian_write_structured` | Write a stable structured memory |
-| `mdbrian_write_procedure` | Write a procedure or playbook memory |
-| `mdbrian_profile` | Get a synthesized user profile |
-| `mdbrian_memory_feedback` | Confirm, correct, or reject memory relevance |
-| `mdbrian_memory_get` | Get a structured or procedure memory |
-| `mdbrian_memory_update` | Update structured or procedure memory |
-| `mdbrian_memory_delete` | Delete or invalidate structured or procedure memory |
-| `mdbrian_memory_history` | Inspect structured or procedure memory history |
-| `mdbrian_chain_trace` | Inspect memory chain provenance |
-| `mdbrian_status` | Check memory provider health |
+| `mdbrain_search` | Search memory with hybrid vector + full-text |
+| `mdbrain_search_detailed` | Search with plans, passes, metadata, and evidence |
+| `mdbrain_search_kb` | Search imported knowledge base content |
+| `mdbrain_read_file` | Reopen a memory locator or file path |
+| `mdbrain_build_context_bundle` | Build a prompt-ready context bundle |
+| `mdbrain_add` | Add content to memory |
+| `mdbrain_write_event` | Write a conversation event |
+| `mdbrain_write_structured` | Write a stable structured memory |
+| `mdbrain_write_procedure` | Write a procedure or playbook memory |
+| `mdbrain_profile` | Get a synthesized user profile |
+| `mdbrain_memory_feedback` | Confirm, correct, or reject memory relevance |
+| `mdbrain_memory_get` | Get a structured or procedure memory |
+| `mdbrain_memory_update` | Update structured or procedure memory |
+| `mdbrain_memory_delete` | Delete or invalidate structured or procedure memory |
+| `mdbrain_memory_history` | Inspect structured or procedure memory history |
+| `mdbrain_chain_trace` | Inspect memory chain provenance |
+| `mdbrain_status` | Check memory provider health |
 
 The server also includes admin, probe, benchmark, import, detailed status, and
 job tools for operator workflows. Keep agent instructions focused on the
@@ -57,7 +57,7 @@ smallest tool set required for the task.
 Add a durable rule to the client that uses this MCP server:
 
 ```md
-Use Mdbrian as a read-first Company Brain. Search memory or build a context
+Use Mdbrain as a read-first Company Brain. Search memory or build a context
 bundle before answering when durable company, customer, user, project, or
 workflow context would help. Do not write memory automatically. Write only when
 the user or app explicitly asks to remember, update, or forget something.

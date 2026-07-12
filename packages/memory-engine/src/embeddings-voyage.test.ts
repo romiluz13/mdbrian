@@ -5,8 +5,8 @@ import {
 } from "./test-helpers/fetch-mock.js"
 import { mockPublicPinnedHostname } from "./test-helpers/ssrf.js"
 
-vi.mock("@mdbrian/lib", async (importOriginal) => {
-	const original = await importOriginal<typeof import("@mdbrian/lib")>()
+vi.mock("@mdbrain/lib", async (importOriginal) => {
+	const original = await importOriginal<typeof import("@mdbrain/lib")>()
 	const { createModelAuthMockModule } = await import(
 		"./test-helpers/model-auth-mock.js"
 	)
@@ -24,7 +24,7 @@ const createFetchMock = () => {
 	return withFetchPreconnect(fetchMock)
 }
 
-let authModule: typeof import("@mdbrian/lib")
+let authModule: typeof import("@mdbrain/lib")
 let createVoyageEmbeddingProvider: typeof import("./embeddings-voyage.js").createVoyageEmbeddingProvider
 let normalizeVoyageModel: typeof import("./embeddings-voyage.js").normalizeVoyageModel
 
@@ -32,7 +32,7 @@ beforeEach(async () => {
 	vi.useRealTimers()
 	vi.doUnmock("undici")
 	vi.resetModules()
-	authModule = await import("@mdbrian/lib")
+	authModule = await import("@mdbrain/lib")
 	;({ createVoyageEmbeddingProvider, normalizeVoyageModel } = await import(
 		"./embeddings-voyage.js"
 	))

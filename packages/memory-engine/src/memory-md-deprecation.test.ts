@@ -1,7 +1,7 @@
 /**
  * MEMORY.md Deprecation Verification Test
  *
- * Validates that MEMORY.md has been fully removed from the Mdbrian runtime:
+ * Validates that MEMORY.md has been fully removed from the Mdbrain runtime:
  * - internal.ts isMemoryPath rejects MEMORY.md root files
  * - internal.ts listMemoryFiles skips MEMORY.md root files
  */

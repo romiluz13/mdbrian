@@ -323,7 +323,7 @@ export function createApp(): Hono {
 		)
 	}
 
-	app.get("/health", (c) => c.json({ ok: true, service: "mdbrian-api" }))
+	app.get("/health", (c) => c.json({ ok: true, service: "mdbrain-api" }))
 	app.get("/openapi.json", (c) => c.json(openApiSpec))
 	app.route("/v1", createV1Router())
 

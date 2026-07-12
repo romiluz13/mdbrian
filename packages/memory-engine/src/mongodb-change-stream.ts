@@ -4,7 +4,7 @@ import type {
 	Collection,
 	Document,
 } from "mongodb"
-import { createSubsystemLogger } from "@mdbrian/lib"
+import { createSubsystemLogger } from "@mdbrain/lib"
 
 const log = createSubsystemLogger("memory:mongodb:changestream")
 

@@ -73,7 +73,7 @@ let mockFiles: Collection
 
 beforeEach(async () => {
 	vi.clearAllMocks()
-	tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), "mdbrian-sync-test-"))
+	tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), "mdbrain-sync-test-"))
 	mockChunks = createMockChunksCol()
 	mockFiles = createMockFilesCol()
 	vi.mocked(chunksCollection).mockReturnValue(mockChunks)

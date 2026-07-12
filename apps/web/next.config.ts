@@ -10,7 +10,7 @@ const nextConfig: NextConfig = {
 	images: {
 		unoptimized: staticExport,
 	},
-	transpilePackages: ["@mdbrian/client"],
+	transpilePackages: ["@mdbrain/client"],
 	webpack: (config) => {
 		config.resolve.extensionAlias = {
 			...(config.resolve.extensionAlias ?? {}),

@@ -2,52 +2,52 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import contractFixtures from "./__fixtures__/contract-fixtures.js"
 
 const bridgeMocks = vi.hoisted(() => ({
-	mdbrianBridgeAdd: vi.fn(),
-	mdbrianBridgeAccessSummaries: vi.fn(),
-	mdbrianBridgeAccessTrends: vi.fn(),
-	mdbrianBridgeBenchmarkIngest: vi.fn(),
-	mdbrianBridgeImportConversations: vi.fn(),
-	mdbrianBridgeBuildContextBundle: vi.fn(),
-	mdbrianBridgeBuildDiscoveryProjection: vi.fn(),
-	mdbrianBridgeDeleteLifecycleItem: vi.fn(),
-	mdbrianBridgeApplyMemoryFeedback: vi.fn(),
-	mdbrianBridgeGetState: vi.fn(),
-	mdbrianBridgeGetDetailedStatus: vi.fn(),
-	mdbrianBridgeExtractEvent: vi.fn(),
-	mdbrianBridgeGetLifecycleHistory: vi.fn(),
-	mdbrianBridgeGetLifecycleItem: vi.fn(),
-	mdbrianBridgeGetMemoryJob: vi.fn(),
-	mdbrianBridgeGetRecallTrace: vi.fn(),
-	mdbrianBridgeHydrateActiveSlate: vi.fn(),
-	mdbrianBridgeListMemoryJobs: vi.fn(),
-	mdbrianBridgeListRecallTraces: vi.fn(),
-	mdbrianBridgeProbeEmbedding: vi.fn(),
-	mdbrianBridgeProbeVector: vi.fn(),
-	mdbrianBridgeProfile: vi.fn(),
-	mdbrianBridgeRecallConversation: vi.fn(),
-	mdbrianBridgeReadFile: vi.fn(),
-	mdbrianBridgeRelevanceBenchmark: vi.fn(),
-	mdbrianBridgeRelevanceExplain: vi.fn(),
-	mdbrianBridgeRelevanceReport: vi.fn(),
-	mdbrianBridgeRelevanceSampleRate: vi.fn(),
-	mdbrianBridgeSearch: vi.fn(),
-	mdbrianBridgeSearchDetailed: vi.fn(),
-	mdbrianBridgeSearchKB: vi.fn(),
-	mdbrianBridgeStats: vi.fn(),
-	mdbrianBridgeStatus: vi.fn(),
-	mdbrianBridgeSync: vi.fn(),
-	mdbrianBridgeUpdateLifecycleItem: vi.fn(),
-	mdbrianBridgeReportProcedureOutcome: vi.fn(),
-	mdbrianBridgeWriteConversationEvent: vi.fn(),
-	mdbrianBridgeWriteProcedure: vi.fn(),
-	mdbrianBridgeWriteStructuredMemory: vi.fn(),
-	mdbrianBridgeTraceChain: vi.fn(),
-	mdbrianBridgeScanNovelty: vi.fn(),
-	mdbrianBridgeConsolidate: vi.fn(),
-	mdbrianBridgeSelfEdit: vi.fn(),
+	mdbrainBridgeAdd: vi.fn(),
+	mdbrainBridgeAccessSummaries: vi.fn(),
+	mdbrainBridgeAccessTrends: vi.fn(),
+	mdbrainBridgeBenchmarkIngest: vi.fn(),
+	mdbrainBridgeImportConversations: vi.fn(),
+	mdbrainBridgeBuildContextBundle: vi.fn(),
+	mdbrainBridgeBuildDiscoveryProjection: vi.fn(),
+	mdbrainBridgeDeleteLifecycleItem: vi.fn(),
+	mdbrainBridgeApplyMemoryFeedback: vi.fn(),
+	mdbrainBridgeGetState: vi.fn(),
+	mdbrainBridgeGetDetailedStatus: vi.fn(),
+	mdbrainBridgeExtractEvent: vi.fn(),
+	mdbrainBridgeGetLifecycleHistory: vi.fn(),
+	mdbrainBridgeGetLifecycleItem: vi.fn(),
+	mdbrainBridgeGetMemoryJob: vi.fn(),
+	mdbrainBridgeGetRecallTrace: vi.fn(),
+	mdbrainBridgeHydrateActiveSlate: vi.fn(),
+	mdbrainBridgeListMemoryJobs: vi.fn(),
+	mdbrainBridgeListRecallTraces: vi.fn(),
+	mdbrainBridgeProbeEmbedding: vi.fn(),
+	mdbrainBridgeProbeVector: vi.fn(),
+	mdbrainBridgeProfile: vi.fn(),
+	mdbrainBridgeRecallConversation: vi.fn(),
+	mdbrainBridgeReadFile: vi.fn(),
+	mdbrainBridgeRelevanceBenchmark: vi.fn(),
+	mdbrainBridgeRelevanceExplain: vi.fn(),
+	mdbrainBridgeRelevanceReport: vi.fn(),
+	mdbrainBridgeRelevanceSampleRate: vi.fn(),
+	mdbrainBridgeSearch: vi.fn(),
+	mdbrainBridgeSearchDetailed: vi.fn(),
+	mdbrainBridgeSearchKB: vi.fn(),
+	mdbrainBridgeStats: vi.fn(),
+	mdbrainBridgeStatus: vi.fn(),
+	mdbrainBridgeSync: vi.fn(),
+	mdbrainBridgeUpdateLifecycleItem: vi.fn(),
+	mdbrainBridgeReportProcedureOutcome: vi.fn(),
+	mdbrainBridgeWriteConversationEvent: vi.fn(),
+	mdbrainBridgeWriteProcedure: vi.fn(),
+	mdbrainBridgeWriteStructuredMemory: vi.fn(),
+	mdbrainBridgeTraceChain: vi.fn(),
+	mdbrainBridgeScanNovelty: vi.fn(),
+	mdbrainBridgeConsolidate: vi.fn(),
+	mdbrainBridgeSelfEdit: vi.fn(),
 }))
 
-vi.mock("@mdbrian/memory-bridge", () => bridgeMocks)
+vi.mock("@mdbrain/memory-bridge", () => bridgeMocks)
 
 import { createApp } from "./app.js"
 
@@ -56,38 +56,38 @@ describe("createApp", () => {
 
 	beforeEach(() => {
 		process.env = { ...prevEnv }
-		bridgeMocks.mdbrianBridgeSearch.mockReset()
-		bridgeMocks.mdbrianBridgeSearchDetailed.mockReset()
-		bridgeMocks.mdbrianBridgeAdd.mockReset()
-		bridgeMocks.mdbrianBridgeAccessSummaries.mockReset()
-		bridgeMocks.mdbrianBridgeAccessTrends.mockReset()
-		bridgeMocks.mdbrianBridgeBenchmarkIngest.mockReset()
-		bridgeMocks.mdbrianBridgeImportConversations.mockReset()
-		bridgeMocks.mdbrianBridgeBuildContextBundle.mockReset()
-		bridgeMocks.mdbrianBridgeBuildDiscoveryProjection.mockReset()
-		bridgeMocks.mdbrianBridgeDeleteLifecycleItem.mockReset()
-		bridgeMocks.mdbrianBridgeApplyMemoryFeedback.mockReset()
-		bridgeMocks.mdbrianBridgeExtractEvent.mockReset()
-		bridgeMocks.mdbrianBridgeGetLifecycleHistory.mockReset()
-		bridgeMocks.mdbrianBridgeGetLifecycleItem.mockReset()
-		bridgeMocks.mdbrianBridgeGetState.mockReset()
-		bridgeMocks.mdbrianBridgeGetMemoryJob.mockReset()
-		bridgeMocks.mdbrianBridgeGetRecallTrace.mockReset()
-		bridgeMocks.mdbrianBridgeProfile.mockReset()
-		bridgeMocks.mdbrianBridgeRecallConversation.mockReset()
-		bridgeMocks.mdbrianBridgeListMemoryJobs.mockReset()
-		bridgeMocks.mdbrianBridgeListRecallTraces.mockReset()
-		bridgeMocks.mdbrianBridgeRelevanceBenchmark.mockReset()
-		bridgeMocks.mdbrianBridgeStatus.mockReset()
-		bridgeMocks.mdbrianBridgeTraceChain.mockReset()
-		bridgeMocks.mdbrianBridgeScanNovelty.mockReset()
-		bridgeMocks.mdbrianBridgeConsolidate.mockReset()
-		bridgeMocks.mdbrianBridgeSelfEdit.mockReset()
-		bridgeMocks.mdbrianBridgeUpdateLifecycleItem.mockReset()
-		bridgeMocks.mdbrianBridgeReportProcedureOutcome.mockReset()
-		bridgeMocks.mdbrianBridgeWriteConversationEvent.mockReset()
-		bridgeMocks.mdbrianBridgeSearch.mockResolvedValue([])
-		bridgeMocks.mdbrianBridgeSearchDetailed.mockResolvedValue({
+		bridgeMocks.mdbrainBridgeSearch.mockReset()
+		bridgeMocks.mdbrainBridgeSearchDetailed.mockReset()
+		bridgeMocks.mdbrainBridgeAdd.mockReset()
+		bridgeMocks.mdbrainBridgeAccessSummaries.mockReset()
+		bridgeMocks.mdbrainBridgeAccessTrends.mockReset()
+		bridgeMocks.mdbrainBridgeBenchmarkIngest.mockReset()
+		bridgeMocks.mdbrainBridgeImportConversations.mockReset()
+		bridgeMocks.mdbrainBridgeBuildContextBundle.mockReset()
+		bridgeMocks.mdbrainBridgeBuildDiscoveryProjection.mockReset()
+		bridgeMocks.mdbrainBridgeDeleteLifecycleItem.mockReset()
+		bridgeMocks.mdbrainBridgeApplyMemoryFeedback.mockReset()
+		bridgeMocks.mdbrainBridgeExtractEvent.mockReset()
+		bridgeMocks.mdbrainBridgeGetLifecycleHistory.mockReset()
+		bridgeMocks.mdbrainBridgeGetLifecycleItem.mockReset()
+		bridgeMocks.mdbrainBridgeGetState.mockReset()
+		bridgeMocks.mdbrainBridgeGetMemoryJob.mockReset()
+		bridgeMocks.mdbrainBridgeGetRecallTrace.mockReset()
+		bridgeMocks.mdbrainBridgeProfile.mockReset()
+		bridgeMocks.mdbrainBridgeRecallConversation.mockReset()
+		bridgeMocks.mdbrainBridgeListMemoryJobs.mockReset()
+		bridgeMocks.mdbrainBridgeListRecallTraces.mockReset()
+		bridgeMocks.mdbrainBridgeRelevanceBenchmark.mockReset()
+		bridgeMocks.mdbrainBridgeStatus.mockReset()
+		bridgeMocks.mdbrainBridgeTraceChain.mockReset()
+		bridgeMocks.mdbrainBridgeScanNovelty.mockReset()
+		bridgeMocks.mdbrainBridgeConsolidate.mockReset()
+		bridgeMocks.mdbrainBridgeSelfEdit.mockReset()
+		bridgeMocks.mdbrainBridgeUpdateLifecycleItem.mockReset()
+		bridgeMocks.mdbrainBridgeReportProcedureOutcome.mockReset()
+		bridgeMocks.mdbrainBridgeWriteConversationEvent.mockReset()
+		bridgeMocks.mdbrainBridgeSearch.mockResolvedValue([])
+		bridgeMocks.mdbrainBridgeSearchDetailed.mockResolvedValue({
 			results: [],
 			metadata: {
 				mode: "auto",
@@ -109,16 +109,16 @@ describe("createApp", () => {
 				reranked: false,
 			},
 		})
-		bridgeMocks.mdbrianBridgeAdd.mockResolvedValue({
+		bridgeMocks.mdbrainBridgeAdd.mockResolvedValue({
 			eventId: "evt-1",
 			chunkCreated: true,
 		})
-		bridgeMocks.mdbrianBridgeWriteConversationEvent.mockResolvedValue({
+		bridgeMocks.mdbrainBridgeWriteConversationEvent.mockResolvedValue({
 			eventId: "evt-2",
 			chunkCreated: true,
 		})
-		bridgeMocks.mdbrianBridgeProfile.mockResolvedValue({ profile: [] })
-		bridgeMocks.mdbrianBridgeHydrateActiveSlate.mockResolvedValue({
+		bridgeMocks.mdbrainBridgeProfile.mockResolvedValue({ profile: [] })
+		bridgeMocks.mdbrainBridgeHydrateActiveSlate.mockResolvedValue({
 			agentId: "main",
 			scope: "agent",
 			scopeRef: "agent:main",
@@ -132,7 +132,7 @@ describe("createApp", () => {
 			},
 			hydratedAt: "2026-04-05T12:00:00.000Z",
 		})
-		bridgeMocks.mdbrianBridgeBuildDiscoveryProjection.mockResolvedValue({
+		bridgeMocks.mdbrainBridgeBuildDiscoveryProjection.mockResolvedValue({
 			kind: "entity-brief",
 			query: "Phoenix",
 			title: "Phoenix entity brief",
@@ -147,7 +147,7 @@ describe("createApp", () => {
 			},
 			builtAt: "2026-04-05T12:00:00.000Z",
 		})
-		bridgeMocks.mdbrianBridgeBuildContextBundle.mockResolvedValue({
+		bridgeMocks.mdbrainBridgeBuildContextBundle.mockResolvedValue({
 			agentId: "main",
 			query: "Phoenix",
 			scope: "agent",
@@ -166,7 +166,7 @@ describe("createApp", () => {
 			},
 			builtAt: "2026-04-05T12:00:00.000Z",
 		})
-		bridgeMocks.mdbrianBridgeRecallConversation.mockResolvedValue({
+		bridgeMocks.mdbrainBridgeRecallConversation.mockResolvedValue({
 			results: [],
 			metadata: {
 				totalMatched: 0,
@@ -175,7 +175,7 @@ describe("createApp", () => {
 				durationMs: 2,
 			},
 		})
-		bridgeMocks.mdbrianBridgeGetLifecycleItem.mockResolvedValue({
+		bridgeMocks.mdbrainBridgeGetLifecycleItem.mockResolvedValue({
 			family: "structured",
 			handle: {
 				family: "structured",
@@ -197,7 +197,7 @@ describe("createApp", () => {
 			createdAt: "2026-04-09T12:00:00.000Z",
 			updatedAt: "2026-04-10T12:00:00.000Z",
 		})
-		bridgeMocks.mdbrianBridgeUpdateLifecycleItem.mockImplementation(
+		bridgeMocks.mdbrainBridgeUpdateLifecycleItem.mockImplementation(
 			async ({ handle, patch }) => ({
 				family: handle.family,
 				handle: {
@@ -224,7 +224,7 @@ describe("createApp", () => {
 				updatedAt: "2026-04-10T12:05:00.000Z",
 			}),
 		)
-		bridgeMocks.mdbrianBridgeDeleteLifecycleItem.mockImplementation(
+		bridgeMocks.mdbrainBridgeDeleteLifecycleItem.mockImplementation(
 			async ({ handle }) => ({
 				family: handle.family,
 				handle: {
@@ -250,7 +250,7 @@ describe("createApp", () => {
 				updatedAt: "2026-04-10T12:10:00.000Z",
 			}),
 		)
-		bridgeMocks.mdbrianBridgeGetLifecycleHistory.mockResolvedValue([
+		bridgeMocks.mdbrainBridgeGetLifecycleHistory.mockResolvedValue([
 			{
 				family: "structured",
 				handle: {
@@ -291,7 +291,7 @@ describe("createApp", () => {
 				historyKind: "current",
 			},
 		])
-		bridgeMocks.mdbrianBridgeGetState.mockResolvedValue({
+		bridgeMocks.mdbrainBridgeGetState.mockResolvedValue({
 			profile: { profile: [] },
 			blocks: {
 				blocks: [],
@@ -315,16 +315,16 @@ describe("createApp", () => {
 				builtAt: "2026-04-05T12:00:00.000Z",
 			},
 		})
-		bridgeMocks.mdbrianBridgeStatus.mockResolvedValue({
+		bridgeMocks.mdbrainBridgeStatus.mockResolvedValue({
 			backend: "mongodb",
 			provider: "voyage",
 		})
-		bridgeMocks.mdbrianBridgeExtractEvent.mockResolvedValue({
+		bridgeMocks.mdbrainBridgeExtractEvent.mockResolvedValue({
 			jobId: "extraction-evt-1",
 			scheduled: true,
 		})
-		bridgeMocks.mdbrianBridgeAccessTrends.mockResolvedValue([])
-		bridgeMocks.mdbrianBridgeBenchmarkIngest.mockResolvedValue({
+		bridgeMocks.mdbrainBridgeAccessTrends.mockResolvedValue([])
+		bridgeMocks.mdbrainBridgeBenchmarkIngest.mockResolvedValue({
 			datasetPath: "/tmp/benchmark.json",
 			datasetName: "benchmark.json",
 			conversationsIngested: 1,
@@ -333,7 +333,7 @@ describe("createApp", () => {
 			startedAt: "2026-04-09T12:00:00.000Z",
 			completedAt: "2026-04-09T12:00:01.000Z",
 		})
-		bridgeMocks.mdbrianBridgeImportConversations.mockResolvedValue({
+		bridgeMocks.mdbrainBridgeImportConversations.mockResolvedValue({
 			datasetPath: "/tmp/history.json",
 			datasetName: "history.json",
 			datasetKind: "generic",
@@ -345,7 +345,7 @@ describe("createApp", () => {
 			startedAt: "2026-04-11T09:00:00.000Z",
 			completedAt: "2026-04-11T09:00:02.000Z",
 		})
-		bridgeMocks.mdbrianBridgeRelevanceBenchmark.mockResolvedValue({
+		bridgeMocks.mdbrainBridgeRelevanceBenchmark.mockResolvedValue({
 			datasetVersion: "bench-v1",
 			datasetName: "longmemeval.json",
 			datasetKind: "longmemeval",
@@ -430,8 +430,8 @@ describe("createApp", () => {
 				degradations: [],
 			},
 		})
-		bridgeMocks.mdbrianBridgeListRecallTraces.mockResolvedValue([])
-		bridgeMocks.mdbrianBridgeListMemoryJobs.mockResolvedValue([])
+		bridgeMocks.mdbrainBridgeListRecallTraces.mockResolvedValue([])
+		bridgeMocks.mdbrainBridgeListMemoryJobs.mockResolvedValue([])
 	})
 
 	afterEach(() => {
@@ -444,7 +444,7 @@ describe("createApp", () => {
 		expect(res.status).toBe(200)
 		await expect(res.json()).resolves.toEqual({
 			ok: true,
-			service: "mdbrian-api",
+			service: "mdbrain-api",
 		})
 	})
 
@@ -501,20 +501,20 @@ describe("createApp", () => {
 				query: "workspace checkpoint",
 				agentId: "codex",
 				scope: "workspace",
-				scopeRef: "/workspace/mdbrian",
+				scopeRef: "/workspace/mdbrain",
 				limit: 3,
 			}),
 		})
 
 		expect(res.status).toBe(200)
-		expect(bridgeMocks.mdbrianBridgeSearch).toHaveBeenCalledWith({
+		expect(bridgeMocks.mdbrainBridgeSearch).toHaveBeenCalledWith({
 			query: "workspace checkpoint",
 			agentId: "codex",
 			maxResults: 3,
 			minScore: undefined,
 			sessionKey: undefined,
 			scope: "workspace",
-			scopeRef: "/workspace/mdbrian",
+			scopeRef: "/workspace/mdbrain",
 		})
 	})
 
@@ -636,7 +636,7 @@ describe("createApp", () => {
 			headers: { Authorization: "Bearer secret" },
 		})
 		expect(authorized.status).toBe(200)
-		expect(bridgeMocks.mdbrianBridgeStatus).toHaveBeenCalledOnce()
+		expect(bridgeMocks.mdbrainBridgeStatus).toHaveBeenCalledOnce()
 	})
 
 	it("logs a prominent warning once when API auth is disabled", async () => {
@@ -789,7 +789,7 @@ describe("createApp", () => {
 				token: "scoped-secret",
 				agentIds: ["codex"],
 				scopes: ["workspace"],
-				scopeRefs: ["/workspace/mdbrian"],
+				scopeRefs: ["/workspace/mdbrain"],
 			},
 		])
 
@@ -803,16 +803,16 @@ describe("createApp", () => {
 				query: "scoped gates",
 				agentId: "codex",
 				scope: "workspace",
-				scopeRef: "/workspace/mdbrian",
+				scopeRef: "/workspace/mdbrain",
 			}),
 		})
 
 		expect(res.status).toBe(200)
-		expect(bridgeMocks.mdbrianBridgeSearch).toHaveBeenCalledWith(
+		expect(bridgeMocks.mdbrainBridgeSearch).toHaveBeenCalledWith(
 			expect.objectContaining({
 				agentId: "codex",
 				scope: "workspace",
-				scopeRef: "/workspace/mdbrian",
+				scopeRef: "/workspace/mdbrain",
 			}),
 		)
 	})
@@ -823,7 +823,7 @@ describe("createApp", () => {
 				token: "scoped-secret",
 				agentIds: ["codex"],
 				scopes: ["workspace"],
-				scopeRefs: ["/workspace/mdbrian"],
+				scopeRefs: ["/workspace/mdbrain"],
 			},
 		])
 
@@ -848,7 +848,7 @@ describe("createApp", () => {
 				message: "scopeRef is not allowed for this API key",
 			},
 		})
-		expect(bridgeMocks.mdbrianBridgeSearch).not.toHaveBeenCalled()
+		expect(bridgeMocks.mdbrainBridgeSearch).not.toHaveBeenCalled()
 	})
 
 	it("requires explicit scoped fields for scoped API keys", async () => {
@@ -857,7 +857,7 @@ describe("createApp", () => {
 				token: "scoped-secret",
 				agentIds: ["codex"],
 				scopes: ["workspace"],
-				scopeRefs: ["/workspace/mdbrian"],
+				scopeRefs: ["/workspace/mdbrain"],
 			},
 		])
 
@@ -880,7 +880,7 @@ describe("createApp", () => {
 				message: "scope is required for this API key",
 			},
 		})
-		expect(bridgeMocks.mdbrianBridgeSearch).not.toHaveBeenCalled()
+		expect(bridgeMocks.mdbrainBridgeSearch).not.toHaveBeenCalled()
 	})
 
 	it("keeps MDBRAIN_API_KEY as the admin key when scoped keys are configured", async () => {
@@ -890,7 +890,7 @@ describe("createApp", () => {
 				token: "scoped-secret",
 				agentIds: ["codex"],
 				scopes: ["workspace"],
-				scopeRefs: ["/workspace/mdbrian"],
+				scopeRefs: ["/workspace/mdbrain"],
 			},
 		])
 
@@ -909,7 +909,7 @@ describe("createApp", () => {
 		})
 
 		expect(res.status).toBe(200)
-		expect(bridgeMocks.mdbrianBridgeSearch).toHaveBeenCalledWith(
+		expect(bridgeMocks.mdbrainBridgeSearch).toHaveBeenCalledWith(
 			expect.objectContaining({
 				agentId: "other-agent",
 				scope: "global",
@@ -932,7 +932,7 @@ describe("createApp", () => {
 		})
 
 		expect(res.status).toBe(200)
-		expect(bridgeMocks.mdbrianBridgeAdd).toHaveBeenCalledWith(
+		expect(bridgeMocks.mdbrainBridgeAdd).toHaveBeenCalledWith(
 			expect.objectContaining({
 				content: "remember the scoped thing",
 				agentId: "codex",
@@ -959,7 +959,7 @@ describe("createApp", () => {
 
 		expect(res.status).toBe(200)
 		expect(
-			bridgeMocks.mdbrianBridgeWriteConversationEvent,
+			bridgeMocks.mdbrainBridgeWriteConversationEvent,
 		).toHaveBeenCalledWith(
 			expect.objectContaining({
 				role: "assistant",
@@ -989,7 +989,7 @@ describe("createApp", () => {
 				message: "scope must be session|user|agent|workspace|tenant|global",
 			},
 		})
-		expect(bridgeMocks.mdbrianBridgeSearch).not.toHaveBeenCalled()
+		expect(bridgeMocks.mdbrainBridgeSearch).not.toHaveBeenCalled()
 	})
 
 	it("rejects invalid search-detailed scope values before calling the bridge", async () => {
@@ -1009,7 +1009,7 @@ describe("createApp", () => {
 				message: "scope must be session|user|agent|workspace|tenant|global",
 			},
 		})
-		expect(bridgeMocks.mdbrianBridgeSearchDetailed).not.toHaveBeenCalled()
+		expect(bridgeMocks.mdbrainBridgeSearchDetailed).not.toHaveBeenCalled()
 	})
 
 	it("rejects user and tenant scopes without scopeRef", async () => {
@@ -1029,7 +1029,7 @@ describe("createApp", () => {
 				message: "tenant scope requires scopeRef",
 			},
 		})
-		expect(bridgeMocks.mdbrianBridgeAdd).not.toHaveBeenCalled()
+		expect(bridgeMocks.mdbrainBridgeAdd).not.toHaveBeenCalled()
 	})
 
 	it("rejects state user scope without scopeRef", async () => {
@@ -1042,7 +1042,7 @@ describe("createApp", () => {
 				message: "user scope requires scopeRef",
 			},
 		})
-		expect(bridgeMocks.mdbrianBridgeGetState).not.toHaveBeenCalled()
+		expect(bridgeMocks.mdbrainBridgeGetState).not.toHaveBeenCalled()
 	})
 
 	it("forwards profile scope when provided", async () => {
@@ -1057,7 +1057,7 @@ describe("createApp", () => {
 		})
 
 		expect(res.status).toBe(200)
-		expect(bridgeMocks.mdbrianBridgeProfile).toHaveBeenCalledWith(
+		expect(bridgeMocks.mdbrainBridgeProfile).toHaveBeenCalledWith(
 			expect.objectContaining({
 				scope: "session",
 				scopeRef: "session:demo",
@@ -1067,7 +1067,7 @@ describe("createApp", () => {
 	})
 
 	it("forwards hydrate-active-slate requests with explicit scope", async () => {
-		bridgeMocks.mdbrianBridgeHydrateActiveSlate.mockResolvedValue({
+		bridgeMocks.mdbrainBridgeHydrateActiveSlate.mockResolvedValue({
 			agentId: "agent-42",
 			scope: "workspace",
 			scopeRef: "workspace:demo",
@@ -1119,7 +1119,7 @@ describe("createApp", () => {
 			}),
 			hydratedAt: "2026-04-05T12:00:00.000Z",
 		})
-		expect(bridgeMocks.mdbrianBridgeHydrateActiveSlate).toHaveBeenCalledWith({
+		expect(bridgeMocks.mdbrainBridgeHydrateActiveSlate).toHaveBeenCalledWith({
 			agentId: "agent-42",
 			scope: "workspace",
 			scopeRef: "workspace:demo",
@@ -1128,7 +1128,7 @@ describe("createApp", () => {
 	})
 
 	it("forwards discovery projection requests and returns projection metadata", async () => {
-		bridgeMocks.mdbrianBridgeBuildDiscoveryProjection.mockResolvedValue({
+		bridgeMocks.mdbrainBridgeBuildDiscoveryProjection.mockResolvedValue({
 			kind: "what-changed",
 			query: "routing",
 			title: "What changed for routing",
@@ -1191,7 +1191,7 @@ describe("createApp", () => {
 			builtAt: "2026-04-05T12:00:00.000Z",
 		})
 		expect(
-			bridgeMocks.mdbrianBridgeBuildDiscoveryProjection,
+			bridgeMocks.mdbrainBridgeBuildDiscoveryProjection,
 		).toHaveBeenCalledWith({
 			agentId: "agent-42",
 			kind: "what-changed",
@@ -1204,7 +1204,7 @@ describe("createApp", () => {
 	})
 
 	it("forwards context bundle requests and returns bundle metadata", async () => {
-		bridgeMocks.mdbrianBridgeBuildContextBundle.mockResolvedValue({
+		bridgeMocks.mdbrainBridgeBuildContextBundle.mockResolvedValue({
 			agentId: "agent-42",
 			query: "Phoenix handoff",
 			scope: "agent",
@@ -1269,7 +1269,7 @@ describe("createApp", () => {
 			}),
 			builtAt: "2026-04-05T12:00:00.000Z",
 		})
-		expect(bridgeMocks.mdbrianBridgeBuildContextBundle).toHaveBeenCalledWith({
+		expect(bridgeMocks.mdbrainBridgeBuildContextBundle).toHaveBeenCalledWith({
 			agentId: "agent-42",
 			query: "Phoenix handoff",
 			scope: "agent",
@@ -1300,7 +1300,7 @@ describe("createApp", () => {
 		})
 
 		expect(res.status).toBe(200)
-		expect(bridgeMocks.mdbrianBridgeBuildContextBundle).toHaveBeenCalledWith({
+		expect(bridgeMocks.mdbrainBridgeBuildContextBundle).toHaveBeenCalledWith({
 			agentId: "agent-42",
 			query: undefined,
 			scope: "workspace",
@@ -1319,7 +1319,7 @@ describe("createApp", () => {
 	})
 
 	it("forwards state route requests to the canonical bridge method", async () => {
-		bridgeMocks.mdbrianBridgeGetState.mockResolvedValue({
+		bridgeMocks.mdbrainBridgeGetState.mockResolvedValue({
 			profile: { profile: [] },
 			blocks: {
 				blocks: [
@@ -1369,7 +1369,7 @@ describe("createApp", () => {
 				}),
 			}),
 		)
-		expect(bridgeMocks.mdbrianBridgeGetState).toHaveBeenCalledWith({
+		expect(bridgeMocks.mdbrainBridgeGetState).toHaveBeenCalledWith({
 			agentId: "agent-42",
 			scope: "workspace",
 			scopeRef: "workspace:demo",
@@ -1377,7 +1377,7 @@ describe("createApp", () => {
 	})
 
 	it("traces reasoning chain for a fact via chain-trace", async () => {
-		bridgeMocks.mdbrianBridgeTraceChain.mockResolvedValue({
+		bridgeMocks.mdbrainBridgeTraceChain.mockResolvedValue({
 			factId: "fact-1",
 			collection: "structured",
 			chain: [
@@ -1405,7 +1405,7 @@ describe("createApp", () => {
 				collection: "structured",
 			}),
 		)
-		expect(bridgeMocks.mdbrianBridgeTraceChain).toHaveBeenCalledWith({
+		expect(bridgeMocks.mdbrainBridgeTraceChain).toHaveBeenCalledWith({
 			agentId: "agent-42",
 			factId: "fact-1",
 			collection: "structured",
@@ -1414,7 +1414,7 @@ describe("createApp", () => {
 	})
 
 	it("lists recall traces via admin route", async () => {
-		bridgeMocks.mdbrianBridgeListRecallTraces.mockResolvedValue([
+		bridgeMocks.mdbrainBridgeListRecallTraces.mockResolvedValue([
 			{
 				traceId: "trace-1",
 				agentId: "agent-42",
@@ -1432,7 +1432,7 @@ describe("createApp", () => {
 		await expect(res.json()).resolves.toEqual([
 			expect.objectContaining({ traceId: "trace-1" }),
 		])
-		expect(bridgeMocks.mdbrianBridgeListRecallTraces).toHaveBeenCalledWith({
+		expect(bridgeMocks.mdbrainBridgeListRecallTraces).toHaveBeenCalledWith({
 			agentId: "agent-42",
 			limit: 5,
 		})
@@ -1443,14 +1443,14 @@ describe("createApp", () => {
 			"/v1/admin/traces?agentId=agent-42&limit=999999999",
 		)
 
-		expect(bridgeMocks.mdbrianBridgeListRecallTraces).toHaveBeenCalledWith({
+		expect(bridgeMocks.mdbrainBridgeListRecallTraces).toHaveBeenCalledWith({
 			agentId: "agent-42",
 			limit: 100,
 		})
 	})
 
 	it("gets one recall trace via admin route", async () => {
-		bridgeMocks.mdbrianBridgeGetRecallTrace.mockResolvedValue({
+		bridgeMocks.mdbrainBridgeGetRecallTrace.mockResolvedValue({
 			traceId: "trace-1",
 			agentId: "agent-42",
 			query: "phoenix",
@@ -1465,14 +1465,14 @@ describe("createApp", () => {
 		await expect(res.json()).resolves.toEqual(
 			expect.objectContaining({ traceId: "trace-1" }),
 		)
-		expect(bridgeMocks.mdbrianBridgeGetRecallTrace).toHaveBeenCalledWith({
+		expect(bridgeMocks.mdbrainBridgeGetRecallTrace).toHaveBeenCalledWith({
 			agentId: "agent-42",
 			traceId: "trace-1",
 		})
 	})
 
 	it("returns access trends via admin route", async () => {
-		bridgeMocks.mdbrianBridgeAccessTrends.mockResolvedValue([
+		bridgeMocks.mdbrainBridgeAccessTrends.mockResolvedValue([
 			{
 				collection: "events",
 				memoryId: "evt-1",
@@ -1491,7 +1491,7 @@ describe("createApp", () => {
 		await expect(res.json()).resolves.toEqual([
 			expect.objectContaining({ memoryId: "evt-1" }),
 		])
-		expect(bridgeMocks.mdbrianBridgeAccessTrends).toHaveBeenCalledWith({
+		expect(bridgeMocks.mdbrainBridgeAccessTrends).toHaveBeenCalledWith({
 			agentId: "agent-42",
 			collection: "events",
 			memoryIds: ["evt-1", "evt-2"],
@@ -1501,7 +1501,7 @@ describe("createApp", () => {
 	})
 
 	it("returns access summaries via admin route", async () => {
-		bridgeMocks.mdbrianBridgeAccessSummaries.mockResolvedValue([
+		bridgeMocks.mdbrainBridgeAccessSummaries.mockResolvedValue([
 			{
 				collection: "events",
 				memoryId: "evt-1",
@@ -1518,7 +1518,7 @@ describe("createApp", () => {
 		await expect(res.json()).resolves.toEqual([
 			expect.objectContaining({ memoryId: "evt-1", accessCount: 7 }),
 		])
-		expect(bridgeMocks.mdbrianBridgeAccessSummaries).toHaveBeenCalledWith({
+		expect(bridgeMocks.mdbrainBridgeAccessSummaries).toHaveBeenCalledWith({
 			agentId: "agent-42",
 			collection: "events",
 			memoryIds: ["evt-1", "evt-2"],
@@ -1546,7 +1546,7 @@ describe("createApp", () => {
 				conversationsIngested: 1,
 			}),
 		)
-		expect(bridgeMocks.mdbrianBridgeBenchmarkIngest).toHaveBeenCalledWith({
+		expect(bridgeMocks.mdbrainBridgeBenchmarkIngest).toHaveBeenCalledWith({
 			agentId: "agent-42",
 			datasetPath: "/tmp/benchmark.json",
 			scope: "workspace",
@@ -1576,7 +1576,7 @@ describe("createApp", () => {
 				conversationsImported: 1,
 			}),
 		)
-		expect(bridgeMocks.mdbrianBridgeImportConversations).toHaveBeenCalledWith({
+		expect(bridgeMocks.mdbrainBridgeImportConversations).toHaveBeenCalledWith({
 			agentId: "agent-42",
 			datasetPath: "/tmp/history.json",
 			scope: "workspace",
@@ -1632,7 +1632,7 @@ describe("createApp", () => {
 				}),
 			}),
 		)
-		expect(bridgeMocks.mdbrianBridgeRelevanceBenchmark).toHaveBeenCalledWith({
+		expect(bridgeMocks.mdbrainBridgeRelevanceBenchmark).toHaveBeenCalledWith({
 			agentId: "agent-42",
 			datasetPath: "/tmp/longmemeval.json",
 			maxResults: 10,
@@ -1663,7 +1663,7 @@ describe("createApp", () => {
 		})
 
 		expect(res.status).toBe(200)
-		expect(bridgeMocks.mdbrianBridgeRelevanceBenchmark).toHaveBeenCalledWith(
+		expect(bridgeMocks.mdbrainBridgeRelevanceBenchmark).toHaveBeenCalledWith(
 			expect.objectContaining({
 				agentId: "agent-42",
 				datasetPath: "/tmp/longmemeval.json",
@@ -1722,7 +1722,7 @@ describe("createApp", () => {
 			jobId: "extraction-evt-1",
 			scheduled: true,
 		})
-		expect(bridgeMocks.mdbrianBridgeExtractEvent).toHaveBeenCalledWith({
+		expect(bridgeMocks.mdbrainBridgeExtractEvent).toHaveBeenCalledWith({
 			agentId: "agent-42",
 			eventId: "evt-1",
 		})
@@ -1742,7 +1742,7 @@ describe("createApp", () => {
 	})
 
 	it("lists memory jobs via jobs route", async () => {
-		bridgeMocks.mdbrianBridgeListMemoryJobs.mockResolvedValue([
+		bridgeMocks.mdbrainBridgeListMemoryJobs.mockResolvedValue([
 			{
 				jobId: "consolidation-1",
 				jobType: "consolidation",
@@ -1760,7 +1760,7 @@ describe("createApp", () => {
 		await expect(res.json()).resolves.toEqual([
 			expect.objectContaining({ jobId: "consolidation-1" }),
 		])
-		expect(bridgeMocks.mdbrianBridgeListMemoryJobs).toHaveBeenCalledWith({
+		expect(bridgeMocks.mdbrainBridgeListMemoryJobs).toHaveBeenCalledWith({
 			agentId: "agent-42",
 			status: "running",
 			limit: 10,
@@ -1773,7 +1773,7 @@ describe("createApp", () => {
 			"/v1/jobs?agentId=agent-42&status=running&limit=999999999",
 		)
 
-		expect(bridgeMocks.mdbrianBridgeListMemoryJobs).toHaveBeenCalledWith({
+		expect(bridgeMocks.mdbrainBridgeListMemoryJobs).toHaveBeenCalledWith({
 			agentId: "agent-42",
 			status: "running",
 			limit: 100,
@@ -1782,7 +1782,7 @@ describe("createApp", () => {
 	})
 
 	it("gets one memory job via jobs route", async () => {
-		bridgeMocks.mdbrianBridgeGetMemoryJob.mockResolvedValue({
+		bridgeMocks.mdbrainBridgeGetMemoryJob.mockResolvedValue({
 			jobId: "consolidation-1",
 			jobType: "consolidation",
 			agentId: "agent-42",
@@ -1798,7 +1798,7 @@ describe("createApp", () => {
 		await expect(res.json()).resolves.toEqual(
 			expect.objectContaining({ jobId: "consolidation-1" }),
 		)
-		expect(bridgeMocks.mdbrianBridgeGetMemoryJob).toHaveBeenCalledWith({
+		expect(bridgeMocks.mdbrainBridgeGetMemoryJob).toHaveBeenCalledWith({
 			agentId: "agent-42",
 			jobId: "consolidation-1",
 		})
@@ -1831,7 +1831,7 @@ describe("createApp", () => {
 	})
 
 	it("scans for novel observations via novelty-scan", async () => {
-		bridgeMocks.mdbrianBridgeScanNovelty.mockResolvedValue({
+		bridgeMocks.mdbrainBridgeScanNovelty.mockResolvedValue({
 			novelItems: [
 				{ id: "evt-1", body: "surprising observation", surprisal: 0.95 },
 			],
@@ -1856,7 +1856,7 @@ describe("createApp", () => {
 				totalScanned: 50,
 			}),
 		)
-		expect(bridgeMocks.mdbrianBridgeScanNovelty).toHaveBeenCalledWith({
+		expect(bridgeMocks.mdbrainBridgeScanNovelty).toHaveBeenCalledWith({
 			agentId: "agent-42",
 			limit: 10,
 			scope: "workspace",
@@ -1864,7 +1864,7 @@ describe("createApp", () => {
 	})
 
 	it("runs dreamer consolidation via consolidate", async () => {
-		bridgeMocks.mdbrianBridgeConsolidate.mockResolvedValue({
+		bridgeMocks.mdbrainBridgeConsolidate.mockResolvedValue({
 			factsExtracted: 3,
 			eventsProcessed: 10,
 			skipped: 2,
@@ -1889,7 +1889,7 @@ describe("createApp", () => {
 				eventsProcessed: 10,
 			}),
 		)
-		expect(bridgeMocks.mdbrianBridgeConsolidate).toHaveBeenCalledWith({
+		expect(bridgeMocks.mdbrainBridgeConsolidate).toHaveBeenCalledWith({
 			agentId: "agent-42",
 			maxEvents: 20,
 			minCombinedScore: 0.15,
@@ -1898,7 +1898,7 @@ describe("createApp", () => {
 	})
 
 	it("edits core memory block via self-edit", async () => {
-		bridgeMocks.mdbrianBridgeSelfEdit.mockResolvedValue({
+		bridgeMocks.mdbrainBridgeSelfEdit.mockResolvedValue({
 			upserted: true,
 			id: "core:user",
 		})
@@ -1922,7 +1922,7 @@ describe("createApp", () => {
 				id: "core:user",
 			}),
 		)
-		expect(bridgeMocks.mdbrianBridgeSelfEdit).toHaveBeenCalledWith({
+		expect(bridgeMocks.mdbrainBridgeSelfEdit).toHaveBeenCalledWith({
 			agentId: "agent-42",
 			block: "user",
 			action: "append",
@@ -1960,7 +1960,7 @@ describe("createApp", () => {
 	})
 
 	it("forwards searchDetailed request options and returns bridge metadata", async () => {
-		bridgeMocks.mdbrianBridgeSearchDetailed.mockResolvedValue({
+		bridgeMocks.mdbrainBridgeSearchDetailed.mockResolvedValue({
 			results: [
 				{
 					path: "structured:decision:phoenix",
@@ -2018,7 +2018,7 @@ describe("createApp", () => {
 				query: "what changed",
 				agentId: "agent-42",
 				scope: "workspace",
-				scopeRef: "/workspace/mdbrian",
+				scopeRef: "/workspace/mdbrain",
 				limit: 4,
 				minScore: 0.4,
 				searchMode: "agentic",
@@ -2075,11 +2075,11 @@ describe("createApp", () => {
 				}),
 			}),
 		})
-		expect(bridgeMocks.mdbrianBridgeSearchDetailed).toHaveBeenCalledWith({
+		expect(bridgeMocks.mdbrainBridgeSearchDetailed).toHaveBeenCalledWith({
 			query: "what changed",
 			agentId: "agent-42",
 			scope: "workspace",
-			scopeRef: "/workspace/mdbrian",
+			scopeRef: "/workspace/mdbrain",
 			maxResults: 4,
 			minScore: 0.4,
 			searchMode: "agentic",
@@ -2116,7 +2116,7 @@ describe("createApp", () => {
 	})
 
 	it("forwards recall-conversation filters and returns cited results", async () => {
-		bridgeMocks.mdbrianBridgeRecallConversation.mockResolvedValue({
+		bridgeMocks.mdbrainBridgeRecallConversation.mockResolvedValue({
 			results: [
 				{
 					citation: {
@@ -2188,7 +2188,7 @@ describe("createApp", () => {
 				durationMs: 12,
 			},
 		})
-		expect(bridgeMocks.mdbrianBridgeRecallConversation).toHaveBeenCalledWith({
+		expect(bridgeMocks.mdbrainBridgeRecallConversation).toHaveBeenCalledWith({
 			agentId: "agent-42",
 			query: "phoenix",
 			sessionId: "session-9",
@@ -2227,7 +2227,7 @@ describe("createApp", () => {
 				data: expect.objectContaining({ value: "Use MongoDB Atlas Local" }),
 			}),
 		)
-		expect(bridgeMocks.mdbrianBridgeGetLifecycleItem).toHaveBeenCalledWith({
+		expect(bridgeMocks.mdbrainBridgeGetLifecycleItem).toHaveBeenCalledWith({
 			handle: expect.objectContaining({
 				family: "structured",
 				agentId: "agent-42",
@@ -2267,7 +2267,7 @@ describe("createApp", () => {
 				data: expect.objectContaining({ value: "Use MongoDB Atlas Preview" }),
 			}),
 		)
-		expect(bridgeMocks.mdbrianBridgeUpdateLifecycleItem).toHaveBeenCalledWith({
+		expect(bridgeMocks.mdbrainBridgeUpdateLifecycleItem).toHaveBeenCalledWith({
 			handle: expect.objectContaining({
 				family: "structured",
 				structured: { type: "decision", key: "db" },
@@ -2306,7 +2306,7 @@ describe("createApp", () => {
 				handle: expect.objectContaining({ state: "invalidated" }),
 			}),
 		)
-		expect(bridgeMocks.mdbrianBridgeDeleteLifecycleItem).toHaveBeenCalledWith({
+		expect(bridgeMocks.mdbrainBridgeDeleteLifecycleItem).toHaveBeenCalledWith({
 			handle: expect.objectContaining({
 				family: "structured",
 				structured: { type: "decision", key: "db" },
@@ -2341,7 +2341,7 @@ describe("createApp", () => {
 				expect.objectContaining({ historyKind: "current" }),
 			]),
 		)
-		expect(bridgeMocks.mdbrianBridgeGetLifecycleHistory).toHaveBeenCalledWith({
+		expect(bridgeMocks.mdbrainBridgeGetLifecycleHistory).toHaveBeenCalledWith({
 			handle: expect.objectContaining({
 				family: "structured",
 				structured: { type: "decision", key: "db" },
@@ -2351,7 +2351,7 @@ describe("createApp", () => {
 	})
 
 	it("records procedure outcomes through the stable handle route", async () => {
-		bridgeMocks.mdbrianBridgeReportProcedureOutcome.mockResolvedValue({
+		bridgeMocks.mdbrainBridgeReportProcedureOutcome.mockResolvedValue({
 			family: "procedure",
 			handle: {
 				family: "procedure",
@@ -2402,7 +2402,7 @@ describe("createApp", () => {
 			}),
 		)
 		expect(
-			bridgeMocks.mdbrianBridgeReportProcedureOutcome,
+			bridgeMocks.mdbrainBridgeReportProcedureOutcome,
 		).toHaveBeenCalledWith({
 			handle,
 			success: true,
@@ -2412,7 +2412,7 @@ describe("createApp", () => {
 	})
 
 	it("applies structured memory feedback through the public feedback route", async () => {
-		bridgeMocks.mdbrianBridgeApplyMemoryFeedback.mockResolvedValue({
+		bridgeMocks.mdbrainBridgeApplyMemoryFeedback.mockResolvedValue({
 			family: "structured",
 			handle: {
 				family: "structured",
@@ -2461,7 +2461,7 @@ describe("createApp", () => {
 				data: expect.objectContaining({ reinforcementCount: 7 }),
 			}),
 		)
-		expect(bridgeMocks.mdbrianBridgeApplyMemoryFeedback).toHaveBeenCalledWith({
+		expect(bridgeMocks.mdbrainBridgeApplyMemoryFeedback).toHaveBeenCalledWith({
 			handle,
 			signal: "confirm",
 			note: "Still true",

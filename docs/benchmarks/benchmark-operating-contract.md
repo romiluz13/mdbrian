@@ -1,6 +1,6 @@
-# Mdbrian benchmark operating contract
+# Mdbrain benchmark operating contract
 
-Mdbrian benchmark work has one rule: **numbers are product claims only when the
+Mdbrain benchmark work has one rule: **numbers are product claims only when the
 run proves the product path being claimed**. Internal diagnostics are valuable,
 but they must not be presented as official benchmark wins.
 
@@ -61,7 +61,7 @@ export MDBRAIN_BUILD_LABEL="0.0.0-dev"
 ```
 
 CI providers may provide `GITHUB_SHA`, `GITHUB_RUN_ID`,
-`VERCEL_GIT_COMMIT_SHA`, or `VERCEL_DEPLOYMENT_ID`; Mdbrian reads those as
+`VERCEL_GIT_COMMIT_SHA`, or `VERCEL_DEPLOYMENT_ID`; Mdbrain reads those as
 fallbacks.
 
 ## Publishable benchmark claims

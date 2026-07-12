@@ -34,7 +34,7 @@ import type {
 export type BenchmarkRetrievalLane = "native" | "raw-session"
 
 /**
- * Engine-wide retrieval unit. Mdbrian retrieves over the `events` collection
+ * Engine-wide retrieval unit. Mdbrain retrieves over the `events` collection
  * (turn-level documents), so the unit is `turn`. Exported as a constant so
  * we never hardcode the literal in two places.
  */

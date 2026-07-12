@@ -4,7 +4,7 @@ import {
 	type MemoryScope,
 	createSubsystemLogger,
 	retryAsync,
-} from "@mdbrian/lib"
+} from "@mdbrain/lib"
 import { recordProjectionRun } from "./mongodb-ops.js"
 import { eventsCollection, chunksCollection } from "./mongodb-schema.js"
 import { resolveScopeRef } from "./mongodb-scope.js"

@@ -30,7 +30,7 @@ describe("buildSessionEntry", () => {
 			}),
 			JSON.stringify({
 				type: "custom",
-				customType: "mdbrian.cache-ttl",
+				customType: "mdbrain.cache-ttl",
 				data: {},
 			}),
 			JSON.stringify({ type: "session-meta", agentId: "test" }),
