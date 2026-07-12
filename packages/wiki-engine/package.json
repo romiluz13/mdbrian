@@ -1,7 +1,7 @@
 {
 	"name": "@mdbrain/wiki-engine",
 	"version": "0.1.0",
-	"private": true,
+	"private": false,
 	"description": "MDBrain wiki engine \u2014 wiki_pages, OKF interchange, page rendering, maintenance, contradictions, governance, connectors",
 	"license": "Apache-2.0",
 	"type": "module",

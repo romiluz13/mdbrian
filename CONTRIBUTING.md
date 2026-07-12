@@ -24,6 +24,7 @@ These are the packages and apps we actively shape as the product:
 - `apps/docs`
 - `packages/memory-engine`
 - `packages/memory-bridge`
+- `packages/wiki-engine`
 - `packages/mdbrain-memory`
 - `packages/client`
 - `packages/tools`

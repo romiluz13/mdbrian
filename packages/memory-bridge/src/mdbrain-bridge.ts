@@ -2,6 +2,7 @@
  * Stable entry for the Mdbrain HTTP product layer: loads standalone config and
  * delegates to the MongoDB memory manager.
  */
+import { createSubsystemLogger } from "@mdbrain/lib"
 import type { MemoryScope } from "@mdbrain/lib/types/memory"
 import type {
 	ConversationRecallResponse,
@@ -363,7 +364,7 @@ export async function mdbrainBridgeGetManager(
 	if (!manager || error) {
 		throw new Error(error ?? "mongodb memory unavailable")
 	}
-	const m = manager as MongoDBMemoryManager
+	const typedManager = manager as MongoDBMemoryManager
 	// Initialize the wiki_pages collection + schema validation + indexes +
 	// search indexes. This is critical — without it, wiki search returns
 	// empty results (no vector/text search indexes on wiki_pages).
@@ -371,16 +372,17 @@ export async function mdbrainBridgeGetManager(
 		const { getWikiDbHandle, ensureWikiSchema } = await import(
 			"@mdbrain/wiki-engine"
 		)
-		const handle = getWikiDbHandle(m)
+		const handle = getWikiDbHandle(typedManager)
 		await ensureWikiSchema(handle.db, handle.prefix)
 	} catch (err) {
 		// Don't crash the API if wiki schema init fails — log + continue.
 		// The memory engine still works; only wiki features are affected.
-		console.warn(
+		const log = createSubsystemLogger("wiki:bridge")
+		log.warn(
 			`wiki schema initialization failed: ${err instanceof Error ? err.message : String(err)}`,
 		)
 	}
-	return m
+	return typedManager
 }
 
 export async function mdbrainBridgeSearch(params: {
