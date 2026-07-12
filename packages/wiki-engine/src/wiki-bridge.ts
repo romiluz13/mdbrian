@@ -242,63 +242,67 @@ function normalizeInput(input: WikiPageInput): OptionalId<WikiPage> {
 		summary: input.summary,
 		body: input.body,
 		frontmatter: input.frontmatter,
-		claims: (input.claims ?? []).map((c) => ({
-			id: c.id,
-			text: c.text,
-			status: c.status ?? "active",
-			confidence: c.confidence ?? 0,
-			evidence: c.evidence ?? [],
-			writerAgent: c.writerAgent,
-			derivedFrom: c.derivedFrom ?? [],
-			supersedesClaimId: c.supersedesClaimId,
-			sourceMemId: c.sourceMemId,
-			validFrom: c.validFrom ?? now,
-			validTo: c.validTo,
-			updatedAt: now,
-		})) as Required<WikiClaimInput>[],
+		claims: (input.claims ?? []).map((c) => {
+			const claim: Record<string, unknown> = {
+				id: c.id,
+				text: c.text,
+				status: c.status ?? "active",
+				confidence: c.confidence ?? 0,
+				evidence: c.evidence ?? [],
+				derivedFrom: c.derivedFrom ?? [],
+				validFrom: c.validFrom ?? now,
+				updatedAt: now,
+			}
+			if (c.writerAgent) claim.writerAgent = c.writerAgent
+			if (c.supersedesClaimId) claim.supersedesClaimId = c.supersedesClaimId
+			if (c.sourceMemId) claim.sourceMemId = c.sourceMemId
+			if (c.validTo) claim.validTo = c.validTo
+			return claim
+		}) as Required<WikiClaimInput>[],
 		contradictions: [],
-		questions: (input.questions ?? []).map((q) => ({
-			id: q.id,
-			text: q.text,
-			status: q.status ?? "open",
-			answeredByClaimId: q.answeredByClaimId,
-			createdAt: now,
-		})) as Required<WikiQuestionInput>[],
-		relationships: (input.relationships ?? []).map((r) => ({
-			targetPageSlug: r.targetPageSlug,
-			targetTitle: r.targetTitle,
-			kind: r.kind,
-			weight: r.weight ?? 0,
-			confidence: r.confidence ?? 0,
-			evidenceKind: r.evidenceKind,
-			privacyTier: r.privacyTier,
-		})) as Required<WikiRelationshipInput>[],
+		questions: (input.questions ?? []).map((q) => {
+			const question: Record<string, unknown> = {
+				id: q.id,
+				text: q.text,
+				status: q.status ?? "open",
+				createdAt: now,
+			}
+			if (q.answeredByClaimId) question.answeredByClaimId = q.answeredByClaimId
+			return question
+		}) as Required<WikiQuestionInput>[],
+		relationships: (input.relationships ?? []).map((r) => {
+			const rel: Record<string, unknown> = {
+				targetPageSlug: r.targetPageSlug,
+				targetTitle: r.targetTitle,
+				kind: r.kind,
+				weight: r.weight ?? 0,
+				confidence: r.confidence ?? 0,
+			}
+			if (r.evidenceKind) rel.evidenceKind = r.evidenceKind
+			if (r.privacyTier) rel.privacyTier = r.privacyTier
+			return rel
+		}) as Required<WikiRelationshipInput>[],
 		personCard: input.personCard ?? null,
-		entityId: input.entityId,
-		okfConceptId: input.okfConceptId,
-		okfBundleId: input.okfBundleId,
 		scope: input.scope,
 		scopeRef: input.scopeRef,
 		trustTier: input.trustTier,
 		permissions: input.permissions ?? {},
 		provenance: {},
-		sourceAgent: input.sourceAgent,
 		sourceEventIds: [],
 		sourceReliability: 0,
 		state: "active",
-		supersedes: undefined,
-		supersededBy: undefined,
 		revision: 1,
 		validFrom: now,
-		validTo: undefined,
-		lastMaintainedAt: undefined,
-		lastMaintenanceSource: undefined,
-		maintenanceHash: undefined,
 		freshness: "fresh",
 		backlinks: [],
-		embedding: undefined,
 		createdAt: now,
 		updatedAt: now,
+		// Optional fields — only set when they have values (avoids MongoDB
+		// $jsonSchema validation failures on undefined fields).
+		...(input.entityId ? { entityId: input.entityId } : {}),
+		...(input.okfConceptId ? { okfConceptId: input.okfConceptId } : {}),
+		...(input.okfBundleId ? { okfBundleId: input.okfBundleId } : {}),
+		...(input.sourceAgent ? { sourceAgent: input.sourceAgent } : {}),
 	} as unknown as OptionalId<WikiPage>
 }
 

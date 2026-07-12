@@ -541,13 +541,14 @@ export const WIKI_PAGES_SEARCH_INDEX_TARGETS = {
 					body: [{ type: "string", analyzer: "lucene.standard" }],
 					aliases: [{ type: "string", analyzer: "lucene.standard" }],
 					"frontmatter.tags": [{ type: "string", analyzer: "lucene.standard" }],
-					// Filter facets for scoped retrieval + governance
-					kind: { type: "string" },
-					scope: { type: "string" },
-					scopeRef: { type: "string" },
-					trustTier: { type: "string" },
-					state: { type: "string" },
-					"permissions.privacyTier": { type: "string" },
+					// Filter facets for scoped retrieval + governance.
+					// Must be 'token' type for Atlas Search equals() operator.
+					kind: { type: "token" },
+					scope: { type: "token" },
+					scopeRef: { type: "token" },
+					trustTier: { type: "token" },
+					state: { type: "token" },
+					"permissions.privacyTier": { type: "token" },
 				},
 			},
 		},

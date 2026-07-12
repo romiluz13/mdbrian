@@ -363,7 +363,24 @@ export async function mdbrianBridgeGetManager(
 	if (!manager || error) {
 		throw new Error(error ?? "mongodb memory unavailable")
 	}
-	return manager as MongoDBMemoryManager
+	const m = manager as MongoDBMemoryManager
+	// Initialize the wiki_pages collection + schema validation + indexes +
+	// search indexes. This is critical — without it, wiki search returns
+	// empty results (no vector/text search indexes on wiki_pages).
+	try {
+		const { getWikiDbHandle, ensureWikiSchema } = await import(
+			"@mdbrian/wiki-engine"
+		)
+		const handle = getWikiDbHandle(m)
+		await ensureWikiSchema(handle.db, handle.prefix)
+	} catch (err) {
+		// Don't crash the API if wiki schema init fails — log + continue.
+		// The memory engine still works; only wiki features are affected.
+		console.warn(
+			`wiki schema initialization failed: ${err instanceof Error ? err.message : String(err)}`,
+		)
+	}
+	return m
 }
 
 export async function mdbrianBridgeSearch(params: {
