@@ -4,7 +4,8 @@ import "./globals.css"
 
 const title = "Mdbrain"
 const description = "MongoDB-native long-term memory for production AI agents"
-const siteUrl = "https://mdbrain.rom-88f.workers.dev"
+const siteUrl =
+	process.env.NEXT_PUBLIC_SITE_URL ?? "https://mdbrain.dev"
 const socialImage = "/mdbrain-social-preview.png"
 
 export const metadata: Metadata = {

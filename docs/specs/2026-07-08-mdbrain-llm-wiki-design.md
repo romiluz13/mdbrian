@@ -1,7 +1,7 @@
 # MDBrain — LLM Wiki on MongoDB (Design Spec)
 
 **Date:** 2026-07-08
-**Status:** Draft (pending user review)
+**Status:** Final
 **Baseline:** mdbrain (MongoDB-native long-term AI memory) → transformed into a wiki-first company brain.
 **Inspirations:** LangChain OpenWiki (LLM-maintained code wiki, git-diff incremental), Google Open Knowledge Format / OKF (vendor-neutral concept-per-page interchange spec), arXiv:2606.24535 "Governed Shared Memory for Multi-Agent LLM Systems" (fleet-memory governance primitives).
 
@@ -283,7 +283,7 @@ All four enterprise connectors share a common connector interface (`Connector` A
 ## 9. Deferred to v1.1 / v2
 
 - Connector write-back (wiki → Confluence/Notion/Slack/CRM) — v1.1
-- Bidirectional wiki→code intent layer (Tal's frontier: change intent in wiki → agent changes code) — v2
+- Bidirectional wiki→code intent layer (change intent in wiki → agent changes code) — v2
 - SKILL.md open standard (Caura) — v2
 - Company-brain benchmarks (LongMemEval adaptation) — v2
 - factory.ai-style CI auto-wiki on every push — v2
@@ -342,12 +342,4 @@ Sources (git repo, Obsidian vault, Confluence, Notion, Slack, CRM, conversations
 
 ## 13. Research Artifacts
 
-All research underpinning this design is in `docs/research/llm-wiki/`:
-
-- `raw/01-landscape.out` — category landscape (Karpathy, OpenWiki, OKF, Mem0, Letta, Graphiti, Cognee, GraphRAG, LightRAG, Glean, Notion AI)
-- `raw/02-github-code.out` — code-level analysis of 10+ OSS repos
-- `raw/03-youtube.out` — YouTube coverage (architectures, pain points, MongoDB perception gap)
-- `04-mongodb-why.md` — the one-system MongoDB argument (semantic+structured+temporal in one consistency boundary)
-- `05-codebase.md` — mdbrain existing-impl recon
-- `06-commercial.md` — Memclaw/Qontext/mybrains.ai/factory.ai verification
-- `07-academic.md` — arXiv:2606.24535 governance primitives + trained-embedding claim debunk + bidirectional intent prior art
+Research underpinning this design was conducted against public primary sources (Karpathy's LLM Wiki gist, LangChain OpenWiki, Google OKF spec, Mem0/Letta/Graphiti docs, arXiv:2606.24535). Internal research notes are not included in the public repo.

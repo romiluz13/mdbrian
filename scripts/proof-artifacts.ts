@@ -2,14 +2,7 @@ import { existsSync } from "node:fs"
 import { mkdir, writeFile } from "node:fs/promises"
 import path from "node:path"
 
-const LOCAL_WORKFLOW_ARTIFACT_SEGMENTS = [
-	".claude",
-	"cc10x",
-	"v10",
-	"workflows",
-	"mdbrain-memory-hardening",
-	"artifacts",
-] as const
+const LOCAL_WORKFLOW_ARTIFACT_SEGMENTS = ["proof-artifacts"] as const
 
 export function getDefaultProofArtifactDir(cwd = process.cwd()): string {
 	return path.join(cwd, ...LOCAL_WORKFLOW_ARTIFACT_SEGMENTS)
