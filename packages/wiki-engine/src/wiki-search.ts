@@ -89,6 +89,8 @@ export interface WikiSearchParams {
 	agentId?: string // not used for filtering; reserved for future per-agent perms
 	/** When provided, re-ranks search results using a cross-encoder (e.g. Voyage rerank-2.5). */
 	rerank?: WikiRerankFn
+	/** When true, adds native MongoDB $rerank aggregation stage (requires MongoDB 8.3+). */
+	nativeRerank?: boolean
 	/** When provided, expands search results with related pages via relationship graph traversal. */
 	graphExpansion?: { maxDepth?: number; crossScope?: boolean }
 }
@@ -249,6 +251,18 @@ async function hybridSearch(
 		pipeline.push({ $addFields: { scoreDetails: { $meta: "scoreDetails" } } })
 		pipeline.push({ $addFields: { searchScore: "$scoreDetails.value" } })
 	}
+	// Native $rerank stage (MongoDB 8.3+, Public Preview June 2026).
+	// Runs server-side in the aggregation pipeline — no app-side HTTP round trip.
+	// Per MongoDB docs: { $rerank: { query: "text", model: "rerank-2.5", top_k: N } }
+	if (params.nativeRerank) {
+		pipeline.push({
+			$rerank: {
+				query: params.query,
+				model: "rerank-2.5",
+				top_k: cfg.maxResults,
+			},
+		})
+	}
 	pipeline.push({ $limit: cfg.maxResults })
 
 	try {
@@ -273,9 +287,10 @@ async function hybridSearch(
 // Graph expansion: traverse relationships[] to find related pages
 // ---------------------------------------------------------------------------
 
-/** BFS over wiki page relationships, mirroring $graphLookup behavior but
- *  in-application so we can apply governance filters and avoid deep
- *  traversal limits. Returns related pages not already in the result set. */
+/** Graph expansion via native MongoDB $graphLookup. Traverses
+ *  relationships[].targetPageSlug → slug on the same wiki_pages collection.
+ *  Mirrors memory-engine $graphLookup pattern (mongodb-graph.ts:1007-1020).
+ *  Returns related pages not already in the search result set. */
 async function expandGraph(
 	handle: WikiDbHandle,
 	searchResults: WikiSearchResult[],
@@ -285,43 +300,44 @@ async function expandGraph(
 	const coll = wikiPagesCollection(handle.db, handle.prefix)
 	const maxDepth = params.graphExpansion?.maxDepth ?? 1
 	const maxExpansion = 20 // cap to avoid unbounded expansion
-
 	const startSlugs = searchResults.map((r) => r.page.slug)
-	const visited = new Set(startSlugs)
-	const result: WikiPageView[] = []
-	// Start BFS from the relationships already in the search results.
-	const queue: Array<{ slug: string; depth: number }> = []
-	for (const r of searchResults) {
-		for (const rel of (r.page.relationships ?? []) as Array<{
-			targetPageSlug?: string
-		}>) {
-			if (rel.targetPageSlug && !visited.has(rel.targetPageSlug)) {
-				queue.push({ slug: rel.targetPageSlug, depth: 0 })
-			}
-		}
-	}
 
-	while (queue.length > 0 && result.length < maxExpansion) {
-		const { slug, depth } = queue.shift()!
-		if (visited.has(slug) || depth >= maxDepth) continue
-		visited.add(slug)
-		const relatedPage = (await coll.findOne({
-			$and: [{ slug }, prefilter],
-		})) as Document | null
-		if (!relatedPage) continue
-		result.push(toView(relatedPage))
-		if (depth + 1 < maxDepth) {
-			const rels = (relatedPage.relationships ?? []) as Array<{
-				targetPageSlug?: string
-			}>
-			for (const rel of rels) {
-				if (rel.targetPageSlug && !visited.has(rel.targetPageSlug)) {
-					queue.push({ slug: rel.targetPageSlug, depth: depth + 1 })
-				}
+	// Build $graphLookup pipeline: match seed pages → traverse relationships
+	// Self-referential: from = same collection, connectFromField = relationships.targetPageSlug, connectToField = slug
+	const pipeline: Document[] = [
+		{ $match: { slug: { $in: startSlugs } } },
+		{
+			$graphLookup: {
+				from: coll.collectionName,
+				startWith: "$relationships.targetPageSlug",
+				connectFromField: "relationships.targetPageSlug",
+				connectToField: "slug",
+				as: "relatedPages",
+				maxDepth: maxDepth,
+				depthField: "depth",
+				restrictSearchWithMatch: prefilter,
+			},
+		},
+		{ $unwind: "$relatedPages" },
+		{ $replaceRoot: "$relatedPages" },
+		{ $limit: maxExpansion },
+	]
+
+	try {
+		const docs = await coll.aggregate(pipeline).toArray()
+		const existingSlugs = new Set(startSlugs)
+		const result: WikiPageView[] = []
+		for (const doc of docs) {
+			const view = toView(doc as Document)
+			if (!existingSlugs.has(view.slug)) {
+				result.push(view)
+				existingSlugs.add(view.slug)
 			}
 		}
+		return result
+	} catch {
+		return []
 	}
-	return result
 }
 
 // ---------------------------------------------------------------------------

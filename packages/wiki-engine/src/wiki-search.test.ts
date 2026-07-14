@@ -208,26 +208,56 @@ describe("searchWikiPages with reranking", () => {
 				toArray: async () => [
 					{
 						_id: { toString: () => "id1" },
-						kind: "concept", title: "Accounts", slug: "tables/accounts",
-						aliases: [], summary: "s", body: "b",
-						frontmatter: { type: "table" }, claims: [], contradictions: [],
-						questions: [], relationships: [], personCard: null,
-						scope: "workspace", scopeRef: "ws-1", trustTier: "standard",
-						permissions: {}, state: "active", revision: 1,
-						validFrom: new Date(), freshness: "fresh", backlinks: [],
-						createdAt: new Date(), updatedAt: new Date(),
+						kind: "concept",
+						title: "Accounts",
+						slug: "tables/accounts",
+						aliases: [],
+						summary: "s",
+						body: "b",
+						frontmatter: { type: "table" },
+						claims: [],
+						contradictions: [],
+						questions: [],
+						relationships: [],
+						personCard: null,
+						scope: "workspace",
+						scopeRef: "ws-1",
+						trustTier: "standard",
+						permissions: {},
+						state: "active",
+						revision: 1,
+						validFrom: new Date(),
+						freshness: "fresh",
+						backlinks: [],
+						createdAt: new Date(),
+						updatedAt: new Date(),
 						searchScore: 1.5,
 					},
 					{
 						_id: { toString: () => "id2" },
-						kind: "concept", title: "Orders", slug: "tables/orders",
-						aliases: [], summary: "s2", body: "b2",
-						frontmatter: { type: "table" }, claims: [], contradictions: [],
-						questions: [], relationships: [], personCard: null,
-						scope: "workspace", scopeRef: "ws-1", trustTier: "standard",
-						permissions: {}, state: "active", revision: 1,
-						validFrom: new Date(), freshness: "fresh", backlinks: [],
-						createdAt: new Date(), updatedAt: new Date(),
+						kind: "concept",
+						title: "Orders",
+						slug: "tables/orders",
+						aliases: [],
+						summary: "s2",
+						body: "b2",
+						frontmatter: { type: "table" },
+						claims: [],
+						contradictions: [],
+						questions: [],
+						relationships: [],
+						personCard: null,
+						scope: "workspace",
+						scopeRef: "ws-1",
+						trustTier: "standard",
+						permissions: {},
+						state: "active",
+						revision: 1,
+						validFrom: new Date(),
+						freshness: "fresh",
+						backlinks: [],
+						createdAt: new Date(),
+						updatedAt: new Date(),
 						searchScore: 0.8,
 					},
 				],
@@ -268,72 +298,44 @@ describe("searchWikiPages with reranking", () => {
 })
 
 describe("searchWikiPages with graph expansion", () => {
-	it("appends related pages when graphExpansion is enabled", async () => {
-		// Mock that returns a page with a relationship, then the related page
-		const _findOneCallCount = { count: 0 }
+	it("uses $graphLookup in aggregation pipeline when graphExpansion is enabled", async () => {
+		const capturedPipelines: Document[][] = []
 		const coll = {
 			collectionName: "test_wiki_pages",
-			aggregate: vi.fn(() => ({
-				toArray: async () => [
-					{
-						_id: { toString: () => "id1" },
-						kind: "concept",
-						title: "Accounts",
-						slug: "tables/accounts",
-						aliases: [],
-						summary: "s",
-						body: "b",
-						frontmatter: { type: "table" },
-						claims: [],
-						contradictions: [],
-						questions: [],
-						relationships: [{ targetPageSlug: "tables/orders" }],
-						personCard: null,
-						scope: "workspace",
-						scopeRef: "ws-1",
-						trustTier: "standard",
-						permissions: {},
-						state: "active",
-						revision: 1,
-						validFrom: new Date(),
-						freshness: "fresh",
-						backlinks: [],
-						createdAt: new Date(),
-						updatedAt: new Date(),
-						searchScore: 1.5,
-					},
-				],
-			})),
-			findOne: vi.fn(async (filter: Record<string, unknown>) => {
-				_findOneCallCount.count++
-				const andArray = (filter.$and ?? []) as Array<Record<string, unknown>>
-				const slug = (andArray[0]?.slug ?? filter.slug) as string
-				if (slug === "tables/orders") {
+			aggregate: vi.fn((pipeline: Document[]) => {
+				capturedPipelines.push(pipeline)
+				// First call: hybrid search → returns page with relationship
+				// Second call: $graphLookup expansion → returns related page
+				if (capturedPipelines.length === 1) {
 					return {
-						_id: { toString: () => "id-orders" },
-						slug: "tables/orders",
-						kind: "concept",
-						title: "Orders",
-						summary: "Order data",
-						body: "# Orders",
-						frontmatter: { type: "table" },
-						claims: [],
-						contradictions: [],
-						questions: [],
-						relationships: [],
-						personCard: null,
-						scope: "workspace",
-						scopeRef: "ws-1",
-						trustTier: "standard",
-						permissions: {},
-						state: "active",
-						revision: 1,
-						validFrom: new Date(),
-						freshness: "fresh",
-						backlinks: [],
+						toArray: async () => [{
+							_id: { toString: () => "id1" },
+							kind: "concept", title: "Accounts", slug: "tables/accounts",
+							aliases: [], summary: "s", body: "b",
+							frontmatter: { type: "table" }, claims: [], contradictions: [],
+							questions: [], relationships: [{ targetPageSlug: "tables/orders" }],
+							personCard: null, scope: "workspace", scopeRef: "ws-1",
+							trustTier: "standard", permissions: {}, state: "active",
+							revision: 1, validFrom: new Date(), freshness: "fresh",
+							backlinks: [], createdAt: new Date(), updatedAt: new Date(),
+							searchScore: 1.5,
+						}],
 					}
 				}
-				return null
+				// Second call: $graphLookup pipeline → returns expanded page
+				return {
+					toArray: async () => [{
+						_id: { toString: () => "id-orders" },
+						slug: "tables/orders", kind: "concept", title: "Orders",
+						aliases: [], summary: "Order data", body: "# Orders",
+						frontmatter: { type: "table" }, claims: [], contradictions: [],
+						questions: [], relationships: [], personCard: null,
+						scope: "workspace", scopeRef: "ws-1", trustTier: "standard",
+						permissions: {}, state: "active", revision: 1,
+						validFrom: new Date(), freshness: "fresh", backlinks: [],
+						createdAt: new Date(), updatedAt: new Date(),
+					}],
+				}
 			}),
 		} as unknown as Collection
 		const db = { collection: vi.fn(() => coll) } as unknown as Db
@@ -346,5 +348,54 @@ describe("searchWikiPages with graph expansion", () => {
 		expect(res.results.length).toBe(2)
 		expect(res.results.some((r) => r.page.slug === "tables/orders")).toBe(true)
 		expect(res.results.some((r) => r.source === "graph")).toBe(true)
+		// The second aggregate call should contain $graphLookup
+		expect(capturedPipelines.length).toBe(2)
+		const graphPipeline = capturedPipelines[1]
+		const graphStage = graphPipeline.find((s) => "$graphLookup" in s)
+		expect(graphStage).toBeDefined()
+		expect(graphStage?.$graphLookup).toBeDefined()
+		expect(graphStage?.$graphLookup.connectFromField).toBe("relationships.targetPageSlug")
+		expect(graphStage?.$graphLookup.connectToField).toBe("slug")
+		expect(graphStage?.$graphLookup.depthField).toBe("depth")
+	})
+})
+
+describe("searchWikiPages with native rerank", () => {
+	it("adds $rerank stage to pipeline when nativeRerank is true", async () => {
+		const capturedPipelines: Document[][] = []
+		const coll = {
+			collectionName: "test_wiki_pages",
+			aggregate: vi.fn((pipeline: Document[]) => {
+				capturedPipelines.push(pipeline)
+				return {
+					toArray: async () => [
+						{
+							_id: { toString: () => "id1" },
+							kind: "concept", title: "Accounts", slug: "tables/accounts",
+							aliases: [], summary: "s", body: "b",
+							frontmatter: { type: "table" }, claims: [], contradictions: [],
+							questions: [], relationships: [], personCard: null,
+							scope: "workspace", scopeRef: "ws-1", trustTier: "standard",
+							permissions: {}, state: "active", revision: 1,
+							validFrom: new Date(), freshness: "fresh", backlinks: [],
+							createdAt: new Date(), updatedAt: new Date(),
+							searchScore: 1.5,
+						},
+					],
+					}
+			}),
+		} as unknown as Collection
+		const db = { collection: vi.fn(() => coll) } as unknown as Db
+		const h: WikiDbHandle = { db, prefix: "test_" }
+		await searchWikiPages(h, {
+			query: "accounts",
+			nativeRerank: true,
+		})
+		// The search pipeline should contain $rerank stage
+		expect(capturedPipelines.length).toBe(1)
+		const rerankStage = capturedPipelines[0].find((s) => "$rerank" in s)
+		expect(rerankStage).toBeDefined()
+		expect(rerankStage?.$rerank.model).toBe("rerank-2.5")
+		expect(rerankStage?.$rerank.query).toBe("accounts")
 	})
 })

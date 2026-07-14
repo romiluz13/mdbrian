@@ -50,6 +50,7 @@ db.wiki_pages.aggregate([
   { $vectorSearch: { ... } },     // semantic search (auto-embedded via Voyage AI)
   { $search: { ... } },           // full-text search (BM25)
   { $rankFusion: { ... } },       // hybrid scoring, server-side
+  { $rerank: { ... } },           // cross-encoder reranking (MongoDB 8.3+)
   { $graphLookup: { ... } },      // multi-hop relationship traversal
   { $limit: 10 }
 ])
@@ -184,6 +185,7 @@ CRM        ──┘                       │               │
                               │ $vectorSearch │  $graphLookup
                               │ $search       │  (multi-hop)  │
                               │ $rankFusion   │       │
+                              │ $rerank       │       │
                               └───────────────┘       │
                                       │               │
                               ┌───────┴───────────────┴────┐
@@ -198,7 +200,9 @@ CRM        ──┘                       │               │
 
 **Hybrid search** — Atlas Vector Search (semantic, auto-embedded via Voyage AI) + Atlas Search (full-text, lucene.standard) combined via `$rankFusion` with reciprocal rank fusion scoring. One query, server-side scoring, no app-side merging.
 
-**Graph traversal** — `$graphLookup` traverses wiki relationships multi-hop in the same aggregation pipeline as search. The GraphRAG pattern: semantic retrieval finds seed pages, `$graphLookup` expands their relationships, the LLM gets graph-enriched context. Wiki pages are nodes, relationships are edges, backlinks are reverse edges.
+**Reranking** — Native MongoDB `$rerank` aggregation stage (MongoDB 8.3+, Voyage `rerank-2.5`) runs server-side in the pipeline. For older MongoDB versions, an app-side callback reranker is supported as fallback. Completes the retrieval funnel: vector search → text search → hybrid fusion → reranking.
+
+**Graph traversal** — Native MongoDB `$graphLookup` traverses wiki relationships multi-hop in a single aggregation pipeline. The GraphRAG pattern: semantic retrieval finds seed pages, `$graphLookup` expands their relationships, the LLM gets graph-enriched context. Wiki pages are nodes, relationships are edges, backlinks are reverse edges. No N+1 queries — one pipeline, one round trip.
 
 **OKF interchange** — Import and export [Google's Open Knowledge Format](https://groundingpage.com/facts/open-knowledge-format/) bundles. MDBrain's internal schema is richer than OKF; OKF is a strict-subset projection for interoperability.
 
