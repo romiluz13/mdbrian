@@ -31,6 +31,49 @@ import {
 } from "./wiki-bridge.js"
 
 // ---------------------------------------------------------------------------
+// Path safety — prevent directory traversal in OKF import/export
+// ---------------------------------------------------------------------------
+
+/** Validates that a directory path is within an allowed root. Mirrors the
+ *  isPathWithinRoot pattern from memory-engine's benchmark dataset resolver. */
+function isPathWithinRoot(candidate: string, root: string): boolean {
+	const relative = path.relative(root, candidate)
+	return (
+		relative === "" ||
+		(!relative.startsWith("..") && !path.isAbsolute(relative))
+	)
+}
+
+/** Resolves and validates a directory path against allowed roots. Throws if
+ *  the path escapes all allowed roots or contains parent-directory traversal. */
+function validateOkfPath(dir: string, allowedRoots: string[]): string {
+	if (!dir.trim()) {
+		throw new Error("directory path is required")
+	}
+	// Reject obvious traversal attempts early
+	if (dir.split(/[\\/]+/).includes("..")) {
+		throw new Error(
+			"directory path must not contain parent-directory traversal (..)",
+		)
+	}
+	const resolved = path.resolve(dir)
+	if (allowedRoots.length === 0) {
+		// No roots configured — allow resolved absolute paths (backward compat
+		// for local-first dev where the caller controls the filesystem)
+		return resolved
+	}
+	const allowed = allowedRoots.some((root) =>
+		isPathWithinRoot(resolved, path.resolve(root)),
+	)
+	if (!allowed) {
+		throw new Error(
+			"directory path must resolve inside the workspace or a configured OKF root",
+		)
+	}
+	return resolved
+}
+
+// ---------------------------------------------------------------------------
 // Frontmatter shape
 // ---------------------------------------------------------------------------
 
@@ -75,6 +118,12 @@ function parseConceptFile(
 	filePath: string,
 	relativePath: string,
 ): OkfConcept | null {
+	// Cap file size to prevent DoS via oversized concept files.
+	const MAX_CONCEPT_BYTES = 1024 * 1024 // 1 MiB
+	const stat = fs.statSync(filePath)
+	if (stat.size > MAX_CONCEPT_BYTES) {
+		return null
+	}
 	const raw = fs.readFileSync(filePath, "utf-8")
 	const { frontmatter, body } = splitFrontmatter(raw)
 	if (!frontmatter || !frontmatter.type) {
@@ -105,8 +154,20 @@ function splitFrontmatter(raw: string): {
 		.slice(end + 1)
 		.join("\n")
 		.replace(/^\n/, "")
+	// Cap YAML block size to prevent DoS via oversized frontmatter.
+	const MAX_YAML_BYTES = 256 * 1024 // 256 KiB
+	if (Buffer.byteLength(yamlBlock, "utf8") > MAX_YAML_BYTES) {
+		return { frontmatter: null, body }
+	}
+	// Use js-yaml's DEFAULT_SCHEMA (safe schema) to prevent unsafe tag
+	// execution (e.g. !!js/function). The 256 KiB size cap above prevents
+	// resource exhaustion. Note: js-yaml v4 uses references for aliases (not
+	// deep copies), so the "billion laughs" exponential-expansion attack is
+	// not viable — memory growth is linear, not exponential.
 	try {
-		const parsed = yaml.load(yamlBlock) as OkfFrontmatter | null
+		const parsed = yaml.load(yamlBlock, {
+			schema: yaml.DEFAULT_SCHEMA,
+		}) as OkfFrontmatter | null
 		return { frontmatter: parsed ?? null, body }
 	} catch {
 		return { frontmatter: null, body }
@@ -158,8 +219,12 @@ export async function importOkfBundle(
 		embed?: (text: string) => Promise<number[]>
 	},
 ): Promise<OkfImportResult> {
-	const concepts = readBundleConcepts(bundleDir)
-	const indexRelationships = parseIndexRelationships(bundleDir)
+	const allowedRoots = process.env.MDBRAIN_OKF_ALLOWED_ROOTS
+		? process.env.MDBRAIN_OKF_ALLOWED_ROOTS.split(",").map((r) => r.trim())
+		: []
+	const safeBundleDir = validateOkfPath(bundleDir, allowedRoots)
+	const concepts = readBundleConcepts(safeBundleDir)
+	const indexRelationships = parseIndexRelationships(safeBundleDir)
 	const result: OkfImportResult = {
 		imported: 0,
 		skipped: 0,
@@ -476,10 +541,14 @@ export async function exportOkfBundle(
 		opts.scopeRef,
 		opts.okfBundleId,
 	)
-	fs.mkdirSync(opts.outDir, { recursive: true })
+	const allowedRoots = process.env.MDBRAIN_OKF_ALLOWED_ROOTS
+		? process.env.MDBRAIN_OKF_ALLOWED_ROOTS.split(",").map((r) => r.trim())
+		: []
+	const safeOutDir = validateOkfPath(opts.outDir, allowedRoots)
+	fs.mkdirSync(safeOutDir, { recursive: true })
 	const files: string[] = []
 	for (const page of pages) {
-		const filePath = path.join(opts.outDir, `${page.slug}.md`)
+		const filePath = path.join(safeOutDir, `${page.slug}.md`)
 		fs.mkdirSync(path.dirname(filePath), { recursive: true })
 		const content = wikiPageToOkfMarkdown(page)
 		fs.writeFileSync(filePath, content, "utf-8")
@@ -487,9 +556,9 @@ export async function exportOkfBundle(
 	}
 	// Write index.md with links to all concepts.
 	const indexContent = buildIndexMarkdown(pages)
-	fs.writeFileSync(path.join(opts.outDir, "index.md"), indexContent, "utf-8")
+	fs.writeFileSync(path.join(safeOutDir, "index.md"), indexContent, "utf-8")
 	files.push("index.md")
-	return { dir: opts.outDir, exported: pages.length, files }
+	return { dir: safeOutDir, exported: pages.length, files }
 }
 
 /** Lists all wiki pages for a scope (paginated internally to avoid limits). */
