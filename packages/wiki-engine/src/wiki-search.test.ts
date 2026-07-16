@@ -308,33 +308,67 @@ describe("searchWikiPages with graph expansion", () => {
 				// Second call: $graphLookup expansion → returns related page
 				if (capturedPipelines.length === 1) {
 					return {
-						toArray: async () => [{
-							_id: { toString: () => "id1" },
-							kind: "concept", title: "Accounts", slug: "tables/accounts",
-							aliases: [], summary: "s", body: "b",
-							frontmatter: { type: "table" }, claims: [], contradictions: [],
-							questions: [], relationships: [{ targetPageSlug: "tables/orders" }],
-							personCard: null, scope: "workspace", scopeRef: "ws-1",
-							trustTier: "standard", permissions: {}, state: "active",
-							revision: 1, validFrom: new Date(), freshness: "fresh",
-							backlinks: [], createdAt: new Date(), updatedAt: new Date(),
-							searchScore: 1.5,
-						}],
+						toArray: async () => [
+							{
+								_id: { toString: () => "id1" },
+								kind: "concept",
+								title: "Accounts",
+								slug: "tables/accounts",
+								aliases: [],
+								summary: "s",
+								body: "b",
+								frontmatter: { type: "table" },
+								claims: [],
+								contradictions: [],
+								questions: [],
+								relationships: [{ targetPageSlug: "tables/orders" }],
+								personCard: null,
+								scope: "workspace",
+								scopeRef: "ws-1",
+								trustTier: "standard",
+								permissions: {},
+								state: "active",
+								revision: 1,
+								validFrom: new Date(),
+								freshness: "fresh",
+								backlinks: [],
+								createdAt: new Date(),
+								updatedAt: new Date(),
+								searchScore: 1.5,
+							},
+						],
 					}
 				}
 				// Second call: $graphLookup pipeline → returns expanded page
 				return {
-					toArray: async () => [{
-						_id: { toString: () => "id-orders" },
-						slug: "tables/orders", kind: "concept", title: "Orders",
-						aliases: [], summary: "Order data", body: "# Orders",
-						frontmatter: { type: "table" }, claims: [], contradictions: [],
-						questions: [], relationships: [], personCard: null,
-						scope: "workspace", scopeRef: "ws-1", trustTier: "standard",
-						permissions: {}, state: "active", revision: 1,
-						validFrom: new Date(), freshness: "fresh", backlinks: [],
-						createdAt: new Date(), updatedAt: new Date(),
-					}],
+					toArray: async () => [
+						{
+							_id: { toString: () => "id-orders" },
+							slug: "tables/orders",
+							kind: "concept",
+							title: "Orders",
+							aliases: [],
+							summary: "Order data",
+							body: "# Orders",
+							frontmatter: { type: "table" },
+							claims: [],
+							contradictions: [],
+							questions: [],
+							relationships: [],
+							personCard: null,
+							scope: "workspace",
+							scopeRef: "ws-1",
+							trustTier: "standard",
+							permissions: {},
+							state: "active",
+							revision: 1,
+							validFrom: new Date(),
+							freshness: "fresh",
+							backlinks: [],
+							createdAt: new Date(),
+							updatedAt: new Date(),
+						},
+					],
 				}
 			}),
 		} as unknown as Collection
@@ -354,7 +388,9 @@ describe("searchWikiPages with graph expansion", () => {
 		const graphStage = graphPipeline.find((s) => "$graphLookup" in s)
 		expect(graphStage).toBeDefined()
 		expect(graphStage?.$graphLookup).toBeDefined()
-		expect(graphStage?.$graphLookup.connectFromField).toBe("relationships.targetPageSlug")
+		expect(graphStage?.$graphLookup.connectFromField).toBe(
+			"relationships.targetPageSlug",
+		)
 		expect(graphStage?.$graphLookup.connectToField).toBe("slug")
 		expect(graphStage?.$graphLookup.depthField).toBe("depth")
 	})
@@ -371,18 +407,33 @@ describe("searchWikiPages with native rerank", () => {
 					toArray: async () => [
 						{
 							_id: { toString: () => "id1" },
-							kind: "concept", title: "Accounts", slug: "tables/accounts",
-							aliases: [], summary: "s", body: "b",
-							frontmatter: { type: "table" }, claims: [], contradictions: [],
-							questions: [], relationships: [], personCard: null,
-							scope: "workspace", scopeRef: "ws-1", trustTier: "standard",
-							permissions: {}, state: "active", revision: 1,
-							validFrom: new Date(), freshness: "fresh", backlinks: [],
-							createdAt: new Date(), updatedAt: new Date(),
+							kind: "concept",
+							title: "Accounts",
+							slug: "tables/accounts",
+							aliases: [],
+							summary: "s",
+							body: "b",
+							frontmatter: { type: "table" },
+							claims: [],
+							contradictions: [],
+							questions: [],
+							relationships: [],
+							personCard: null,
+							scope: "workspace",
+							scopeRef: "ws-1",
+							trustTier: "standard",
+							permissions: {},
+							state: "active",
+							revision: 1,
+							validFrom: new Date(),
+							freshness: "fresh",
+							backlinks: [],
+							createdAt: new Date(),
+							updatedAt: new Date(),
 							searchScore: 1.5,
 						},
 					],
-					}
+				}
 			}),
 		} as unknown as Collection
 		const db = { collection: vi.fn(() => coll) } as unknown as Db

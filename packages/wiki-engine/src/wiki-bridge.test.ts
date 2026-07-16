@@ -156,9 +156,15 @@ describe("listWikiPages", () => {
 		const { db, coll } = mockDb()
 		const h: WikiDbHandle = { db, prefix: "test_" }
 		await listWikiPages(h, { kind: "concept", limit: 500 })
-		expect(coll.find).toHaveBeenCalledWith({ kind: "concept" })
+		expect(coll.find).toHaveBeenCalledWith({
+			kind: "concept",
+			state: { $ne: "superseded" },
+		})
 		// find().sort().skip().limit() chain — verify countDocuments filter too
-		expect(coll.countDocuments).toHaveBeenCalledWith({ kind: "concept" })
+		expect(coll.countDocuments).toHaveBeenCalledWith({
+			kind: "concept",
+			state: { $ne: "superseded" },
+		})
 	})
 })
 

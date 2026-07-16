@@ -509,6 +509,7 @@ async function listAllWikiPages(
 			scopeRef,
 			limit,
 			skip,
+			state: "all",
 		})
 		// Filter by okfBundleId if specified (listWikiPages doesn't filter it).
 		const filtered = okfBundleId

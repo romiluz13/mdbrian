@@ -22,6 +22,10 @@ import {
 	runWritePipelineGate,
 	type ClaimRecord,
 } from "./wiki-contradictions.js"
+import {
+	buildGovernanceFilter,
+	type GovernanceContext,
+} from "./wiki-governance.js"
 
 // ---------------------------------------------------------------------------
 // Types
@@ -386,13 +390,29 @@ export async function getWikiPage(
 	slug: string,
 	scope: string,
 	scopeRef: string,
+	governance?: GovernanceContext,
 ): Promise<WikiPageView | undefined> {
 	const coll = wikiPagesCollection(handle.db, handle.prefix)
-	const doc = (await coll.findOne({
-		slug,
-		scope,
-		scopeRef,
-	})) as unknown as Record<string, unknown> | null
+	const baseFilter: Record<string, unknown> = { slug, scope, scopeRef }
+	if (governance) {
+		const govFilter = buildGovernanceFilter(governance)
+		// Merge: the $and from governance + the equality fields coexist as an
+		// implicit top-level $and in MongoDB.
+		const merged: Record<string, unknown> = { ...baseFilter }
+		if (Array.isArray((govFilter as Record<string, unknown>).$and)) {
+			merged.$and = (govFilter as Record<string, unknown>).$and
+		}
+		const doc = (await coll.findOne(merged)) as unknown as Record<
+			string,
+			unknown
+		> | null
+		if (!doc) return undefined
+		return toView(doc)
+	}
+	const doc = (await coll.findOne(baseFilter)) as unknown as Record<
+		string,
+		unknown
+	> | null
 	if (!doc) return undefined
 	return toView(doc)
 }
@@ -408,6 +428,7 @@ export async function listWikiPages(
 		state?: string
 		limit?: number
 		skip?: number
+		governance?: GovernanceContext
 	} = {},
 ): Promise<{ pages: WikiPageView[]; total: number }> {
 	const coll = wikiPagesCollection(handle.db, handle.prefix)
@@ -416,7 +437,22 @@ export async function listWikiPages(
 	if (opts.scope) filter.scope = opts.scope
 	if (opts.scopeRef) filter.scopeRef = opts.scopeRef
 	if (opts.trustTier) filter.trustTier = opts.trustTier
-	if (opts.state) filter.state = opts.state
+	// Default: exclude superseded pages unless the caller explicitly requests them.
+	// Prevents soft-deleted pages from appearing in normal listings.
+	if (opts.state === "all") {
+		// Explicit "all states" — no state filter (for OKF export / archive)
+	} else if (opts.state) {
+		filter.state = opts.state
+	} else {
+		// Default: exclude superseded pages (soft-delete safety)
+		filter.state = { $ne: "superseded" }
+	}
+	if (opts.governance) {
+		const govFilter = buildGovernanceFilter(opts.governance)
+		if (Array.isArray((govFilter as Record<string, unknown>).$and)) {
+			filter.$and = (govFilter as Record<string, unknown>).$and
+		}
+	}
 	const limit = Math.min(opts.limit ?? 50, 100)
 	const skip = opts.skip ?? 0
 	const [docs, total] = await Promise.all([

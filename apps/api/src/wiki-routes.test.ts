@@ -201,6 +201,7 @@ describe("wiki routes", () => {
 				"tables/accounts",
 				"workspace",
 				"ws-1",
+				{ scope: "workspace", scopeRef: "ws-1", trustTier: "standard" },
 			)
 		})
 
@@ -267,6 +268,11 @@ describe("wiki routes", () => {
 					state: undefined,
 					limit: 10,
 					skip: undefined,
+					governance: {
+						scope: "workspace",
+						scopeRef: "ws-1",
+						trustTier: "standard",
+					},
 				},
 			)
 		})
@@ -469,6 +475,8 @@ describe("wiki routes", () => {
 				headers: { "Content-Type": "application/json" },
 				body: JSON.stringify({
 					query: "x",
+					scope: "workspace",
+					scopeRef: "ws-1",
 					recipe: "fast",
 					kind: "concept",
 					trustTier: "standard",
@@ -482,6 +490,22 @@ describe("wiki routes", () => {
 			expect(params.trustTier).toBe("standard")
 			expect(params.privacyTier).toBe("internal")
 			expect(params.maxResults).toBe(5)
+			expect(params.scope).toBe("workspace")
+			expect(params.scopeRef).toBe("ws-1")
+			expect(params.governance).toBeDefined()
+			expect(params.governance.scope).toBe("workspace")
+		})
+
+		it("rejects missing scope/scopeRef", async () => {
+			const res = await createApp().request("/v1/wiki/search", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({ query: "x" }),
+			})
+			expect(res.status).toBe(400)
+			expect((await asJson(res)).error?.message).toMatch(
+				/scope and scopeRef are required/,
+			)
 		})
 	})
 })

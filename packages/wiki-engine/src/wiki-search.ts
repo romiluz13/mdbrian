@@ -19,6 +19,10 @@ import {
 	type WikiPageView,
 } from "./wiki-bridge.js"
 import { createSubsystemLogger } from "@mdbrain/lib"
+import {
+	filterPagesByGovernance,
+	type GovernanceContext,
+} from "./wiki-governance.js"
 
 const log = createSubsystemLogger("wiki:search")
 
@@ -90,6 +94,7 @@ export interface WikiSearchParams {
 	maxResults?: number
 	minScore?: number
 	agentId?: string // not used for filtering; reserved for future per-agent perms
+	governance?: GovernanceContext
 	/** When provided, re-ranks search results using a cross-encoder (e.g. Voyage rerank-2.5). */
 	rerank?: WikiRerankFn
 	/** When true, adds native MongoDB $rerank aggregation stage (requires MongoDB 8.3+). */
@@ -122,7 +127,12 @@ function buildPrefilter(params: WikiSearchParams): Document {
 	if (params.scopeRef) filter.scopeRef = params.scopeRef
 	if (params.kind) filter.kind = params.kind
 	if (params.trustTier) filter.trustTier = params.trustTier
-	if (params.state) filter.state = params.state
+	// Default: exclude superseded pages unless the caller explicitly requests them.
+	if (params.state) {
+		filter.state = params.state
+	} else {
+		filter.state = { $ne: "superseded" }
+	}
 	if (params.privacyTier) filter["permissions.privacyTier"] = params.privacyTier
 	return filter
 }
@@ -165,13 +175,25 @@ function buildTextCompound(query: string, prefilter: Document): Document {
 		},
 	]
 	// Atlas Search compound.filter (no scoring) for the scalar pre-filter axes.
+	// $ne values are routed to compound.mustNot (Atlas Search doesn't support
+	// $ne in filter — mustNot with equals is the correct equivalent).
 	const compoundFilters: Document[] = []
+	const mustNot: Document[] = []
 	for (const [field, value] of Object.entries(prefilter)) {
-		compoundFilters.push({ equals: { path: field, value } })
+		if (value && typeof value === "object" && "$ne" in value) {
+			mustNot.push({
+				equals: { path: field, value: (value as { $ne: unknown }).$ne },
+			})
+		} else {
+			compoundFilters.push({ equals: { path: field, value } })
+		}
 	}
 	const compound: Document = { must }
 	if (compoundFilters.length > 0) {
 		compound.filter = compoundFilters
+	}
+	if (mustNot.length > 0) {
+		compound.mustNot = mustNot
 	}
 	return compound
 }
@@ -392,6 +414,20 @@ export async function searchWikiPages(
 	}
 
 	let results = await hybridSearch(handle, params, cfg, prefilter)
+
+	// Post-filter results through governance (roles/departments check that
+	// can't be expressed in Atlas Search compound). Scope + privacyTier are
+	// already pre-filtered at the index level via buildPrefilter.
+	if (params.governance) {
+		const govDocs = filterPagesByGovernance(
+			results.map((r) => r.page as unknown as Document),
+			params.governance,
+		)
+		const allowedSlugs = new Set(
+			govDocs.map((d) => (d as Record<string, unknown>).slug as string),
+		)
+		results = results.filter((r) => allowedSlugs.has(r.page.slug))
+	}
 
 	// Reranking: cross-encoder re-ranks search results (e.g. Voyage rerank-2.5).
 	// Mirrors memory-engine's rerankResults pattern (mongodb-manager.ts:2644).

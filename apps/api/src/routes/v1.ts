@@ -63,6 +63,7 @@ import {
 	listUnresolvedContradictions,
 	WikiDuplicateSlugError,
 	type WikiPageInput,
+	type GovernanceContext,
 } from "@mdbrain/wiki-engine"
 import { jsonError } from "../lib/errors.js"
 
@@ -2114,6 +2115,18 @@ export function createV1Router(): Hono {
 	]
 	const WIKI_VALID_TRUST_TIERS = ["restricted", "standard", "admin"]
 
+	function buildWikiGovContext(
+		scope: string,
+		scopeRef: string,
+		trustTier?: string,
+	): GovernanceContext {
+		return {
+			scope,
+			scopeRef,
+			trustTier: (trustTier as GovernanceContext["trustTier"]) ?? "standard",
+		}
+	}
+
 	v1.post("/wiki", async (c) => {
 		const body = (await c.req.json().catch(() => ({}))) as Record<
 			string,
@@ -2191,6 +2204,13 @@ export function createV1Router(): Hono {
 			? Number(c.req.query("limit"))
 			: undefined
 		const skip = c.req.query("skip") ? Number(c.req.query("skip")) : undefined
+		if (!scope || !scopeRef)
+			return jsonError(
+				c,
+				400,
+				"VALIDATION_ERROR",
+				"scope and scopeRef query params are required",
+			)
 		try {
 			const handle = await readWikiDbHandle(
 				String(c.req.query("agentId") ?? ""),
@@ -2203,6 +2223,11 @@ export function createV1Router(): Hono {
 				state: state ?? undefined,
 				limit: Number.isFinite(limit) ? limit : undefined,
 				skip: Number.isFinite(skip) ? skip : undefined,
+				governance: buildWikiGovContext(
+					scope,
+					scopeRef,
+					trustTier ?? undefined,
+				),
 			})
 			return c.json(result)
 		} catch (err) {
@@ -2228,7 +2253,13 @@ export function createV1Router(): Hono {
 			const handle = await readWikiDbHandle(
 				String(c.req.query("agentId") ?? ""),
 			)
-			const page = await getWikiPage(handle, slug, scope, scopeRef)
+			const page = await getWikiPage(
+				handle,
+				slug,
+				scope,
+				scopeRef,
+				buildWikiGovContext(scope, scopeRef),
+			)
 			if (!page)
 				return jsonError(
 					c,
@@ -2425,12 +2456,21 @@ export function createV1Router(): Hono {
 		const query = String(body.query ?? "").trim()
 		if (!query)
 			return jsonError(c, 400, "VALIDATION_ERROR", "query is required")
+		const scope = String(body.scope ?? "")
+		const scopeRef = String(body.scopeRef ?? "")
+		if (!scope || !scopeRef)
+			return jsonError(
+				c,
+				400,
+				"VALIDATION_ERROR",
+				"scope and scopeRef are required",
+			)
 		try {
 			const handle = await readWikiDbHandle(String(body.agentId ?? ""))
 			const result = await searchWikiPages(handle, {
 				query,
-				scope: body.scope ? String(body.scope) : undefined,
-				scopeRef: body.scopeRef ? String(body.scopeRef) : undefined,
+				scope,
+				scopeRef,
 				kind: body.kind ? String(body.kind) : undefined,
 				trustTier: body.trustTier ? String(body.trustTier) : undefined,
 				state: body.state ? String(body.state) : undefined,
@@ -2444,6 +2484,11 @@ export function createV1Router(): Hono {
 				maxResults:
 					typeof body.maxResults === "number" ? body.maxResults : undefined,
 				minScore: typeof body.minScore === "number" ? body.minScore : undefined,
+				governance: buildWikiGovContext(
+					scope,
+					scopeRef,
+					body.trustTier ? String(body.trustTier) : undefined,
+				),
 			})
 			return c.json(result)
 		} catch (err) {
