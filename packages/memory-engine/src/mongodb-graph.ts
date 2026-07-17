@@ -1670,7 +1670,7 @@ export async function searchEntitiesAutocomplete(params: {
 		const pipeline: Document[] = [
 			{
 				$search: {
-					index: "entity_autocomplete",
+					index: `${prefix}entity_autocomplete`,
 					compound: {
 						should: [
 							{

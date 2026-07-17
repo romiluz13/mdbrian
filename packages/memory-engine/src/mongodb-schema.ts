@@ -275,8 +275,23 @@ const STRUCTURED_MEM_SCHEMA: Document = {
 		properties: {
 			type: {
 				bsonType: "string",
-				description:
-					"Memory type (decision, preference, fact, person, todo, project, architecture, custom)",
+				enum: [
+					"decision",
+					"preference",
+					"fact",
+					"person",
+					"todo",
+					"project",
+					"architecture",
+					"contact",
+					"milestone",
+					"problem",
+					"emotional",
+					"identity",
+					"instruction",
+					"custom",
+				],
+				description: "Memory type",
 			},
 			key: { bsonType: "string", description: "Unique key within type" },
 			value: { bsonType: "string", description: "The observation/fact text" },
@@ -773,6 +788,7 @@ const ENTITIES_SCHEMA: Document = {
 			name: { bsonType: "string", description: "Entity name" },
 			type: {
 				bsonType: "string",
+				minLength: 1,
 				description: "Entity type (person, project, concept, etc.)",
 			},
 			agentId: { bsonType: "string" },
@@ -836,6 +852,7 @@ const RELATIONS_SCHEMA: Document = {
 			toEntityId: { bsonType: "string" },
 			type: {
 				bsonType: "string",
+				minLength: 1,
 				description: "Relation type (works_on, knows, etc.)",
 			},
 			agentId: { bsonType: "string" },
@@ -1451,6 +1468,17 @@ export async function ensureSchemaValidation(
 				msg.includes("NamespaceNotFound")
 			) {
 				continue
+			}
+			// In strict/benchmark mode, re-throw non-namespace collMod errors
+			// so deployments know validation failed instead of silently running
+			// without schema enforcement.
+			if (
+				process.env.MDBRAIN_BENCHMARK_STRICT === "1" ||
+				process.env.MDBRAIN_STRICT === "1"
+			) {
+				throw new Error(
+					`schema validation for ${collName} failed (strict mode): ${msg}`,
+				)
 			}
 			log.warn(`schema validation for ${collName} failed: ${msg}`)
 		}
@@ -2700,7 +2728,7 @@ export async function ensureEntityAutocompleteIndex(
 	try {
 		await ensureNamedSearchIndex({
 			collection: entities,
-			name: "entity_autocomplete",
+			name: `${prefix}entity_autocomplete`,
 			type: "search",
 			definition: {
 				mappings: {
@@ -2827,7 +2855,7 @@ export function getExpectedSearchIndexTargets(
 		},
 		{
 			collectionName: `${prefix}entities`,
-			indexNames: ["entity_autocomplete"],
+			indexNames: [`${prefix}entity_autocomplete`],
 		},
 	]
 }

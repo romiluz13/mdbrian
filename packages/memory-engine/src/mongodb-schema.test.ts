@@ -1411,7 +1411,7 @@ describe("search index readiness helpers", () => {
 			},
 			{
 				collectionName: "test_entities",
-				indexNames: ["entity_autocomplete"],
+				indexNames: ["test_entity_autocomplete"],
 			},
 		])
 	})
