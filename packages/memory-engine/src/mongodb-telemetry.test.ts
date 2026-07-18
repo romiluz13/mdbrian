@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/unbound-method -- Vitest mock method assertions */
 import type { Db, Collection } from "mongodb"
-import { describe, it, expect, vi, beforeEach } from "vitest"
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest"
 
 // ---------------------------------------------------------------------------
 // Mock mongodb-schema before importing module under test
@@ -13,6 +13,8 @@ vi.mock("./mongodb-schema.js", () => ({
 import { telemetryCollection } from "./mongodb-schema.js"
 import {
 	emitTelemetry,
+	flushTelemetry,
+	resetTelemetry,
 	getLatencyStats,
 	getCacheHitRate,
 	getOperationDistribution,
@@ -27,6 +29,10 @@ function createMockCollection(
 ): Collection {
 	return {
 		insertOne: vi.fn().mockResolvedValue({ insertedId: "mock-id" }),
+		insertMany: vi.fn().mockResolvedValue({
+			insertedCount: 0,
+			insertedIds: {},
+		}),
 		aggregate: vi
 			.fn()
 			.mockReturnValue({ toArray: vi.fn().mockResolvedValue([]) }),
@@ -46,30 +52,53 @@ describe("emitTelemetry", () => {
 
 	beforeEach(() => {
 		vi.clearAllMocks()
+		resetTelemetry()
 		mockCol = createMockCollection()
 		vi.mocked(telemetryCollection).mockReturnValue(mockCol)
 	})
 
-	it("calls insertOne with correct document shape", () => {
+	afterEach(() => {
+		resetTelemetry()
+	})
+
+	it("buffers the document without an immediate insert (H4 #29)", () => {
 		emitTelemetry({} as Db, PREFIX, {
 			meta: { agentId: AGENT_ID, operation: "search" },
 			durationMs: 42,
 			ok: true,
 		})
 
-		expect(mockCol.insertOne).toHaveBeenCalledOnce()
-		const [doc] = vi.mocked(mockCol.insertOne).mock.calls[0]
-		expect(doc).toEqual(
+		// H4: emit no longer calls insertOne directly — it buffers.
+		expect(mockCol.insertOne).not.toHaveBeenCalled()
+		expect(mockCol.insertMany).not.toHaveBeenCalled()
+	})
+
+	it("flushTelemetry writes the buffered batch via insertMany", async () => {
+		emitTelemetry({} as Db, PREFIX, {
+			meta: { agentId: AGENT_ID, operation: "search" },
+			durationMs: 42,
+			ok: true,
+		})
+
+		await flushTelemetry({} as Db, PREFIX)
+
+		expect(mockCol.insertMany).toHaveBeenCalledOnce()
+		const [docs, options] = vi.mocked(mockCol.insertMany).mock
+			.calls[0] as unknown[]
+		expect(Array.isArray(docs)).toBe(true)
+		expect((docs as Array<Record<string, unknown>>).length).toBe(1)
+		expect(docs).toEqual([
 			expect.objectContaining({
 				meta: { agentId: AGENT_ID, operation: "search" },
 				durationMs: 42,
 				ok: true,
 				ts: expect.any(Date),
 			}),
-		)
+		])
+		expect(options).toEqual({ ordered: false })
 	})
 
-	it("adds ts field automatically", () => {
+	it("adds ts field automatically when buffered", () => {
 		const before = Date.now()
 		emitTelemetry({} as Db, PREFIX, {
 			meta: { agentId: AGENT_ID, operation: "event-write" },
@@ -78,28 +107,42 @@ describe("emitTelemetry", () => {
 		})
 		const after = Date.now()
 
-		const [doc] = vi.mocked(mockCol.insertOne).mock.calls[0]
-		const ts = (doc as Record<string, unknown>).ts as Date
-		expect(ts.getTime()).toBeGreaterThanOrEqual(before)
-		expect(ts.getTime()).toBeLessThanOrEqual(after)
+		// Drain via flush and inspect the batch.
+		return flushTelemetry({} as Db, PREFIX).then(() => {
+			const [docs] = vi.mocked(mockCol.insertMany).mock.calls[0] as unknown[]
+			const ts = (docs as Array<Record<string, unknown>>)[0].ts as Date
+			expect(ts.getTime()).toBeGreaterThanOrEqual(before)
+			expect(ts.getTime()).toBeLessThanOrEqual(after)
+		})
 	})
 
-	it("does not throw on insertOne failure", () => {
-		vi.mocked(mockCol.insertOne).mockReturnValue(
-			Promise.reject(new Error("Write failed")) as never,
+	it("flush failure retains events in the buffer for the next flush", async () => {
+		vi.mocked(mockCol.insertMany).mockRejectedValueOnce(
+			new Error("Write failed") as never,
 		)
 
-		// Should not throw
-		expect(() => {
-			emitTelemetry({} as Db, PREFIX, {
-				meta: { agentId: AGENT_ID, operation: "search" },
-				durationMs: 10,
-				ok: true,
-			})
-		}).not.toThrow()
+		emitTelemetry({} as Db, PREFIX, {
+			meta: { agentId: AGENT_ID, operation: "search" },
+			durationMs: 10,
+			ok: true,
+		})
+
+		// Should not throw; failed events stay buffered.
+		await expect(flushTelemetry({} as Db, PREFIX)).resolves.toBeUndefined()
+
+		// Retry flush succeeds and writes the retained event.
+		await flushTelemetry({} as Db, PREFIX)
+		expect(mockCol.insertMany).toHaveBeenCalledTimes(2)
+		const [docs] = vi.mocked(mockCol.insertMany).mock.calls[1] as unknown[]
+		expect((docs as Array<Record<string, unknown>>).length).toBe(1)
 	})
 
-	it("includes optional fields when provided", () => {
+	it("flushTelemetry is a no-op when the buffer is empty", async () => {
+		await flushTelemetry({} as Db, PREFIX)
+		expect(mockCol.insertMany).not.toHaveBeenCalled()
+	})
+
+	it("includes optional fields when provided", async () => {
 		emitTelemetry({} as Db, PREFIX, {
 			meta: { agentId: AGENT_ID, operation: "search" },
 			durationMs: 100,
@@ -110,38 +153,44 @@ describe("emitTelemetry", () => {
 			fusionMethod: "rrf",
 		})
 
-		const [doc] = vi.mocked(mockCol.insertOne).mock.calls[0]
-		expect(doc).toEqual(
+		await flushTelemetry({} as Db, PREFIX)
+
+		const [docs] = vi.mocked(mockCol.insertMany).mock.calls[0] as unknown[]
+		expect(docs).toEqual([
 			expect.objectContaining({
 				pathUsed: "conversation-vector",
 				resultCount: 5,
 				topScore: 0.95,
 				fusionMethod: "rrf",
 			}),
-		)
+		])
 	})
 
-	it("omits optional fields when not provided", () => {
+	it("omits optional fields when not provided", async () => {
 		emitTelemetry({} as Db, PREFIX, {
 			meta: { agentId: AGENT_ID, operation: "cache-check" },
 			durationMs: 5,
 			ok: true,
 		})
 
-		const [doc] = vi.mocked(mockCol.insertOne).mock.calls[0]
-		const d = doc as Record<string, unknown>
+		await flushTelemetry({} as Db, PREFIX)
+
+		const [docs] = vi.mocked(mockCol.insertMany).mock.calls[0] as unknown[]
+		const d = (docs as Array<Record<string, unknown>>)[0]
 		expect(d.pathUsed).toBeUndefined()
 		expect(d.resultCount).toBeUndefined()
 		expect(d.topScore).toBeUndefined()
 		expect(d.fusionMethod).toBeUndefined()
 	})
 
-	it("passes correct collection prefix", () => {
+	it("passes correct collection prefix to flush", async () => {
 		emitTelemetry({} as Db, "prod_", {
 			meta: { agentId: AGENT_ID, operation: "search" },
 			durationMs: 10,
 			ok: true,
 		})
+
+		await flushTelemetry({} as Db, "prod_")
 
 		expect(telemetryCollection).toHaveBeenCalledWith({}, "prod_")
 	})

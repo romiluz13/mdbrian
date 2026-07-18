@@ -18,7 +18,6 @@ vi.mock("./mongodb-structured-memory.js", () => ({
 
 import { structuredMemCollection } from "./mongodb-schema.js"
 import { writeStructuredMemory } from "./mongodb-structured-memory.js"
-import type { MemorySelfEditBlock, MemorySelfEditAction } from "./types.js"
 import { selfEditBlock } from "./mongodb-self-edit.js"
 
 // ---------------------------------------------------------------------------
@@ -29,12 +28,36 @@ function makeFakeFindOne(existing: { value: string } | null) {
 	return vi.fn().mockResolvedValue(existing)
 }
 
-function setupCollection(existing: { value: string } | null) {
+/**
+ * H2 (#27): standalone append/prepend now uses an atomic
+ * findOneAndUpdate (aggregation pipeline) + updateOne to mark embeddings
+ * stale. This helper mocks both paths. `updatedValue` is the value the
+ * atomic update should report as the post-update doc.
+ */
+function setupCollection(
+	existing: { value: string } | null,
+	updatedValue?: string,
+) {
 	const findOne = makeFakeFindOne(existing)
+	const updatedDoc =
+		updatedValue !== undefined
+			? {
+					value: updatedValue,
+					agentId: "agent-1",
+					type: "preference",
+					key: "core:user",
+				}
+			: null
+	const findOneAndUpdate = vi.fn().mockResolvedValue(updatedDoc)
+	const updateOne = vi
+		.fn()
+		.mockResolvedValue({ matchedCount: 1, modifiedCount: 1 })
 	vi.mocked(structuredMemCollection).mockReturnValue({
 		findOne,
+		findOneAndUpdate,
+		updateOne,
 	} as any)
-	return { findOne }
+	return { findOne, findOneAndUpdate, updateOne }
 }
 
 const baseParams = {
@@ -78,8 +101,11 @@ describe("selfEditBlock", () => {
 		)
 	})
 
-	it("append: appends to existing value with newline separator", async () => {
-		setupCollection({ value: "Existing content" })
+	it("append: appends atomically via aggregation pipeline (H2 #27)", async () => {
+		const { findOneAndUpdate, updateOne } = setupCollection(
+			{ value: "Existing content" },
+			"Existing content\nNew content",
+		)
 
 		const result = await selfEditBlock({
 			...baseParams,
@@ -89,13 +115,24 @@ describe("selfEditBlock", () => {
 		})
 
 		expect(result.id).toBe("core:user")
-		expect(writeStructuredMemory).toHaveBeenCalledWith(
-			expect.objectContaining({
-				entry: expect.objectContaining({
-					value: "Existing content\nNew content",
-				}),
-			}),
+		expect(result.upserted).toBe(true)
+		// Atomic findOneAndUpdate used, not read-then-write via writeStructuredMemory
+		expect(findOneAndUpdate).toHaveBeenCalledOnce()
+		expect(writeStructuredMemory).not.toHaveBeenCalled()
+		const [filter, pipeline, options] = findOneAndUpdate.mock
+			.calls[0] as unknown[]
+		expect(filter).toEqual({
+			agentId: "agent-1",
+			type: "preference",
+			key: "core:user",
+		})
+		// Aggregation pipeline: [{ $set: { value: { $concat: [..., "\n", content] } } }]
+		expect(Array.isArray(pipeline)).toBe(true)
+		expect(options).toEqual(
+			expect.objectContaining({ upsert: true, returnDocument: "after" }),
 		)
+		// Embedding marked stale after the atomic value update
+		expect(updateOne).toHaveBeenCalledOnce()
 	})
 
 	it("append with client: uses a transaction and passes the session to the write path", async () => {
@@ -134,8 +171,11 @@ describe("selfEditBlock", () => {
 		expect(endSession).toHaveBeenCalledTimes(1)
 	})
 
-	it("prepend: prepends to existing value with newline separator", async () => {
-		setupCollection({ value: "Existing content" })
+	it("prepend: prepends atomically via aggregation pipeline (H2 #27)", async () => {
+		const { findOneAndUpdate } = setupCollection(
+			{ value: "Existing content" },
+			"New content\nExisting content",
+		)
 
 		const result = await selfEditBlock({
 			...baseParams,
@@ -145,19 +185,27 @@ describe("selfEditBlock", () => {
 		})
 
 		expect(result.id).toBe("core:persona")
-		expect(writeStructuredMemory).toHaveBeenCalledWith(
-			expect.objectContaining({
-				entry: expect.objectContaining({
-					type: "identity",
-					key: "core:persona",
-					value: "New content\nExisting content",
-				}),
-			}),
-		)
+		expect(findOneAndUpdate).toHaveBeenCalledOnce()
+		expect(writeStructuredMemory).not.toHaveBeenCalled()
+		const [filter, pipeline] = findOneAndUpdate.mock.calls[0] as unknown[]
+		expect(filter).toEqual({
+			agentId: "agent-1",
+			type: "identity",
+			key: "core:persona",
+		})
+		// prepend order: content, "\n", existing
+		const setStage = (pipeline as Array<Record<string, unknown>>)[0]
+			.$set as Record<string, unknown>
+		const concat = setStage.value as Record<string, unknown>
+		expect(concat.$concat).toEqual([
+			"New content",
+			"\n",
+			expect.objectContaining({ $ifNull: ["$value", ""] }),
+		])
 	})
 
-	it("append on non-existing doc: creates with just the content", async () => {
-		setupCollection(null)
+	it("append on non-existing doc: creates with just the content (H2 #27)", async () => {
+		const { findOneAndUpdate } = setupCollection(null, "Follow these rules")
 
 		const result = await selfEditBlock({
 			...baseParams,
@@ -167,14 +215,16 @@ describe("selfEditBlock", () => {
 		})
 
 		expect(result.id).toBe("core:instructions")
-		expect(writeStructuredMemory).toHaveBeenCalledWith(
-			expect.objectContaining({
-				entry: expect.objectContaining({
-					type: "instruction",
-					key: "core:instructions",
-					value: "Follow these rules",
-				}),
-			}),
+		expect(findOneAndUpdate).toHaveBeenCalledOnce()
+		const [filter, , options] = findOneAndUpdate.mock.calls[0] as unknown[]
+		expect(filter).toEqual({
+			agentId: "agent-1",
+			type: "instruction",
+			key: "core:instructions",
+		})
+		// upsert creates the doc when missing; $ifNull yields just the content
+		expect(options).toEqual(
+			expect.objectContaining({ upsert: true, returnDocument: "after" }),
 		)
 	})
 

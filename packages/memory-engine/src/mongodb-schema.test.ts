@@ -357,8 +357,8 @@ describe("ensureCollections", () => {
 	it("creates all collections when none exist, including both time series collections", async () => {
 		const db = mockDb([])
 		await ensureCollections(db, "test_")
-		// 30 = 29 baseline + 1 memory_quarantine (, )
-		expect(db.createCollection).toHaveBeenCalledTimes(30)
+		// 31 = 29 baseline + 1 memory_quarantine + 1 migrations (H3 #28)
+		expect(db.createCollection).toHaveBeenCalledTimes(31)
 		// Non-validated collections: called with name only
 		expect(db.createCollection).toHaveBeenCalledWith("test_files")
 		expect(db.createCollection).toHaveBeenCalledWith("test_embedding_cache")
@@ -435,8 +435,8 @@ describe("ensureCollections", () => {
 	it("skips already-existing collections", async () => {
 		const db = mockDb(["test_chunks", "test_files"])
 		await ensureCollections(db, "test_")
-		// 28 = 30 new total - 2 skipped. 29 baseline + 1 memory_quarantine.
-		expect(db.createCollection).toHaveBeenCalledTimes(28)
+		// 29 = 31 new total - 2 skipped. 29 baseline + 1 memory_quarantine + 1 migrations (H3 #28).
+		expect(db.createCollection).toHaveBeenCalledTimes(29)
 		expect(db.createCollection).toHaveBeenCalledWith("test_embedding_cache")
 		expect(db.createCollection).toHaveBeenCalledWith("test_meta")
 		expect(db.createCollection).toHaveBeenCalledWith(
@@ -494,6 +494,7 @@ describe("ensureCollections", () => {
 			"oc_memory_jobs",
 			"oc_session_chunks",
 			"oc_memory_quarantine",
+			"oc_migrations",
 		])
 		await ensureCollections(db, "oc_")
 		expect(db.createCollection).not.toHaveBeenCalled()
@@ -2348,8 +2349,8 @@ describe("ensureCollections total count with query_cache and time series", () =>
 	it("creates all regular collections plus telemetry and access-events time series collections", async () => {
 		const db = mockDb([])
 		await ensureCollections(db, "test_")
-		// 30 = 29 baseline + 1 memory_quarantine (, )
-		expect(db.createCollection).toHaveBeenCalledTimes(30)
+		// 31 = 29 baseline + 1 memory_quarantine + 1 migrations (H3 #28)
+		expect(db.createCollection).toHaveBeenCalledTimes(31)
 	})
 })
 

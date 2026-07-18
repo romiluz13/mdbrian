@@ -83,44 +83,52 @@ export async function selfEditBlock(params: {
 		}
 	}
 
-	let value: string
 	if (action === "replace") {
-		value = content
-	} else {
-		// append or prepend — read existing doc first
-		const existing = await structuredMemCollection(db, prefix).findOne({
-			agentId,
-			type,
-			key,
+		const result = await writeStructuredMemory({
+			db,
+			prefix,
+			entry: {
+				type,
+				key,
+				value: content,
+				agentId,
+				confidence: 1.0,
+				salience: "critical",
+				sourceAgent: { id: agentId, name: "user" },
+			},
+			embeddingMode,
+			client,
 		})
-		const existingValue =
-			existing && typeof existing.value === "string" ? existing.value : null
+		return { upserted: result.upserted, id: `core:${block}` }
+	}
 
-		if (existingValue === null) {
-			value = content
-		} else if (action === "append") {
-			value = `${existingValue}\n${content}`
-		} else {
-			// prepend
-			value = `${content}\n${existingValue}`
+	// H2 (#27): append/prepend without a transaction — use an atomic
+	// aggregation-pipeline update so we don't lose updates to a concurrent
+	// writer. $ifNull makes the concat a no-op on a missing field, and
+	// upsert:true lets us create the doc in the same atomic step.
+	// Embeddings are re-derived by the writer path below.
+	const filter = { agentId, type, key }
+	const concatExpr =
+		action === "append"
+			? { $concat: [{ $ifNull: ["$value", ""] }, "\n", content] }
+			: { $concat: [content, "\n", { $ifNull: ["$value", ""] }] }
+
+	const updated = await structuredMemCollection(db, prefix).findOneAndUpdate(
+		filter,
+		[{ $set: { value: concatExpr } }],
+		{ upsert: true, returnDocument: "after" },
+	)
+
+	// Mark the embedding as stale so the next search / projection refreshes it.
+	if (updated) {
+		try {
+			await structuredMemCollection(db, prefix).updateOne(filter, {
+				$set: { embeddingStatus: "pending", updatedAt: new Date() },
+			})
+		} catch {
+			// Non-fatal — the value was already persisted atomically.
 		}
 	}
 
-	const result = await writeStructuredMemory({
-		db,
-		prefix,
-		entry: {
-			type,
-			key,
-			value,
-			agentId,
-			confidence: 1.0,
-			salience: "critical",
-			sourceAgent: { id: agentId, name: "user" },
-		},
-		embeddingMode,
-		client,
-	})
-
-	return { upserted: result.upserted, id: `core:${block}` }
+	return { upserted: updated !== null, id: `core:${block}` }
 }

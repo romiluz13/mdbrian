@@ -174,6 +174,16 @@ export function memoryJobsCollection(db: Db, prefix: string): Collection {
 	return col(db, prefix, "memory_jobs")
 }
 
+/** H3 (#28): migration tracking — { _id: migrationId, appliedAt: Date } */
+export type MigrationDoc = { _id: string; appliedAt: Date }
+
+export function migrationsCollection(
+	db: Db,
+	prefix: string,
+): Collection<MigrationDoc> {
+	return db.collection<MigrationDoc>(`${prefix}migrations`)
+}
+
 export function sessionChunksCollection(db: Db, prefix: string): Collection {
 	return col(db, prefix, "session_chunks")
 }
@@ -1366,6 +1376,7 @@ export async function ensureCollections(db: Db, prefix: string): Promise<void> {
 		"memory_jobs",
 		"session_chunks",
 		"memory_quarantine",
+		"migrations",
 		...(isEvidenceMirrorEnabled() ? ["memory_evidence"] : []),
 	].map((n) => `${prefix}${n}`)
 	for (const name of needed) {

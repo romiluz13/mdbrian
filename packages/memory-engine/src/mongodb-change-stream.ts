@@ -38,6 +38,16 @@ export class MongoDBChangeStreamWatcher {
 	 * The manager can persist this token externally across restarts.
 	 */
 	private _lastResumeToken: unknown = null
+	/**
+	 * H1 (#26): Health-check interval that restarts the stream if it dies.
+	 * Guards against silent loss of cross-instance sync after a fatal error,
+	 * invalidate event, or oplog overflow.
+	 */
+	private healthCheckInterval: NodeJS.Timeout | null = null
+	/** H1 (#26): Interval between health-check polls (ms). */
+	private readonly healthCheckMs = 30_000
+	/** H1 (#26): Tracks whether the watcher intentionally gave up (standalone). */
+	private unsupported = false
 
 	constructor(
 		private readonly collection: Collection,
@@ -90,22 +100,90 @@ export class MongoDBChangeStreamWatcher {
 					log.info(
 						"change streams not supported (standalone topology), closing watcher",
 					)
+					this.unsupported = true
 					void this.close()
 				} else {
 					log.warn(`change stream error: ${msg}`)
 				}
 			})
 
+			// H1 (#26): A closed stream emits no more events; clear our handle so
+			// the health check can detect the death and restart it.
+			this.stream.on("close", () => {
+				if (!this.closed && !this.unsupported) {
+					log.warn(
+						"change stream closed unexpectedly; will restart via health check",
+					)
+				}
+				this.stream = null
+			})
+
+			this.startHealthCheck()
 			log.info("change stream started")
 			return true
 		} catch (err) {
 			const msg = err instanceof Error ? err.message : String(err)
 			if (isChangeStreamNotSupported(msg)) {
 				log.info("change streams not supported (standalone topology)")
+				this.unsupported = true
 				return false
 			}
 			log.warn(`failed to start change stream: ${msg}`)
 			return false
+		}
+	}
+
+	/**
+	 * H1 (#26): Periodic supervisor that restarts the stream if it has died.
+	 * Polls every `healthCheckMs`; on a dead stream it first retries with the
+	 * last resume token, and on failure restarts fresh (clearing the token).
+	 */
+	private startHealthCheck(): void {
+		this.stopHealthCheck()
+		this.healthCheckInterval = setInterval(() => {
+			void this.runHealthCheck()
+		}, this.healthCheckMs)
+		// Don't keep the event loop alive solely for health checks.
+		this.healthCheckInterval.unref?.()
+	}
+
+	private stopHealthCheck(): void {
+		if (this.healthCheckInterval) {
+			clearInterval(this.healthCheckInterval)
+			this.healthCheckInterval = null
+		}
+	}
+
+	private async runHealthCheck(): Promise<void> {
+		if (this.closed || this.unsupported) {
+			return
+		}
+		// If the stream handle is still present, assume it's alive.
+		if (this.stream) {
+			return
+		}
+		log.warn("change stream appears dead; attempting restart with resume token")
+		let started = false
+		try {
+			started = await this.start(this._lastResumeToken)
+		} catch (err) {
+			const msg = err instanceof Error ? err.message : String(err)
+			log.warn(`change stream restart with token failed: ${msg}`)
+		}
+		if (!started) {
+			log.warn("change stream restart with token failed; restarting fresh")
+			// Clear the persisted token — a stale token after oplog overflow / invalidate
+			// makes every resume attempt fail forever otherwise.
+			this._lastResumeToken = null
+			try {
+				started = await this.start()
+			} catch (err) {
+				const msg = err instanceof Error ? err.message : String(err)
+				log.warn(`change stream fresh restart failed: ${msg}`)
+			}
+		}
+		if (started) {
+			log.info("change stream restarted successfully")
 		}
 	}
 
@@ -175,6 +253,8 @@ export class MongoDBChangeStreamWatcher {
 		}
 		this.closed = true
 
+		this.stopHealthCheck()
+
 		if (this.debounceTimer) {
 			clearTimeout(this.debounceTimer)
 			this.debounceTimer = null
@@ -194,6 +274,15 @@ export class MongoDBChangeStreamWatcher {
 
 	get isActive(): boolean {
 		return this.stream !== null && !this.closed
+	}
+
+	/**
+	 * H1 (#26): True when the watcher has permanently given up because the
+	 * deployment does not support change streams (standalone topology).
+	 * Exposed for diagnostics; the health check will not retry in this state.
+	 */
+	get isUnsupported(): boolean {
+		return this.unsupported
 	}
 }
 

@@ -1,10 +1,50 @@
 import { createHash } from "node:crypto"
 import type { Db } from "mongodb"
 import { createSubsystemLogger } from "@mdbrain/lib"
-import { chunksCollection, eventsCollection } from "./mongodb-schema.js"
+import {
+	chunksCollection,
+	eventsCollection,
+	migrationsCollection,
+} from "./mongodb-schema.js"
 import { resolveScopeRef } from "./mongodb-scope.js"
 
 const log = createSubsystemLogger("memory:mongodb:migration")
+
+// H3 (#28): migration tracking -------------------------------------------------
+
+/** Stable id for the chunks→events backfill migration. */
+export const BACKFILL_EVENTS_MIGRATION_ID = "backfill-events-from-chunks"
+
+/**
+ * H3 (#28): Returns true when `migrationId` has already been recorded in the
+ * migrations collection. Uses a simple { _id: migrationId } lookup.
+ */
+export async function isMigrationApplied(
+	db: Db,
+	prefix: string,
+	migrationId: string,
+): Promise<boolean> {
+	const existing = await migrationsCollection(db, prefix).findOne({
+		_id: migrationId,
+	})
+	return existing !== null
+}
+
+/**
+ * H3 (#28): Records a migration as applied. Idempotent — uses upsert so a
+ * repeat call after a partial run is a no-op.
+ */
+export async function recordMigrationApplied(
+	db: Db,
+	prefix: string,
+	migrationId: string,
+): Promise<void> {
+	await migrationsCollection(db, prefix).updateOne(
+		{ _id: migrationId },
+		{ $setOnInsert: { _id: migrationId, appliedAt: new Date() } },
+		{ upsert: true },
+	)
+}
 
 // ---------------------------------------------------------------------------
 // Backfill v1 conversation chunks into canonical events
@@ -26,6 +66,14 @@ export async function backfillEventsFromChunks(params: {
 	skipped: number
 }> {
 	const { db, prefix, agentId, batchSize = 100 } = params
+
+	// H3 (#28): skip if this migration has already been applied.
+	if (await isMigrationApplied(db, prefix, BACKFILL_EVENTS_MIGRATION_ID)) {
+		log.info(
+			`migration ${BACKFILL_EVENTS_MIGRATION_ID} already applied; skipping backfill`,
+		)
+		return { eventsCreated: 0, chunksProcessed: 0, skipped: 0 }
+	}
 
 	const chunks = chunksCollection(db, prefix)
 	const events = eventsCollection(db, prefix)
@@ -118,5 +166,7 @@ export async function backfillEventsFromChunks(params: {
 	log.info(
 		`backfill complete: chunksProcessed=${chunksProcessed} eventsCreated=${eventsCreated} skipped=${skipped}`,
 	)
+	// H3 (#28): record the migration as applied so re-runs are skipped.
+	await recordMigrationApplied(db, prefix, BACKFILL_EVENTS_MIGRATION_ID)
 	return { eventsCreated, chunksProcessed, skipped }
 }

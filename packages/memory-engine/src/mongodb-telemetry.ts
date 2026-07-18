@@ -49,13 +49,85 @@ export type TelemetryDocument = {
 }
 
 // ---------------------------------------------------------------------------
-// Emit (fire-and-forget, error-swallowing, non-blocking)
+// Emit (batched, fire-and-forget, non-blocking) — H4 (#29)
 // ---------------------------------------------------------------------------
 
 /**
+ * H4 (#29): In-memory buffer of telemetry documents awaiting flush. Kept at
+ * module scope so all callers share one batch. Flushed by `flushTelemetry`
+ * (called automatically on a timer, or manually on shutdown).
+ */
+const telemetryBuffer: TelemetryDocument[] = []
+
+/** H4 (#29): Most recent db/prefix seen by emitTelemetry, used by the auto-timer. */
+let pendingFlush: { db: Db; prefix: string } | null = null
+
+let flushInterval: NodeJS.Timeout | null = null
+const FLUSH_INTERVAL_MS = 5_000
+
+/** H4 (#29): Start the auto-flush timer (idempotent, unref'd). */
+function ensureFlushTimer(): void {
+	if (flushInterval) {
+		return
+	}
+	flushInterval = setInterval(() => {
+		void flushPending()
+	}, FLUSH_INTERVAL_MS)
+	// Don't keep the event loop alive solely for telemetry flushing.
+	flushInterval.unref?.()
+}
+
+/** H4 (#29): Auto-timer callback — flushes to the last-seen db/prefix. */
+async function flushPending(): Promise<void> {
+	if (!pendingFlush) {
+		return
+	}
+	await flushTelemetry(pendingFlush.db, pendingFlush.prefix)
+}
+
+/**
+ * H4 (#29): Flush the buffer to the telemetry collection via `insertMany`
+ * (ordered:false so one bad doc doesn't abort the batch). On failure the
+ * events are returned to the buffer for the next flush (data is not lost).
+ * No-op when the buffer is empty.
+ */
+export async function flushTelemetry(db: Db, prefix: string): Promise<void> {
+	if (telemetryBuffer.length === 0) {
+		return
+	}
+	// Take the whole batch out so concurrent emits append to a fresh buffer.
+	const batch = telemetryBuffer.splice(0, telemetryBuffer.length)
+	try {
+		await telemetryCollection(db, prefix).insertMany(batch, {
+			ordered: false,
+		})
+	} catch (err) {
+		log.warn("telemetry flush failed; retaining events for next flush", {
+			count: batch.length,
+			error: err,
+		})
+		// Put the failed batch back at the front; new events stay after it.
+		telemetryBuffer.unshift(...batch)
+	}
+}
+
+/**
+ * H4 (#29): Test/reset hook — clears the in-memory buffer and stops the
+ * auto-flush timer. Not intended for production callers.
+ */
+export function resetTelemetry(): void {
+	telemetryBuffer.length = 0
+	pendingFlush = null
+	if (flushInterval) {
+		clearInterval(flushInterval)
+		flushInterval = null
+	}
+}
+
+/**
  * Emit a telemetry document to the memory_telemetry time series collection.
- * Fire-and-forget: never blocks the caller, never throws.
- * Uses insertOne with .catch() for error-swallowing.
+ * H4 (#29): Now batched — pushes to an in-memory buffer flushed periodically
+ * (every 5s) or via `flushTelemetry`. Never blocks the caller, never throws.
  */
 export function emitTelemetry(
 	db: Db,
@@ -63,14 +135,9 @@ export function emitTelemetry(
 	doc: Omit<TelemetryDocument, "ts">,
 ): void {
 	const entry: TelemetryDocument = { ...doc, ts: new Date() }
-	telemetryCollection(db, prefix)
-		.insertOne(entry)
-		.catch((err) => {
-			log.warn("telemetry emit failed", {
-				operation: doc.meta.operation,
-				error: err,
-			})
-		})
+	telemetryBuffer.push(entry)
+	pendingFlush = { db, prefix }
+	ensureFlushTimer()
 }
 
 // ---------------------------------------------------------------------------

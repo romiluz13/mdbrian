@@ -6,10 +6,21 @@ import { describe, it, expect, vi, beforeEach } from "vitest"
 vi.mock("./mongodb-schema.js", () => ({
 	chunksCollection: vi.fn(),
 	eventsCollection: vi.fn(),
+	migrationsCollection: vi.fn(),
 }))
 
-import { backfillEventsFromChunks } from "./mongodb-migration.js"
-import { chunksCollection, eventsCollection } from "./mongodb-schema.js"
+import {
+	backfillEventsFromChunks,
+	BACKFILL_EVENTS_MIGRATION_ID,
+	isMigrationApplied,
+	recordMigrationApplied,
+} from "./mongodb-migration.js"
+import {
+	chunksCollection,
+	eventsCollection,
+	migrationsCollection,
+	type MigrationDoc,
+} from "./mongodb-schema.js"
 
 // ---------------------------------------------------------------------------
 // Mock collection factories
@@ -38,6 +49,26 @@ function createMockEventsCol(): Collection {
 	} as unknown as Collection
 }
 
+/** H3 (#28): mock migrations collection — not applied by default. */
+function createMockMigrationsCol(applied = false): {
+	col: Collection<MigrationDoc>
+	findOne: ReturnType<typeof vi.fn>
+	updateOne: ReturnType<typeof vi.fn>
+} {
+	const findOne = vi
+		.fn()
+		.mockResolvedValue(
+			applied
+				? { _id: BACKFILL_EVENTS_MIGRATION_ID, appliedAt: new Date() }
+				: null,
+		)
+	const updateOne = vi
+		.fn()
+		.mockResolvedValue({ matchedCount: 0, modifiedCount: 0, upsertedCount: 1 })
+	const col = { findOne, updateOne } as unknown as Collection<MigrationDoc>
+	return { col, findOne, updateOne }
+}
+
 function mockDb(): Db {
 	return {} as unknown as Db
 }
@@ -47,8 +78,15 @@ function mockDb(): Db {
 // ---------------------------------------------------------------------------
 
 describe("backfillEventsFromChunks", () => {
+	let migrationsCol: Collection<MigrationDoc>
+	let migrationsUpdateOne: ReturnType<typeof vi.fn>
+
 	beforeEach(() => {
 		vi.clearAllMocks()
+		const m = createMockMigrationsCol(false)
+		migrationsCol = m.col
+		migrationsUpdateOne = m.updateOne
+		vi.mocked(migrationsCollection).mockReturnValue(migrationsCol)
 	})
 
 	it("reads chunks and creates events", async () => {
@@ -354,5 +392,118 @@ describe("backfillEventsFromChunks", () => {
 		const ops = vi.mocked(eventsCol.bulkWrite).mock
 			.calls[0][0] as unknown as Array<Record<string, unknown>>
 		expect(ops.length).toBe(1)
+	})
+
+	it("records the migration as applied after a successful backfill (H3 #28)", async () => {
+		const chunks = [
+			{
+				path: "sessions/msg-1",
+				text: "Hello",
+				hash: "abc",
+				source: "conversation",
+				updatedAt: new Date(),
+			},
+		]
+		const chunksCol = createMockChunksCol(chunks)
+		const eventsCol = createMockEventsCol()
+		vi.mocked(chunksCollection).mockReturnValue(chunksCol)
+		vi.mocked(eventsCollection).mockReturnValue(eventsCol)
+
+		await backfillEventsFromChunks({
+			db: mockDb(),
+			prefix: "test_",
+			agentId: "agent-1",
+		})
+
+		expect(migrationsUpdateOne).toHaveBeenCalledOnce()
+		const [filter] = migrationsUpdateOne.mock.calls[0] as unknown[]
+		expect(filter).toEqual({ _id: BACKFILL_EVENTS_MIGRATION_ID })
+	})
+
+	it("skips backfill when the migration is already applied (H3 #28)", async () => {
+		const applied = createMockMigrationsCol(true)
+		vi.mocked(migrationsCollection).mockReturnValue(applied.col)
+		const chunksCol = createMockChunksCol([
+			{
+				path: "sessions/msg-1",
+				text: "Hello",
+				hash: "abc",
+				source: "conversation",
+				updatedAt: new Date(),
+			},
+		])
+		const eventsCol = createMockEventsCol()
+		vi.mocked(chunksCollection).mockReturnValue(chunksCol)
+		vi.mocked(eventsCollection).mockReturnValue(eventsCol)
+
+		const result = await backfillEventsFromChunks({
+			db: mockDb(),
+			prefix: "test_",
+			agentId: "agent-1",
+		})
+
+		expect(result).toEqual({ eventsCreated: 0, chunksProcessed: 0, skipped: 0 })
+		expect(eventsCol.bulkWrite).not.toHaveBeenCalled()
+		// Already applied → recordMigrationApplied not called again.
+		expect(applied.updateOne).not.toHaveBeenCalled()
+	})
+})
+
+// ---------------------------------------------------------------------------
+// H3 (#28): migration tracking helpers
+// ---------------------------------------------------------------------------
+
+describe("isMigrationApplied / recordMigrationApplied (H3 #28)", () => {
+	beforeEach(() => {
+		vi.clearAllMocks()
+	})
+
+	it("isMigrationApplied returns false when no record exists", async () => {
+		const { col, findOne } = createMockMigrationsCol(false)
+		vi.mocked(migrationsCollection).mockReturnValue(col)
+
+		const applied = await isMigrationApplied(
+			mockDb(),
+			"test_",
+			"some-migration",
+		)
+
+		expect(applied).toBe(false)
+		expect(findOne).toHaveBeenCalledWith({ _id: "some-migration" })
+	})
+
+	it("isMigrationApplied returns true when a record exists", async () => {
+		const { col } = createMockMigrationsCol(true)
+		vi.mocked(migrationsCollection).mockReturnValue(col)
+
+		const applied = await isMigrationApplied(
+			mockDb(),
+			"test_",
+			BACKFILL_EVENTS_MIGRATION_ID,
+		)
+
+		expect(applied).toBe(true)
+	})
+
+	it("recordMigrationApplied upserts the migration record", async () => {
+		const { col, updateOne } = createMockMigrationsCol(false)
+		vi.mocked(migrationsCollection).mockReturnValue(col)
+
+		await recordMigrationApplied(
+			mockDb(),
+			"test_",
+			BACKFILL_EVENTS_MIGRATION_ID,
+		)
+
+		expect(updateOne).toHaveBeenCalledOnce()
+		const [filter, update, options] = updateOne.mock.calls[0] as unknown[]
+		expect(filter).toEqual({ _id: BACKFILL_EVENTS_MIGRATION_ID })
+		expect((update as Record<string, unknown>).$setOnInsert).toEqual(
+			expect.objectContaining({
+				_id: BACKFILL_EVENTS_MIGRATION_ID,
+				appliedAt: expect.any(Date),
+			}),
+		)
+		expect(options).toEqual(expect.objectContaining({ upsert: true }))
 	})
 })
