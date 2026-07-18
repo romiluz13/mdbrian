@@ -59,9 +59,16 @@ export type ExportBundle = {
  *   - `Uint8Array`   → same tagged object as `Buffer`
  *   - `Map`          → `{ __type: "Map", entries: [[k, v], ...] }` (key-sorted)
  *   - `Set`          → `{ __type: "Set", values: [...] }` (JSON-sorted)
+ *   - BSON types     → tagged objects (`ObjectId`, `Decimal128`, `Long`, `Timestamp`)
  * Tagged objects round-trip through canonicalization and sign deterministically.
+ * A depth limit guards against cyclic references.
  */
-function canonicalize(value: unknown): unknown {
+function canonicalize(value: unknown, depth = 0): unknown {
+	if (depth > 100) {
+		throw new Error(
+			"canonicalize: maximum depth exceeded (possible cyclic reference)",
+		)
+	}
 	if (value === null || value === undefined) {
 		return value
 	}
@@ -82,7 +89,11 @@ function canonicalize(value: unknown): unknown {
 	}
 	if (value instanceof Map) {
 		const entries = Array.from(value.entries()).map(
-			([k, v]) => [canonicalize(k), canonicalize(v)] as [unknown, unknown],
+			([k, v]) =>
+				[canonicalize(k, depth + 1), canonicalize(v, depth + 1)] as [
+					unknown,
+					unknown,
+				],
 		)
 		entries.sort((a, b) => {
 			const ka = JSON.stringify(a[0])
@@ -92,7 +103,9 @@ function canonicalize(value: unknown): unknown {
 		return { __type: "Map", entries }
 	}
 	if (value instanceof Set) {
-		const values = Array.from(value.values()).map(canonicalize)
+		const values = Array.from(value.values()).map((v) =>
+			canonicalize(v, depth + 1),
+		)
 		values.sort((a, b) => {
 			const sa = JSON.stringify(a)
 			const sb = JSON.stringify(b)
@@ -100,14 +113,52 @@ function canonicalize(value: unknown): unknown {
 		})
 		return { __type: "Set", values }
 	}
+	// BSON type normalization — MongoDB driver types that JSON.stringify
+	// would mangle or drop. Each is converted to a deterministic tagged object
+	// so exports are byte-identical and data is not lost.
+	const bsonValue = value as Record<string, unknown>
+	if (typeof bsonValue?.toHexString === "function") {
+		// ObjectId (and similar BSON types with toHexString)
+		return {
+			__type: "ObjectId",
+			hex: (value as { toHexString: () => string }).toHexString(),
+		}
+	}
+	if (
+		typeof bsonValue?.toString === "function" &&
+		value?.constructor?.name === "Decimal128"
+	) {
+		return {
+			__type: "Decimal128",
+			value: (value as { toString: () => string }).toString(),
+		}
+	}
+	if (
+		typeof bsonValue?.toString === "function" &&
+		value?.constructor?.name === "Long"
+	) {
+		return {
+			__type: "Long",
+			value: (value as { toString: () => string }).toString(),
+		}
+	}
+	if (
+		typeof bsonValue?.toString === "function" &&
+		value?.constructor?.name === "Timestamp"
+	) {
+		return {
+			__type: "Timestamp",
+			value: (value as { toString: () => string }).toString(),
+		}
+	}
 	if (Array.isArray(value)) {
-		return value.map(canonicalize)
+		return value.map((v) => canonicalize(v, depth + 1))
 	}
 	const obj = value as Record<string, unknown>
 	const sortedKeys = Object.keys(obj).sort()
 	const result: Record<string, unknown> = {}
 	for (const key of sortedKeys) {
-		result[key] = canonicalize(obj[key])
+		result[key] = canonicalize(obj[key], depth + 1)
 	}
 	return result
 }

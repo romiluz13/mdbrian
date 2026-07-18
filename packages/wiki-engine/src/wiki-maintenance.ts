@@ -28,6 +28,7 @@ import {
 	type WikiDbHandle,
 	type WikiPageInput,
 } from "./wiki-bridge.js"
+import { searchWikiPages } from "./wiki-search.js"
 
 // ---------------------------------------------------------------------------
 // Shared types
@@ -304,17 +305,31 @@ export async function runDreamerPromotion(
 			// Phase 1: Novelty — skip events with no text.
 			if (!event.text || event.text.trim().length === 0) continue
 
-			// Phase 2: Similarity — find the best matching wiki page by slug
-			// (simplified: use a hash-based slug from the event text).
-			// In production, this would use $vectorSearch against the wiki_pages
-			// embedding index. Here we use a simple text-hash slug for determinism.
-			const slug = eventToSlug(event.id)
-			const existing = await getWikiPage(
-				handle,
-				slug,
-				opts.scope,
-				opts.scopeRef,
-			)
+			// Phase 2: Similarity — search for an existing wiki page that
+			// semantically matches the event text. Uses the wiki search
+			// pipeline ($vectorSearch + $search + $rankFusion when available).
+			// Falls back to hash-based slug when search is unavailable.
+			let slug = eventToSlug(event.id)
+			let existing = null
+			try {
+				const searchResult = await searchWikiPages(handle, {
+					query: event.text.slice(0, 500),
+					scope: opts.scope,
+					scopeRef: opts.scopeRef,
+					maxResults: 1,
+					minScore: 0.65,
+				})
+				if (searchResult.results.length > 0) {
+					slug = searchResult.results[0].page.slug
+					existing = await getWikiPage(handle, slug, opts.scope, opts.scopeRef)
+				} else {
+					// No semantic match — fall back to hash slug lookup (backward compat)
+					existing = await getWikiPage(handle, slug, opts.scope, opts.scopeRef)
+				}
+			} catch {
+				// Search unavailable (no mongot) — fall back to hash slug
+				existing = await getWikiPage(handle, slug, opts.scope, opts.scopeRef)
+			}
 
 			// Phase 3: Injection classification (simplified — always new info;
 			// the pipeline gate handles contradictions).
